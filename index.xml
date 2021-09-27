@@ -6,9 +6,181 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Sun, 26 Sep 2021 02:01:58 +0530</lastBuildDate>
+    <lastBuildDate>Mon, 27 Sep 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>Golang下透過grpc調用服務案例</title>
+        <link>https://yoziming.github.io/post/210927-grpc/</link>
+        <pubDate>Mon, 27 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210927-grpc/</guid>
+        <description>柚子隨筆 https://yoziming.github.io/post/210927-grpc/ -&lt;h2 id=&#34;golang下透過grpc調用服務案例&#34;&gt;Golang下透過grpc調用服務案例&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;grpc簡單說就是跨平台(跨語言)調用各種服務的通用轉接口&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;對.proto文件使用轉譯指令:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;案例:透過grpc遠程傳遞一個調用teacher資料類型的服務&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;.proto:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;syntax=&amp;quot;proto3&amp;quot;;
+
+option go_package=&amp;quot;/.;pb&amp;quot;;
+
+message Teacher{
+    int32 age=1;
+    string name=2;
+}
+
+service SayName{
+    rpc SayHello(Teacher) returns(Teacher);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;server:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Children struct{}
+
+// 綁定類方法
+func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {
+	t.Name += &amp;quot;is sleeping&amp;quot;
+	return t, nil
+}
+
+func main() {
+	// 初始一個grpc對象
+	grpcServer := grpc.NewServer()
+
+	// 註冊服務
+	pb.RegisterSayNameServer(grpcServer, new(Children))
+
+	// 監聽
+	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;listen err&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;server監聽中...&amp;quot;)
+	defer listener.Close()
+
+	// 啟動服務
+	grpcServer.Serve(listener)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;client:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	// 連接grpc服務
+	grpcConn, err := grpc.Dial(&amp;quot;127.0.0.1:8899&amp;quot;, grpc.WithInsecure())
+	if err != nil {
+		fmt.Println(&amp;quot;conn err&amp;quot;, err)
+		return
+	}
+	defer grpcConn.Close()
+
+	// 初起化客戶端
+	gprcClient := pb.NewSayNameClient(grpcConn)
+
+	// 創建並初始化接收對象
+	var teacher pb.Teacher
+	teacher.Age = 18
+	teacher.Name = &amp;quot;Mary&amp;quot;
+
+	// 調用遠程服務
+	t, err := gprcClient.SayHello(context.TODO(), &amp;amp;teacher)
+	fmt.Println(t, err)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-grpc/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Golang中使用ProtoBuf</title>
+        <link>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</link>
+        <pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</guid>
+        <description>柚子隨筆 https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ -&lt;h2 id=&#34;golang中使用protobuf&#34;&gt;Golang中使用ProtoBuf&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;protobuf類似json，它體積更小效率更高，規範統一(沒有大小寫等困擾)。&lt;/p&gt;
+&lt;p&gt;缺點是改動協議就要重新生成、數據本身是二進位沒有可讀性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下載，window系統選.exe，解壓縮放到$GOPATH/bin&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://github.com/protocolbuffers/protobuf/releases
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安裝golang對應的庫跟插件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;go get github.com/golang/protobuf/proto
+go get github.com/golang/protobuf/protoc-gen-go
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;測試&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc -h 或 protoc --version
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;沒報錯就是成功&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;消息體舉例，xxx.proto&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 指定版本，不打3就會是2
+syntax=&amp;quot;proto3&amp;quot;;
+
+// 指定輸出位置&amp;amp;go包名，沒寫轉換不了
+// option go_package =&amp;quot;path;name&amp;quot;;
+option go_package =&amp;quot;/.&amp;quot;;  // 放在同一目錄下包名為__(空)
+
+// 定義消息體，分配唯一編號 (不能用19000~19999)
+message Student{
+     int32 age = 1; // 可以不從1開始，但不可重複
+     string name = 2;
+     People p=3;
+     repeated int32 score=4; // 數組
+     Week w=5;
+     // 聯合體
+     oneof data{
+         string teacher=6;
+         string class=7;
+     }
+ }
+
+// 消息體可以嵌套
+message People{
+    int32 weight=1;
+}
+
+// 定義枚舉類型
+enum Week{
+    Monday=0; // 必須從0開始
+    Turesday=1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;生成go文件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;成功轉換出來的就會是一個xxx.pb.go的文件，可以點開看一下，它就是轉換成go語言的版本，記住不要修改這個檔案(他第一行就叫你不要修改)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;添加rpc服務&#34;&gt;添加rpc服務&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;語法:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;service 服務名{
+	rpc 函數名(參數:消息體) returns (返回值:消息)
+}
+舉例:
+service bj{
+    rpc Say(People) returns (Student);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;但是rpc用的很廣，他不知道你要轉成給誰用的，於是要調用另一個生成的指令&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這就是grpc了，到下章繼續&amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ - yoziming</description>
+        </item>
     
     
     
