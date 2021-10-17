@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html><head>
+<title>Docker &amp; Hyper-V占用port問題</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="鬼之占用port問題，困擾我好久">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Docker &amp; Hyper-V占用port問題" />
+<meta property="og:description" content="鬼之占用port問題，困擾我好久" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-10-15T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker &amp; Hyper-V占用port問題"/>
+<meta name="twitter:description" content="鬼之占用port問題，困擾我好久"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                日期歸檔
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker--hyper-v%e5%8d%a0%e7%94%a8port%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#docker--hyper-v占用port問題-nav`)" id="docker--hyper-v占用port問題-nav">
+									Docker &amp; Hyper-V占用port問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e6%9e%9c%e9%81%bf%e4%b8%8d%e9%96%8b%e5%b0%b1%e6%89%8b%e5%8b%95%e5%8f%abhyper-v%e8%ae%93%e8%b7%af" onclick="onNavClick(`#如果避不開就手動叫hyper-v讓路-nav`)" id="如果避不開就手動叫hyper-v讓路-nav">
+									如果避不開就手動叫Hyper-V讓路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#reference" onclick="onNavClick(`#reference-nav`)" id="reference-nav">
+									Reference
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    日期歸檔
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker--hyper-v%e5%8d%a0%e7%94%a8port%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#docker--hyper-v占用port問題-nav`)" id="docker--hyper-v占用port問題-nav">
+									Docker &amp; Hyper-V占用port問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e6%9e%9c%e9%81%bf%e4%b8%8d%e9%96%8b%e5%b0%b1%e6%89%8b%e5%8b%95%e5%8f%abhyper-v%e8%ae%93%e8%b7%af" onclick="onNavClick(`#如果避不開就手動叫hyper-v讓路-nav`)" id="如果避不開就手動叫hyper-v讓路-nav">
+									如果避不開就手動叫Hyper-V讓路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#reference" onclick="onNavClick(`#reference-nav`)" id="reference-nav">
+									Reference
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Docker &amp; Hyper-V占用port問題
+                    
+                    <div class="post-subtitle">
+                        鬼之占用port問題，困擾我好久
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-10-15 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98">自學筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/docker">Docker</a>
+                                &nbsp;
+                            
+                                <a href="/tags/hyper-v">Hyper-V</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="docker--hyper-v占用port問題">Docker &amp; Hyper-V占用port問題</h1>
+<p>在window下用docker desktop有時候遇上port被莫名佔用
+用指令<code>netstat -ano | findstr xxx</code>查詢xxx埠被誰佔用卻又顯示沒有</p>
+<p>原來是因為在window下用docker需要依賴hyper-v技術，
+而這個hyper-v每次都會隨機搶走一部分tcp埠，使用命令可以得知應避開的範圍:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd</span>
+netsh interface ipv4 show excludedportrange protocol=tcp
+</code></pre></div><h2 id="如果避不開就手動叫hyper-v讓路">如果避不開就手動叫Hyper-V讓路</h2>
+<ol>
+<li>
+<p>關閉hyper-v</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd</span>
+dism.exe /Online /<span style="color:#658b00">Disable-Feature</span><span style="color:#a61717;background-color:#e3d2d2">:</span><span style="color:#658b00">Microsoft-Hyper</span>-V
+</code></pre></div></li>
+<li>
+<p>配置ipv4動態埠 / 或者配置需要的埠不被佔用</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd 管理員許可權</span>
+<span style="color:#228b22"># start 起始埠  num 表示可用埠數     按自己的需求來</span>
+netsh int ipv4 <span style="color:#658b00">set </span>dynamicport tcp start=30000 num=16383
+// 叫他去用30000以後的阜
+
+<span style="color:#228b22"># 排除ipv4動態埠佔用 startport 起始埠 numberofports 埠數</span>
+netsh int ipv4 add excludedportrange protocol=tcp startport=50051 numberofports=1
+// 或是指定端口50051為要讓路的
+</code></pre></div></li>
+<li>
+<p>重新啟動hyper-v</p>
+<pre tabindex="0"><code>dism.exe /Online /Enable-Feature:Microsoft-Hyper-V /All
+</code></pre></li>
+</ol>
+<h2 id="reference">Reference</h2>
+<p><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Fdocker%2Ffor-win%2Fissues%2F3171%23issuecomment-459205576">https://github.com/docker/for-win/issues/3171#issuecomment-459205576</a></p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-10-15</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211017-%E4%BF%AE%E6%94%B9css%E6%88%96js%E5%BE%8C%E7%80%8F%E8%A6%BD%E5%99%A8%E5%BF%AB%E5%8F%96%E4%B8%8D%E6%9B%B4%E6%96%B0%E5%95%8F%E9%A1%8C/">
+			下一篇<br>修改css或js後瀏覽器快取不更新問題
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211010-ubuntu%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+			上一篇<br>ubuntu常用操作
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -7,7 +7,130 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Mon, 27 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 17 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>修改css或js後瀏覽器快取不更新問題</title>
+      <link>https://yoziming.github.io/post/211017-%E4%BF%AE%E6%94%B9css%E6%88%96js%E5%BE%8C%E7%80%8F%E8%A6%BD%E5%99%A8%E5%BF%AB%E5%8F%96%E4%B8%8D%E6%9B%B4%E6%96%B0%E5%95%8F%E9%A1%8C/</link>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211017-%E4%BF%AE%E6%94%B9css%E6%88%96js%E5%BE%8C%E7%80%8F%E8%A6%BD%E5%99%A8%E5%BF%AB%E5%8F%96%E4%B8%8D%E6%9B%B4%E6%96%B0%E5%95%8F%E9%A1%8C/</guid>
+      <description>修改css或js後瀏覽器快取不更新問題  當初我真的是被這個整到懷疑人生
+ 解決方式一：
+​ 使用者按Ctrl + F5強制重新整理頁面或者手動清空了瀏覽器的快取。此時瀏覽器會重新向伺服器獲取CSS和JS檔案,新的檔案便會生效。
+解決方式二：
+​ 但是使用者量過大的時候總不能讓每個使用者一一清理快取吧，於是便從程式碼的角度著手解決這個問題。在js後面新增版本號，讓瀏覽器把這個JS檔案當做新的檔案重新向伺服器獲取資源。
+加版本號前：
+ &amp;lt;script type=&amp;#34;text/javascript&amp;#34; th:src=&amp;#34;@{/js/test/index.js}&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;  加版本號後：
+ &amp;lt;script type=&amp;#34;text/javascript&amp;#34; th:src=&amp;#34;@{/js/test/index.js?v=1.0}&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;  參考 https://www.itread01.com/content/1548610940.html</description>
+    </item>
+    
+    <item>
+      <title>Docker &amp; Hyper-V占用port問題</title>
+      <link>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</link>
+      <pubDate>Fri, 15 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</guid>
+      <description>Docker &amp;amp; Hyper-V占用port問題 在window下用docker desktop有時候遇上port被莫名佔用 用指令netstat -ano | findstr xxx查詢xxx埠被誰佔用卻又顯示沒有
+原來是因為在window下用docker需要依賴hyper-v技術， 而這個hyper-v每次都會隨機搶走一部分tcp埠，使用命令可以得知應避開的範圍:
+# powershell / cmd netsh interface ipv4 show excludedportrange protocol=tcp 如果避不開就手動叫Hyper-V讓路   關閉hyper-v
+# powershell / cmd dism.exe /Online /Disable-Feature:Microsoft-Hyper-V   配置ipv4動態埠 / 或者配置需要的埠不被佔用
+# powershell / cmd 管理員許可權 # start 起始埠 num 表示可用埠數 按自己的需求來 netsh int ipv4 set dynamicport tcp start=30000 num=16383 // 叫他去用30000以後的阜 # 排除ipv4動態埠佔用 startport 起始埠 numberofports 埠數 netsh int ipv4 add excludedportrange protocol=tcp startport=50051 numberofports=1 // 或是指定端口50051為要讓路的   重新啟動hyper-v</description>
+    </item>
+    
+    <item>
+      <title>ubuntu常用操作</title>
+      <link>https://yoziming.github.io/post/211010-ubuntu%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Sun, 10 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211010-ubuntu%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+      <description>ubuntu常用操作  ubuntu 屋奔兔，算是最常見的Linux系統
+ // 解壓縮XX檔案到/usr/local sudo tar -C /usr/local -xzvf go1.17.1.linux-amd64.tar.gz
+// 文字編輯器 sudo gedit /home/yoziming/.config/go/env
+// 檔案總管 sudo nautilus
+// 啟用go mod go env -w GO111MODULE=on</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes基礎認識</title>
+      <link>https://yoziming.github.io/post/211006-k8s/</link>
+      <pubDate>Wed, 06 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211006-k8s/</guid>
+      <description>Kubernetes基礎認識  自動化地以容器的形式管理你的應用程式 To host your application in the form of containers in a automated fashion
+ 名詞解釋   Cluster:集群，計算、儲存資源的集合。一個Cluster通常包含一個Controller Plane和數個Node，視需求而定(也可能有Multi-Controller Plane 的集群)
+ Controller Plane:(以前叫Mater)控制主節點，調度指揮所  APIserver:管理整個 K8s 所需 API 的接口(Endpoint)，提供HTTP Rest介面的關鍵服務處理程序，是集群中各個節點的溝通橋樑 etcd:存資料 Scheduler:資源調配，例如調度Pod運行在哪個Node Controller-manager:總經理，負責管理並運行 controller ，controller定義各種Pod的部屬特性(如最常用的Deployment)來滿足不同的業務場景   Node:節點，讓物件(resource-objects)運行的實體或虛擬機器  kubelet:對應api-server的接口，可以看成每個Node上的&amp;quot;實際執行者&amp;quot;或&amp;quot;操作者&amp;quot;，負責接收來自api-server的訊息，並做出相對應的動作，例如，負責Pod對應的容器的建立、啟動或停止等。 kube-proxy:維護網路規則(iptables)，這些規則允許從群集內部或外部的與Pod進行通訊。 Container Runtime:容器的運行引擎，預設是Docker，也支援其他滿足CRI標準的。  Pod:可被調度的最小單位，每個Pod包含一或多個容器，Pod內共享生命週期、資源、通信(使用同一個網路namespace，即相同的IP與port)、儲存空間。通常使用是一個Pod中放一個容器；當需要高度共享資源時才會用一個Pod內多個容器的形式      延伸觀念  Deployment:部屬，例如把Pod做橫向擴展，適用自動管理，或達成無停機系統升級 Service:服務，Deployment可以部屬多個Pod，每個Pod都有自己的IP，隨時都在生滅浮動，外界如何訪問? 答案就是透過Service，可以說Controller負責運行Pod，而Service負責訪問Pod。 Ingress:Service 中是將每個 Service 元件對外的 port number 跟 Node 上的 port number 做 mapping，這樣在我們的 Service 變多時，port number 以及分流規則的管理變得相當困難。而 Ingress 可以透過 HTTP/HTTPS，在我們眾多的 Service 前搭建一個 reverse-proxy。這樣 Ingress 可以幫助我們統一一個對外的 port number，並且根據 hostname 或是 pathname 決定封包要轉發到哪個 Service 上 Namespace:命名空間，假如有多個用戶使用同一個Cluster，想把他們創建的Controller、Pod等資源分開，就靠Namespace。Namespace將物理的Cluster從邏輯上切成多個虛擬Cluster，每一個虛擬Cluster就是一個Namespace，不同Namespace中的資源完全隔離。K8s默認創建2個Namespace:  default:如果不指定，資源就預設放這 kube-system:K8s自己創建的系統資源會放在這個Namespace中      </description>
+    </item>
+    
+    <item>
+      <title>MySQL常用語句 &amp; Workbench</title>
+      <link>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</guid>
+      <description>MySQL 常用語句 資料庫database
+create database XXX;show databases;use XXX;drop database XXX;資料表table
+create table mytable(school char(5),name char(10),id int);show tables;describe mytable; // 顯示這表有哪些欄位跟屬性drop table mytable;select * from mytable; // 顯示mytable中所有資料insert into mytable(school, name, id) values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);insert into mytable values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);update mytable set name = &#39;HaHa&#39; where id = &#39;123&#39;;delete from mytable where name = &#39;HaHa&#39;;delete from 表格; // 把表格內資料都刪除(但格式宣告還在)select * from mytable where id = &#39;123&#39; order by name DESC; // 資料表查詢+條件+排序 (DESC 代表由大到小排序)load data local infile &amp;quot;c:\\data.</description>
+    </item>
+    
+    <item>
+      <title>Docker啟用Redis</title>
+      <link>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</link>
+      <pubDate>Sat, 02 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</guid>
+      <description>Docker啟用Redis 抓映象檔 docker pull redis:6.0 拉一個6.0版本的redis  執行 Image docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes –name redis6 ：將 Container 取名為 redis6 -p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器) -d :後台執行 Container ，並返回ID redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置  進入 Container docker exec -it redis6 bash -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  資料庫測試 redis-cliset hello worldget hello</description>
+    </item>
+    
+    <item>
+      <title>Docker啟用Mysql</title>
+      <link>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</link>
+      <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</guid>
+      <description>Docker啟用Mysql 抓映象檔 docker pull mysql/mysql-server:8.0 拉一個8.0版本的mysql  執行 Image docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password -d：同--detach，以背景模式執行。 -v ~/mysql-docker-data:/var/lib/mysql：同--volume，掛載host目錄到container目錄，也就是host的~/mysql-docker-data會保存container /var/lib/mysql的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。 -it：同--interactive加--tty，作用為運行container時可登入其bash操作。 --name mysql8，命名container名稱為mysql8。 -p：同--publish。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port -e：同--env，設定環境變數。MYSQL_ROOT_PASSWORD設定MySQL root帳號的登入密碼為1234，MYSQL_DATABASE設定資料庫名稱為mydb。 mysql:8：mysql為image名稱，8為image tag。所以運行的是mysql:8的image。 --default-authentication-plugin=mysql_native_password：把儲存密碼的方式改為MySQL 5的mysql_native_password，因為MySQL 8的儲存方式預設為caching_sha2_password，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。  檢視運行中的容器 docker ps進入 Container docker exec mysql8 mysql -u root -p docker exec指令的作用為在運行的container執行指令，所以意思就是在mysql8這個container執行mysql -u root -p的指令。  docker container exec -it mysql8 /bin/bash 遇到權限問題用這個  進入Mysql mysql -uroot -p新增 1 個開放外部連線的帳號 CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;GRANT ALL ON your_database.</description>
+    </item>
+    
+    <item>
+      <title>Docker常用語句</title>
+      <link>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+      <description>Docker常用語句 抓映象檔 docker pull xxx檢視運行中的容器 docker ps進入 Container docker exec -it &amp;lt;container_id&amp;gt; /bin/bash -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  查看字元編碼 locale臨時改成UTF8 export LANG=&amp;quot;en_US.UTF-8&amp;quot;  永久設置需在Dockerfile中設置環境字元集環境變數
+ENV LANG=&amp;quot;en_US.UTF-8&amp;quot;  </description>
+    </item>
+    
+    <item>
+      <title>Docker啟用MinIO</title>
+      <link>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</link>
+      <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</guid>
+      <description>Docker啟用MinIO儲存 執行 Image docker run -d --name minio -e &amp;quot;MINIO_ROOT_USER=root&amp;quot; -e &amp;quot;MINIO_ROOT_PASSWORD=root1234&amp;quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &amp;quot;:9001&amp;quot;  --name minio，命名container名稱為minio。 -v /data/minio:/data/minio該命令將主機 /data/minio 目錄對映到容器中的 /data/minio 目錄中 MinIO 還提供了圖形管理介面，在瀏覽器輸入 ip:9001即可檢視 不管是圖形介面操作，還是客戶端操作，預設賬號密碼都為 minioadmin -e環境變數，這裡用了自定義賬號密碼，賬號不能小於 3 字元，密碼不能小於 8 字元  Go初始化 導入github.com/minio/minio-go/v7，注意這個後面的v7，在自動引包時可能會漏掉，導致使用到舊版的同名函數而報錯
+func InitMinio() { ctx := context.Background() endpoint := &amp;#34;localhost:9000&amp;#34; accessKeyID := &amp;#34;root&amp;#34; secretAccessKey := &amp;#34;root1234&amp;#34; useSSL := false // Initialize minio client object. 	minioClient, err := minio.</description>
+    </item>
+    
+    <item>
+      <title>consul基礎使用練習</title>
+      <link>https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/</link>
+      <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/</guid>
+      <description>consul基礎使用練習  想像去郵局辦事，consul類似於發號碼牌的那個機器
+伺服端(櫃台人員)去找consul註冊服務，比如說櫃台1~3提供儲蓄，櫃台4~6提供郵寄服務
+客戶進來透過服務發現，把要辦的事丟給consul，它查看哪個櫃台健康，幫你匹配對應的服務或叫號
+(感覺這例子不太完善，就&amp;hellip;類似的理解啦，實際用了才會懂)
+   下載
+# 官網:https://www.consul.io/downloads# ubuntu shell: (下載&amp;gt;解壓縮&amp;gt;把二進位執行檔丟進去)wget https://releases.hashicorp.com/consul/1.10.3/consul_1.10.3_linux_amd64.zipunzip consul_1.10.3_linux_amd64.zipsudo mv consul /usr/local/bin/  測試
+consul -h  啟動server
+consul agent -server -bootstrap-expect 1 -data-dir /tmp/consul -node=n1 -bind=192.168.234.128 -ui -rejoin -config-dir=/etc/consul.d/ -client 0.0.0.0這個IP=192.168.234.128=ubuntu的ip
+*若/etc/consul.d/不存在要先自己創
+  查看服務
+http://192.168.234.128:8500/  註冊自訂的健康檢查服務，範例:
+剛剛自訂的配置檔路徑/etc/consul.d/下新增一個web.json
+{&amp;quot;service&amp;quot;: {&amp;quot;name&amp;quot;: &amp;quot;web&amp;quot;,&amp;quot;tags&amp;quot;: [&amp;quot;extract&amp;quot;, &amp;quot;verify&amp;quot;, &amp;quot;compare&amp;quot;, &amp;quot;idcard&amp;quot;],&amp;quot;address&amp;quot;: &amp;quot;192.168.234.128&amp;quot;,&amp;quot;port&amp;quot;: 9000,&amp;quot;check&amp;quot;: {&amp;quot;id&amp;quot;: &amp;quot;api&amp;quot;,&amp;quot;name&amp;quot;: &amp;quot;HTTP API on port 9000&amp;quot;,&amp;quot;http&amp;quot;: &amp;quot;http://localhost:9000&amp;quot;,&amp;quot;interval&amp;quot;: &amp;quot;10s&amp;quot;,&amp;quot;timeout&amp;quot;: &amp;quot;1s&amp;quot;}}}  重啟server並查看服務</description>
+    </item>
+    
     <item>
       <title>Golang下透過grpc調用服務案例</title>
       <link>https://yoziming.github.io/post/210927-grpc/</link>
@@ -69,11 +192,23 @@ choco install hugo -confirmchoco install hugo-extended -confirm  hugo new site
     </item>
     
     <item>
-      <title>範例文章</title>
-      <link>https://yoziming.github.io/post/210925-example/</link>
-      <pubDate>Sat, 25 Sep 2021 00:00:00 +0000</pubDate>
+      <title>MVC &amp; Microservices</title>
+      <link>https://yoziming.github.io/post/210910-mvc-microservices/</link>
+      <pubDate>Fri, 10 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210925-example/</guid>
+      <guid>https://yoziming.github.io/post/210910-mvc-microservices/</guid>
+      <description>MVC架構 Model:模型，管理資料庫(增刪改查)、業務邏輯、物件結構定義
+View:視圖，使用者實際在看、操作的介面(UI)，前端
+Controller:控制，接收請求、回覆結果，決定工作流程，算是Model跟View的中間人
+微服務架構（Microservices）  單一職責:把業務邏輯拆分成無數個小區塊(Blocks)，負責單一任務，服務之間透過管道來通訊。 輕量級通訊:使用不依賴語言或平台的格式，例如XML、JSON、protobuf。通常基於HTTP協議、符合REST風格來達成標準化、無狀態化。 獨立開發、測試、部屬:顧名思義，都拆開了就可以分開做，不像傳統架構牽一髮而動全身。 容器化:微服務既然能獨立作業了，就可以放到容器(Container)中，互相隔離互不干擾，達成快速部署、節省資源。Docker是目前最普遍的容器技術，Kubernetes(K8s)是常用來管理容器、協調整合的平台。  </description>
+    </item>
+    
+    <item>
+      <title>範例文章</title>
+      <link>https://yoziming.github.io/post/200101-example/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/200101-example/</guid>
       <description>Heading 1 | 一級標題字 Heading 2 | 二級標題字 Heading 3 | 三級標題字 以此類推   引言 | Blockquotes
   內文 strud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
  程式碼
