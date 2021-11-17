@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html><head>
+<title>文字檔案讀取寫入</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="go自學筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="文字檔案讀取寫入" />
+<meta property="og:description" content="go自學筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%96%87%E5%AD%97%E6%AA%94%E6%A1%88%E8%AE%80%E5%8F%96%E5%AF%AB%E5%85%A5/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="文字檔案讀取寫入"/>
+<meta name="twitter:description" content="go自學筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                日期歸檔
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%ae%80%e5%8f%96" onclick="onNavClick(`#讀取-nav`)" id="讀取-nav">
+									讀取
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%ab%e5%85%a5" onclick="onNavClick(`#寫入-nav`)" id="寫入-nav">
+									寫入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    日期歸檔
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%ae%80%e5%8f%96" onclick="onNavClick(`#讀取-nav`)" id="讀取-nav">
+									讀取
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%ab%e5%85%a5" onclick="onNavClick(`#寫入-nav`)" id="寫入-nav">
+									寫入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/notebook.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    文字檔案讀取寫入
+                    
+                    <div class="post-subtitle">
+                        go自學筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/go">go</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="讀取">讀取</h2>
+<pre tabindex="0"><code>func main() {
+	//打開一個文件
+	file, err := os.Open(&quot;c:/test.txt&quot;)
+	//有人叫file對象/指針/文件句柄
+	if err != nil {
+		fmt.Println(&quot;open file err=&quot;, err)
+	}
+	//看看文件是啥
+	fmt.Printf(&quot;file=%v\n&quot;, file)
+	//退出函數就關閉文件
+	defer file.Close()
+
+	//創建一個帶緩衝的reader，預設大小是4096
+	reader := bufio.NewReader(file)
+	for {
+		str, err := reader.ReadString('\n') //讀到換行就結束
+		fmt.Print(str)
+		if err == io.EOF { //表示文件末尾
+			break
+		}
+	}
+	fmt.Println(&quot;\n讀取結束&quot;)
+
+	//用ioutil.ReadFile一次讀完
+	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
+	file2 := &quot;c:/test.txt&quot;
+	str2, err2 := ioutil.ReadFile(file2)
+	if err2 != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(&quot;%s&quot;, str2) //原本輸出是[]byte,用%s轉
+
+	//創建一個新檔案，寫入5句話
+	filePath := &quot;c:/abc.txt&quot;
+	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err3)
+		return
+	}
+	defer file3.Close() //及時關閉文件
+	str3 := &quot;hello\r\n&quot;
+	writer3 := bufio.NewWriter(file3)
+	for i := 0; i &lt; 5; i++ {
+		writer3.WriteString(str3)
+	}
+	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//覆蓋一個檔案，寫入3句話
+	filePath4 := &quot;c:/abc2.txt&quot;
+	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	defer file4.Close() //及時關閉文件
+	str4 := &quot;覆蓋\r\n&quot;
+	writer4 := bufio.NewWriter(file4)
+	for i := 0; i &lt; 3; i++ {
+		writer4.WriteString(str4)
+	}
+	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，追加寫入3句話
+	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	defer file5.Close() //及時關閉文件
+	str5 := &quot;追加\r\n&quot;
+	writer5 := bufio.NewWriter(file5)
+	for i := 0; i &lt; 3; i++ {
+		writer5.WriteString(str5)
+	}
+	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，讀取打印出來並追加寫入5句話
+	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	//先讀取
+	reader6 := bufio.NewReader(file6)
+	for {
+		str, err := reader6.ReadString('\n')
+		if err == io.EOF { //如果讀到末尾
+			break
+		}
+		fmt.Print(str)
+	}
+	defer file6.Close() //及時關閉文件
+	str6 := &quot;追加2BBB\r\n&quot;
+	writer6 := bufio.NewWriter(file6)
+	for i := 0; i &lt; 5; i++ {
+		writer6.WriteString(str6)
+	}
+	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
+
+}
+</code></pre><h2 id="寫入">寫入</h2>
+<pre tabindex="0"><code>
+func main() {
+	//打開一個文件
+	file, err := os.Open(&quot;c:/test.txt&quot;)
+	//有人叫file對象/指針/文件句柄
+	if err != nil {
+		fmt.Println(&quot;open file err=&quot;, err)
+	}
+	//看看文件是啥
+	fmt.Printf(&quot;file=%v\n&quot;, file)
+	//退出函數就關閉文件
+	defer file.Close()
+
+	//創建一個帶緩衝的reader，預設大小是4096
+	reader := bufio.NewReader(file)
+	for {
+		str, err := reader.ReadString('\n') //讀到換行就結束
+		fmt.Print(str)
+		if err == io.EOF { //表示文件末尾
+			break
+		}
+	}
+	fmt.Println(&quot;\n讀取結束&quot;)
+
+	//用ioutil.ReadFile一次讀完
+	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
+	file2 := &quot;c:/test.txt&quot;
+	str2, err2 := ioutil.ReadFile(file2)
+	if err2 != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(&quot;%s&quot;, str2) //原本輸出是[]byte,用%s轉
+
+	//創建一個新檔案，寫入5句話
+	filePath := &quot;c:/abc.txt&quot;
+	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err3)
+		return
+	}
+	defer file3.Close() //及時關閉文件
+	str3 := &quot;hello\r\n&quot;
+	writer3 := bufio.NewWriter(file3)
+	for i := 0; i &lt; 5; i++ {
+		writer3.WriteString(str3)
+	}
+	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//覆蓋一個檔案，寫入3句話
+	filePath4 := &quot;c:/abc2.txt&quot;
+	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	defer file4.Close() //及時關閉文件
+	str4 := &quot;覆蓋\r\n&quot;
+	writer4 := bufio.NewWriter(file4)
+	for i := 0; i &lt; 3; i++ {
+		writer4.WriteString(str4)
+	}
+	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，追加寫入3句話
+	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	defer file5.Close() //及時關閉文件
+	str5 := &quot;追加\r\n&quot;
+	writer5 := bufio.NewWriter(file5)
+	for i := 0; i &lt; 3; i++ {
+		writer5.WriteString(str5)
+	}
+	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，讀取打印出來並追加寫入5句話
+	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&quot;open file err=&quot;, err4)
+		return
+	}
+	//先讀取
+	reader6 := bufio.NewReader(file6)
+	for {
+		str, err := reader6.ReadString('\n')
+		if err == io.EOF { //如果讀到末尾
+			break
+		}
+		fmt.Print(str)
+	}
+	defer file6.Close() //及時關閉文件
+	str6 := &quot;追加2BBB\r\n&quot;
+	writer6 := bufio.NewWriter(file6)
+	for i := 0; i &lt; 5; i++ {
+		writer6.WriteString(str6)
+	}
+	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//將c:/abc的內容導入到c:abc2
+
+	fileAPath := &quot;c:/abc.txt&quot;
+	fileBPath := &quot;c:/abc2.txt&quot;
+
+	data, err9 := ioutil.ReadFile(fileAPath)
+	if err9 != nil {
+		fmt.Println(&quot;文件讀取錯誤&quot;, err9)
+		return
+	}
+	err = ioutil.WriteFile(fileBPath, data, 0666)
+	if err != nil {
+		fmt.Println(&quot;文件讀取錯誤&quot;, err)
+		return
+	}
+
+}
+
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-08-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E7%B5%84/">
+			下一篇<br>數組
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%96%87%E6%AA%94%E5%AD%97%E7%AC%A6%E7%B5%B1%E8%A8%88/">
+			上一篇<br>文檔字符統計
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+                <p style="opacity: 0.6" align="center">
+                    <small>此篇文章的評論功能已經停用。</small>
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

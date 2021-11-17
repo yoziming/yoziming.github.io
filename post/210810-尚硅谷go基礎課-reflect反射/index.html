@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html><head>
+<title>Reflect反射</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="go自學筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Reflect反射" />
+<meta property="og:description" content="go自學筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-reflect%E5%8F%8D%E5%B0%84/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Reflect反射"/>
+<meta name="twitter:description" content="go自學筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                日期歸檔
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#reflect%e5%8f%8d%e5%b0%84" onclick="onNavClick(`#reflect反射-nav`)" id="reflect反射-nav">
+									reflect反射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%ae%8a%e9%87%8f" onclick="onNavClick(`#修改變量-nav`)" id="修改變量-nav">
+									修改變量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e8%b8%90" onclick="onNavClick(`#實踐-nav`)" id="實踐-nav">
+									實踐
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    日期歸檔
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#reflect%e5%8f%8d%e5%b0%84" onclick="onNavClick(`#reflect反射-nav`)" id="reflect反射-nav">
+									reflect反射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%ae%8a%e9%87%8f" onclick="onNavClick(`#修改變量-nav`)" id="修改變量-nav">
+									修改變量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e8%b8%90" onclick="onNavClick(`#實踐-nav`)" id="實踐-nav">
+									實踐
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/notebook.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Reflect反射
+                    
+                    <div class="post-subtitle">
+                        go自學筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/go">go</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="reflect反射">reflect反射</h1>
+<pre tabindex="0"><code>func reflectTest01(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&quot;rType=&quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&quot;rVal=&quot;, rVal)
+	// n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value
+	n1 := 10 + rVal.Int() //用.Int()轉換後就可以了
+	// n3 := rVal.Float()//像這樣也不行的，一定要確認類型
+	fmt.Println(&quot;n1=&quot;, n1)
+	// fmt.Println(&quot;n3=&quot;, n3)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	n2 := iV.(int)
+	fmt.Println(&quot;n2=&quot;, n2)
+}
+
+func reflectTest02(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&quot;rType=&quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&quot;rVal=&quot;, rVal)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	//斷言回來
+	n2, ok := iV.(Student)
+	if !ok {
+		fmt.Println(&quot;從interface{}轉換回Student失敗&quot;)
+	}
+	fmt.Println(&quot;n2=&quot;, n2)
+	fmt.Println(&quot;n2.Name=&quot;, n2.Name)
+
+	//獲取變量對應的kind，可以從Type也能從val拿。
+	//比如這個type是包名.Student，kind是stuct，可以說定義上kind包含type
+	fmt.Println(&quot;kind=&quot;, rType.Kind())
+	fmt.Println(&quot;kind=&quot;, rVal.Kind())
+
+}
+
+type Student struct {
+	Name string
+	Age  int
+}
+
+func main() {
+	var num int = 100
+	reflectTest01(num)
+	fmt.Println(&quot;===============================&quot;)
+	stu := Student{
+		Name: &quot;tom&quot;,
+		Age:  20,
+	}
+	reflectTest02(stu)
+
+}
+</code></pre><h2 id="修改變量">修改變量</h2>
+<pre tabindex="0"><code>func reflect01(b interface{}) {
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&quot;rVal=&quot;, rVal)
+	rType := reflect.TypeOf(b)
+	fmt.Println(&quot;rType=&quot;, rType)
+
+	iV := rVal.Interface()
+	vNew, ok := iV.(float64)
+	if ok {
+		fmt.Println(&quot;轉換成功 vNew=&quot;, vNew)
+	} else {
+		fmt.Println(&quot;err&quot;)
+	}
+}
+func main() {
+	var v float64 = 1.2
+	reflect01(v)
+
+	// var str string = &quot;tom&quot;  //錯誤示範
+	// fs := reflect.ValueOf(str)
+	// fs.SetString(&quot;jack&quot;)
+	// fmt.Println(str)
+
+	var str string = &quot;tom&quot;
+	fs := reflect.ValueOf(&amp;str)
+	fs.Elem().SetString(&quot;jack&quot;)
+	fmt.Println(str)
+}
+</code></pre><h2 id="實踐">實踐</h2>
+<pre tabindex="0"><code>type Monster struct {
+	Name  string `json:&quot;name&quot;`
+	Age   int    `json:&quot;age&quot;`
+	Score float64
+}
+
+//方法打印m值
+func (m Monster) Print() {
+	fmt.Println(m)
+}
+
+//方法 求2和
+func (m Monster) GetSum(n1, n2 int) int {
+	return n1 + n2
+}
+
+//方法 接收4值給Monster
+func (m Monster) Set(n string, a int, s float64) {
+	m.Name = n
+	m.Age = a
+	m.Score = s
+}
+
+//反射實例
+func TestStruct(a interface{}) {
+	typ := reflect.TypeOf(a)
+	val := reflect.ValueOf(a)
+	kd := val.Kind()
+	if kd != reflect.Struct {
+		fmt.Println(&quot;傳入的不是結構體&quot;)
+		return
+	}
+	//獲取該結構有幾字段
+	num := val.NumField()
+	fmt.Println(&quot;struct有幾個字段=&quot;, num)
+
+	//遍歷所有字段
+	for i := 0; i &lt; num; i++ {
+		fmt.Printf(&quot;Field%d 值為%v\n&quot;, i, val.Field(i))
+		//獲取struct標籤
+		tagVal := typ.Field(i).Tag.Get(&quot;json&quot;)
+		if tagVal != &quot;&quot; {
+			fmt.Printf(&quot;Field%d tag為%v\n&quot;, i, tagVal)
+		}
+	}
+	//獲取結構體有幾個方法
+	numOfMethod := val.NumMethod()
+	fmt.Println(&quot;方法有&quot;, numOfMethod)
+	//調用第[]個方法且call調用他(傳入參數值)
+	//但他這個是方法的首字(asc碼)當排序的 我們的方法是G P S開頭 (1)=第2個
+	val.Method(1).Call(nil)
+	//試著調用getsum 他call傳入的是要[]reflect.Value
+	var params []reflect.Value
+	params = append(params, reflect.ValueOf(10))
+	params = append(params, reflect.ValueOf(20))
+	res := val.MethodByName(&quot;GetSum&quot;).Call(params)
+	fmt.Println(&quot;res=&quot;, res[0].Int())
+}
+
+func main() {
+
+	var a Monster = Monster{
+		Name:  &quot;牛梅王&quot;,
+		Age:   500,
+		Score: 87,
+	}
+	TestStruct(a)
+
+}
+
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-08-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-redis%E5%9F%BA%E7%A4%8E/">
+			下一篇<br>Redis基本操作
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210927-rpc/">
+			上一篇<br>RPC
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+                <p style="opacity: 0.6" align="center">
+                    <small>此篇文章的評論功能已經停用。</small>
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

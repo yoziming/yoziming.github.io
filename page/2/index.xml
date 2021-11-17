@@ -6,355 +6,119 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Sun, 17 Oct 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     
         <item>
-        <title>Golang下透過grpc調用服務案例</title>
-        <link>https://yoziming.github.io/post/210927-grpc/</link>
-        <pubDate>Mon, 27 Sep 2021 00:00:00 +0000</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211127-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day12%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210927-grpc/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210927-grpc/ -&lt;h2 id=&#34;golang下透過grpc調用服務案例&#34;&gt;Golang下透過grpc調用服務案例&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;grpc簡單說就是跨平台(跨語言)調用各種服務的通用轉接口&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;對.proto文件使用轉譯指令:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
-&lt;p&gt;案例:透過grpc遠程傳遞一個調用teacher資料類型的服務&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;.proto:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;syntax=&amp;quot;proto3&amp;quot;;
-
-option go_package=&amp;quot;/.;pb&amp;quot;;
-
-message Teacher{
-    int32 age=1;
-    string name=2;
-}
-
-service SayName{
-    rpc SayHello(Teacher) returns(Teacher);
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;server:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Children struct{}
-
-// 綁定類方法
-func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {
-	t.Name += &amp;quot;is sleeping&amp;quot;
-	return t, nil
-}
-
-func main() {
-	// 初始一個grpc對象
-	grpcServer := grpc.NewServer()
-
-	// 註冊服務
-	pb.RegisterSayNameServer(grpcServer, new(Children))
-
-	// 監聽
-	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
-	if err != nil {
-		fmt.Println(&amp;quot;listen err&amp;quot;, err)
-		return
-	}
-	fmt.Println(&amp;quot;server監聽中...&amp;quot;)
-	defer listener.Close()
-
-	// 啟動服務
-	grpcServer.Serve(listener)
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;client:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	// 連接grpc服務
-	grpcConn, err := grpc.Dial(&amp;quot;127.0.0.1:8899&amp;quot;, grpc.WithInsecure())
-	if err != nil {
-		fmt.Println(&amp;quot;conn err&amp;quot;, err)
-		return
-	}
-	defer grpcConn.Close()
-
-	// 初起化客戶端
-	gprcClient := pb.NewSayNameClient(grpcConn)
-
-	// 創建並初始化接收對象
-	var teacher pb.Teacher
-	teacher.Age = 18
-	teacher.Name = &amp;quot;Mary&amp;quot;
-
-	// 調用遠程服務
-	t, err := gprcClient.SayHello(context.TODO(), &amp;amp;teacher)
-	fmt.Println(t, err)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-grpc/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211127-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day12%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211127-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day12%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211127-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day12%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
     
         <item>
-        <title>Golang中使用ProtoBuf</title>
-        <link>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</link>
-        <pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211128-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day13%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ -&lt;h2 id=&#34;golang中使用protobuf&#34;&gt;Golang中使用ProtoBuf&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;protobuf類似json，它體積更小效率更高，規範統一(沒有大小寫等困擾)。&lt;/p&gt;
-&lt;p&gt;缺點是改動協議就要重新生成、數據本身是二進位沒有可讀性&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;下載，window系統選.exe，解壓縮放到$GOPATH/bin&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://github.com/protocolbuffers/protobuf/releases
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;安裝golang對應的庫跟插件&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;go get github.com/golang/protobuf/proto
-go get github.com/golang/protobuf/protoc-gen-go
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;測試&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc -h 或 protoc --version
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;沒報錯就是成功&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;消息體舉例，xxx.proto&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 指定版本，不打3就會是2
-syntax=&amp;quot;proto3&amp;quot;;
-
-// 指定輸出位置&amp;amp;go包名，沒寫轉換不了
-// option go_package =&amp;quot;path;name&amp;quot;;
-option go_package =&amp;quot;/.&amp;quot;;  // 放在同一目錄下包名為__(空)
-
-// 定義消息體，分配唯一編號 (不能用19000~19999)
-message Student{
-     int32 age = 1; // 可以不從1開始，但不可重複
-     string name = 2;
-     People p=3;
-     repeated int32 score=4; // 數組
-     Week w=5;
-     // 聯合體
-     oneof data{
-         string teacher=6;
-         string class=7;
-     }
- }
-
-// 消息體可以嵌套
-message People{
-    int32 weight=1;
-}
-
-// 定義枚舉類型
-enum Week{
-    Monday=0; // 必須從0開始
-    Turesday=1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;生成go文件&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=. *.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;成功轉換出來的就會是一個xxx.pb.go的文件，可以點開看一下，它就是轉換成go語言的版本，記住不要修改這個檔案(他第一行就叫你不要修改)&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;添加rpc服務&#34;&gt;添加rpc服務&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;語法:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;service 服務名{
-	rpc 函數名(參數:消息體) returns (返回值:消息)
-}
-舉例:
-service bj{
-    rpc Say(People) returns (Student);
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;但是rpc用的很廣，他不知道你要轉成給誰用的，於是要調用另一個生成的指令&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這就是grpc了，到下章繼續&amp;hellip;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-- https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211128-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day13%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211128-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day13%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211128-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day13%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
     
         <item>
-        <title>GitHub&#43;Hugo自建簡單Blog流程</title>
-        <link>https://yoziming.github.io/post/210926-bulidblogwithhugo/</link>
-        <pubDate>Sun, 26 Sep 2021 02:01:58 +0530</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211129-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day14%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210926-bulidblogwithhugo/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210926-bulidblogwithhugo/ -&lt;h1 id=&#34;流程&#34;&gt;流程&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;看了很多教學各種語法不太會用、高級的自動部署、netlify後台等等，學半天卻老是在一些關鍵點卡住而進行不不了。我這個土路雖然又蠢又笨但確實能做出東西，同樣新手可以試試。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;安裝Chocolatey //程式安裝器，讓你從終端裝各種東西很方便&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://chocolatey.org/install
-到這個網址，官方提供很多方法安裝，非常簡單快速一行搞定
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;安裝hugo，有些佈景主題要用到加強版(extended)&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;choco install hugo -confirm
-choco install hugo-extended -confirm
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;hugo new site &amp;lt;資料夾名稱&amp;gt; //建立一個root，相當於你個人網站的原始資料母巢&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;挑主題，到https://themes.gohugo.io/&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;套用主題，範例&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; cd &amp;lt;資料夾名稱&amp;gt;
- git init
- git submodule add https://github.com/AmazingRise/hugo-theme-diary.git themes/diary
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;依照主題的說明文件修改根目錄下的config.toml
-注意，config.toml中的第一項baseURL網址不要有&amp;quot;https://www.ooxx&amp;quot;，否則會造成一些未知的BUG。正確網址應為&amp;quot;https://你的username.github.io/&amp;quot;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;到content/post/下開始寫一篇blog&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;開啟本地預覽，指令hugo server -F   //防止時差問題用-F&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;隨意一個地方開啟網址http://localhost:1313/ 看看網站&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;網站沒問題就打包，指令hugo，會在root資料夾下多出一個public資料夾，裡面就是一個完整的網站準備丟去網路上發布&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;去gitHub建一個Repository(倉庫)，名稱強制為 你的username.github.io&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;下載GitHub Desktop客戶端，可以把他理解成一個雲端，我要把本地public資料夾的內容透過它丟去gitHub上剛剛建的那個Repository(倉庫)裡，之後就能透過網站提供的gitPage功能實現個人網站的搭建&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;在gitHub網頁點進創建的username.github.io專案，右上角綠色&amp;quot;Code&amp;quot;點開，用桌面程式開啟&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;程式開啟後他會要你選擇一個本地的位置去連結該倉庫，直接連結到root/public下看似方便但會導致一些麻煩&amp;amp;錯誤，菜雞如我是放在根目錄同級的位置，姑且稱這個資料夾叫雲端&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;把根目錄下public/裡面的內容copy一份到剛剛建立的雲端資料夾&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;此時回到GitHub Desktop客戶端它會說檢測到本地有新東西準備要上傳，左下角Summary填一個描述(隨意填但必要，他就是讓你描述一下這批上傳的動作，以後冤有頭債有主)，然後點Commit to main，至此一切準備就緒&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;到右邊點第一次叫publish之類，後面那個按鍵會變成push origin，即是把資料正式上傳到網路上&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;等個幾秒後到&amp;quot;https://username.github.io/&amp;ldquo;看看成果&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;之後要更新就是content/post/下建立新的.md，寫完內容然後hugo打包之後push&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-- https://yoziming.github.io/post/210926-bulidblogwithhugo/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211129-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day14%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211129-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day14%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211129-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day14%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
     
         <item>
-        <title>圖片測試</title>
-        <link>https://yoziming.github.io/post/210925-imagetest/</link>
-        <pubDate>Sat, 25 Sep 2021 00:00:00 +0000</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211130-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day15%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210925-imagetest/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210925-imagetest/ -&lt;ul&gt;
-&lt;li&gt;圖片1 使用建立新資料夾後的相對路徑&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;400.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;圖片2  使用\static\images\之下的資源&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yoziming.github.io/images/dark-abstract-1877-hd-wallpapers.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;圖片3&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;image-20210927145513469.png&#34; alt=&#34;image-20210927145513469&#34;&gt;&lt;/p&gt;
-- https://yoziming.github.io/post/210925-imagetest/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211130-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day15%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211130-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day15%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211130-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day15%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
     
         <item>
-        <title>MVC &amp; Microservices</title>
-        <link>https://yoziming.github.io/post/210910-mvc-microservices/</link>
-        <pubDate>Fri, 10 Sep 2021 00:00:00 +0000</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211201-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day16%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210910-mvc-microservices/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210910-mvc-microservices/ -&lt;h2 id=&#34;mvc架構&#34;&gt;MVC架構&lt;/h2&gt;
-&lt;p&gt;Model:模型，管理資料庫(增刪改查)、業務邏輯、物件結構定義&lt;/p&gt;
-&lt;p&gt;View:視圖，使用者實際在看、操作的介面(UI)，前端&lt;/p&gt;
-&lt;p&gt;Controller:控制，接收請求、回覆結果，決定工作流程，算是Model跟View的中間人&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;image-20211012085838544.png&#34; alt=&#34;image-20211012085838544&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;微服務架構microservices&#34;&gt;微服務架構（Microservices）&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;單一職責:把業務邏輯拆分成無數個小區塊(Blocks)，負責單一任務，服務之間透過管道來通訊。&lt;/li&gt;
-&lt;li&gt;輕量級通訊:使用不依賴語言或平台的格式，例如XML、JSON、protobuf。通常基於HTTP協議、符合REST風格來達成標準化、無狀態化。&lt;/li&gt;
-&lt;li&gt;獨立開發、測試、部屬:顧名思義，都拆開了就可以分開做，不像傳統架構牽一髮而動全身。&lt;/li&gt;
-&lt;li&gt;容器化:微服務既然能獨立作業了，就可以放到容器(Container)中，互相隔離互不干擾，達成快速部署、節省資源。Docker是目前最普遍的容器技術，Kubernetes(K8s)是常用來管理容器、協調整合的平台。&lt;/li&gt;
-&lt;/ol&gt;
-- https://yoziming.github.io/post/210910-mvc-microservices/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211201-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day16%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211201-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day16%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211201-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day16%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
     
         <item>
-        <title>範例文章</title>
-        <link>https://yoziming.github.io/post/200101-example/</link>
-        <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211202-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day17%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/200101-example/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/200101-example/ -&lt;h1 id=&#34;heading-1--一級標題字&#34;&gt;Heading 1 | 一級標題字&lt;/h1&gt;
-&lt;h2 id=&#34;heading-2--二級標題字&#34;&gt;Heading 2 | 二級標題字&lt;/h2&gt;
-&lt;h3 id=&#34;heading-3--三級標題字&#34;&gt;Heading 3 | 三級標題字&lt;/h3&gt;
-&lt;h4 id=&#34;以此類推&#34;&gt;以此類推&lt;/h4&gt;
-&lt;hr&gt;
-&lt;blockquote&gt;
-&lt;p&gt;引言 | Blockquotes&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;p&gt;內文
-strud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;程式碼&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;hr&gt;
-&lt;p&gt;序列&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;第一列 | First item&lt;/li&gt;
-&lt;li&gt;第二列 | Second item
-&lt;ul&gt;
-&lt;li&gt;第二列的第一子列 | Second item First subitem&lt;/li&gt;
-&lt;li&gt;第二列的第二子列 | Second item second subitem
-&lt;ul&gt;
-&lt;li&gt;第二列的第二子列的第一子子列 | Second item Second subitem First sub-subitem&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;第二列的第三子列 | Second item Third subitem
-&lt;ol&gt;
-&lt;li&gt;第二列的第三子列的第一有序子子列 | Second item Third subitem First sub-subitem&lt;/li&gt;
-&lt;li&gt;第二列的第三子列的第二有序子子列 | Second item Third subitem Second sub-subitem&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-- https://yoziming.github.io/post/200101-example/ - yoziming</description>
+        <guid>https://yoziming.github.io/post/211202-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day17%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211202-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day17%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211202-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day17%E7%AD%86%E8%A8%98/ - yoziming</description>
         </item>
     
     
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211203-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day18%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211203-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day18%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211203-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day18%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211203-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day18%E7%AD%86%E8%A8%98/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211204-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day19%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211204-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day19%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211204-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day19%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211204-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day19%E7%AD%86%E8%A8%98/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211205-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day20%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211205-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day20%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211205-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day20%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211205-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day20%E7%AD%86%E8%A8%98/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY筆記</title>
+        <link>https://yoziming.github.io/post/211206-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day21%E7%AD%86%E8%A8%98/</link>
+        <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211206-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day21%E7%AD%86%E8%A8%98/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211206-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day21%E7%AD%86%E8%A8%98/ -- https://yoziming.github.io/post/211206-%E5%B0%9A%E7%A1%85%E8%B0%B7java%E5%9F%BA%E7%A4%8E%E8%AA%B2-day21%E7%AD%86%E8%A8%98/ - yoziming</description>
+        </item>
     
     
   </channel>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html><head>
+<title>Go使用mysql與事務操作</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="go自學筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Go使用mysql與事務操作" />
+<meta property="og:description" content="go自學筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-go%E4%BD%BF%E7%94%A8mysql%E8%88%87%E4%BA%8B%E5%8B%99%E6%93%8D%E4%BD%9C/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go使用mysql與事務操作"/>
+<meta name="twitter:description" content="go自學筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                日期歸檔
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#go%e4%bd%bf%e7%94%a8mysql%e8%88%87%e4%ba%8b%e5%8b%99%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#go使用mysql與事務操作-nav`)" id="go使用mysql與事務操作-nav">
+									Go使用mysql與事務操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%9c%ac%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#基本操作-nav`)" id="基本操作-nav">
+									基本操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e4%ba%8b%e5%8b%99%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#mysql事務操作-nav`)" id="mysql事務操作-nav">
+									mysql事務操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    日期歸檔
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#go%e4%bd%bf%e7%94%a8mysql%e8%88%87%e4%ba%8b%e5%8b%99%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#go使用mysql與事務操作-nav`)" id="go使用mysql與事務操作-nav">
+									Go使用mysql與事務操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%9c%ac%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#基本操作-nav`)" id="基本操作-nav">
+									基本操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e4%ba%8b%e5%8b%99%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#mysql事務操作-nav`)" id="mysql事務操作-nav">
+									mysql事務操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/notebook.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Go使用mysql與事務操作
+                    
+                    <div class="post-subtitle">
+                        go自學筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/go">go</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="go使用mysql與事務操作">Go使用mysql與事務操作</h1>
+<h3 id="基本操作">基本操作</h3>
+<pre tabindex="0"><code>import (
+	&quot;database/sql&quot;
+	&quot;fmt&quot;
+
+	_ &quot;github.com/go-sql-driver/mysql&quot;
+)
+
+var db *sql.DB // 是一個連接池對象
+
+// user 接收數據
+type user struct {
+	id   int
+	name string
+	age  int
+}
+
+func initDB() (err error) {
+	dsn := &quot;root:root@tcp(127.0.0.1:3306)/sql_test&quot;
+	db, err = sql.Open(&quot;mysql&quot;, dsn) // 這個db要用全局的，重要!
+	if err != nil {
+		return
+	}
+	err = db.Ping()
+	if err != nil {
+		return
+	} else {
+		fmt.Println(&quot;連接成功&quot;)
+	}
+	return
+}
+
+// 查詢一個
+func find1() {
+	var u1 user
+	sqlStr := `select id, name, age from user where id=?;`
+	rowObj := db.QueryRow(sqlStr, 1)
+	err := rowObj.Scan(&amp;u1.id, &amp;u1.name, &amp;u1.age)
+	if err != nil {
+		fmt.Println(&quot;Scan failed!&quot;, err)
+		return
+	}
+	fmt.Println(u1)
+}
+
+// findMore 查詢多個
+func findMore() {
+	sqlStr := `select id, name, age from user where id &gt; ?;`
+	rows, _ := db.Query(sqlStr, 0)
+	defer rows.Close()
+
+	for rows.Next() {
+		var u user
+		err := rows.Scan(&amp;u.id, &amp;u.name, &amp;u.age)
+		if err != nil {
+			return
+		}
+		fmt.Println(u)
+	}
+}
+
+func update(newAge int, id int) {
+	sqlStr := &quot;update user set age=? where id = ?&quot;
+	ret, err := db.Exec(sqlStr, newAge, id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	n, err := ret.RowsAffected()
+	if err != nil {
+		return
+	}
+	fmt.Println(&quot;更新了&quot;, n, &quot;行數據&quot;)
+}
+
+func delete(id int) {
+	sqlStr := &quot;delete from user where id = ?&quot;
+	ret, err := db.Exec(sqlStr, id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	n, err := ret.RowsAffected()
+	if err != nil {
+		return
+	}
+	fmt.Println(&quot;更新了&quot;, n, &quot;行數據&quot;)
+}
+
+func main() {
+	err := initDB()
+	if err != nil {
+		fmt.Println(&quot;init DB failed&quot;, err)
+	}
+
+	preInsert()
+	// findMore()
+	// update(90, 2)
+	// delete(2)
+	findMore()
+}
+
+func insert() {
+	sqlStr := `insert into user(name, age) values(&quot;AAC&quot;, 18)`
+	ret, err := db.Exec(sqlStr)
+	if err != nil {
+		fmt.Println(&quot;insert failed!&quot;, err)
+		return
+	}
+	// 插入後能拿到對應的ID
+	id, _ := ret.LastInsertId()
+	fmt.Println(&quot;id=&quot;, id)
+}
+
+func preInsert() {
+	sqlStr := &quot;insert into user(name, age) values(?,?)&quot;
+	stmt, err := db.Prepare(sqlStr)
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+	for i := 1; i &lt; 10; i++ {
+		_, _ = stmt.Exec(&quot;人物&quot;, i)
+
+	}
+}
+
+</code></pre><h3 id="mysql事務操作">mysql事務操作</h3>
+<p>事務：一個最小的不可再分的工作單元；通常一個事務對應一個完整的業務(例如銀行帳戶轉帳業務，該業務就是一個最小的工作單元)，同時這個完整的業務需要執行多次的DML(insert、update、delete)語句共同聯合完成。A轉帳給B，這裡面就需要執行兩次update操作。在MySQL中只有使用了Innodb資料庫引擎的資料庫或表才支援事務。交易處理可以用來維護資料庫的完整性，保證成批的SQL語句要麼全部執行，要麼全部不執行。</p>
+<blockquote>
+<p>事務的ACID</p>
+</blockquote>
+<p>通常事務必須滿足4個條件（ACID）：原子性（Atomicity，或稱不可分割性）、一致性（Consistency）、隔離性（Isolation，又稱獨立性）、持久性（Durability）。</p>
+<ol>
+<li>原子性 一個事務（transaction）中的所有操作，要麼全部完成，要麼全部不完成，不會結束在中間某個環節。事務在執行過程中發生錯誤，會被回滾（Rollback）到事務開始前的狀態，就像這個事務從來沒有執行過一樣。</li>
+<li>一致性 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。</li>
+<li>隔離性 資料庫允許多個併發事務同時對其資料進行讀寫和修改的能力，隔離性可以防止多個事務併發執行時由於交叉執行而導致資料的不一致。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和序列化（Serializable）。</li>
+<li>持久性 交易處理結束後，對資料的修改就是永久的，即便系統故障也不會丟失。</li>
+</ol>
+<pre tabindex="0"><code>import (
+	&quot;database/sql&quot;
+	&quot;fmt&quot;
+
+	_ &quot;github.com/go-sql-driver/mysql&quot;
+)
+
+var db *sql.DB // 是一個連接池對象
+
+// user 接收數據
+type user struct {
+	id   int
+	name string
+	age  int
+}
+
+func initDB() (err error) {
+	dsn := &quot;root:root@tcp(127.0.0.1:3306)/sql_test&quot;
+	db, err = sql.Open(&quot;mysql&quot;, dsn) // 這個db要用全局的，重要!
+	if err != nil {
+		return
+	}
+	err = db.Ping()
+	if err != nil {
+		return
+	} else {
+		fmt.Println(&quot;連接成功&quot;)
+	}
+	return
+}
+
+func transaction() {
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println(&quot;begin failed!&quot;, err)
+		return
+	}
+
+	sqlStr1 := &quot;update user set age=age-2 where id=1&quot;
+	sqlStr2 := &quot;update user set age=age+2 where id=3&quot;
+	ret1, err := tx.Exec(sqlStr1)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	affRow1, err := ret1.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	ret2, err := tx.Exec(sqlStr2)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	affRow2, err := ret2.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	fmt.Println(affRow1, affRow2)
+	if affRow1 == 1 &amp;&amp; affRow2 == 1 {
+		tx.Commit()
+		fmt.Println(&quot;已提交&quot;)
+	} else {
+		tx.Rollback()
+	}
+
+}
+
+func findMore() {
+	sqlStr := `select id, name, age from user where id &gt; ?;`
+	rows, _ := db.Query(sqlStr, 0)
+	defer rows.Close()
+
+	for rows.Next() {
+		var u user
+		err := rows.Scan(&amp;u.id, &amp;u.name, &amp;u.age)
+		if err != nil {
+			return
+		}
+		fmt.Println(u)
+	}
+}
+
+func main() {
+
+	initDB()
+	findMore()
+	transaction()
+	findMore()
+}
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-08-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-goroutine%E4%B8%A6%E7%99%BC/">
+			下一篇<br>goroutine
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-json%E5%BA%8F%E5%88%97%E5%8C%96/">
+			上一篇<br>JSON序列化
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+                <p style="opacity: 0.6" align="center">
+                    <small>此篇文章的評論功能已經停用。</small>
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
