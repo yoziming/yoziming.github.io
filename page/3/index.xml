@@ -13,6 +13,170 @@
     
     
         <item>
+        <title>哈希表數據結構</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ -&lt;h1 id=&#34;哈希表數據結構&#34;&gt;哈希表數據結構&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;os&amp;quot;
+)
+
+type Emp struct {
+	Id   int
+	Name string
+	Next *Emp
+}
+
+func (e *Emp) ShowMe() {
+	fmt.Printf(&amp;quot;链表%d 找到该雇员 %d\n&amp;quot;, e.Id%7, e.Id)
+}
+
+//不帶表頭，即第一個節點就放雇員資料
+type EmpLink struct {
+	Head *Emp
+}
+
+func (e *EmpLink) FindByIdEmpLink(id int) *Emp {
+	cur := e.Head
+	for {
+		if cur != nil &amp;amp;&amp;amp; cur.Id == id {
+			return cur
+		} else if cur == nil {
+			break
+		}
+		cur = cur.Next
+	}
+	return nil
+}
+
+//給EmpLink寫增加雇員方法，編號從小到大
+func (e *EmpLink) AddEmpLink(emp *Emp) {
+	cur := e.Head      //輔助指針
+	var pre *Emp = nil //輔助指針pre在cur前面
+	//如果當前EmpLink是空的
+	if cur == nil {
+		e.Head = emp
+		return
+	}
+	//給emp找位置並插入
+	for {
+		if cur != nil {
+			if cur.Id &amp;gt; emp.Id { //找到
+				break
+			}
+			pre = cur
+			cur = cur.Next
+		} else {
+			break
+		}
+	}
+	pre.Next = emp
+	emp.Next = cur
+}
+
+func (e *EmpLink) ShowLink() {
+	//如果當前EmpLink是空的
+	if e.Head == nil {
+		fmt.Println(&amp;quot;當前鏈表為空&amp;quot;)
+		return
+	}
+	cur := e.Head
+	for {
+		if cur != nil {
+			fmt.Printf(&amp;quot;雇員ID=%d 名字=%s ~&amp;gt;&amp;quot;, cur.Id, cur.Name)
+			cur = cur.Next
+		} else {
+			break
+		}
+	}
+	fmt.Println()
+}
+
+//鏈表數組
+type HashTable struct {
+	LinkArr [7]EmpLink
+}
+
+//給HashTable寫增加雇員方法
+func (h *HashTable) Add(emp *Emp) {
+	//使用散列函數，確定雇員添到哪個鏈表
+	linkNo := h.HashFun(emp.Id)
+	//添加
+	h.LinkArr[linkNo].AddEmpLink(emp)
+}
+
+//顯示所有HashTable雇員方法
+func (h *HashTable) ShowAll() {
+	for i := 0; i &amp;lt; len(h.LinkArr); i++ {
+		h.LinkArr[i].ShowLink()
+	}
+}
+
+//查找
+func (h *HashTable) FindById(id int) *Emp {
+	linkNo := h.HashFun(id)
+	return h.LinkArr[linkNo].FindByIdEmpLink(id)
+}
+
+//散列函數
+func (h *HashTable) HashFun(id int) int {
+	return id % 7 //得到一個值，就是鏈表的下標
+}
+
+func main() {
+	key := 0
+	id := 0
+	name := &amp;quot;&amp;quot;
+	var hashTable HashTable
+	for {
+		fmt.Println(&amp;quot;===雇員系統===&amp;quot;)
+		fmt.Println(&amp;quot;\t1.添加&amp;quot;)
+		fmt.Println(&amp;quot;\t2.顯示&amp;quot;)
+		fmt.Println(&amp;quot;\t3.查找&amp;quot;)
+		fmt.Println(&amp;quot;\t4.退出&amp;quot;)
+		fmt.Scanln(&amp;amp;key)
+		switch key {
+		case 1:
+			fmt.Println(&amp;quot;輸入雇員ID&amp;quot;)
+			fmt.Scanln(&amp;amp;id)
+			fmt.Println(&amp;quot;輸入雇員 name&amp;quot;)
+			fmt.Scanln(&amp;amp;name)
+			emp := &amp;amp;Emp{
+				Id:   id,
+				Name: name,
+			}
+			hashTable.Add(emp)
+		case 2:
+			hashTable.ShowAll()
+		case 3:
+			fmt.Println(&amp;quot;輸入欲查雇員ID&amp;quot;)
+			fmt.Scanln(&amp;amp;id)
+			emp := hashTable.FindById(id)
+			if emp == nil {
+				fmt.Println(&amp;quot;不存在&amp;quot;)
+			} else {
+				emp.ShowMe()
+			}
+		case 4:
+			os.Exit(0)
+		default:
+			fmt.Println(&amp;quot;輸入錯誤&amp;quot;)
+		}
+	}
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
         <title>單向鏈表</title>
         <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</link>
         <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
@@ -1163,45 +1327,6 @@ func main() {
 
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-channel%E9%80%9A%E9%81%93/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>const常量</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-const%E5%B8%B8%E9%87%8F/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-const%E5%B8%B8%E9%87%8F/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-const%E5%B8%B8%E9%87%8F/ -&lt;h1 id=&#34;const常量&#34;&gt;const常量&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;常量 聲明時必須賦值、不能修改、只能是bool、數值、string，賦值需是一個確定的值&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	const tax int = 10
-	const x = 9 / 3
-	// const c = 9 / a //因為a可能是一個變量所以這樣不行
-	// var a int = 3
-	fmt.Println(tax, x)
-
-	const (
-		a = iota //表示a=0
-		b        //b=a+1
-		c        //c=b+1
-	)
-	fmt.Println(a, b, c)
-
-	const (
-		d = iota
-		e
-		f, g = iota, iota
-	)
-	fmt.Println(d, e, f, g)
-
-	//其他程式語言常量會用全大寫，go中沒限制，且一樣用首字母大小來控制使用範圍
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-const%E5%B8%B8%E9%87%8F/ - yoziming</description>
         </item>
     
     

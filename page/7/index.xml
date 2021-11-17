@@ -13,6 +13,185 @@
     
     
         <item>
+        <title>接口interface</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8E%A5%E5%8F%A3interface/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8E%A5%E5%8F%A3interface/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8E%A5%E5%8F%A3interface/ -&lt;h1 id=&#34;接口interface&#34;&gt;接口interface&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，&lt;/p&gt;
+&lt;p&gt;那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//接口內不能有變量，方法也不能實現
+type Usb interface {
+	//聲明兩個沒實現的方法
+	Start()
+	Stop()
+}
+
+type Usb2 interface {
+	//接口是不需要顯示聲明，只要能實現就都能調用
+	Start()
+	Stop()
+	//假如我多聲明一個沒實現的方法在接口內就不能調用
+	Test() //有方法沒實現，導致Usb2這個接口不能用
+}
+type Phone struct {
+}
+
+//讓Phone實現USB接口的方法
+func (p Phone) Start() {
+	fmt.Println(&amp;quot;手機啟動&amp;quot;)
+}
+func (p Phone) Stop() {
+	fmt.Println(&amp;quot;手機停止&amp;quot;)
+}
+
+type Camera struct {
+}
+
+func (c Camera) Start() {
+	fmt.Println(&amp;quot;相機啟動~~&amp;quot;)
+}
+func (c Camera) Stop() {
+	fmt.Println(&amp;quot;相機停止&amp;quot;)
+}
+
+//電腦
+type Computer struct {
+}
+
+func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型
+	//通過usb變量來調用Start等方法
+	fmt.Println(&amp;quot;電腦連接usb中...&amp;quot;)
+	usb.Start()
+	usb.Stop()
+
+}
+func main() {
+	computer := Computer{}
+	phone := Phone{}
+	camera := Camera{}
+
+	//關鍵
+	computer.Working(phone)
+	computer.Working(camera)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口繼承&#34;&gt;接口繼承&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;繼承主要在於復用性跟可維護性
+接口價值在於擴展性(設計好規範(方法)，讓其他類型去實現&lt;/p&gt;
+&lt;p&gt;繼承是 is a的關係 例如 學生是個人
+接口是 like a的關係 例如 學生會說英語&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func (m *Monkey) climb() {
+	fmt.Println(m.Name, &amp;quot;生來會爬樹&amp;quot;)
+}
+
+//聲明接口
+type BirdAble interface {
+	Flying()
+}
+
+func (lm *LittleMonkey) Flying() {
+	fmt.Println(lm.Name, &amp;quot;學會飛了&amp;quot;)
+}
+
+func main() {
+	var monkey1 LittleMonkey
+	monkey1.Name = &amp;quot;悟空&amp;quot;
+	monkey1.climb()
+	monkey1.Flying()
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口實踐排序&#34;&gt;接口實踐排序&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Hero struct {
+	Name string
+	Age  int
+}
+
+//聲明一個Hero結構體的切片類型
+type HeroSlice []Hero
+
+//實現接口
+func (hs HeroSlice) Len() int {
+	return len(hs)
+}
+
+func (hs HeroSlice) Less(i, j int) bool {
+	//return hs[i].Age &amp;lt; hs[j].Age //Less就是決定使用哪個字段來排序
+	return hs[i].Name &amp;lt; hs[j].Name //Less就是決定使用哪個字段來排序
+}
+
+func (hs HeroSlice) Swap(i, j int) {
+	hs[i], hs[j] = hs[j], hs[i]
+}
+
+func main() {
+	//定義一個數組跟切片
+	var intSlice = []int{5, 3, 1, 2, 4}
+	//來排序
+	sort.Ints(intSlice)
+	fmt.Println(intSlice)
+
+	//系統提供的方法
+	
+	//創建切片內容
+	var heroes HeroSlice
+	for i := 0; i &amp;lt; 10; i++ {
+		hero := Hero{
+			Name: fmt.Sprintf(&amp;quot;英雄%d&amp;quot;, rand.Intn(100)),
+			Age:  rand.Intn(100),
+		}
+		//放進切片 隨機創建了十個hero放進heroes這個切片
+		heroes = append(heroes, hero)
+	}
+
+	//排序前
+	for _, v := range heroes {
+		fmt.Println(v)
+	}
+
+	//調用sort.Sort
+	sort.Sort(heroes)
+	//因為我的結構體能實現接口，就可以享受這些方便
+	fmt.Println(&amp;quot;---排序後---&amp;quot;)
+	for _, v := range heroes {
+		fmt.Println(v)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;類型斷言&#34;&gt;類型斷言&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TypeJudge(items ...interface{}) {
+	for index, x := range items {
+		switch x.(type) {
+		case bool:
+			fmt.Printf(&amp;quot;第%v個參數是bool類型,值是%v\n&amp;quot;, index+1, x)
+		case int, int32, int64:
+			fmt.Printf(&amp;quot;第%v個參數是int類型,值是%v\n&amp;quot;, index+1, x)
+		case string:
+			fmt.Printf(&amp;quot;第%v個參數是string類型,值是%v\n&amp;quot;, index+1, x)
+		default:
+			fmt.Printf(&amp;quot;第%v個參數是不明類型,值是%v\n&amp;quot;, index+1, x)
+		}
+	}
+}
+
+func main() {
+	var n1 float64 = 2.3
+	var n2 int = 30
+	var name string = &amp;quot;tom&amp;quot;
+	n4 := 300
+
+	TypeJudge(n1, n2, name, n4)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8E%A5%E5%8F%A3interface/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
         <title>數組</title>
         <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E7%B5%84/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
@@ -762,8 +941,6 @@ strud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
 &lt;/ul&gt;
 - https://yoziming.github.io/post/200101-example/ - yoziming</description>
         </item>
-    
-    
     
     
   </channel>
