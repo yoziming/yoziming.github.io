@@ -6,9 +6,294 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Wed, 17 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>Reflect反射</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-reflect%E5%8F%8D%E5%B0%84/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-reflect%E5%8F%8D%E5%B0%84/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-reflect%E5%8F%8D%E5%B0%84/ -&lt;h1 id=&#34;reflect反射&#34;&gt;reflect反射&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func reflectTest01(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+	// n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value
+	n1 := 10 + rVal.Int() //用.Int()轉換後就可以了
+	// n3 := rVal.Float()//像這樣也不行的，一定要確認類型
+	fmt.Println(&amp;quot;n1=&amp;quot;, n1)
+	// fmt.Println(&amp;quot;n3=&amp;quot;, n3)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	n2 := iV.(int)
+	fmt.Println(&amp;quot;n2=&amp;quot;, n2)
+}
+
+func reflectTest02(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	//斷言回來
+	n2, ok := iV.(Student)
+	if !ok {
+		fmt.Println(&amp;quot;從interface{}轉換回Student失敗&amp;quot;)
+	}
+	fmt.Println(&amp;quot;n2=&amp;quot;, n2)
+	fmt.Println(&amp;quot;n2.Name=&amp;quot;, n2.Name)
+
+	//獲取變量對應的kind，可以從Type也能從val拿。
+	//比如這個type是包名.Student，kind是stuct，可以說定義上kind包含type
+	fmt.Println(&amp;quot;kind=&amp;quot;, rType.Kind())
+	fmt.Println(&amp;quot;kind=&amp;quot;, rVal.Kind())
+
+}
+
+type Student struct {
+	Name string
+	Age  int
+}
+
+func main() {
+	var num int = 100
+	reflectTest01(num)
+	fmt.Println(&amp;quot;===============================&amp;quot;)
+	stu := Student{
+		Name: &amp;quot;tom&amp;quot;,
+		Age:  20,
+	}
+	reflectTest02(stu)
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;修改變量&#34;&gt;修改變量&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func reflect01(b interface{}) {
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	iV := rVal.Interface()
+	vNew, ok := iV.(float64)
+	if ok {
+		fmt.Println(&amp;quot;轉換成功 vNew=&amp;quot;, vNew)
+	} else {
+		fmt.Println(&amp;quot;err&amp;quot;)
+	}
+}
+func main() {
+	var v float64 = 1.2
+	reflect01(v)
+
+	// var str string = &amp;quot;tom&amp;quot;  //錯誤示範
+	// fs := reflect.ValueOf(str)
+	// fs.SetString(&amp;quot;jack&amp;quot;)
+	// fmt.Println(str)
+
+	var str string = &amp;quot;tom&amp;quot;
+	fs := reflect.ValueOf(&amp;amp;str)
+	fs.Elem().SetString(&amp;quot;jack&amp;quot;)
+	fmt.Println(str)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;實踐&#34;&gt;實踐&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Monster struct {
+	Name  string `json:&amp;quot;name&amp;quot;`
+	Age   int    `json:&amp;quot;age&amp;quot;`
+	Score float64
+}
+
+//方法打印m值
+func (m Monster) Print() {
+	fmt.Println(m)
+}
+
+//方法 求2和
+func (m Monster) GetSum(n1, n2 int) int {
+	return n1 + n2
+}
+
+//方法 接收4值給Monster
+func (m Monster) Set(n string, a int, s float64) {
+	m.Name = n
+	m.Age = a
+	m.Score = s
+}
+
+//反射實例
+func TestStruct(a interface{}) {
+	typ := reflect.TypeOf(a)
+	val := reflect.ValueOf(a)
+	kd := val.Kind()
+	if kd != reflect.Struct {
+		fmt.Println(&amp;quot;傳入的不是結構體&amp;quot;)
+		return
+	}
+	//獲取該結構有幾字段
+	num := val.NumField()
+	fmt.Println(&amp;quot;struct有幾個字段=&amp;quot;, num)
+
+	//遍歷所有字段
+	for i := 0; i &amp;lt; num; i++ {
+		fmt.Printf(&amp;quot;Field%d 值為%v\n&amp;quot;, i, val.Field(i))
+		//獲取struct標籤
+		tagVal := typ.Field(i).Tag.Get(&amp;quot;json&amp;quot;)
+		if tagVal != &amp;quot;&amp;quot; {
+			fmt.Printf(&amp;quot;Field%d tag為%v\n&amp;quot;, i, tagVal)
+		}
+	}
+	//獲取結構體有幾個方法
+	numOfMethod := val.NumMethod()
+	fmt.Println(&amp;quot;方法有&amp;quot;, numOfMethod)
+	//調用第[]個方法且call調用他(傳入參數值)
+	//但他這個是方法的首字(asc碼)當排序的 我們的方法是G P S開頭 (1)=第2個
+	val.Method(1).Call(nil)
+	//試著調用getsum 他call傳入的是要[]reflect.Value
+	var params []reflect.Value
+	params = append(params, reflect.ValueOf(10))
+	params = append(params, reflect.ValueOf(20))
+	res := val.MethodByName(&amp;quot;GetSum&amp;quot;).Call(params)
+	fmt.Println(&amp;quot;res=&amp;quot;, res[0].Int())
+}
+
+func main() {
+
+	var a Monster = Monster{
+		Name:  &amp;quot;牛梅王&amp;quot;,
+		Age:   500,
+		Score: 87,
+	}
+	TestStruct(a)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-reflect%E5%8F%8D%E5%B0%84/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>RPC</title>
+        <link>https://yoziming.github.io/post/210927-rpc/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210927-rpc/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210927-rpc/ -&lt;h3 id=&#34;server&#34;&gt;server&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/ 用接口，讓服務端註冊RPC的時候，就能確保他合法
+
+type World struct{}
+
+func (w *World) HelloWorld(name string, resp *string) error {
+	*resp = name + &amp;quot;你好&amp;quot;
+	return nil
+	// 如果這個return的返回值不為空，
+	// 那無論傳出的參數是否有值，服務端都不會給東西
+	// (就你給你error)
+}
+
+// 用接口，讓服務端註冊RPC的時候，就能確保他合法
+type MyInerface interface {
+	HelloWorld(string *string) error
+}
+
+// 調用方法時，給i傳參，參數是實現HelloWorld方法的對象
+func RegsiterService(i MyInerface) {
+	rpc.RegisterName(&amp;quot;hello&amp;quot;, i)
+}
+func main() {
+	// 1.註冊RPC服務 綁定對象方法
+	err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World))
+	if err != nil {
+		fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err)
+	}
+
+	// 2.開始監聽
+	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;listener failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;server開始監聽...&amp;quot;)
+	defer listener.Close()
+	// 3.建立連接
+	conn, err := listener.Accept()
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;連接成功&amp;quot;)
+	defer conn.Close()
+	// 4.綁訂服務
+	jsonrpc.ServeConn(conn)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;client&#34;&gt;client&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;net/rpc&amp;quot;
+	&amp;quot;net/rpc/jsonrpc&amp;quot;
+)
+
+func main01() {
+	// 1.用RPC連接服務器
+	// conn, err := rpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	conn, err := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	defer conn.Close()
+	// 2.遠程調用函數
+	var reply = &amp;quot;&amp;quot;
+	err = conn.Call(&amp;quot;hello.HelloWorld&amp;quot;, &amp;quot;張三&amp;quot;, &amp;amp;reply)
+	if err != nil {
+		fmt.Println(&amp;quot;Call failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(reply)
+}
+
+func main() {
+	// myClient := InitClient(&amp;quot;127.0.0.1:8899&amp;quot;)
+	// var resp string
+	// err := myClient.HelloWorld(&amp;quot;李四&amp;quot;, &amp;amp;resp)
+	// if err != nil {
+	// 	fmt.Println(&amp;quot;HelloWorld failed&amp;quot;, err)
+	// 	return
+	// }
+	// fmt.Println(resp, err)
+}
+
+type MyClient struct {
+	c *rpc.Client
+}
+
+// 把c初始化下面才能調用
+// func InitClient(addr string) {
+// 	conn, _ := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, addr)
+// 	return MyClient{c: conn}
+// }
+
+func (m *MyClient) HelloWorld(a string, b *string) error {
+	return m.c.Call(&amp;quot;hello.HelloWorld&amp;quot;, a, b)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-rpc/ - yoziming</description>
+        </item>
     
     
     
@@ -542,101 +827,6 @@ func main() {
 }
 
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%88%87%E7%89%87/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>匿名函數與閉包</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/ -&lt;h1 id=&#34;匿名函數&#34;&gt;匿名函數&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	res := func(n1, n2 int) int {
-		return n1 + n2
-	}(10, 20)
-	fmt.Println(res)
-	a := func(n1, n2 int) int {
-		return n1 - n2
-	}
-	res = a(10, 5)
-	fmt.Println(res)
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;閉包&#34;&gt;閉包&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//累加器
-func Add() func(int) int { //Add是一個函數，返回的數據類型是func(int) int
-
-	var n int = 10 //返回的是一個匿名函數，那這個函數用到函數外的n，因此形成一個整體稱為閉包
-	return func(x int) int {
-		n = n + x
-		return n
-		//閉包是類，函數是操作，n是字段，函數+使用n構成閉包
-		//n只初始化一次
-	}
-}
-func main() {
-	a := Add()
-	fmt.Println(a(1))
-	fmt.Println(a(2))
-	fmt.Println(a(3))
-
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;案例2&#34;&gt;案例2&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func makeSuffix(suffix string) func(string) string {
-	return func(name string) string {
-		if !strings.HasSuffix(name, suffix) {
-			return name + suffix
-		}
-		return name
-	}
-}
-func main() {
-	f := makeSuffix(&amp;quot;.jpg&amp;quot;)
-	fmt.Println(f(&amp;quot;654&amp;quot;))
-	fmt.Println(f(&amp;quot;123.jpg&amp;quot;))
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>命令行參數Args&amp;Flag</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ -&lt;h1 id=&#34;命令行參數argsflag&#34;&gt;命令行參數Args&amp;amp;Flag&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	fmt.Println(&amp;quot;命令行參數有&amp;quot;, len(os.Args))
-	//遍歷os.Args切片 得到所有輸入的參數值
-	for i, v := range os.Args {
-		fmt.Printf(&amp;quot;args[%v]=%v\n&amp;quot;, i, v)
-	}
-	fmt.Println(&amp;quot;=====================&amp;quot;)
-
-	//flag方法 先定義幾個變量用於接收參數值
-	var user string
-	var pwd string
-	var host string
-	var port int
-
-	flag.StringVar(&amp;amp;user, &amp;quot;u&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;帳號 預設為空&amp;quot;)
-	flag.StringVar(&amp;amp;pwd, &amp;quot;pwd&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;密碼 預設為空&amp;quot;)
-	flag.StringVar(&amp;amp;host, &amp;quot;h&amp;quot;, &amp;quot;localhost&amp;quot;, &amp;quot;主機 預設為localhost&amp;quot;)
-	flag.IntVar(&amp;amp;port, &amp;quot;port&amp;quot;, 3306, &amp;quot;端口 預設為3306&amp;quot;)
-	//前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設
-
-	flag.Parse() //這個一定要調用
-
-	//輸出結果
-	fmt.Printf(&amp;quot;user=%v pwd=%v host=%v port=%v&amp;quot;,
-		user, pwd, host, port)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ - yoziming</description>
         </item>
     
     

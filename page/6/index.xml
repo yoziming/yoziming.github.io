@@ -6,9 +6,104 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Wed, 17 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>匿名函數與閉包</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/ -&lt;h1 id=&#34;匿名函數&#34;&gt;匿名函數&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	res := func(n1, n2 int) int {
+		return n1 + n2
+	}(10, 20)
+	fmt.Println(res)
+	a := func(n1, n2 int) int {
+		return n1 - n2
+	}
+	res = a(10, 5)
+	fmt.Println(res)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;閉包&#34;&gt;閉包&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//累加器
+func Add() func(int) int { //Add是一個函數，返回的數據類型是func(int) int
+
+	var n int = 10 //返回的是一個匿名函數，那這個函數用到函數外的n，因此形成一個整體稱為閉包
+	return func(x int) int {
+		n = n + x
+		return n
+		//閉包是類，函數是操作，n是字段，函數+使用n構成閉包
+		//n只初始化一次
+	}
+}
+func main() {
+	a := Add()
+	fmt.Println(a(1))
+	fmt.Println(a(2))
+	fmt.Println(a(3))
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;案例2&#34;&gt;案例2&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func makeSuffix(suffix string) func(string) string {
+	return func(name string) string {
+		if !strings.HasSuffix(name, suffix) {
+			return name + suffix
+		}
+		return name
+	}
+}
+func main() {
+	f := makeSuffix(&amp;quot;.jpg&amp;quot;)
+	fmt.Println(f(&amp;quot;654&amp;quot;))
+	fmt.Println(f(&amp;quot;123.jpg&amp;quot;))
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>命令行參數Args&amp;Flag</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ -&lt;h1 id=&#34;命令行參數argsflag&#34;&gt;命令行參數Args&amp;amp;Flag&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	fmt.Println(&amp;quot;命令行參數有&amp;quot;, len(os.Args))
+	//遍歷os.Args切片 得到所有輸入的參數值
+	for i, v := range os.Args {
+		fmt.Printf(&amp;quot;args[%v]=%v\n&amp;quot;, i, v)
+	}
+	fmt.Println(&amp;quot;=====================&amp;quot;)
+
+	//flag方法 先定義幾個變量用於接收參數值
+	var user string
+	var pwd string
+	var host string
+	var port int
+
+	flag.StringVar(&amp;amp;user, &amp;quot;u&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;帳號 預設為空&amp;quot;)
+	flag.StringVar(&amp;amp;pwd, &amp;quot;pwd&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;密碼 預設為空&amp;quot;)
+	flag.StringVar(&amp;amp;host, &amp;quot;h&amp;quot;, &amp;quot;localhost&amp;quot;, &amp;quot;主機 預設為localhost&amp;quot;)
+	flag.IntVar(&amp;amp;port, &amp;quot;port&amp;quot;, 3306, &amp;quot;端口 預設為3306&amp;quot;)
+	//前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設
+
+	flag.Parse() //這個一定要調用
+
+	//輸出結果
+	fmt.Printf(&amp;quot;user=%v pwd=%v host=%v port=%v&amp;quot;,
+		user, pwd, host, port)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ - yoziming</description>
+        </item>
     
     
     
@@ -841,102 +936,6 @@ func main() {
 }
 
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%9C%89%E5%BA%8F%E6%95%B8%E5%88%97%E9%80%B2%E8%A1%8C%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>工廠模式</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%B7%A5%E5%BB%A0%E6%A8%A1%E5%BC%8F/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%B7%A5%E5%BB%A0%E6%A8%A1%E5%BC%8F/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%B7%A5%E5%BB%A0%E6%A8%A1%E5%BC%8F/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//工廠模式
-// 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等
-// 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意
-// 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品
-
-import (
-	&amp;quot;fmt&amp;quot;
-)
-
-type Student struct {
-	Name  string
-	Age   int
-	Score float64
-}
-
-func (s *Student) Say() string {
-	infoStr := fmt.Sprintf(&amp;quot;信息 name=[%v] age=[%v] score=[%v]&amp;quot;,
-		s.Name, s.Age, s.Score)
-	return infoStr
-}
-
-func main() {
-	var s1 = Student{
-		Name:  &amp;quot;tom&amp;quot;,
-		Score: 98,
-		Age:   18, //不依賴順序
-	}
-	res := s1.Say()
-	fmt.Println(res)
-
-	//其他創建結構變量同時指定值的方法:
-	stu2 := Student{&amp;quot;Jack&amp;quot;, 20, 100} //項目順序都要有對應
-	fmt.Println(stu2)
-	//返回結構的指針
-	var stu3 = &amp;amp;Student{&amp;quot;Mary&amp;quot;, 28, 5}
-	fmt.Println(*stu3)
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E5%B7%A5%E5%BB%A0%E6%A8%A1%E5%BC%8F/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>拷貝檔案</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8B%B7%E8%B2%9D%E6%AA%94%E6%A1%88/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8B%B7%E8%B2%9D%E6%AA%94%E6%A1%88/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8B%B7%E8%B2%9D%E6%AA%94%E6%A1%88/ -&lt;h1 id=&#34;拷貝一個檔案&#34;&gt;拷貝一個檔案&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//定義一個函數接收2個路徑
-func CopyFile(dstFileName, srcFileName string) (written int64, err error) {
-	srcFile, err := os.Open(srcFileName)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer srcFile.Close()
-	//通過srcFile獲取到reader
-	reader := bufio.NewReader(srcFile)
-
-	//打開dstFileName
-	dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//通過dstFile獲取到writer
-	writer := bufio.NewWriter(dstFile)
-	defer dstFile.Close()
-	return io.Copy(writer, reader)
-
-}
-
-func main() {
-	src := &amp;quot;C:/01.mkv&amp;quot; //原始檔
-	dst := &amp;quot;C:/food2.mkv&amp;quot;
-	_, err := CopyFile(dst, src)
-	if err == nil {
-		fmt.Println(&amp;quot;拷貝完成&amp;quot;)
-	} else {
-		fmt.Println(&amp;quot;拷貝失敗&amp;quot;)
-	}
-
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%8B%B7%E8%B2%9D%E6%AA%94%E6%A1%88/ - yoziming</description>
         </item>
     
     

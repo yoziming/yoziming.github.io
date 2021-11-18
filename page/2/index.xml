@@ -6,9 +6,103 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Wed, 17 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>Docker啟用Redis</title>
+        <link>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</link>
+        <pubDate>Sat, 02 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/ -&lt;h1 id=&#34;docker啟用redis&#34;&gt;Docker啟用Redis&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull redis:6.0
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;拉一個6.0版本的redis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;–name redis6 ：將 Container 取名為 redis6&lt;/li&gt;
+&lt;li&gt;-p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器)&lt;/li&gt;
+&lt;li&gt;-d :後台執行 Container ，並返回ID&lt;/li&gt;
+&lt;li&gt;redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec -it redis6 bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;-i ：即使沒有附加也保持STDIN 打開&lt;/li&gt;
+&lt;li&gt;-t ：分配一個偽終端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;資料庫測試&#34;&gt;資料庫測試&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;redis-cli
+set hello world
+get hello
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker啟用Mysql</title>
+        <link>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</link>
+        <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ -&lt;h1 id=&#34;docker啟用mysql&#34;&gt;Docker啟用Mysql&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull mysql/mysql-server:8.0
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;拉一個8.0版本的mysql&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-d&lt;/code&gt;：同&lt;code&gt;--detach&lt;/code&gt;，以背景模式執行。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-v ~/mysql-docker-data:/var/lib/mysql&lt;/code&gt;：同&lt;code&gt;--volume&lt;/code&gt;，掛載host目錄到container目錄，也就是host的&lt;code&gt;~/mysql-docker-data&lt;/code&gt;會保存container &lt;code&gt;/var/lib/mysql&lt;/code&gt;的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-it&lt;/code&gt;：同&lt;code&gt;--interactive&lt;/code&gt;加&lt;code&gt;--tty&lt;/code&gt;，作用為運行container時可登入其bash操作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--name mysql8&lt;/code&gt;，命名container名稱為&lt;code&gt;mysql8&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-p&lt;/code&gt;：同&lt;code&gt;--publish&lt;/code&gt;。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-e&lt;/code&gt;：同&lt;code&gt;--env&lt;/code&gt;，設定環境變數。&lt;code&gt;MYSQL_ROOT_PASSWORD&lt;/code&gt;設定MySQL root帳號的登入密碼為&lt;code&gt;1234&lt;/code&gt;，&lt;code&gt;MYSQL_DATABASE&lt;/code&gt;設定資料庫名稱為&lt;code&gt;mydb&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql:8&lt;/code&gt;：&lt;code&gt;mysql&lt;/code&gt;為image名稱，&lt;code&gt;8&lt;/code&gt;為image tag。所以運行的是&lt;code&gt;mysql:8&lt;/code&gt;的image。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-authentication-plugin=mysql_native_password&lt;/code&gt;：把儲存密碼的方式改為MySQL 5的&lt;code&gt;mysql_native_password&lt;/code&gt;，因為MySQL 8的儲存方式預設為&lt;code&gt;caching_sha2_password&lt;/code&gt;，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;檢視運行中的容器&#34;&gt;檢視運行中的容器&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec mysql8 mysql -u root -p
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker exec&lt;/code&gt;指令的作用為在運行的container執行指令，所以意思就是在&lt;code&gt;mysql8&lt;/code&gt;這個container執行&lt;code&gt;mysql -u root -p&lt;/code&gt;的指令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker container exec -it mysql8 /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;遇到權限問題用這個&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;進入mysql&#34;&gt;進入Mysql&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -uroot -p
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;新增-1-個開放外部連線的帳號&#34;&gt;新增 1 個開放外部連線的帳號&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;
+GRANT ALL ON your_database.* TO &#39;user01&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;IDENTIFIED BY &amp;lsquo;1234&amp;rsquo;=密碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;允許-mysql-被遠程訪問&#34;&gt;允許 MySQL 被遠程訪問&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;grant all privileges on *.* to &#39;root&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;這是一個強力手段(有權限風險)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;flush privileges;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;刷新&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ - yoziming</description>
+        </item>
     
     
     
@@ -616,195 +710,6 @@ choco install hugo-extended -confirm
 &lt;li&gt;容器化:微服務既然能獨立作業了，就可以放到容器(Container)中，互相隔離互不干擾，達成快速部署、節省資源。Docker是目前最普遍的容器技術，Kubernetes(K8s)是常用來管理容器、協調整合的平台。&lt;/li&gt;
 &lt;/ol&gt;
 - https://yoziming.github.io/post/210910-mvc-microservices/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>一次性隊列</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/ -&lt;h1 id=&#34;一次性隊列&#34;&gt;一次性隊列&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//用結構體管理隊列
-type Queue struct {
-	maxSize int
-	array   [3]int
-	front   int //隊列首(不包含)
-	rear    int //隊尾(含)
-}
-
-//添加數據val到隊列
-func (q *Queue) AddQueue(val int) (err error) {
-	//先判斷是否已滿
-	if q.rear == q.maxSize-1 {
-		return errors.New(&amp;quot;queue full&amp;quot;)
-	}
-	q.rear++
-	q.array[q.rear] = val
-	return
-}
-
-//取出數據
-func (q *Queue) GetQueue() (val int, err error) {
-	//先判斷是否為空
-	if q.rear == q.front {
-		return -1, errors.New(&amp;quot;queue empty&amp;quot;)
-	}
-	q.front++
-	val = q.array[q.front]
-	return val, err
-
-}
-
-//顯示隊列
-func (q *Queue) ShowQueue() {
-	fmt.Println(&amp;quot;當前隊列=&amp;quot;)
-	for i := q.front + 1; i &amp;lt;= q.rear; i++ {
-		fmt.Printf(&amp;quot;array[%d]=%d\t&amp;quot;, i, q.array[i])
-	}
-	fmt.Println(&amp;quot;隊列顯示完畢&amp;quot;)
-}
-
-func main() {
-	//創建一個隊列
-	queue1 := Queue{
-		maxSize: 3,
-		front:   -1,
-		rear:    -1,
-	}
-	var key string
-	var val int
-	for {
-		fmt.Println(&amp;quot;\n等待操作中...&amp;quot;)
-		fmt.Println(&amp;quot;輸入add 添加&amp;quot;)
-		fmt.Println(&amp;quot;輸入get 取出&amp;quot;)
-		fmt.Println(&amp;quot;輸入show 顯示&amp;quot;)
-		fmt.Println(&amp;quot;輸入exit 離開&amp;quot;)
-
-		fmt.Scanln(&amp;amp;key)
-		switch key {
-		case &amp;quot;add&amp;quot;:
-			fmt.Println(&amp;quot;輸入要加入的數值...&amp;quot;)
-			fmt.Scanln(&amp;amp;val)
-			err := queue1.AddQueue(val)
-			if err != nil {
-				fmt.Println(err.Error())
-			} else {
-				fmt.Println(&amp;quot;加入成功&amp;quot;)
-			}
-		case &amp;quot;get&amp;quot;:
-			val, err := queue1.GetQueue()
-			if err != nil {
-				fmt.Println(err.Error())
-			} else {
-				fmt.Println(&amp;quot;取出成功&amp;quot;, val)
-			}
-
-		case &amp;quot;show&amp;quot;:
-			queue1.ShowQueue()
-		case &amp;quot;exit&amp;quot;:
-			os.Exit(0)
-		}
-
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>二分樹的3種遍歷</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ -&lt;h1 id=&#34;二分樹的3種遍歷&#34;&gt;二分樹的3種遍歷&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
-
-import &amp;quot;fmt&amp;quot;
-
-type Hero struct {
-	No    int
-	Name  string
-	Left  *Hero
-	Right *Hero
-}
-
-//前序遍歷 先輸出root 再輸出左子樹 再輸出右子樹，會中左右一層層往下
-func PreOrder(node *Hero) {
-	if node != nil {
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-		PreOrder(node.Left)
-		PreOrder(node.Right)
-	}
-}
-
-//中序遍歷 左子樹 root 右子樹
-func InfixOrder(node *Hero) {
-	if node != nil {
-		InfixOrder(node.Left)
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-		InfixOrder(node.Right)
-	}
-}
-
-//後序遍歷 左子樹  右子樹 root，會一路到最左最下開始打
-func PostOrder(node *Hero) {
-	if node != nil {
-		PostOrder(node.Left)
-		PostOrder(node.Right)
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-
-	}
-}
-
-func main() {
-	//建一個二分樹
-	root := &amp;amp;Hero{
-		No:   1,
-		Name: &amp;quot;宋江&amp;quot;,
-	}
-
-	left1 := &amp;amp;Hero{
-		No:   2,
-		Name: &amp;quot;無用&amp;quot;,
-	}
-
-	right1 := &amp;amp;Hero{
-		No:   3,
-		Name: &amp;quot;你軌&amp;quot;,
-	}
-	root.Left = left1
-	root.Right = right1
-	right2 := &amp;amp;Hero{
-		No:   4,
-		Name: &amp;quot;林沖&amp;quot;,
-	}
-	right1.Right = right2
-	node21 := &amp;amp;Hero{
-		No:   21,
-		Name: &amp;quot;無用-下左&amp;quot;,
-	}
-	node22 := &amp;amp;Hero{
-		No:   22,
-		Name: &amp;quot;無用-下右&amp;quot;,
-	}
-	left1.Left = node21
-	left1.Right = node22
-
-	PreOrder(root)
-	fmt.Println(&amp;quot;==========&amp;quot;)
-	InfixOrder(root)
-	fmt.Println(&amp;quot;==========&amp;quot;)
-	PostOrder(root)
-
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ - yoziming</description>
         </item>
     
     
