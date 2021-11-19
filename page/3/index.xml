@@ -6,9 +6,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Thu, 18 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 19 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>MVC &amp; Microservices</title>
+        <link>https://yoziming.github.io/post/210910-mvc-microservices/</link>
+        <pubDate>Fri, 10 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210910-mvc-microservices/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210910-mvc-microservices/ -&lt;h2 id=&#34;mvc架構&#34;&gt;MVC架構&lt;/h2&gt;
+&lt;p&gt;Model:模型，管理資料庫(增刪改查)、業務邏輯、物件結構定義&lt;/p&gt;
+&lt;p&gt;View:視圖，使用者實際在看、操作的介面(UI)，前端&lt;/p&gt;
+&lt;p&gt;Controller:控制，接收請求、回覆結果，決定工作流程，算是Model跟View的中間人&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211012085838544.png&#34; alt=&#34;image-20211012085838544&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;微服務架構microservices&#34;&gt;微服務架構（Microservices）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;單一職責:把業務邏輯拆分成無數個小區塊(Blocks)，負責單一任務，服務之間透過管道來通訊。&lt;/li&gt;
+&lt;li&gt;輕量級通訊:使用不依賴語言或平台的格式，例如XML、JSON、protobuf。通常基於HTTP協議、符合REST風格來達成標準化、無狀態化。&lt;/li&gt;
+&lt;li&gt;獨立開發、測試、部屬:顧名思義，都拆開了就可以分開做，不像傳統架構牽一髮而動全身。&lt;/li&gt;
+&lt;li&gt;容器化:微服務既然能獨立作業了，就可以放到容器(Container)中，互相隔離互不干擾，達成快速部署、節省資源。Docker是目前最普遍的容器技術，Kubernetes(K8s)是常用來管理容器、協調整合的平台。&lt;/li&gt;
+&lt;/ol&gt;
+- https://yoziming.github.io/post/210910-mvc-microservices/ - yoziming</description>
+        </item>
     
     
     
@@ -1096,80 +1119,6 @@ func main() {
 }
 
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>迷宮遞迴</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/ -&lt;h1 id=&#34;迷宮遞迴&#34;&gt;迷宮遞迴&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func SetWay(myMap *[8][7]int, a int, b int) bool {
-	//a,b 表示對地圖的那個點測試
-
-	//找到出口
-	if myMap[6][5] == 2 {
-		return true
-	} else {
-		//繼續找
-		if myMap[a][b] == 0 { //可探測的點
-			myMap[a][b] = 2            //踩上去了，再探上下左右，但是我知道要往下往右探
-			if SetWay(myMap, a+1, b) { //下
-				return true
-			} else if SetWay(myMap, a, b+1) { //右
-				return true
-			} else if SetWay(myMap, a-1, b) { //上
-				return true
-			} else if SetWay(myMap, a, b-1) { //左
-				return true
-			} else { //死路
-				myMap[a][b] = 3
-				return false
-			}
-		} else { //不可探測的點
-			return false
-		}
-	}
-}
-func main() {
-	//定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路
-	var myMap [8][7]int
-
-	//四周設置圍牆
-	for i := 0; i &amp;lt; 7; i++ {
-		myMap[0][i] = 1
-		myMap[7][i] = 1
-	}
-	for i := 0; i &amp;lt; 8; i++ {
-		myMap[i][0] = 1
-		myMap[i][6] = 1
-	}
-	myMap[3][1] = 1
-	myMap[3][2] = 1
-
-	//看樣子
-	for i := 0; i &amp;lt; 8; i++ {
-		for j := 0; j &amp;lt; 7; j++ {
-			fmt.Print(myMap[i][j], &amp;quot; &amp;quot;)
-		}
-		fmt.Println()
-	}
-
-	SetWay(&amp;amp;myMap, 1, 1)
-	fmt.Println(&amp;quot;已探完&amp;quot;)
-
-	for i := 0; i &amp;lt; 8; i++ {
-		for j := 0; j &amp;lt; 7; j++ {
-			fmt.Print(myMap[i][j], &amp;quot; &amp;quot;)
-		}
-		fmt.Println()
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E7%A1%85%E8%B0%B7go%E5%9F%BA%E7%A4%8E%E8%AA%B2-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/ - yoziming</description>
         </item>
     
     
