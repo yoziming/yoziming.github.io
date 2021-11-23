@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>channel通道</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="go自學筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="channel通道" />
+<meta property="og:description" content="go自學筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="channel通道"/>
+<meta name="twitter:description" content="go自學筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            yoziming&#39; Blog
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                文章📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類📌
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                歸檔📃
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於👋
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#channel%e9%80%9a%e9%81%93" onclick="onNavClick(`#channel通道-nav`)" id="channel通道-nav">
+									channel通道
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#lock-sync%e8%88%87chan%e5%9f%ba%e6%9c%ac%e8%aa%8d%e8%ad%98" onclick="onNavClick(`#lock-sync與chan基本認識-nav`)" id="lock-sync與chan基本認識-nav">
+									lock sync與chan基本認識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%aa%e8%ae%80%e6%88%96%e5%af%ab" onclick="onNavClick(`#只讀或寫-nav`)" id="只讀或寫-nav">
+									只讀或寫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8d%e6%ad%b7chan" onclick="onNavClick(`#遍歷chan-nav`)" id="遍歷chan-nav">
+									遍歷chan
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%bb%e5%a1%9e" onclick="onNavClick(`#阻塞-nav`)" id="阻塞-nav">
+									阻塞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8select%e8%a7%a3%e6%b1%ba%e9%98%bb%e5%a1%9e" onclick="onNavClick(`#用select解決阻塞-nav`)" id="用select解決阻塞-nav">
+									用select解決阻塞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    文章📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類📌
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    歸檔📃
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於👋
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#channel%e9%80%9a%e9%81%93" onclick="onNavClick(`#channel通道-nav`)" id="channel通道-nav">
+									channel通道
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#lock-sync%e8%88%87chan%e5%9f%ba%e6%9c%ac%e8%aa%8d%e8%ad%98" onclick="onNavClick(`#lock-sync與chan基本認識-nav`)" id="lock-sync與chan基本認識-nav">
+									lock sync與chan基本認識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%aa%e8%ae%80%e6%88%96%e5%af%ab" onclick="onNavClick(`#只讀或寫-nav`)" id="只讀或寫-nav">
+									只讀或寫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8d%e6%ad%b7chan" onclick="onNavClick(`#遍歷chan-nav`)" id="遍歷chan-nav">
+									遍歷chan
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%bb%e5%a1%9e" onclick="onNavClick(`#阻塞-nav`)" id="阻塞-nav">
+									阻塞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8select%e8%a7%a3%e6%b1%ba%e9%98%bb%e5%a1%9e" onclick="onNavClick(`#用select解決阻塞-nav`)" id="用select解決阻塞-nav">
+									用select解決阻塞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            yoziming&#39; Blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">yoziming&#39; Blog</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/notebook.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    channel通道
+                    
+                    <div class="post-subtitle">
+                        go自學筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/go">go</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="channel通道">channel通道</h1>
+<h2 id="lock-sync與chan基本認識">lock sync與chan基本認識</h2>
+<pre tabindex="0"><code>//階乘1-n 把各個數放到map中 用goroutine完成
+var (
+	myMap = make(map[int]int, 10)
+	//聲明一個全局的互斥鎖
+	lock sync.Mutex
+	//來點管道 記得要make初始化才能用
+	intChan chan int = make(chan int, 3)
+
+	//聲明類型為空接口可以接收任意類型
+	allChan chan interface{} = make(chan interface{}, 5)
+	//注意後面沒聲明容量則不給用
+)
+
+type Cat struct {
+	Name string
+	Age  int
+}
+
+func test(n int) {
+	res := 1
+	for i := 1; i &lt;= n; i++ {
+		res = res * i
+	}
+	//把res放進mayMap
+	//加鎖
+	lock.Lock()
+	myMap[n] = res
+	//解鎖
+	lock.Unlock()
+}
+
+func main() {
+	//啟用多個協程
+	for i := 1; i &lt;= 1; i++ {
+		go test(i)
+	}
+	//如果不加鎖concurrent map iteration and map write
+	lock.Lock()
+	for i, v := range myMap {
+		fmt.Printf(&quot;map[%d]=%v\n&quot;, i, v)
+	}
+	lock.Unlock()
+
+	//看看管道
+	fmt.Println(intChan)
+	//出來是一個地址，表示誰要經過這 (當然本身也有一個地址但不重要)
+	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+
+	//向管道寫入數據
+	intChan &lt;- 10
+	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	num1 := 5
+	intChan &lt;- num1
+	intChan &lt;- 1
+	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	//intChan &lt;- 12 //超過3個太長報錯
+
+	//從管道取數據
+	var num2 int = &lt;-intChan
+	fmt.Println(num2)
+	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	//先進先出，取完超過一樣報錯
+	num3 := &lt;-intChan
+	fmt.Println(num3)
+	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+
+	//關於allChan
+	allChan &lt;- 10
+	allChan &lt;- &quot;ABC&quot;
+	cat1 := Cat{&quot;小花&quot;, 3}
+	allChan &lt;- cat1
+	//可以亂塞一通
+
+	//想拿到第三個元素 先把兩個推出來
+	&lt;-allChan
+	&lt;-allChan
+
+	newCat := &lt;-allChan //從管道中取出來的cat1
+	fmt.Printf(&quot;類型=%T 值=%v\n&quot;, newCat, newCat)
+	// fmt.Printf(&quot;%v\n&quot;, newCat.Name) //雖然類型一樣但這樣用不通過
+	//必須類型斷言
+	a := newCat.(Cat)
+	fmt.Printf(&quot;%v\n&quot;, a.Name)
+
+}
+</code></pre><h2 id="只讀或寫">只讀或寫</h2>
+<pre tabindex="0"><code>func main() {
+	//chan可以只讀或只寫
+	// chan1 chan int //可讀可寫
+	var chan2 chan&lt;- int = make(chan int, 3) //只寫
+	chan2 &lt;- 20
+	// num:=&lt;-chan2//報錯
+	fmt.Println(chan2)
+
+	var chan3 &lt;-chan int = make(chan int, 3)
+	num2 := &lt;-chan3
+	fmt.Println(num2)
+	chan3 &lt;- 10 //報錯
+}
+</code></pre><h2 id="遍歷chan">遍歷chan</h2>
+<pre tabindex="0"><code>func main() {
+	//用close關掉channel就不能往內加(但是可以拿出)
+	var intChan chan int = make(chan int, 3)
+	intChan &lt;- 100
+	intChan &lt;- 200
+	close(intChan)
+	// intChan &lt;- 300 //錯誤
+	n1 := &lt;-intChan
+	fmt.Println(n1)
+
+	//遍歷
+	intChan2 := make(chan int, 100)
+	for i := 0; i &lt; 100; i++ {
+		intChan2 &lt;- i * 2 //放100個數據(2,4,6...進去)
+	}
+	//得用for:=range用一般for遍歷會報錯
+	//如果已經close遍歷完就會自動停止，如果沒有先關掉會deadlock
+	close(intChan2)
+	for v := range intChan2 {
+		fmt.Println(v)
+	}
+
+}
+</code></pre><h2 id="阻塞">阻塞</h2>
+<pre tabindex="0"><code>func writeData(intChan chan int) {
+	for i := 1; i &lt;= 50; i++ {
+		intChan &lt;- i
+		fmt.Printf(&quot;writeData=%v\n&quot;, i)
+		// time.Sleep(time.Second / 1000)
+	}
+	close(intChan) //寫完就關
+}
+func readData(intChan chan int, exitChan chan bool) {
+	for {
+		v, ok := &lt;-intChan
+		// time.Sleep(time.Second / 1000)
+		if !ok {
+			break
+		}
+		fmt.Printf(&quot;readData讀取到數據=%v\n&quot;, v)
+	}
+	//讀取完=任務完成 其實這裡不管對exitChan做啥都無所謂，重點是有調用他就能阻塞main
+	exitChan &lt;- true
+	close(exitChan)
+}
+
+func main() {
+
+	intChan := make(chan int, 5)
+	//即使管道小 寫的慢讀得快或相反，他會排隊，重點不要阻塞死鎖就能繼續
+	exitChan := make(chan bool, 1)
+
+	go writeData(intChan)
+	go readData(intChan, exitChan)
+	if &lt;-exitChan { //重點就是這個判斷調用到一個管道有跨到子函數的就能阻塞住main
+		fmt.Println(&quot;任務完成&quot;)
+	}
+}
+
+</code></pre><h2 id="用select解決阻塞">用select解決阻塞</h2>
+<pre tabindex="0"><code>func sayH() {
+	for i := 0; i &lt; 10; i++ {
+		time.Sleep(time.Second / 10)
+		fmt.Println(&quot;hello&quot;)
+	}
+}
+
+func test() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(&quot;test錯誤&quot;, err)
+		}
+	}()
+	myMap := make(map[int]string)
+	myMap[0] = &quot;我家&quot;
+	fmt.Println(myMap)
+}
+
+func main() {
+
+	go sayH()
+	go test()
+	fmt.Println(&quot;hellom&quot;)
+
+	intChan := make(chan int, 10)
+	for i := 0; i &lt; 10; i++ {
+		intChan &lt;- i
+	}
+
+	stringChan := make(chan string, 5)
+	for i := 0; i &lt; 5; i++ {
+		stringChan &lt;- &quot;hello&quot; + fmt.Sprintf(&quot;%d&quot;, i)
+	}
+	//傳統方法遍歷，如果不關閉會阻塞 就導致deadlock
+	//實際開發不好確定哪時候關閉，就用select解決
+	for {
+		select {
+		//就算沒關閉，只要阻塞他就往其他case移動
+		case v := &lt;-intChan:
+			fmt.Printf(&quot;intChan取出%d\n&quot;, v)
+		case v := &lt;-stringChan:
+			fmt.Printf(&quot;stringChan取出%s\n&quot;, v)
+		default:
+			fmt.Println(&quot;取完了&quot;)
+			return
+		}
+	}
+
+}
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-08-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E9%9B%99%E5%90%91%E9%8F%88%E8%A1%A8/">
+			下一篇<br>雙向鏈表
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/">
+			上一篇<br>const常量
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+                <p style="opacity: 0.6" align="center">
+                    <small>此篇文章的評論功能已經停用。</small>
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
