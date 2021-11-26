@@ -6,9 +6,192 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Tue, 23 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>Docker啟用Mysql</title>
+        <link>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</link>
+        <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ -&lt;h1 id=&#34;docker啟用mysql&#34;&gt;Docker啟用Mysql&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull mysql/mysql-server:8.0
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;拉一個8.0版本的mysql&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-d&lt;/code&gt;：同&lt;code&gt;--detach&lt;/code&gt;，以背景模式執行。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-v ~/mysql-docker-data:/var/lib/mysql&lt;/code&gt;：同&lt;code&gt;--volume&lt;/code&gt;，掛載host目錄到container目錄，也就是host的&lt;code&gt;~/mysql-docker-data&lt;/code&gt;會保存container &lt;code&gt;/var/lib/mysql&lt;/code&gt;的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-it&lt;/code&gt;：同&lt;code&gt;--interactive&lt;/code&gt;加&lt;code&gt;--tty&lt;/code&gt;，作用為運行container時可登入其bash操作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--name mysql8&lt;/code&gt;，命名container名稱為&lt;code&gt;mysql8&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-p&lt;/code&gt;：同&lt;code&gt;--publish&lt;/code&gt;。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-e&lt;/code&gt;：同&lt;code&gt;--env&lt;/code&gt;，設定環境變數。&lt;code&gt;MYSQL_ROOT_PASSWORD&lt;/code&gt;設定MySQL root帳號的登入密碼為&lt;code&gt;1234&lt;/code&gt;，&lt;code&gt;MYSQL_DATABASE&lt;/code&gt;設定資料庫名稱為&lt;code&gt;mydb&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql:8&lt;/code&gt;：&lt;code&gt;mysql&lt;/code&gt;為image名稱，&lt;code&gt;8&lt;/code&gt;為image tag。所以運行的是&lt;code&gt;mysql:8&lt;/code&gt;的image。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-authentication-plugin=mysql_native_password&lt;/code&gt;：把儲存密碼的方式改為MySQL 5的&lt;code&gt;mysql_native_password&lt;/code&gt;，因為MySQL 8的儲存方式預設為&lt;code&gt;caching_sha2_password&lt;/code&gt;，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;檢視運行中的容器&#34;&gt;檢視運行中的容器&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec mysql8 mysql -u root -p
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker exec&lt;/code&gt;指令的作用為在運行的container執行指令，所以意思就是在&lt;code&gt;mysql8&lt;/code&gt;這個container執行&lt;code&gt;mysql -u root -p&lt;/code&gt;的指令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker container exec -it mysql8 /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;遇到權限問題用這個&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;進入mysql&#34;&gt;進入Mysql&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -uroot -p
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;新增-1-個開放外部連線的帳號&#34;&gt;新增 1 個開放外部連線的帳號&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;
+GRANT ALL ON your_database.* TO &#39;user01&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;IDENTIFIED BY &amp;lsquo;1234&amp;rsquo;=密碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;允許-mysql-被遠程訪問&#34;&gt;允許 MySQL 被遠程訪問&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;grant all privileges on *.* to &#39;root&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;這是一個強力手段(有權限風險)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;flush privileges;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;刷新&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker常用語句</title>
+        <link>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+        <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/ -&lt;h1 id=&#34;docker常用語句&#34;&gt;Docker常用語句&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull xxx
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;檢視運行中的容器&#34;&gt;檢視運行中的容器&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec -it  &amp;lt;container_id&amp;gt;  /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;-i ：即使沒有附加也保持STDIN 打開&lt;/li&gt;
+&lt;li&gt;-t ：分配一個偽終端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;查看字元編碼&#34;&gt;查看字元編碼&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;locale
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;臨時改成utf8&#34;&gt;臨時改成UTF8&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;export  LANG=&amp;quot;en_US.UTF-8&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;永久設置需在Dockerfile中設置環境字元集環境變數&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ENV LANG=&amp;quot;en_US.UTF-8&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker啟用MinIO</title>
+        <link>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</link>
+        <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/ -&lt;h1 id=&#34;docker啟用minio儲存&#34;&gt;Docker啟用MinIO儲存&lt;/h1&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run -d --name minio -e &amp;quot;MINIO_ROOT_USER=root&amp;quot; -e &amp;quot;MINIO_ROOT_PASSWORD=root1234&amp;quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &amp;quot;:9001&amp;quot; 
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--name minio&lt;/code&gt;，命名container名稱為&lt;code&gt;minio&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-v /data/minio:/data/minio&lt;/code&gt;該命令將主機 &lt;code&gt;/data/minio&lt;/code&gt; 目錄對映到容器中的 &lt;code&gt;/data/minio&lt;/code&gt; 目錄中&lt;/li&gt;
+&lt;li&gt;MinIO 還提供了圖形管理介面，在瀏覽器輸入 &lt;code&gt;ip:9001&lt;/code&gt;即可檢視&lt;/li&gt;
+&lt;li&gt;不管是圖形介面操作，還是客戶端操作，預設賬號密碼都為 &lt;code&gt;minioadmin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-e&lt;/code&gt;環境變數，這裡用了自定義賬號密碼，賬號不能小於 3 字元，密碼不能小於 8 字元&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;go初始化&#34;&gt;Go初始化&lt;/h2&gt;
+&lt;p&gt;導入&lt;code&gt;github.com/minio/minio-go/v7&lt;/code&gt;，注意這個後面的&lt;code&gt;v7&lt;/code&gt;，在自動引包時可能會漏掉，導致使用到舊版的同名函數而報錯&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;InitMinio&lt;/span&gt;() {
+	ctx := context.&lt;span style=&#34;color:#008b45&#34;&gt;Background&lt;/span&gt;()
+	endpoint := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;localhost:9000&amp;#34;&lt;/span&gt;
+	accessKeyID := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;root&amp;#34;&lt;/span&gt;
+	secretAccessKey := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;root1234&amp;#34;&lt;/span&gt;
+	useSSL := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;false&lt;/span&gt;
+
+	&lt;span style=&#34;color:#228b22&#34;&gt;// Initialize minio client object.
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	minioClient, err := minio.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(endpoint, &amp;amp;minio.Options{
+		Creds:  credentials.&lt;span style=&#34;color:#008b45&#34;&gt;NewStaticV4&lt;/span&gt;(accessKeyID, secretAccessKey, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;),
+		Secure: useSSL,
+	})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+	}
+
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 創建預設的bucket
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;// Make a new bucket called mymusic.
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	bucketName := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;mymusic&amp;#34;&lt;/span&gt;
+	location := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;us-east-1&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;// 這個是AWS用的，詳細查他官方
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	
+
+	err = minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;MakeBucket&lt;/span&gt;(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		&lt;span style=&#34;color:#228b22&#34;&gt;// Check to see if we already own this bucket (which happens if you run this twice)
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		exists, errBucketExists := minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;BucketExists&lt;/span&gt;(ctx, bucketName)
+		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; errBucketExists == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; &amp;amp;&amp;amp; exists {
+			log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;We already own %s\n&amp;#34;&lt;/span&gt;, bucketName)
+		} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+			log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+		}
+	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully created %s\n&amp;#34;&lt;/span&gt;, bucketName)
+	}
+	    &lt;span style=&#34;color:#228b22&#34;&gt;// 試著上傳一個.zip
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    objectName := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;golden-oldies.zip&amp;#34;&lt;/span&gt;
+    filePath := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/tmp/golden-oldies.zip&amp;#34;&lt;/span&gt;
+    contentType := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;application/zip&amp;#34;&lt;/span&gt;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// Upload the zip file with FPutObject
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    info, err := minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;FPutObject&lt;/span&gt;(ctx, bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+        log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+    }
+
+    log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully uploaded %s of size %d\n&amp;#34;&lt;/span&gt;, objectName, info.Size)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;配合gin框架範例&#34;&gt;配合Gin框架範例&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 假定要上傳頭像，先獲取圖片文件資訊
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	file, _ := ctx.&lt;span style=&#34;color:#008b45&#34;&gt;FormFile&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;)
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 這裡使用minioClient.PutObject（）方法上傳，入參是file.Open()。
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	f, _ := file.&lt;span style=&#34;color:#008b45&#34;&gt;Open&lt;/span&gt;()
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 新增一個哈希命名規則防止圖片覆蓋
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	m5 := md5.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;()
+	m5.&lt;span style=&#34;color:#008b45&#34;&gt;Write&lt;/span&gt;([]&lt;span style=&#34;color:#658b00&#34;&gt;byte&lt;/span&gt;(file.Filename+時間或uuid等等)
+	fileName_hash := hex.&lt;span style=&#34;color:#008b45&#34;&gt;EncodeToString&lt;/span&gt;(m5.&lt;span style=&#34;color:#008b45&#34;&gt;Sum&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;))
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 上傳到minio 
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	info, err := model.MinioClient.&lt;span style=&#34;color:#008b45&#34;&gt;PutObject&lt;/span&gt;(ctx, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;, fileName_hash, f, -&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;, minio.PutObjectOptions{ContentType: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt;
+	}
+	log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully uploaded %s of size %d\n&amp;#34;&lt;/span&gt;, file.Filename, info.Size)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;細節補充&#34;&gt;細節補充&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;minio儲存的單位是 BUCKETS(桶)，創建完之後預設的Access Policy為Private，外部無法訪問，要改成public才行&lt;/li&gt;
+&lt;li&gt;預設上傳的檔案網址就是http://{endpoint}/{buckets}/{Filename}，只要BUCKETS是public就能直接訪問&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/ - yoziming</description>
+        </item>
     
     
     
@@ -588,382 +771,6 @@ func main() {
 }
 
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>二分樹的3種遍歷</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ -&lt;h1 id=&#34;二分樹的3種遍歷&#34;&gt;二分樹的3種遍歷&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
-
-import &amp;quot;fmt&amp;quot;
-
-type Hero struct {
-	No    int
-	Name  string
-	Left  *Hero
-	Right *Hero
-}
-
-//前序遍歷 先輸出root 再輸出左子樹 再輸出右子樹，會中左右一層層往下
-func PreOrder(node *Hero) {
-	if node != nil {
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-		PreOrder(node.Left)
-		PreOrder(node.Right)
-	}
-}
-
-//中序遍歷 左子樹 root 右子樹
-func InfixOrder(node *Hero) {
-	if node != nil {
-		InfixOrder(node.Left)
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-		InfixOrder(node.Right)
-	}
-}
-
-//後序遍歷 左子樹  右子樹 root，會一路到最左最下開始打
-func PostOrder(node *Hero) {
-	if node != nil {
-		PostOrder(node.Left)
-		PostOrder(node.Right)
-		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
-
-	}
-}
-
-func main() {
-	//建一個二分樹
-	root := &amp;amp;Hero{
-		No:   1,
-		Name: &amp;quot;宋江&amp;quot;,
-	}
-
-	left1 := &amp;amp;Hero{
-		No:   2,
-		Name: &amp;quot;無用&amp;quot;,
-	}
-
-	right1 := &amp;amp;Hero{
-		No:   3,
-		Name: &amp;quot;你軌&amp;quot;,
-	}
-	root.Left = left1
-	root.Right = right1
-	right2 := &amp;amp;Hero{
-		No:   4,
-		Name: &amp;quot;林沖&amp;quot;,
-	}
-	right1.Right = right2
-	node21 := &amp;amp;Hero{
-		No:   21,
-		Name: &amp;quot;無用-下左&amp;quot;,
-	}
-	node22 := &amp;amp;Hero{
-		No:   22,
-		Name: &amp;quot;無用-下右&amp;quot;,
-	}
-	left1.Left = node21
-	left1.Right = node22
-
-	PreOrder(root)
-	fmt.Println(&amp;quot;==========&amp;quot;)
-	InfixOrder(root)
-	fmt.Println(&amp;quot;==========&amp;quot;)
-	PostOrder(root)
-
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>哈希表數據結構</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ -&lt;h1 id=&#34;哈希表數據結構&#34;&gt;哈希表數據結構&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
-
-import (
-	&amp;quot;fmt&amp;quot;
-	&amp;quot;os&amp;quot;
-)
-
-type Emp struct {
-	Id   int
-	Name string
-	Next *Emp
-}
-
-func (e *Emp) ShowMe() {
-	fmt.Printf(&amp;quot;链表%d 找到该雇员 %d\n&amp;quot;, e.Id%7, e.Id)
-}
-
-//不帶表頭，即第一個節點就放雇員資料
-type EmpLink struct {
-	Head *Emp
-}
-
-func (e *EmpLink) FindByIdEmpLink(id int) *Emp {
-	cur := e.Head
-	for {
-		if cur != nil &amp;amp;&amp;amp; cur.Id == id {
-			return cur
-		} else if cur == nil {
-			break
-		}
-		cur = cur.Next
-	}
-	return nil
-}
-
-//給EmpLink寫增加雇員方法，編號從小到大
-func (e *EmpLink) AddEmpLink(emp *Emp) {
-	cur := e.Head      //輔助指針
-	var pre *Emp = nil //輔助指針pre在cur前面
-	//如果當前EmpLink是空的
-	if cur == nil {
-		e.Head = emp
-		return
-	}
-	//給emp找位置並插入
-	for {
-		if cur != nil {
-			if cur.Id &amp;gt; emp.Id { //找到
-				break
-			}
-			pre = cur
-			cur = cur.Next
-		} else {
-			break
-		}
-	}
-	pre.Next = emp
-	emp.Next = cur
-}
-
-func (e *EmpLink) ShowLink() {
-	//如果當前EmpLink是空的
-	if e.Head == nil {
-		fmt.Println(&amp;quot;當前鏈表為空&amp;quot;)
-		return
-	}
-	cur := e.Head
-	for {
-		if cur != nil {
-			fmt.Printf(&amp;quot;雇員ID=%d 名字=%s ~&amp;gt;&amp;quot;, cur.Id, cur.Name)
-			cur = cur.Next
-		} else {
-			break
-		}
-	}
-	fmt.Println()
-}
-
-//鏈表數組
-type HashTable struct {
-	LinkArr [7]EmpLink
-}
-
-//給HashTable寫增加雇員方法
-func (h *HashTable) Add(emp *Emp) {
-	//使用散列函數，確定雇員添到哪個鏈表
-	linkNo := h.HashFun(emp.Id)
-	//添加
-	h.LinkArr[linkNo].AddEmpLink(emp)
-}
-
-//顯示所有HashTable雇員方法
-func (h *HashTable) ShowAll() {
-	for i := 0; i &amp;lt; len(h.LinkArr); i++ {
-		h.LinkArr[i].ShowLink()
-	}
-}
-
-//查找
-func (h *HashTable) FindById(id int) *Emp {
-	linkNo := h.HashFun(id)
-	return h.LinkArr[linkNo].FindByIdEmpLink(id)
-}
-
-//散列函數
-func (h *HashTable) HashFun(id int) int {
-	return id % 7 //得到一個值，就是鏈表的下標
-}
-
-func main() {
-	key := 0
-	id := 0
-	name := &amp;quot;&amp;quot;
-	var hashTable HashTable
-	for {
-		fmt.Println(&amp;quot;===雇員系統===&amp;quot;)
-		fmt.Println(&amp;quot;\t1.添加&amp;quot;)
-		fmt.Println(&amp;quot;\t2.顯示&amp;quot;)
-		fmt.Println(&amp;quot;\t3.查找&amp;quot;)
-		fmt.Println(&amp;quot;\t4.退出&amp;quot;)
-		fmt.Scanln(&amp;amp;key)
-		switch key {
-		case 1:
-			fmt.Println(&amp;quot;輸入雇員ID&amp;quot;)
-			fmt.Scanln(&amp;amp;id)
-			fmt.Println(&amp;quot;輸入雇員 name&amp;quot;)
-			fmt.Scanln(&amp;amp;name)
-			emp := &amp;amp;Emp{
-				Id:   id,
-				Name: name,
-			}
-			hashTable.Add(emp)
-		case 2:
-			hashTable.ShowAll()
-		case 3:
-			fmt.Println(&amp;quot;輸入欲查雇員ID&amp;quot;)
-			fmt.Scanln(&amp;amp;id)
-			emp := hashTable.FindById(id)
-			if emp == nil {
-				fmt.Println(&amp;quot;不存在&amp;quot;)
-			} else {
-				emp.ShowMe()
-			}
-		case 4:
-			os.Exit(0)
-		default:
-			fmt.Println(&amp;quot;輸入錯誤&amp;quot;)
-		}
-	}
-
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>單向鏈表</title>
-        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ -&lt;h1 id=&#34;單向鏈表&#34;&gt;單向鏈表&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type HeroNode struct {
-	no   int
-	name string
-	next *HeroNode //表示指向下一個節點
-}
-
-//給鏈表插入節點
-func Insert(head *HeroNode, newHeroNode *HeroNode) {
-	//先找到最後的節點，創建一個輔助
-	temp := head
-	for {
-		if temp.next == nil { //表示找到最後
-			break
-		}
-		temp = temp.next //不斷往下找
-	}
-	//把newHeroNode加到屁股
-	temp.next = newHeroNode
-}
-
-//根據No從小到大插入
-func InsertNo(head *HeroNode, newHeroNode *HeroNode) {
-	//想找到適當的節點，創建一個輔助
-	temp := head
-	for {
-		if temp.next == nil { //表示找到最後
-			break
-		} else if temp.next.no &amp;gt; newHeroNode.no {
-			//表示new要插到temp後
-			break
-		} else if temp.next.no == newHeroNode.no {
-			//表示new這個編號已存在
-			fmt.Println(newHeroNode.no, &amp;quot;該編號已存在&amp;quot;)
-			return
-		}
-		temp = temp.next //不斷往下找
-
-	}
-	//把newHeroNode加到找到的地方
-	newHeroNode.next = temp.next
-	temp.next = newHeroNode 
-}
-
-//根據no刪除一個節點
-func DelHeroNode(head *HeroNode, id int) {
-	//想找到適當的節點，創建一個輔助
-	temp := head
-	for {
-		if temp.next == nil { //表示找到最後
-			break
-		} else if temp.next.no == id {
-			//表示找到了
-			fmt.Println(id, &amp;quot;該編號已刪除&amp;quot;)
-			temp.next = temp.next.next
-			return
-		}
-		temp = temp.next //不斷往下找
-	}
-
-}
-
-//顯示
-func List(head *HeroNode) {
-	//創建一個輔助
-	temp := head
-	if temp.next == nil { //空鏈表?
-		fmt.Println(&amp;quot;空&amp;quot;)
-		return
-	}
-	for {
-		fmt.Printf(&amp;quot;[%d,%s]==&amp;gt;&amp;quot;, temp.next.no, temp.next.name)
-		temp = temp.next      //不斷往下找
-		if temp.next == nil { //到尾了
-			fmt.Println(&amp;quot;完畢&amp;quot;)
-			break
-		}
-	}
-}
-
-func main() {
-	//創建一個頭節點(空的)
-	head := &amp;amp;HeroNode{}
-	hero1 := &amp;amp;HeroNode{
-		no:   1,
-		name: &amp;quot;宋江&amp;quot;,
-	}
-	hero2 := &amp;amp;HeroNode{
-		no:   2,
-		name: &amp;quot;李奎&amp;quot;,
-	}
-	hero3 := &amp;amp;HeroNode{
-		no:   3,
-		name: &amp;quot;李軌&amp;quot;,
-	}
-	hero4 := &amp;amp;HeroNode{
-		no:   3,
-		name: &amp;quot;321&amp;quot;,
-	}
-	InsertNo(head, hero3)
-	InsertNo(head, hero1)
-	InsertNo(head, hero2)
-	InsertNo(head, hero4)
-	List(head)
-	DelHeroNode(head, 2)
-	List(head)
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ - yoziming</description>
         </item>
     
     

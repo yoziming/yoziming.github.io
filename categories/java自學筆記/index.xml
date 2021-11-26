@@ -7,28 +7,65 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Tue, 23 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/java%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 26 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/java%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>尚硅谷JAVA基礎課-DAY11筆記</title>
+      <link>https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/</link>
+      <pubDate>Fri, 26 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/</guid>
+      <description>實作練習-客戶訊息管理  有點基礎這部分都蠻簡單的
+ 有個知識點是這邊在&amp;quot;刪除用戶&amp;quot;的功能用到了循環鏈表的概念
+public boolean deleteCustomer(int index) {if (customers[index] != null) {for (int i = index; i &amp;lt; total - 1; i++) { // 不能搬到total，否則[i+1]會越位customers[i] = customers[i + 1];}customers[total - 1] = null;total--;System.out.println(&amp;quot;刪除用戶成功!&amp;quot;);return true;}System.out.println(&amp;quot;索引無效，操作失敗&amp;quot;);return false;}total表示當前數組中用戶總數，這個i &amp;lt; total - 1蠻關鍵的，我原先沒想到這邊要-1，還想著讓他把後面的null往前搬就好，沒考慮到末尾可能會越位的情況。
+搬完跟customers[total - 1] = null搭配使用，這樣才是健壯的</description>
+    </item>
+    
+    <item>
+      <title>尚硅谷JAVA基礎課-DAY10筆記</title>
+      <link>https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/</link>
+      <pubDate>Thu, 25 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/</guid>
+      <description>封裝的設計思想   高內聚:類的內部數據操作細節自己完成，不允許外部干涉
+  低耦合:對外露出少量的方法(API)供使用
+   舉例:微波爐，我不需要用戶控制燈光、波照、轉盤等等，只要他放入東西按下&amp;quot;解凍&amp;quot;即可。即所謂的&amp;quot;一鍵XX&amp;quot;功能。
+ 封裝性的體現  將類的屬性私有化(private)，通過公共的(public)的set與get方法讓外部調用，舉例:  public class Main {public static void main(String[] args) {Animal a1 = new Animal();a1.setAge(10);System.out.println(a1.getAge());}}class Animal {private int age;public void setAge(int i) {age = i;}public int getAge() {return age;}} 不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&amp;quot;小工具&amp;quot;) 單例模式(將構造器私有化) &amp;hellip;等等 需要權限修飾符來配合  權限修飾符  JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)
+  private:當前類內部可以調用 default(缺省、就是不寫):同一個包內可以調用 protected:不同包的子類 public:同一個工程  修飾的對象  以上4種可以用於修飾類的內部結構:屬性、方法、構造器、內部類 class本身的修飾只能是缺省或public  構造器(constructor)  作用:創立物件、初始化物件的屬性 說明:如果沒有顯示定義構造器，則系統默認提供一個空參的構造器 格式:權限修飾符 類名(形參列表){}，注意構造器名=類名 在一個類中可以定義多個構造器，彼此構成重載，舉例:  public class Main {public static void main(String[] args) {Animal a1 = new Animal(5);Animal a2 = new Animal(4, &amp;quot;狗&amp;quot;);}}class Animal {private int age;private String kind;public Animal(int a) {age = a;System.</description>
+    </item>
+    
+    <item>
+      <title>尚硅谷JAVA基礎課-DAY09筆記</title>
+      <link>https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/</link>
+      <pubDate>Wed, 24 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/</guid>
+      <description>細說方法 方法的重載(overload)  定義:同一各類中，允許存在一個以上的同名方法，只要他們的參數個數或參數類型不同即可 跟方法的權限修飾符、返回值類型、形參變量名、方法體無關，判斷重點在於參數本身 可能會自動類型提升，舉例:傳入的是int形，方法中沒有int但有double，就會調用double 典型的例子就是內建的println()  可變個數形參  格式:方法名(形參類型 &amp;hellip; 形參名) 調用時傳入的形參數量可以是0到多個，包含數組 與本類中方法名相同，形參不同的方法間構成重載(可共存) 與本類中方法名相同，形參類型也相同的數組之間不構成重載(不可共存)  PS.這是歷史遺留問題，因為可變個數形參是JDK5加入的，以前都是用數組   方法內把它當作數組使用，遍歷itar (i=0;i&amp;lt;形參名.length;i++){} 必須聲明在末尾，且最多只能有一個  方法參數的值傳遞 先複習一下變量的賦值規則  變量是基本數據類型(byte、short、int、long、char、float、double、boolean)，賦值的是變量所保存的數據值 變量是引用類型(引用類型就只有null跟地址值兩種情況)，賦值給的是所保存數據的地址值  名詞解釋  形參:方法定義時，聲明的小括號中的參數 實參:方法調用時，實際傳給形參的數據  傳參規則  跟變量的賦值規則其實相同
+  如果參數是基本數據類型，實參賦給形參的是數據值(類似給一份副本) 如果參數是引用類型，實參賦給形參的是地址值(包含變量的數據類型)  陷阱題  println在char[]這有個特例，要避免踩坑就是調用時多看看方法格式
+ int[] arr1 = new int[]{1, 2, 3};System.out.println(arr1); // [I@1b6d3586char[] arr2 = new char[]{&#39;a&#39;, &#39;b&#39;, &#39;c&#39;};System.out.println(arr2); // abc練習-在方法中引用其他類的方法並調用 public class Main {public static void main(String[] args) {PassObject t1 = new PassObject();Circle c = new Circle();t1.</description>
+    </item>
+    
     <item>
       <title>尚硅谷JAVA基礎課-DAY08筆記</title>
       <link>https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/</link>
       <pubDate>Tue, 23 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/</guid>
-      <description>DAY08-物件導向  Object-oriented programming中國翻為&amp;quot;面向對象&amp;quot;，台灣則翻為物件導向，我個人也是認為&amp;quot;物件導向&amp;quot;翻的比較信雅達，可以參考這篇知乎問答的解釋
+      <description>物件導向  Object-oriented programming中國翻為&amp;quot;面向對象&amp;quot;，台灣則翻為物件導向
+我個人也覺得&amp;quot;物件導向&amp;quot;翻的比較信雅達，可以參考這篇知乎問答的解釋
 https://www.zhihu.com/question/22515658/answer/120754062
- 過程導向/物件導向的區別  用咖啡機煮咖啡為例
- 過程導向(Process-oriented programming)：   執行加咖啡豆方法
+ 概念 首先用咖啡機煮咖啡為例:
+過程導向(Process-oriented)  過程導向強調的是功能行為，以函數為最小單位，考慮如何做
+   執行加咖啡豆方法
   執行加水方法
   執行煮咖啡方法
   執行喝咖啡方法
-   過程導向強調的是功能行為，以函數為最小單位，考慮如何做
- 物件導向(Object-oriented programming)： 在執行煮咖啡操作前要抽象出：人和咖啡機（分類），然後開始執行：
+  物件導向(Object-oriented)  物件導向則是先將功能封裝進物件，強調具備功能的物件，以類/物件為最小單位，考慮誰來做
+ 在執行煮咖啡操作前要抽象出：人和咖啡機（分類），然後開始執行：
   人.加咖啡豆
   人.加水
   咖啡機.煮
   人.喝咖啡
-   物件導向則是先將功能封裝進物件，強調具備功能的物件，以類/物件為最小單位，考慮誰來做
- 物件導向的三大特徵  封裝(Encapsulation) 繼承(Inheritance) 多態(Polymorphism)  類和實例 類(class):抽象的模板、概念上的定義
+  物件導向的三大特徵  封裝(Encapsulation) 繼承(Inheritance) 多態(Polymorphism)  類和實例 類(class):抽象的模板、概念上的定義
 物件(object):是實際存在的個體，也稱為實例(Instance)
  比如說有輪子、吃汽油跑的是汽車類。小弟的車new march則為實例
  類的設計  設計類其實就是設計類的成員
@@ -44,8 +81,8 @@ https://www.zhihu.com/question/22515658/answer/120754062
       <pubDate>Mon, 22 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211122-%E5%B0%9A%E8%AA%B2java-day07/</guid>
-      <description>DAY07-數組常用算法 數據結構簡述  程序=數據結構+演算法
- 數據結構  數據間的邏輯關係:集合、一對一、一對多、多對多 數據的儲存結構:  線性表:順序表(如:數組)、鏈表、棧、隊列 樹形結構:二叉樹 圖形結構    演算法-Algorithm   排序
+      <description>數組常用算法 數據結構  程序=數據結構+演算法
+  數據間的邏輯關係:集合、一對一、一對多、多對多 數據的儲存結構:  線性表:順序表(如:數組)、鏈表、棧、隊列 樹形結構:二叉樹 圖形結構    演算法-Algorithm   排序
   檢索
   加密
   &amp;hellip;
@@ -59,10 +96,10 @@ https://www.zhihu.com/question/22515658/answer/120754062
       <pubDate>Sun, 21 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211121-%E5%B0%9A%E8%AA%B2java-day06/</guid>
-      <description>DAY06-數組Array 一維數組  多個相同類型的數據按一定的順序排列的集合
+      <description>數組Array  多個相同類型的數據按一定的順序排列的集合
  結構  數組名 元素 下標aka角標/索引 長度(元素的個數)  特性  數組本身是引用數據類型，其中的元素可以是任何類型 數組的排列是有序的 在記憶體中開闢一整塊連續的空間，數組名引用的是這塊連續空間的首地址 長度確定後就不可更改  聲明與初始化  數組必須初始化才能使用
   方法1-靜態初始化，創建時填入已知的元素內容，由系統判定長度  int[] array1; // 聲明array1 = new int[]{1, 2, 3}; // 靜態初始化:同時對元素賦值了// 也可以合併成int[] array1 = new int[]{1, 2, 3};// 可以再縮寫成 (類型推斷)int[] array1 = {1, 2, 3}; 方法2-動態初始化，創建時填入已知的長度，元素內容為0或空(系統默認，後述)  int[] array3 = new int[3]; // 動態初始化，注意後面的[5]是指長度訪問數組內的元素  沒特別的，一樣從0~長度-1。長度=array.length
- 舉例:array[0]、array[1]&amp;hellip;array[array.</description>
+ 舉例:array[0]、array[1]&amp;hellip;array[array.length-1]</description>
     </item>
     
     <item>
@@ -71,7 +108,7 @@ https://www.zhihu.com/question/22515658/answer/120754062
       <pubDate>Sat, 20 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211120-%E5%B0%9A%E8%AA%B2java-day05/</guid>
-      <description>DAY05-流程控制練習 嵌套循環  就是for中有for，有時候需要多花點時間理解
+      <description>嵌套循環  就是for中有for，有時候需要多花點時間理解
   內層循環整個遍歷完，外層循環才執行一次 假設外層循環要執行m次，內層循環要執行n次。整個跑完內層循環一共執行了m*n次  練習題-印菱形 Scanner scan = new Scanner(System.in);System.out.println(&amp;quot;輸入想印的菱形邊長n=...&amp;quot;);int n = scan.nextInt();// 上半部分(含中間最長邊)for (int i = 1; i &amp;lt;= n; i++) {for (int j = 0; j &amp;lt; n - i; j++) {System.out.print(&amp;quot; &amp;quot;);}for (int k = 0; k &amp;lt; i; k++) {System.out.print(&amp;quot;* &amp;quot;);}System.out.println();}// 下半部分(從最長-1開始)for (int i = 1; i &amp;lt;= n; i++) {for (int j = 0; j &amp;lt; i; j++) {System.</description>
     </item>
     
@@ -81,13 +118,14 @@ https://www.zhihu.com/question/22515658/answer/120754062
       <pubDate>Fri, 19 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211119-%E5%B0%9A%E8%AA%B2java-day04/</guid>
-      <description>DAY04-流程控制 分支控制 if-else  基礎都一樣不多贅述
+      <description>分支控制 if-else  基礎都一樣不多贅述
    特殊情況有人不加{}，這種情境下就近原則且只控制一行(到第一個;為止)
 if (1 == 2)System.out.println(&amp;quot;a&amp;quot;);System.out.println(&amp;quot;b&amp;quot;);System.out.println(&amp;quot;c&amp;quot;);結果為bc  只有單行時可以接else且也會就近選擇
 if (1 == 2)System.out.println(&amp;quot;a&amp;quot;);elseSystem.out.println(&amp;quot;d&amp;quot;);結果為d  多行時直接報錯
 if (1 == 2)System.out.println(&amp;quot;a&amp;quot;);System.out.println(&amp;quot;b&amp;quot;);System.out.println(&amp;quot;c&amp;quot;);else報錯  小結:不加{}的全部拖出去打
   switch-case   結構:
-switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... default: // 預設執行語句 }   如果不加break;就不會跳出，而是會穿透且之下的語句全都執行一遍</description>
+switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... default: // 預設執行語句 }   如果不加break;就不會跳出，而是會穿透且之下的語句全都執行一遍
+  基於上述特性，可以合併使用，舉例:</description>
     </item>
     
     <item>
@@ -96,7 +134,7 @@ switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... d
       <pubDate>Thu, 18 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211118-%E5%B0%9A%E8%AA%B2java-day03/</guid>
-      <description>DAY03-運算符 加減乘除  基本都一樣不再贅述
+      <description>運算符 加減乘除  基本都一樣不再贅述
  % 取餘的規則  結果的符號與被取餘的數符號相同，舉例-12%5=-2、12%-5=2、-12%-5=-2 實際開發中取餘常用來判斷是否能除盡  自增自減的規則  ++a，(前++)先運算後取值，舉例a=2;b=++a;結果a=3;b=3 a++，先取值後運算，舉例a=2;b=a++;結果a=3;b=2 &amp;ndash;a，先運算後取值，舉例a=2;b=&amp;ndash;a;結果a=1;b=1 a&amp;ndash;，先取值後運算，舉例a=2;b=a&amp;ndash;;結果a=1;b=2 自增減不會改變數據類型(但可能會溢位) 不可連用，舉例a++++會報錯  另外+也能用在字符串聯接，舉例&amp;quot;he&amp;quot;+&amp;ldquo;llo&amp;rdquo;=&amp;ldquo;hello&amp;rdquo;
 = 賦值的規則  可以連續賦值，舉例int i1,i2; i1=i2=10; int i3=10,j3=20; +=、-=、*=、/=、%= 不會改變數據類型 面試題n=10; n+=(n++)+(++n); n=? 解: 拆成 n = n + 10 + 12 =32  邏輯運算符  乍看邏輯跟短路結果是一樣，實際使用上差異為短路後的東西就不執行了 舉例: b=false; n=10; b &amp;amp;&amp;amp; (n++&amp;gt;0)=false，但n=10  位運算符   操作的都是整數 &amp;laquo; 向左移一位相當於*2，&amp;raquo;向右移一位相當於/2，有可能溢位   三元運算符  結構: (條件表達式) ? 表達式1 : 表達式2 說明: 條件表達式=boolean，如果是true則執行表達式1，反之執行2 表達式1 與 表達式2 要求一致(至少能裝進同一個類型) 其實就是簡易版的if，可以嵌套使用  優先級   基本原則是從上到下，從左到右，括號優先 自增減、賦值運算、三元運算才從右往左看  </description>
     </item>
@@ -107,7 +145,7 @@ switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... d
       <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211117-%E5%B0%9A%E8%AA%B2java-day02/</guid>
-      <description>DAY02-關鍵字與數據類型 關鍵字  有特殊含意與用途，所有關鍵字都是小寫
+      <description>關鍵字 關鍵字  有特殊含意與用途，所有關鍵字都是小寫
  例如:if、new&amp;hellip;等等，後面都會一一接觸到
 保留字  未來版本可能會用到而保留
  例如:goto、const
@@ -117,7 +155,7 @@ switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... d
   能包含關鍵字但不能純用關鍵字
   嚴格區分大小寫
   不能包含空格
-命名規範  不強制但最好遵守
+標識符的命名規範  不強制但最好遵守
    包名:多單詞所有字母小寫aaabbbccc
   類名、接口名:大駝峰(首字母大寫)AaaBbbCcc
   變量名、方法名:開頭小寫後面首字母大寫(小駝峰)aaaBbbCcc
@@ -125,8 +163,7 @@ switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... d
   命名要有意義，見名知意
   變量(variable)  記憶體中的一個儲存區域，使用的基本單位
   必須先聲明，後使用 作用域在其定義所在的一對{}內，只在其作用域中有效 同一作用域中不可重複  數據類型 基礎數據類型  六種數字類型（四個整數型，兩個浮點型），一種字符類型，還有一種布爾型。
- byte：
- byte數據類型是8位、有符號的，以二進制補碼表示的整數 最小值是-128（-2^7）最大值是127（2^7-1）默認值是0 byte類型用在大型數組中節約空間，主要代替整數，因為byte變量佔用的空間只有int類型的四分之一 例子：byte a = 100，byte b = -50。  short：</description>
+ byte  byte數據類型是8位、有符號的，以二進制補碼表示的整數 最小值是-128（-2^7）最大值是127（2^7-1）默認值是0 byte類型用在大型數組中節約空間，主要代替整數，因為byte變量佔用的空間只有int類型的四分之一 例子：byte a = 100，byte b = -50。  short  short數據類型是16位、有符號的以二進制補碼表示的整數 最小值是-32768（-2^15）最大值是32767（2^15 - 1）默認值是0 Short數據類型也可以像byte那樣節省空間。 一個short變量是int型變量所佔空間的二分之一 例子：short s = 1000，short r = -20000。  int  int數據類型是32位、有符號的以二進制補碼表示的整數 最小值是-2,147,483,648（-2^31）最大值是2,147,483,647（2^31 - 1）默認值是0 一般整型變量默認為int類型 例子：int a = 100000, int b = -200000。  long  long數據類型是64位、有符號的以二進制補碼表示的整數 最小值是-9,223,372,036,854,775,808（-2^63） 最大值是9,223,372,036,854,775,807（2^63 -1） 這種類型主要使用在需要比較大整數的系統上 必須以L(大小都可)結尾，不加自動被當成int 默認值是0L 例子： long a = 100000L，Long b = -200000L。  float  float的儲存結構是1個符號位，8個指數位，23個尾數，符合IEEE 754標準的浮點數 可以看做float只有24位來表示精度，所以int或long轉float可能會有精度損失。 必須以F(大小都可)結尾，不加報錯 默認值是0.</description>
     </item>
     
     <item>
@@ -135,7 +172,7 @@ switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... d
       <pubDate>Tue, 16 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211116-%E5%B0%9A%E8%AA%B2java-day01/</guid>
-      <description>DAY01-認識JAVA、環境配置 常用DOS操作   cd=進入指定目錄
+      <description>認識JAVA、環境配置 常用DOS操作   cd=進入指定目錄
   cd..=回上層
   cd=回到根目錄
   變更硬碟目錄=直接輸入d:

@@ -6,9 +6,301 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Tue, 23 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>channel通道</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/ -&lt;h1 id=&#34;channel通道&#34;&gt;channel通道&lt;/h1&gt;
+&lt;h2 id=&#34;lock-sync與chan基本認識&#34;&gt;lock sync與chan基本認識&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//階乘1-n 把各個數放到map中 用goroutine完成
+var (
+	myMap = make(map[int]int, 10)
+	//聲明一個全局的互斥鎖
+	lock sync.Mutex
+	//來點管道 記得要make初始化才能用
+	intChan chan int = make(chan int, 3)
+
+	//聲明類型為空接口可以接收任意類型
+	allChan chan interface{} = make(chan interface{}, 5)
+	//注意後面沒聲明容量則不給用
+)
+
+type Cat struct {
+	Name string
+	Age  int
+}
+
+func test(n int) {
+	res := 1
+	for i := 1; i &amp;lt;= n; i++ {
+		res = res * i
+	}
+	//把res放進mayMap
+	//加鎖
+	lock.Lock()
+	myMap[n] = res
+	//解鎖
+	lock.Unlock()
+}
+
+func main() {
+	//啟用多個協程
+	for i := 1; i &amp;lt;= 1; i++ {
+		go test(i)
+	}
+	//如果不加鎖concurrent map iteration and map write
+	lock.Lock()
+	for i, v := range myMap {
+		fmt.Printf(&amp;quot;map[%d]=%v\n&amp;quot;, i, v)
+	}
+	lock.Unlock()
+
+	//看看管道
+	fmt.Println(intChan)
+	//出來是一個地址，表示誰要經過這 (當然本身也有一個地址但不重要)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+
+	//向管道寫入數據
+	intChan &amp;lt;- 10
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	num1 := 5
+	intChan &amp;lt;- num1
+	intChan &amp;lt;- 1
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	//intChan &amp;lt;- 12 //超過3個太長報錯
+
+	//從管道取數據
+	var num2 int = &amp;lt;-intChan
+	fmt.Println(num2)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	//先進先出，取完超過一樣報錯
+	num3 := &amp;lt;-intChan
+	fmt.Println(num3)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+
+	//關於allChan
+	allChan &amp;lt;- 10
+	allChan &amp;lt;- &amp;quot;ABC&amp;quot;
+	cat1 := Cat{&amp;quot;小花&amp;quot;, 3}
+	allChan &amp;lt;- cat1
+	//可以亂塞一通
+
+	//想拿到第三個元素 先把兩個推出來
+	&amp;lt;-allChan
+	&amp;lt;-allChan
+
+	newCat := &amp;lt;-allChan //從管道中取出來的cat1
+	fmt.Printf(&amp;quot;類型=%T 值=%v\n&amp;quot;, newCat, newCat)
+	// fmt.Printf(&amp;quot;%v\n&amp;quot;, newCat.Name) //雖然類型一樣但這樣用不通過
+	//必須類型斷言
+	a := newCat.(Cat)
+	fmt.Printf(&amp;quot;%v\n&amp;quot;, a.Name)
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;只讀或寫&#34;&gt;只讀或寫&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//chan可以只讀或只寫
+	// chan1 chan int //可讀可寫
+	var chan2 chan&amp;lt;- int = make(chan int, 3) //只寫
+	chan2 &amp;lt;- 20
+	// num:=&amp;lt;-chan2//報錯
+	fmt.Println(chan2)
+
+	var chan3 &amp;lt;-chan int = make(chan int, 3)
+	num2 := &amp;lt;-chan3
+	fmt.Println(num2)
+	chan3 &amp;lt;- 10 //報錯
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;遍歷chan&#34;&gt;遍歷chan&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//用close關掉channel就不能往內加(但是可以拿出)
+	var intChan chan int = make(chan int, 3)
+	intChan &amp;lt;- 100
+	intChan &amp;lt;- 200
+	close(intChan)
+	// intChan &amp;lt;- 300 //錯誤
+	n1 := &amp;lt;-intChan
+	fmt.Println(n1)
+
+	//遍歷
+	intChan2 := make(chan int, 100)
+	for i := 0; i &amp;lt; 100; i++ {
+		intChan2 &amp;lt;- i * 2 //放100個數據(2,4,6...進去)
+	}
+	//得用for:=range用一般for遍歷會報錯
+	//如果已經close遍歷完就會自動停止，如果沒有先關掉會deadlock
+	close(intChan2)
+	for v := range intChan2 {
+		fmt.Println(v)
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;阻塞&#34;&gt;阻塞&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func writeData(intChan chan int) {
+	for i := 1; i &amp;lt;= 50; i++ {
+		intChan &amp;lt;- i
+		fmt.Printf(&amp;quot;writeData=%v\n&amp;quot;, i)
+		// time.Sleep(time.Second / 1000)
+	}
+	close(intChan) //寫完就關
+}
+func readData(intChan chan int, exitChan chan bool) {
+	for {
+		v, ok := &amp;lt;-intChan
+		// time.Sleep(time.Second / 1000)
+		if !ok {
+			break
+		}
+		fmt.Printf(&amp;quot;readData讀取到數據=%v\n&amp;quot;, v)
+	}
+	//讀取完=任務完成 其實這裡不管對exitChan做啥都無所謂，重點是有調用他就能阻塞main
+	exitChan &amp;lt;- true
+	close(exitChan)
+}
+
+func main() {
+
+	intChan := make(chan int, 5)
+	//即使管道小 寫的慢讀得快或相反，他會排隊，重點不要阻塞死鎖就能繼續
+	exitChan := make(chan bool, 1)
+
+	go writeData(intChan)
+	go readData(intChan, exitChan)
+	if &amp;lt;-exitChan { //重點就是這個判斷調用到一個管道有跨到子函數的就能阻塞住main
+		fmt.Println(&amp;quot;任務完成&amp;quot;)
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;用select解決阻塞&#34;&gt;用select解決阻塞&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func sayH() {
+	for i := 0; i &amp;lt; 10; i++ {
+		time.Sleep(time.Second / 10)
+		fmt.Println(&amp;quot;hello&amp;quot;)
+	}
+}
+
+func test() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(&amp;quot;test錯誤&amp;quot;, err)
+		}
+	}()
+	myMap := make(map[int]string)
+	myMap[0] = &amp;quot;我家&amp;quot;
+	fmt.Println(myMap)
+}
+
+func main() {
+
+	go sayH()
+	go test()
+	fmt.Println(&amp;quot;hellom&amp;quot;)
+
+	intChan := make(chan int, 10)
+	for i := 0; i &amp;lt; 10; i++ {
+		intChan &amp;lt;- i
+	}
+
+	stringChan := make(chan string, 5)
+	for i := 0; i &amp;lt; 5; i++ {
+		stringChan &amp;lt;- &amp;quot;hello&amp;quot; + fmt.Sprintf(&amp;quot;%d&amp;quot;, i)
+	}
+	//傳統方法遍歷，如果不關閉會阻塞 就導致deadlock
+	//實際開發不好確定哪時候關閉，就用select解決
+	for {
+		select {
+		//就算沒關閉，只要阻塞他就往其他case移動
+		case v := &amp;lt;-intChan:
+			fmt.Printf(&amp;quot;intChan取出%d\n&amp;quot;, v)
+		case v := &amp;lt;-stringChan:
+			fmt.Printf(&amp;quot;stringChan取出%s\n&amp;quot;, v)
+		default:
+			fmt.Println(&amp;quot;取完了&amp;quot;)
+			return
+		}
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>const常量</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/ -&lt;h1 id=&#34;const常量&#34;&gt;const常量&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;常量 聲明時必須賦值、不能修改、只能是bool、數值、string，賦值需是一個確定的值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	const tax int = 10
+	const x = 9 / 3
+	// const c = 9 / a //因為a可能是一個變量所以這樣不行
+	// var a int = 3
+	fmt.Println(tax, x)
+
+	const (
+		a = iota //表示a=0
+		b        //b=a+1
+		c        //c=b+1
+	)
+	fmt.Println(a, b, c)
+
+	const (
+		d = iota
+		e
+		f, g = iota, iota
+	)
+	fmt.Println(d, e, f, g)
+
+	//其他程式語言常量會用全大寫，go中沒限制，且一樣用首字母大小來控制使用範圍
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>defer臨走前啟用</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/ -&lt;h1 id=&#34;defer臨走前啟用&#34;&gt;defer臨走前啟用&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;退出函數前才執行&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func sum(n1, n2 int) int {
+	defer fmt.Println(&amp;quot;ok1&amp;quot;, n1)
+	defer fmt.Println(&amp;quot;ok2&amp;quot;, n2)
+	//defer棧先入後出
+	n1++
+	n2++
+	res := n1 + n2
+	fmt.Println(&amp;quot;ok3 res=&amp;quot;, res)
+	return res
+
+}
+func main() {
+	res := sum(10, 20)
+	fmt.Println(&amp;quot;res=&amp;quot;, res)
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/ - yoziming</description>
+        </item>
     
     
     
@@ -787,225 +1079,6 @@ func main() {
 }
 
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-reflect%E5%8F%8D%E5%B0%84/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>RPC</title>
-        <link>https://yoziming.github.io/post/210927-rpc/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210927-rpc/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210927-rpc/ -&lt;h3 id=&#34;server&#34;&gt;server&lt;/h3&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/ 用接口，讓服務端註冊RPC的時候，就能確保他合法
-
-type World struct{}
-
-func (w *World) HelloWorld(name string, resp *string) error {
-	*resp = name + &amp;quot;你好&amp;quot;
-	return nil
-	// 如果這個return的返回值不為空，
-	// 那無論傳出的參數是否有值，服務端都不會給東西
-	// (就你給你error)
-}
-
-// 用接口，讓服務端註冊RPC的時候，就能確保他合法
-type MyInerface interface {
-	HelloWorld(string *string) error
-}
-
-// 調用方法時，給i傳參，參數是實現HelloWorld方法的對象
-func RegsiterService(i MyInerface) {
-	rpc.RegisterName(&amp;quot;hello&amp;quot;, i)
-}
-func main() {
-	// 1.註冊RPC服務 綁定對象方法
-	err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World))
-	if err != nil {
-		fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err)
-	}
-
-	// 2.開始監聽
-	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
-	if err != nil {
-		fmt.Println(&amp;quot;listener failed&amp;quot;, err)
-		return
-	}
-	fmt.Println(&amp;quot;server開始監聽...&amp;quot;)
-	defer listener.Close()
-	// 3.建立連接
-	conn, err := listener.Accept()
-	if err != nil {
-		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
-		return
-	}
-	fmt.Println(&amp;quot;連接成功&amp;quot;)
-	defer conn.Close()
-	// 4.綁訂服務
-	jsonrpc.ServeConn(conn)
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;client&#34;&gt;client&lt;/h3&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
-	&amp;quot;fmt&amp;quot;
-	&amp;quot;net/rpc&amp;quot;
-	&amp;quot;net/rpc/jsonrpc&amp;quot;
-)
-
-func main01() {
-	// 1.用RPC連接服務器
-	// conn, err := rpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
-	conn, err := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
-	if err != nil {
-		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
-		return
-	}
-	defer conn.Close()
-	// 2.遠程調用函數
-	var reply = &amp;quot;&amp;quot;
-	err = conn.Call(&amp;quot;hello.HelloWorld&amp;quot;, &amp;quot;張三&amp;quot;, &amp;amp;reply)
-	if err != nil {
-		fmt.Println(&amp;quot;Call failed&amp;quot;, err)
-		return
-	}
-	fmt.Println(reply)
-}
-
-func main() {
-	// myClient := InitClient(&amp;quot;127.0.0.1:8899&amp;quot;)
-	// var resp string
-	// err := myClient.HelloWorld(&amp;quot;李四&amp;quot;, &amp;amp;resp)
-	// if err != nil {
-	// 	fmt.Println(&amp;quot;HelloWorld failed&amp;quot;, err)
-	// 	return
-	// }
-	// fmt.Println(resp, err)
-}
-
-type MyClient struct {
-	c *rpc.Client
-}
-
-// 把c初始化下面才能調用
-// func InitClient(addr string) {
-// 	conn, _ := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, addr)
-// 	return MyClient{c: conn}
-// }
-
-func (m *MyClient) HelloWorld(a string, b *string) error {
-	return m.c.Call(&amp;quot;hello.HelloWorld&amp;quot;, a, b)
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-rpc/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>Split切分字串</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ -&lt;h1 id=&#34;split切分字串&#34;&gt;Split切分字串&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
-func Split(str, sep string) []string {
-	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
-	var ret = make([]string, 0, strings.Count(str, sep)+1)
-	index := strings.Index(str, sep)
-	for index &amp;gt;= 0 {
-		ret = append(ret, str[:index])
-		str = str[index+len(sep):]
-		index = strings.Index(str, sep)
-	}
-	ret = append(ret, str)
-	return ret
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>Test單元測試</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ -&lt;h1 id=&#34;test單元測試&#34;&gt;Test單元測試&lt;/h1&gt;
-&lt;ol&gt;
-&lt;li&gt;單元測試目的是驗證程式碼(例如一個方法)本身的邏輯是否正確&lt;/li&gt;
-&lt;li&gt;單元測試應排除外部依賴（Database、File System IO）&lt;/li&gt;
-&lt;li&gt;單元測試應該是隨時隨地都要能正確執行&lt;/li&gt;
-&lt;li&gt;單元測試的標題需要具備好的可讀性、明確、標題與測試的內容精確吻合
-例：「public void GetTest_帶入會員ID＿應回該ID搜尋到的會員資料DTO」，盡量符合：受測方法＿傳入參數意義＿期望得到的結果&lt;/li&gt;
-&lt;li&gt;一個測試只應該關注一件事情，如果受測目標有多種狀況，應該分成好幾個測試去涵蓋所有邏輯&lt;/li&gt;
-&lt;/ol&gt;
-&lt;blockquote&gt;
-&lt;p&gt;3A原則&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;Arrange = 準備受測物件、參數、預期結果&lt;/li&gt;
-&lt;li&gt;Act = 執行受測方法&lt;/li&gt;
-&lt;li&gt;Assert = 驗證執行結果與預測結果是否一致&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;calgo&#34;&gt;cal.go&lt;/h4&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func addUpper(n int) int {
-	res := 0
-	for i := 0; i &amp;lt;= n; i++ {
-		res = +i
-	}
-	return res
-}
-
-func getSub(n1, n2 int) int {
-	return n1 - n2
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;cal_testgo&#34;&gt;cal_test.go&lt;/h4&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TestAddUpper(t *testing.T) {
-	//調用
-	res := addUpper(10)
-	if res != 55 {
-		t.Fatalf(&amp;quot;AddUpper(10)執行錯誤 期望=%v 實際=%v&amp;quot;, 55, res)
-	}
-	t.Logf(&amp;quot;執行正確&amp;quot;)
-}
-
-func TestHello(t *testing.T) {
-	fmt.Println(&amp;quot;hello&amp;quot;)
-}
-
-func TestGetSub(t *testing.T) {
-	res2 := getSub(5, 10)
-	if res2 != 10 {
-		t.Fatalf(&amp;quot;getSub(5, 10)執行錯誤 期望=%v 實際=%v&amp;quot;, 10, res2)
-	}
-	t.Logf(&amp;quot;執行正確&amp;quot;)
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;測性能&#34;&gt;測性能&lt;/h2&gt;
-&lt;h4 id=&#34;splitgo&#34;&gt;Split.go&lt;/h4&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
-func Split(str, sep string) []string {
-	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
-	var ret = make([]string, 0, strings.Count(str, sep)+1)
-	index := strings.Index(str, sep)
-	for index &amp;gt;= 0 {
-		ret = append(ret, str[:index])
-		str = str[index+len(sep):]
-		index = strings.Index(str, sep)
-	}
-	ret = append(ret, str)
-	return ret
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;split_testgo&#34;&gt;Split_test.go&lt;/h4&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func BenchmarkSplit(b *testing.B) {
-	for i := 0; i &amp;lt; b.N; i++ {
-		Split(&amp;quot;a:b:c&amp;quot;, &amp;quot;:&amp;quot;)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ - yoziming</description>
         </item>
     
     

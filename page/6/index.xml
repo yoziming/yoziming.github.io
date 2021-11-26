@@ -6,9 +6,228 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>yoziming</copyright>
-    <lastBuildDate>Tue, 23 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Nov 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>RPC</title>
+        <link>https://yoziming.github.io/post/210927-rpc/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210927-rpc/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210927-rpc/ -&lt;h3 id=&#34;server&#34;&gt;server&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/ 用接口，讓服務端註冊RPC的時候，就能確保他合法
+
+type World struct{}
+
+func (w *World) HelloWorld(name string, resp *string) error {
+	*resp = name + &amp;quot;你好&amp;quot;
+	return nil
+	// 如果這個return的返回值不為空，
+	// 那無論傳出的參數是否有值，服務端都不會給東西
+	// (就你給你error)
+}
+
+// 用接口，讓服務端註冊RPC的時候，就能確保他合法
+type MyInerface interface {
+	HelloWorld(string *string) error
+}
+
+// 調用方法時，給i傳參，參數是實現HelloWorld方法的對象
+func RegsiterService(i MyInerface) {
+	rpc.RegisterName(&amp;quot;hello&amp;quot;, i)
+}
+func main() {
+	// 1.註冊RPC服務 綁定對象方法
+	err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World))
+	if err != nil {
+		fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err)
+	}
+
+	// 2.開始監聽
+	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;listener failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;server開始監聽...&amp;quot;)
+	defer listener.Close()
+	// 3.建立連接
+	conn, err := listener.Accept()
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;連接成功&amp;quot;)
+	defer conn.Close()
+	// 4.綁訂服務
+	jsonrpc.ServeConn(conn)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;client&#34;&gt;client&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;net/rpc&amp;quot;
+	&amp;quot;net/rpc/jsonrpc&amp;quot;
+)
+
+func main01() {
+	// 1.用RPC連接服務器
+	// conn, err := rpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	conn, err := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	defer conn.Close()
+	// 2.遠程調用函數
+	var reply = &amp;quot;&amp;quot;
+	err = conn.Call(&amp;quot;hello.HelloWorld&amp;quot;, &amp;quot;張三&amp;quot;, &amp;amp;reply)
+	if err != nil {
+		fmt.Println(&amp;quot;Call failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(reply)
+}
+
+func main() {
+	// myClient := InitClient(&amp;quot;127.0.0.1:8899&amp;quot;)
+	// var resp string
+	// err := myClient.HelloWorld(&amp;quot;李四&amp;quot;, &amp;amp;resp)
+	// if err != nil {
+	// 	fmt.Println(&amp;quot;HelloWorld failed&amp;quot;, err)
+	// 	return
+	// }
+	// fmt.Println(resp, err)
+}
+
+type MyClient struct {
+	c *rpc.Client
+}
+
+// 把c初始化下面才能調用
+// func InitClient(addr string) {
+// 	conn, _ := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, addr)
+// 	return MyClient{c: conn}
+// }
+
+func (m *MyClient) HelloWorld(a string, b *string) error {
+	return m.c.Call(&amp;quot;hello.HelloWorld&amp;quot;, a, b)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-rpc/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Split切分字串</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ -&lt;h1 id=&#34;split切分字串&#34;&gt;Split切分字串&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
+func Split(str, sep string) []string {
+	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
+	var ret = make([]string, 0, strings.Count(str, sep)+1)
+	index := strings.Index(str, sep)
+	for index &amp;gt;= 0 {
+		ret = append(ret, str[:index])
+		str = str[index+len(sep):]
+		index = strings.Index(str, sep)
+	}
+	ret = append(ret, str)
+	return ret
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Test單元測試</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ -&lt;h1 id=&#34;test單元測試&#34;&gt;Test單元測試&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;單元測試目的是驗證程式碼(例如一個方法)本身的邏輯是否正確&lt;/li&gt;
+&lt;li&gt;單元測試應排除外部依賴（Database、File System IO）&lt;/li&gt;
+&lt;li&gt;單元測試應該是隨時隨地都要能正確執行&lt;/li&gt;
+&lt;li&gt;單元測試的標題需要具備好的可讀性、明確、標題與測試的內容精確吻合
+例：「public void GetTest_帶入會員ID＿應回該ID搜尋到的會員資料DTO」，盡量符合：受測方法＿傳入參數意義＿期望得到的結果&lt;/li&gt;
+&lt;li&gt;一個測試只應該關注一件事情，如果受測目標有多種狀況，應該分成好幾個測試去涵蓋所有邏輯&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;3A原則&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Arrange = 準備受測物件、參數、預期結果&lt;/li&gt;
+&lt;li&gt;Act = 執行受測方法&lt;/li&gt;
+&lt;li&gt;Assert = 驗證執行結果與預測結果是否一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;calgo&#34;&gt;cal.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func addUpper(n int) int {
+	res := 0
+	for i := 0; i &amp;lt;= n; i++ {
+		res = +i
+	}
+	return res
+}
+
+func getSub(n1, n2 int) int {
+	return n1 - n2
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;cal_testgo&#34;&gt;cal_test.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TestAddUpper(t *testing.T) {
+	//調用
+	res := addUpper(10)
+	if res != 55 {
+		t.Fatalf(&amp;quot;AddUpper(10)執行錯誤 期望=%v 實際=%v&amp;quot;, 55, res)
+	}
+	t.Logf(&amp;quot;執行正確&amp;quot;)
+}
+
+func TestHello(t *testing.T) {
+	fmt.Println(&amp;quot;hello&amp;quot;)
+}
+
+func TestGetSub(t *testing.T) {
+	res2 := getSub(5, 10)
+	if res2 != 10 {
+		t.Fatalf(&amp;quot;getSub(5, 10)執行錯誤 期望=%v 實際=%v&amp;quot;, 10, res2)
+	}
+	t.Logf(&amp;quot;執行正確&amp;quot;)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;測性能&#34;&gt;測性能&lt;/h2&gt;
+&lt;h4 id=&#34;splitgo&#34;&gt;Split.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
+func Split(str, sep string) []string {
+	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
+	var ret = make([]string, 0, strings.Count(str, sep)+1)
+	index := strings.Index(str, sep)
+	for index &amp;gt;= 0 {
+		ret = append(ret, str[:index])
+		str = str[index+len(sep):]
+		index = strings.Index(str, sep)
+	}
+	ret = append(ret, str)
+	return ret
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;split_testgo&#34;&gt;Split_test.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func BenchmarkSplit(b *testing.B) {
+	for i := 0; i &amp;lt; b.N; i++ {
+		Split(&amp;quot;a:b:c&amp;quot;, &amp;quot;:&amp;quot;)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ - yoziming</description>
+        </item>
     
     
     
@@ -491,265 +710,6 @@ func main() {
 
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B8%E8%88%87%E9%96%89%E5%8C%85/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>命令行參數Args&amp;Flag</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ -&lt;h1 id=&#34;命令行參數argsflag&#34;&gt;命令行參數Args&amp;amp;Flag&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	fmt.Println(&amp;quot;命令行參數有&amp;quot;, len(os.Args))
-	//遍歷os.Args切片 得到所有輸入的參數值
-	for i, v := range os.Args {
-		fmt.Printf(&amp;quot;args[%v]=%v\n&amp;quot;, i, v)
-	}
-	fmt.Println(&amp;quot;=====================&amp;quot;)
-
-	//flag方法 先定義幾個變量用於接收參數值
-	var user string
-	var pwd string
-	var host string
-	var port int
-
-	flag.StringVar(&amp;amp;user, &amp;quot;u&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;帳號 預設為空&amp;quot;)
-	flag.StringVar(&amp;amp;pwd, &amp;quot;pwd&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;密碼 預設為空&amp;quot;)
-	flag.StringVar(&amp;amp;host, &amp;quot;h&amp;quot;, &amp;quot;localhost&amp;quot;, &amp;quot;主機 預設為localhost&amp;quot;)
-	flag.IntVar(&amp;amp;port, &amp;quot;port&amp;quot;, 3306, &amp;quot;端口 預設為3306&amp;quot;)
-	//前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設
-
-	flag.Parse() //這個一定要調用
-
-	//輸出結果
-	fmt.Printf(&amp;quot;user=%v pwd=%v host=%v port=%v&amp;quot;,
-		user, pwd, host, port)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%83%E6%95%B8argsflag/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>字串轉換常用函數</title>
-        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%AD%97%E4%B8%B2%E8%BD%89%E6%8F%9B%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B8/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%AD%97%E4%B8%B2%E8%BD%89%E6%8F%9B%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B8/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%AD%97%E4%B8%B2%E8%BD%89%E6%8F%9B%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B8/ -&lt;h1 id=&#34;字串轉換常用函數&#34;&gt;字串轉換常用函數&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
-var str string = &amp;quot;abc123中文&amp;quot;
-
-func main() {
-	fmt.Println(&amp;quot;長度=&amp;quot;, len(str))
-	r := []rune(str)
-	for i := 0; i &amp;lt; len(r); i++ {
-		fmt.Printf(&amp;quot;遍歷=%q\n&amp;quot;, r[i])
-	}
-	//轉成整數 Atoi
-	n, err := strconv.Atoi(&amp;quot;5421&amp;quot;)
-	if err != nil {
-		fmt.Println(&amp;quot;錯誤,err&amp;quot;)
-	} else {
-		fmt.Println(&amp;quot;轉換成&amp;quot;, n)
-		//整數轉字串
-		str2 := strconv.Itoa(654231)
-		fmt.Printf(&amp;quot;類型是%T\n&amp;quot;, str2)
-		//轉byte
-		var bytes = []byte(&amp;quot;hello&amp;quot;)
-		fmt.Printf(&amp;quot;bytes=%v \n&amp;quot;, bytes)
-		//byte轉回字串
-		str3 := string([]byte{97, 98, 99})
-		fmt.Printf(&amp;quot;str3=%v \n&amp;quot;, str3)
-		//10進制轉2,8,16返回字串
-		str4 := strconv.FormatInt(123, 2)
-		fmt.Printf(&amp;quot;str4類型是%T,值=%v \n&amp;quot;, str4, str4)
-		//查找子串
-		b := strings.Contains(&amp;quot;seafood&amp;quot;, &amp;quot;foo&amp;quot;)
-		fmt.Printf(&amp;quot;b類型是%T,值=%v \n&amp;quot;, b, b)
-		//統計符合數量
-		c := strings.Count(&amp;quot;sgfjklewshfrrrrrr&amp;quot;, &amp;quot;r&amp;quot;)
-		fmt.Printf(&amp;quot;c類型是%T,值=%v \n&amp;quot;, c, c)
-		//不分大小寫 (因為==是分的)
-		d := strings.EqualFold(&amp;quot;ABCd&amp;quot;, &amp;quot;aBcD&amp;quot;)
-		fmt.Printf(&amp;quot;d類型是%T,值=%v \n&amp;quot;, d, d)
-		//查找第一次出現的子串位置
-		i := strings.Index(&amp;quot;sdaf654abc&amp;quot;, &amp;quot;a&amp;quot;)
-		fmt.Printf(&amp;quot;i類型是%T,值=%v \n&amp;quot;, i, i)
-		//查找最後出現的子串位置
-		l := strings.LastIndex(&amp;quot;sdaf654abc&amp;quot;, &amp;quot;a&amp;quot;)
-		fmt.Printf(&amp;quot;l類型是%T,值=%v \n&amp;quot;, l, l)
-		//替換文字
-		str5 := &amp;quot;瘟疫之地有瘟疫,瘟疫病人身上有瘟疫&amp;quot;
-		r := strings.Replace(str5, &amp;quot;瘟疫&amp;quot;, &amp;quot;痔瘡&amp;quot;, 2)
-		fmt.Println(&amp;quot;原句&amp;quot;, str5)
-		fmt.Printf(&amp;quot;r類型是%T,值=%v \n&amp;quot;, r, r)
-		//依照指定的字串分割成切片
-		s := strings.Split(&amp;quot;hello,world,ok&amp;quot;, &amp;quot;,&amp;quot;)
-		fmt.Printf(&amp;quot;s類型是%T,值=%v \n&amp;quot;, s, s)
-		//大小寫轉換
-		cap := &amp;quot;DDDDssss&amp;quot;
-		cap = strings.ToLower(cap)
-		fmt.Println(cap)
-		cap = strings.ToUpper(cap)
-		fmt.Println(cap)
-		//去掉左右兩邊空格
-		sp := strings.TrimSpace(&amp;quot;  KJHF JKLH LKJ  ..   &amp;quot;)
-		fmt.Println(sp)
-		//去掉左右指定 //TrimLeft // TrimRight
-		lr := strings.Trim(&amp;quot;!!KJHFJHG!!!&amp;quot;, &amp;quot;!&amp;quot;)
-		fmt.Println(lr)
-		//判斷開頭或結束  //HasSuffix
-		s6 := strings.HasPrefix(&amp;quot;ftp://192.164.2.1&amp;quot;, &amp;quot;ftp&amp;quot;)
-		fmt.Printf(&amp;quot;s6類型是%T,值=%v \n&amp;quot;, s6, s6)
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%AD%97%E4%B8%B2%E8%BD%89%E6%8F%9B%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B8/ - yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>實作練習-ini解析器</title>
-        <link>https://yoziming.github.io/post/210820-%E5%B0%9A%E8%AA%B2go-%E5%AF%A6%E4%BD%9C%E7%B7%B4%E7%BF%92-ini%E8%A7%A3%E6%9E%90%E5%99%A8/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210820-%E5%B0%9A%E8%AA%B2go-%E5%AF%A6%E4%BD%9C%E7%B7%B4%E7%BF%92-ini%E8%A7%A3%E6%9E%90%E5%99%A8/</guid>
-        <description>yoziming&#39; Blog https://yoziming.github.io/post/210820-%E5%B0%9A%E8%AA%B2go-%E5%AF%A6%E4%BD%9C%E7%B7%B4%E7%BF%92-ini%E8%A7%A3%E6%9E%90%E5%99%A8/ -&lt;h1 id=&#34;heading&#34;&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;用來解析.ini文檔格式是否有問題&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
-
-import (
-	&amp;quot;fmt&amp;quot;
-	&amp;quot;io/ioutil&amp;quot;
-	&amp;quot;reflect&amp;quot;
-	&amp;quot;strings&amp;quot;
-)
-
-type RedisConfig struct {
-	Host     string `ini:&amp;quot;host&amp;quot;`
-	Port     int    `ini:&amp;quot;port&amp;quot;`
-	Password string `ini:&amp;quot;password&amp;quot;`
-	Database int    `ini:&amp;quot;database&amp;quot;`
-}
-type MysqlConfig struct {
-	Address  string `ini:&amp;quot;address&amp;quot;`
-	Port     int    `ini:&amp;quot;port&amp;quot;`
-	Password string `ini:&amp;quot;password&amp;quot;`
-	Username string `ini:&amp;quot;username&amp;quot;`
-}
-
-type Config struct {
-	MysqlConfig `ini:&amp;quot;mysql&amp;quot;`
-	RedisConfig `ini:&amp;quot;redis&amp;quot;`
-}
-
-func loadIni(fileName string, data interface{}) (err error) {
-	// 0. 參數校驗
-	// 0.1 傳來的data必須是結構體類型指針
-	t := reflect.TypeOf(data)
-	// fmt.Println(t.Kind())
-	if t.Kind() != reflect.Ptr {
-		err = fmt.Errorf(&amp;quot;傳來的data必須是指針&amp;quot;)
-		return
-	}
-	if t.Elem().Kind() != reflect.Struct {
-		err = fmt.Errorf(&amp;quot;傳來的data必須是結構體類型指針&amp;quot;)
-		return
-	}
-	// 1. 讀取文件~&amp;gt;Byte類型
-	b, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		return
-	}
-	//轉成字符串
-	lineSlice := strings.Split(string(b), &amp;quot;\r\n&amp;quot;)
-	// fmt.Println(lineSlice)
-	// 2. 一行一行讀取數據
-	var structName string
-	for idx, line := range lineSlice {
-		line = strings.TrimSpace(line) //去除多餘空格
-		// 2.1 如果是註釋就跳過
-		if strings.HasPrefix(line, &amp;quot;;&amp;quot;) || strings.HasPrefix(line, &amp;quot;#&amp;quot;) {
-			continue
-		}
-		//純空行就跳過
-		if len(line) == 0 {
-			continue
-		}
-		// 2.2 如果是[]開頭表示是節
-		if strings.HasPrefix(line, &amp;quot;[&amp;quot;) {
-			if line[0] != &#39;[&#39; || line[len(line)-1] != &#39;]&#39; {
-				err = fmt.Errorf(&amp;quot;line:%d syntax error&amp;quot;, idx+1)
-				return
-			}
-			//去掉這行的首尾跟空格拿到內容
-			section := strings.TrimSpace(line[1 : len(line)-1])
-			if len(section) == 0 {
-				err = fmt.Errorf(&amp;quot;line:%d syntax error&amp;quot;, idx+1)
-				return
-			}
-			//根據section去data反射對應的結構體
-			for i := 0; i &amp;lt; t.Elem().NumField(); i++ {
-				field := t.Elem().Field(i)
-				if section == field.Tag.Get(&amp;quot;ini&amp;quot;) {
-					//說明找到了，把字段名記下
-					structName = field.Name
-					fmt.Println(section, structName)
-				}
-
-			}
-
-		} else {
-			// 2.3 剩下的就是分割的鍵值對
-			//先排除異常的行
-			if strings.Index(line, &amp;quot;=&amp;quot;) == -1 || strings.HasPrefix(line, &amp;quot;=&amp;quot;) {
-				err = fmt.Errorf(&amp;quot;line:%d syntax error&amp;quot;, idx+1)
-				return
-			}
-			index := strings.Index(line, &amp;quot;=&amp;quot;)
-			key := strings.TrimSpace(line[:index])
-			// value := strings.TrimSpace(line[:index+1])
-			v := reflect.ValueOf(data)
-			sValue := v.Elem().FieldByName(structName) //拿到嵌套結構體的值信息
-			sType := sValue.Type()                     //拿到嵌套結構體的類型信息
-			if sType.Kind() != reflect.Struct {
-				err = fmt.Errorf(&amp;quot;%s應該為一個結構體&amp;quot;, structName)
-				return
-			}
-			var fieldName string
-			//遍歷嵌套結構體每一個字段 判斷tag是否=key
-			for i := 0; i &amp;lt; sValue.NumField(); i++ {
-				field := sType.Field(i)
-				if field.Tag.Get(&amp;quot;ini&amp;quot;) == key {
-					fieldName = field.Name
-					break
-				}
-			}
-			//根據fieldName取出字段賦值
-			fileObj := sValue.FieldByName(fieldName)
-			fmt.Println(fieldName, fileObj)
-		}
-
-	}
-	return
-}
-
-func main() {
-	var cfg Config
-	err := loadIni(&amp;quot;C:/config.ini&amp;quot;, &amp;amp;cfg)
-	if err != nil {
-		panic(err)
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210820-%E5%B0%9A%E8%AA%B2go-%E5%AF%A6%E4%BD%9C%E7%B7%B4%E7%BF%92-ini%E8%A7%A3%E6%9E%90%E5%99%A8/ - yoziming</description>
         </item>
     
     
