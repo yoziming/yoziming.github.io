@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>尚硅谷JAVA基礎課-DAY13筆記</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="多態-instanceof、object類、包裝類">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="尚硅谷JAVA基礎課-DAY13筆記" />
+<meta property="og:description" content="多態-instanceof、object類、包裝類" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211128-%E5%B0%9A%E8%AA%B2java-day13/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-28T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="尚硅谷JAVA基礎課-DAY13筆記"/>
+<meta name="twitter:description" content="多態-instanceof、object類、包裝類"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            yoziming&#39; Blog
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                文章📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分類📌
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                歸檔📃
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於👋
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e6%85%8b%e6%80%a7" onclick="onNavClick(`#多態性-nav`)" id="多態性-nav">
+									多態性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e5%be%a9%e7%bf%92" onclick="onNavClick(`#小復習-nav`)" id="小復習-nav">
+									小復習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97instanceof" onclick="onNavClick(`#關鍵字instanceof-nav`)" id="關鍵字instanceof-nav">
+									關鍵字instanceof
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e6%8f%90" onclick="onNavClick(`#前提-nav`)" id="前提-nav">
+									前提
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8instanceof" onclick="onNavClick(`#使用instanceof-nav`)" id="使用instanceof-nav">
+									使用instanceof
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%b0%e9%9a%aa%e9%9d%a2%e8%a9%a6%e9%a1%8c" onclick="onNavClick(`#陰險面試題-nav`)" id="陰險面試題-nav">
+									陰險面試題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#object%e9%a1%9e" onclick="onNavClick(`#object類-nav`)" id="object類-nav">
+									Object類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%81%8b%e7%ae%97%e7%ac%a6" onclick="onNavClick(`#運算符-nav`)" id="運算符-nav">
+									運算符&#34;==&#34;
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#equals" onclick="onNavClick(`#equals-nav`)" id="equals-nav">
+									equals
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c%e8%88%87equals%e7%9a%84%e5%8d%80%e5%88%a5" onclick="onNavClick(`#面試題與equals的區別-nav`)" id="面試題與equals的區別-nav">
+									面試題:==與equals()的區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#tostring" onclick="onNavClick(`#tostring-nav`)" id="tostring-nav">
+									toString
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%85%e8%a3%9d%e9%a1%9e" onclick="onNavClick(`#包裝類-nav`)" id="包裝類-nav">
+									包裝類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c-1" onclick="onNavClick(`#面試題-1-nav`)" id="面試題-1-nav">
+									面試題-1
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c-2" onclick="onNavClick(`#面試題-2-nav`)" id="面試題-2-nav">
+									面試題-2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92%e9%a1%8c-vector%e5%8f%af%e8%ae%8a%e9%95%b7%e5%ba%a6%e5%ae%b9%e5%99%a8" onclick="onNavClick(`#練習題-vector可變長度容器-nav`)" id="練習題-vector可變長度容器-nav">
+									練習題-Vector可變長度容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    文章📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分類📌
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    歸檔📃
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於👋
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e6%85%8b%e6%80%a7" onclick="onNavClick(`#多態性-nav`)" id="多態性-nav">
+									多態性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e5%be%a9%e7%bf%92" onclick="onNavClick(`#小復習-nav`)" id="小復習-nav">
+									小復習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97instanceof" onclick="onNavClick(`#關鍵字instanceof-nav`)" id="關鍵字instanceof-nav">
+									關鍵字instanceof
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e6%8f%90" onclick="onNavClick(`#前提-nav`)" id="前提-nav">
+									前提
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8instanceof" onclick="onNavClick(`#使用instanceof-nav`)" id="使用instanceof-nav">
+									使用instanceof
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%b0%e9%9a%aa%e9%9d%a2%e8%a9%a6%e9%a1%8c" onclick="onNavClick(`#陰險面試題-nav`)" id="陰險面試題-nav">
+									陰險面試題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#object%e9%a1%9e" onclick="onNavClick(`#object類-nav`)" id="object類-nav">
+									Object類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%81%8b%e7%ae%97%e7%ac%a6" onclick="onNavClick(`#運算符-nav`)" id="運算符-nav">
+									運算符&#34;==&#34;
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#equals" onclick="onNavClick(`#equals-nav`)" id="equals-nav">
+									equals
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c%e8%88%87equals%e7%9a%84%e5%8d%80%e5%88%a5" onclick="onNavClick(`#面試題與equals的區別-nav`)" id="面試題與equals的區別-nav">
+									面試題:==與equals()的區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#tostring" onclick="onNavClick(`#tostring-nav`)" id="tostring-nav">
+									toString
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%85%e8%a3%9d%e9%a1%9e" onclick="onNavClick(`#包裝類-nav`)" id="包裝類-nav">
+									包裝類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c-1" onclick="onNavClick(`#面試題-1-nav`)" id="面試題-1-nav">
+									面試題-1
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%a2%e8%a9%a6%e9%a1%8c-2" onclick="onNavClick(`#面試題-2-nav`)" id="面試題-2-nav">
+									面試題-2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92%e9%a1%8c-vector%e5%8f%af%e8%ae%8a%e9%95%b7%e5%ba%a6%e5%ae%b9%e5%99%a8" onclick="onNavClick(`#練習題-vector可變長度容器-nav`)" id="練習題-vector可變長度容器-nav">
+									練習題-Vector可變長度容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            yoziming&#39; Blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">yoziming&#39; Blog</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/notepad-coffee_640.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    尚硅谷JAVA基礎課-DAY13筆記
+                    
+                    <div class="post-subtitle">
+                        多態-instanceof、object類、包裝類
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-28 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98">JAVA自學筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">JAVA</a>
+                                &nbsp;
+                            
+                                <a href="/tags/%E5%B0%9A%E7%A1%85%E8%B0%B7">尚硅谷</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="多態性">多態性</h1>
+<blockquote>
+<p>類似go接口的概念，就是為了讓子類能調用父類的方法</p>
+<p>白話:為了實現代碼的通用性</p>
+</blockquote>
+<ul>
+<li>
+<p>一個事物的多種形態</p>
+</li>
+<li>
+<p>父類的引用指向子類的物件(子類的物件賦給父類的引用)，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Father obj = <span style="color:#8b008b;font-weight:bold">new</span> Child();
+</code></pre></div></li>
+<li>
+<p>使用:<strong>虛擬方法調用</strong>，編譯期只能調用父類中聲明的方法，但運行時執行的是子類重寫父類的方法。多態只有在運行那一個才知道要調用哪個方法，即多態是個<strong>運行時行為</strong>，又稱為<strong>動態綁定</strong></p>
+<ul>
+<li>白話:<strong>編譯看左，運行看右</strong></li>
+</ul>
+</li>
+<li>
+<p>前提:類的繼承關係、方法的重寫，缺一不可</p>
+</li>
+<li>
+<p>目的:避免重複寫很多重載的方法</p>
+</li>
+<li>
+<p>體現:</p>
+</li>
+<li>
+<pre tabindex="0"><code>舉例Person類 之下有子類 Chinese、Japanese、American
+Person類有welcome方法，被各自子類以該國語言重寫過
+我的某功能調用welcome時能接受Person類，依照實際子類物件呈現不同語言的welcome結果
+該功能即不需要Chinese、Japanese、American都寫一次
+</code></pre></li>
+<li>
+<pre tabindex="0"><code>public class Atest {
+    public static void main(String[] args) {
+        Atest test = new Atest();
+               test.func(new Dog());  // 多態體現在這
+            }
+
+    public void func(Animal animal) { //Animal animal=new Dog();
+        animal.eat();
+        animal.shout();     
+    }
+}
+
+class Animal {
+    public void eat() {
+        System.out.println(&quot;動物吃&quot;);
+    }
+
+    public void shout() {
+        System.out.println(&quot;動物叫&quot;);
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    public void eat() {
+        System.out.println(&quot;狗吃骨頭&quot;);
+    }
+
+    @Override
+    public void shout() {
+        System.out.println(&quot;狗旺旺叫&quot;);
+    }
+}
+</code></pre></li>
+<li>
+<pre tabindex="0"><code>// 調用數據庫
+class Driver {
+    public void doData(Connection conn) { // conn=new MySqlConnection
+        conn.method1();
+</code></pre></li>
+<li>
+<p>只適用於方法，<strong>屬性沒有多態</strong>!!</p>
+<ul>
+<li>白話:屬性全看左</li>
+</ul>
+</li>
+</ul>
+<h3 id="小復習">小復習</h3>
+<ul>
+<li>
+<pre tabindex="0"><code>// 面試陰險考點
+Child objC = new Child() // 造一個子類物件
+Father objF=objC; // 子類物件賦值給父類形成多態
+此時objF、objC地址值是相同的 // 即objF==objC為true
+但他們的屬性可以是各自的(屬性沒有多態)
+方法則是動態綁定(編譯看左，運行看右)
+</code></pre></li>
+<li>
+<p>子類可以獲取父類中private的屬性或方法，但無法直接調用</p>
+</li>
+<li>
+<p>方法的重寫:繼承後，同名同參的方法，對於子類重寫的方法來說，權限範圍不能縮小，返回值與拋出異常必須同類或是其子類。被重寫的方法必須非private、非static</p>
+</li>
+<li>
+<p>重載:同一類中，只要參數的類型或個數不同，允許存在同名的方法或構造器</p>
+</li>
+<li>
+<p>構造器的繼承與重載</p>
+<ul>
+<li>this(形參列表):本類重載其他的構造器</li>
+<li>super(形參列表):調用父類中指定的構造器</li>
+</ul>
+</li>
+</ul>
+<h1 id="關鍵字instanceof">關鍵字instanceof</h1>
+<h3 id="前提">前提</h3>
+<blockquote>
+<p>父類 多態物件=new 子類</p>
+</blockquote>
+<ul>
+<li>當有了物件的多態性以後，因為右邊是有=new 子類，記憶體中其實是有加載子類特有的屬性與方法的，只是由於變量聲明為父類類型，導致編譯時無法直接調用</li>
+<li>可以用&quot;(子類名)多態物件&quot;向下強轉，但可能報錯</li>
+</ul>
+<h3 id="使用instanceof">使用instanceof</h3>
+<ul>
+<li>&ldquo;a instanceof A&rdquo;，判斷物件a是否為類A的實例，返回boolean，舉例:</li>
+</ul>
+<pre tabindex="0"><code>Animal a1 = new Dog();
+if (a1 instanceof Dog) {
+    Dog a2 = (Dog) a1;
+    a2.shout();
+}
+</code></pre><ul>
+<li>對於祖父類也適用，即可以一直向上追溯都能返回true的意思</li>
+<li>實際開發很少用</li>
+</ul>
+<h3 id="陰險面試題">陰險面試題</h3>
+<pre tabindex="0"><code>class Base { // 一個父類
+    public void add(int a, int... arr) {
+        System.out.println(&quot;base&quot;);
+    }
+}
+
+class Sub extends Base { // 一個子類
+    @Override
+    public void add(int a, int[] arr) {
+        System.out.println(&quot;sub1&quot;);
+    }
+
+    public void add(int a, int b, int c) {
+        System.out.println(&quot;sub2&quot;);
+    }
+}
+
+public static void main(String[] args) {
+    Base t = new Sub(); // 創建一個多態的物件t
+    t.add(1, 2, 3);
+    // 結果是sub1，因為編譯器認為int...跟int[]一樣
+    // 形參一樣，構成重寫，所以出來sub1
+
+    Sub s = (Sub) t;
+    s.add(1, 2, 3);
+    // 子類有自己確定性的方法，優先調用，結果是sub2
+
+    int[] arr = new int[]{4, 5, 6};
+    s.add(1, arr);
+    // 結果是sub1，理由同上，有優先適用的形參
+}
+</code></pre><h1 id="object類">Object類</h1>
+<p>在Java中Object類是所有類的父類，意味著Object類中的屬性與方法具有共通性，以下挑幾個常用的介紹</p>
+<h3 id="運算符">運算符&quot;==&quot;</h3>
+<ul>
+<li>&ldquo;==&ldquo;可以用在基本數據類型，判斷值是否相等(類型不一定要相同，可能自動提升)</li>
+<li>&ldquo;==&ldquo;也可以用在引用類型，判斷地址是否相等(即是否指向同一個物件)</li>
+</ul>
+<h3 id="equals">equals</h3>
+<ul>
+<li>Object類中equals()的定義等同於&rdquo;==&quot;，比的還是地址值是否相同，源碼如下</li>
+</ul>
+<pre tabindex="0"><code>    public boolean equals(Object obj) {
+        return (this == obj);
+    }
+</code></pre><ul>
+<li>而String、Date、File、包裝類等都重寫了Object類中equals()方法，重寫後比較的是&quot;實體內容&quot;是否相同</li>
+<li>通常情況下，我們自訂義類用equals()時想比的也是實體內容而非地址，就必須重寫
+<ul>
+<li>重寫的原則:比較類的關鍵屬性是否相同，也可以自動生成
+<ul>
+<li>對稱性:若x.equals(y)=true，則y.equals(x)也必須是true</li>
+<li>自反性:x.equals(x)=必須true</li>
+<li>傳遞性:若x.equals(y)=true，且y.equals(z)=true，則z.equals(x)=true</li>
+<li>一致性:若x.equals(y)=true，只要x與y內容不變，則不管重複幾次結果都是true</li>
+<li>任何情況下x.equals(null)必須=flase，x.equals(非x類對象)必須=flase</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="面試題與equals的區別">面試題:==與equals()的區別</h3>
+<p>==用來比較基本數據類型，而引用類型==與equals()就根本上追溯到object類其實是一樣的，比較的是地址值。只是通常我們在用equals()時都重寫了，變成用來比較實體內容</p>
+<h3 id="tostring">toString</h3>
+<ul>
+<li>
+<p>當我們輸出一個物件的引用時(看地址)，實際上就是調用toString()</p>
+</li>
+<li>
+<p>源碼</p>
+</li>
+</ul>
+<pre tabindex="0"><code>public String toString() {
+	return getClass().getName() + &quot;@&quot; + Integer.toHexString(hashCode());
+}
+</code></pre><ul>
+<li>而String、Date、File、包裝類等都重寫了Object類中toString()方法，重寫後返回的是&quot;實體內容&rdquo;</li>
+</ul>
+<h1 id="包裝類">包裝類</h1>
+<ul>
+<li>
+<p>把基本數據類型封裝成類，真正實現&quot;一切都是物件&rdquo;</p>
+</li>
+<li>
+<p>舉例:手動Float f1 = new Float(12.3)</p>
+</li>
+<li>
+<p>JDK 5.0後，會自動拆裝箱，所以其實直接用就可以了</p>
+</li>
+<li>
+<p>基本數據類型、包裝類都可以簡單地透過valueOf轉換成String，舉例:</p>
+<pre tabindex="0"><code>Float f1 = new Float(12.3);
+String str = String.valueOf(f1);
+</code></pre></li>
+<li>
+<p>String轉回基本數據類型則使用parseXXX，舉例:</p>
+<pre tabindex="0"><code>String str = &quot;123&quot;;
+int i = Integer.parseInt(str);
+</code></pre></li>
+</ul>
+<h3 id="面試題-1">面試題-1</h3>
+<pre tabindex="0"><code>Object o1 = true ? new Integer(1) : new Double(2.0);
+System.out.println(o1); // 1.0
+乍看可能覺得是1，但三元運算符後面兩個條件必須是同類型(否則編譯就報錯了)
+於是1被自動類型提升成Double，答案變1.0。
+若把題目那一行拆成if-else結構那就是1
+</code></pre><h3 id="面試題-2">面試題-2</h3>
+<pre tabindex="0"><code>Integer i = new Integer(1);
+Integer j = new Integer(1);
+System.out.println(i == j); // false，地址值不同
+
+Integer m = 1;
+Integer n = 1;
+System.out.println(m == n); // true
+
+Integer x = 128;
+Integer y = 128;
+System.out.println(x == y); // false，地址值不同
+
+Integer內部定義了一個IntegerCache結構，造了一個數組保存了 - 128 ~127 內的整數，
+我們日常使用自動裝箱其實就是使用這個數組內的元素，不用一直new物件，達到增加效率。
+而當超出這個範圍，就相當於new了新物件，所以x跟y地址不同   
+</code></pre><h3 id="練習題-vector可變長度容器">練習題-Vector可變長度容器</h3>
+<blockquote>
+<p>可以當做一個可變長度的數組來用</p>
+<p>添加元素:vector.addElement(Object obj);</p>
+<p>查看元素內容:vector.elementAt(下標)</p>
+</blockquote>
+<pre tabindex="0"><code>public static void main(String[] args) {
+Vector v = new Vector();
+Scanner scan = new Scanner(System.in);
+int maxScore = 0;
+boolean loopFlag = true;
+for (int i = 0; loopFlag; i++) {
+    System.out.println(&quot;輸入學生成績，負數離開&quot;);
+    int inputInt = scan.nextInt();
+    if (inputInt &lt; 0) {
+        loopFlag = false;
+        break;
+    }
+    if (inputInt &gt; 100) {
+        System.out.println(&quot;成績有誤，重新輸入&quot;);
+        continue;
+        // 這個continue蠻關鍵的，當輸入有誤雖然i++了但不會插入錯誤值到數組中
+        // 因為&quot;跳過這次&quot;了，下面的語句不會執行
+        // 再退一步說其實for的i就是多餘的，因為addElement不用遍歷插入值
+        // loopFlag也是多餘的
+    }
+    if (maxScore &lt; inputInt) {
+        maxScore = inputInt;
+    }
+    v.addElement(inputInt);
+
+}
+System.out.println(&quot;最高分是&quot; + maxScore);
+int sum = 0;
+for (int i = 0; i &lt; v.size(); i++) {
+    Object obj = v.elementAt(i);
+    int score = (int) obj;
+    if (maxScore - score &gt; 40) {
+        sum++;
+        System.out.print(&quot;學生&quot; + (i + 1) + &quot;的成績為&quot; + score + &quot;，不合格\n&quot;);
+    } else {
+        System.out.print(&quot;學生&quot; + (i + 1) + &quot;的成績為&quot; + score + &quot;，合格\n&quot;);
+    }
+}
+System.out.println(&quot;不合格人數是&quot; + sum);
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-28</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211127-%E5%B0%9A%E8%AA%B2java-day12/">
+			上一篇<br>尚硅谷JAVA基礎課-DAY12筆記
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

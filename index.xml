@@ -1,0 +1,1798 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yoziming&#39; Blog</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on yoziming&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY13筆記</title>
+        <link>https://yoziming.github.io/post/211128-%E5%B0%9A%E8%AA%B2java-day13/</link>
+        <pubDate>Sun, 28 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211128-%E5%B0%9A%E8%AA%B2java-day13/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211128-%E5%B0%9A%E8%AA%B2java-day13/ -&lt;h1 id=&#34;多態性&#34;&gt;多態性&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;類似go接口的概念，就是為了讓子類能調用父類的方法&lt;/p&gt;
+&lt;p&gt;白話:為了實現代碼的通用性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;一個事物的多種形態&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;父類的引用指向子類的物件(子類的物件賦給父類的引用)，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Father obj = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Child();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用:&lt;strong&gt;虛擬方法調用&lt;/strong&gt;，編譯期只能調用父類中聲明的方法，但運行時執行的是子類重寫父類的方法。多態只有在運行那一個才知道要調用哪個方法，即多態是個&lt;strong&gt;運行時行為&lt;/strong&gt;，又稱為&lt;strong&gt;動態綁定&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;白話:&lt;strong&gt;編譯看左，運行看右&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;前提:類的繼承關係、方法的重寫，缺一不可&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;目的:避免重複寫很多重載的方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;體現:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;舉例Person類 之下有子類 Chinese、Japanese、American
+Person類有welcome方法，被各自子類以該國語言重寫過
+我的某功能調用welcome時能接受Person類，依照實際子類物件呈現不同語言的welcome結果
+該功能即不需要Chinese、Japanese、American都寫一次
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Atest {
+    public static void main(String[] args) {
+        Atest test = new Atest();
+               test.func(new Dog());  // 多態體現在這
+            }
+
+    public void func(Animal animal) { //Animal animal=new Dog();
+        animal.eat();
+        animal.shout();     
+    }
+}
+
+class Animal {
+    public void eat() {
+        System.out.println(&amp;quot;動物吃&amp;quot;);
+    }
+
+    public void shout() {
+        System.out.println(&amp;quot;動物叫&amp;quot;);
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    public void eat() {
+        System.out.println(&amp;quot;狗吃骨頭&amp;quot;);
+    }
+
+    @Override
+    public void shout() {
+        System.out.println(&amp;quot;狗旺旺叫&amp;quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 調用數據庫
+class Driver {
+    public void doData(Connection conn) { // conn=new MySqlConnection
+        conn.method1();
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;只適用於方法，&lt;strong&gt;屬性沒有多態&lt;/strong&gt;!!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;白話:屬性全看左&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;小復習&#34;&gt;小復習&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 面試陰險考點
+Child objC = new Child() // 造一個子類物件
+Father objF=objC; // 子類物件賦值給父類形成多態
+此時objF、objC地址值是相同的 // 即objF==objC為true
+但他們的屬性可以是各自的(屬性沒有多態)
+方法則是動態綁定(編譯看左，運行看右)
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;子類可以獲取父類中private的屬性或方法，但無法直接調用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方法的重寫:繼承後，同名同參的方法，對於子類重寫的方法來說，權限範圍不能縮小，返回值與拋出異常必須同類或是其子類。被重寫的方法必須非private、非static&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重載:同一類中，只要參數的類型或個數不同，允許存在同名的方法或構造器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;構造器的繼承與重載&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;this(形參列表):本類重載其他的構造器&lt;/li&gt;
+&lt;li&gt;super(形參列表):調用父類中指定的構造器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;關鍵字instanceof&#34;&gt;關鍵字instanceof&lt;/h1&gt;
+&lt;h3 id=&#34;前提&#34;&gt;前提&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;父類 多態物件=new 子類&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;當有了物件的多態性以後，因為右邊是有=new 子類，記憶體中其實是有加載子類特有的屬性與方法的，只是由於變量聲明為父類類型，導致編譯時無法直接調用&lt;/li&gt;
+&lt;li&gt;可以用&amp;quot;(子類名)多態物件&amp;quot;向下強轉，但可能報錯&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用instanceof&#34;&gt;使用instanceof&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;a instanceof A&amp;rdquo;，判斷物件a是否為類A的實例，返回boolean，舉例:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Animal a1 = new Dog();
+if (a1 instanceof Dog) {
+    Dog a2 = (Dog) a1;
+    a2.shout();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;對於祖父類也適用，即可以一直向上追溯都能返回true的意思&lt;/li&gt;
+&lt;li&gt;實際開發很少用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;陰險面試題&#34;&gt;陰險面試題&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Base { // 一個父類
+    public void add(int a, int... arr) {
+        System.out.println(&amp;quot;base&amp;quot;);
+    }
+}
+
+class Sub extends Base { // 一個子類
+    @Override
+    public void add(int a, int[] arr) {
+        System.out.println(&amp;quot;sub1&amp;quot;);
+    }
+
+    public void add(int a, int b, int c) {
+        System.out.println(&amp;quot;sub2&amp;quot;);
+    }
+}
+
+public static void main(String[] args) {
+    Base t = new Sub(); // 創建一個多態的物件t
+    t.add(1, 2, 3);
+    // 結果是sub1，因為編譯器認為int...跟int[]一樣
+    // 形參一樣，構成重寫，所以出來sub1
+
+    Sub s = (Sub) t;
+    s.add(1, 2, 3);
+    // 子類有自己確定性的方法，優先調用，結果是sub2
+
+    int[] arr = new int[]{4, 5, 6};
+    s.add(1, arr);
+    // 結果是sub1，理由同上，有優先適用的形參
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;object類&#34;&gt;Object類&lt;/h1&gt;
+&lt;p&gt;在Java中Object類是所有類的父類，意味著Object類中的屬性與方法具有共通性，以下挑幾個常用的介紹&lt;/p&gt;
+&lt;h3 id=&#34;運算符&#34;&gt;運算符&amp;quot;==&amp;quot;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;==&amp;ldquo;可以用在基本數據類型，判斷值是否相等(類型不一定要相同，可能自動提升)&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;==&amp;ldquo;也可以用在引用類型，判斷地址是否相等(即是否指向同一個物件)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;equals&#34;&gt;equals&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Object類中equals()的定義等同於&amp;rdquo;==&amp;quot;，比的還是地址值是否相同，源碼如下&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    public boolean equals(Object obj) {
+        return (this == obj);
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;而String、Date、File、包裝類等都重寫了Object類中equals()方法，重寫後比較的是&amp;quot;實體內容&amp;quot;是否相同&lt;/li&gt;
+&lt;li&gt;通常情況下，我們自訂義類用equals()時想比的也是實體內容而非地址，就必須重寫
+&lt;ul&gt;
+&lt;li&gt;重寫的原則:比較類的關鍵屬性是否相同，也可以自動生成
+&lt;ul&gt;
+&lt;li&gt;對稱性:若x.equals(y)=true，則y.equals(x)也必須是true&lt;/li&gt;
+&lt;li&gt;自反性:x.equals(x)=必須true&lt;/li&gt;
+&lt;li&gt;傳遞性:若x.equals(y)=true，且y.equals(z)=true，則z.equals(x)=true&lt;/li&gt;
+&lt;li&gt;一致性:若x.equals(y)=true，只要x與y內容不變，則不管重複幾次結果都是true&lt;/li&gt;
+&lt;li&gt;任何情況下x.equals(null)必須=flase，x.equals(非x類對象)必須=flase&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;面試題與equals的區別&#34;&gt;面試題:==與equals()的區別&lt;/h3&gt;
+&lt;p&gt;==用來比較基本數據類型，而引用類型==與equals()就根本上追溯到object類其實是一樣的，比較的是地址值。只是通常我們在用equals()時都重寫了，變成用來比較實體內容&lt;/p&gt;
+&lt;h3 id=&#34;tostring&#34;&gt;toString&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;當我們輸出一個物件的引用時(看地址)，實際上就是調用toString()&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;源碼&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public String toString() {
+	return getClass().getName() + &amp;quot;@&amp;quot; + Integer.toHexString(hashCode());
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;而String、Date、File、包裝類等都重寫了Object類中toString()方法，重寫後返回的是&amp;quot;實體內容&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;包裝類&#34;&gt;包裝類&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;把基本數據類型封裝成類，真正實現&amp;quot;一切都是物件&amp;rdquo;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;舉例:手動Float f1 = new Float(12.3)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;JDK 5.0後，會自動拆裝箱，所以其實直接用就可以了&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;基本數據類型、包裝類都可以簡單地透過valueOf轉換成String，舉例:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Float f1 = new Float(12.3);
+String str = String.valueOf(f1);
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;String轉回基本數據類型則使用parseXXX，舉例:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;String str = &amp;quot;123&amp;quot;;
+int i = Integer.parseInt(str);
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;面試題-1&#34;&gt;面試題-1&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Object o1 = true ? new Integer(1) : new Double(2.0);
+System.out.println(o1); // 1.0
+乍看可能覺得是1，但三元運算符後面兩個條件必須是同類型(否則編譯就報錯了)
+於是1被自動類型提升成Double，答案變1.0。
+若把題目那一行拆成if-else結構那就是1
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;面試題-2&#34;&gt;面試題-2&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Integer i = new Integer(1);
+Integer j = new Integer(1);
+System.out.println(i == j); // false，地址值不同
+
+Integer m = 1;
+Integer n = 1;
+System.out.println(m == n); // true
+
+Integer x = 128;
+Integer y = 128;
+System.out.println(x == y); // false，地址值不同
+
+Integer內部定義了一個IntegerCache結構，造了一個數組保存了 - 128 ~127 內的整數，
+我們日常使用自動裝箱其實就是使用這個數組內的元素，不用一直new物件，達到增加效率。
+而當超出這個範圍，就相當於new了新物件，所以x跟y地址不同   
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;練習題-vector可變長度容器&#34;&gt;練習題-Vector可變長度容器&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可以當做一個可變長度的數組來用&lt;/p&gt;
+&lt;p&gt;添加元素:vector.addElement(Object obj);&lt;/p&gt;
+&lt;p&gt;查看元素內容:vector.elementAt(下標)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public static void main(String[] args) {
+Vector v = new Vector();
+Scanner scan = new Scanner(System.in);
+int maxScore = 0;
+boolean loopFlag = true;
+for (int i = 0; loopFlag; i++) {
+    System.out.println(&amp;quot;輸入學生成績，負數離開&amp;quot;);
+    int inputInt = scan.nextInt();
+    if (inputInt &amp;lt; 0) {
+        loopFlag = false;
+        break;
+    }
+    if (inputInt &amp;gt; 100) {
+        System.out.println(&amp;quot;成績有誤，重新輸入&amp;quot;);
+        continue;
+        // 這個continue蠻關鍵的，當輸入有誤雖然i++了但不會插入錯誤值到數組中
+        // 因為&amp;quot;跳過這次&amp;quot;了，下面的語句不會執行
+        // 再退一步說其實for的i就是多餘的，因為addElement不用遍歷插入值
+        // loopFlag也是多餘的
+    }
+    if (maxScore &amp;lt; inputInt) {
+        maxScore = inputInt;
+    }
+    v.addElement(inputInt);
+
+}
+System.out.println(&amp;quot;最高分是&amp;quot; + maxScore);
+int sum = 0;
+for (int i = 0; i &amp;lt; v.size(); i++) {
+    Object obj = v.elementAt(i);
+    int score = (int) obj;
+    if (maxScore - score &amp;gt; 40) {
+        sum++;
+        System.out.print(&amp;quot;學生&amp;quot; + (i + 1) + &amp;quot;的成績為&amp;quot; + score + &amp;quot;，不合格\n&amp;quot;);
+    } else {
+        System.out.print(&amp;quot;學生&amp;quot; + (i + 1) + &amp;quot;的成績為&amp;quot; + score + &amp;quot;，合格\n&amp;quot;);
+    }
+}
+System.out.println(&amp;quot;不合格人數是&amp;quot; + sum);
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/211128-%E5%B0%9A%E8%AA%B2java-day13/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY12筆記</title>
+        <link>https://yoziming.github.io/post/211127-%E5%B0%9A%E8%AA%B2java-day12/</link>
+        <pubDate>Sat, 27 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211127-%E5%B0%9A%E8%AA%B2java-day12/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211127-%E5%B0%9A%E8%AA%B2java-day12/ -&lt;h1 id=&#34;繼承&#34;&gt;繼承&lt;/h1&gt;
+&lt;h3 id=&#34;好處&#34;&gt;好處&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;減少代碼冗餘、提高復用性&lt;/li&gt;
+&lt;li&gt;便於功能擴展&lt;/li&gt;
+&lt;li&gt;為多態鋪路&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;格式&#34;&gt;格式&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class A extends B{} // A延展了B
+A:子類、派生類、subclass
+B:父類、超類、基類、superclass
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;繪圖時，通常用&lt;strong&gt;實心箭頭從子指向父&lt;/strong&gt;，例如:Student→Person，表示學生類繼承了人類&lt;/p&gt;
+&lt;h3 id=&#34;特性&#34;&gt;特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;A繼承B之後，子類A就獲取了B聲明的所有屬性與方法，&lt;strong&gt;包含了私有(private)的&lt;/strong&gt;，&lt;strong&gt;但是&lt;/strong&gt;由於封裝性的影響，&lt;strong&gt;子類無法直接調用&lt;/strong&gt;父類私有(private)的屬性與方法&lt;/li&gt;
+&lt;li&gt;不允許多重繼承(一人只能有一個老爸)&lt;/li&gt;
+&lt;li&gt;可以多層繼承(允許有孫子，孫子也會繼承爺爺的特性)&lt;/li&gt;
+&lt;li&gt;一個父類可以有多個子類(允許家族開枝散葉)&lt;/li&gt;
+&lt;li&gt;所有類都繼承自java.lang.Object，換言之所有類都具有Object類的特性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;權限修飾符protected的應用&#34;&gt;權限修飾符protected的應用&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;之前提過protected的範圍是&lt;strong&gt;不同包的子類&lt;/strong&gt;也能用，就是應在這了
+&lt;ul&gt;
+&lt;li&gt;實際發開中用的比較少一點&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;方法的重寫&#34;&gt;方法的重寫&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;子類繼承父類後，對父類&lt;strong&gt;同名同參數&lt;/strong&gt;的方法，進行覆蓋&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;子類重寫的方法權限修飾符必須不小於父類被重寫的方法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;白話:不能把公車私有化，權限範圍不能縮小&lt;/li&gt;
+&lt;li&gt;注意:不能重寫父類中聲明為private的方法(本身就見不到)，可以在子類中硬寫一個同名的方法，但那就不是構成重寫&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若父類被重寫的方法返回值是void，子類重寫的方法也必須返回void&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若父類被重寫的方法返回值是A類型，子類重寫的方法返回值可以是A類或A類的子類&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;舉例:父類返回值是動物類，子類可以重寫返回動物類或貓類狗類&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若父類被重寫的方法返回值是基本數據類型，子類重寫的方法返回值必須是相同基本數據類&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;舉例:父類返回double子類也必須是double，&lt;strong&gt;不能&lt;/strong&gt;是int期待他自動類型提升&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;拋出異常(throws)的規則與返回值相同&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;以上白話小結:&lt;strong&gt;權限不能小於爸爸、返回值不能大於爸爸&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;補充:子類與父類同名同參數的方法要嘛都聲明為非static的(考慮重寫)，要嘛都聲明為static的(不是重寫，靜態類的方法不能被覆蓋)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;關鍵字super&#34;&gt;關鍵字super&lt;/h1&gt;
+&lt;p&gt;用來表示&lt;strong&gt;父類中的&lt;/strong&gt;屬性、方法、構造器&lt;/p&gt;
+&lt;h3 id=&#34;調用屬性與方法&#34;&gt;調用屬性與方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;可以在子類的方法或構造中，用&amp;quot;super.方法&amp;quot;或&amp;quot;super.屬性&amp;quot;來顯式調用父類中聲明的屬性或方法&lt;/li&gt;
+&lt;li&gt;就近原則，比如有人很欠揍的在A01類A02類A03類三代中都命名了同為id的屬性，我在A03調super.id會調到A02的id&lt;/li&gt;
+&lt;li&gt;方法則基本上就是用來區分重寫的子類方法，跟原先父類的同名方法&lt;/li&gt;
+&lt;li&gt;super不能突破封裝性的限制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;調用構造器&#34;&gt;調用構造器&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在子類的構造器中，顯示使用&amp;quot;super(形參列表)&amp;ldquo;顯式調用父類中聲明的指定構造器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;super(形參列表)&amp;ldquo;必須聲明在子類構造器的首行&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;意味著&amp;quot;super(形參列表)&amp;ldquo;與&amp;quot;this(形參列表)&amp;ldquo;只能二選一&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若沒寫則首行默認是一個&amp;quot;super()&amp;rdquo;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;意味著子類構造器中必定至少存在一個構造器來自於父類&lt;/li&gt;
+&lt;li&gt;要是在父類中的空參構造器寫了某個特徵，那他所有往下的子類都帶有這個特徵&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;子類物件實例化的過程&#34;&gt;子類物件實例化的過程&lt;/h1&gt;
+&lt;h3 id=&#34;從結果上來看&#34;&gt;從結果上來看&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;子類繼承父類後，就獲取了父類聲明的屬性或方法&lt;/li&gt;
+&lt;li&gt;創建子類的物件，在堆空間中就會加載所有父類中聲明的屬性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;從過程上來看&#34;&gt;從過程上來看&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;當創建子類的物件時，必定會直接或間接的調用其父類的構造器，層層往上直到調用了java.lang.Object類中的空參構造器為止，正因為加載過所有父類的結構，所以才可以看到內存中有父類的結構，子類物件才可以考慮進行調用&lt;/li&gt;
+&lt;li&gt;雖然子類創立物件時調用了父類的構造器，但自始至終就只new一個子類的物件&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211127-%E5%B0%9A%E8%AA%B2java-day12/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY11筆記</title>
+        <link>https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/</link>
+        <pubDate>Fri, 26 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/ -&lt;h1 id=&#34;實作練習-客戶訊息管理&#34;&gt;實作練習-客戶訊息管理&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;有點基礎這部分都蠻簡單的&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有個知識點是這邊在&amp;quot;刪除用戶&amp;quot;的功能用到了循環鏈表的概念&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public boolean deleteCustomer(int index) {
+    if (customers[index] != null) {
+        for (int i = index; i &amp;lt; total - 1; i++) { // 不能搬到total，否則[i+1]會越位
+            customers[i] = customers[i + 1];
+        }
+        customers[total - 1] = null;
+        total--;
+
+        System.out.println(&amp;quot;刪除用戶成功!&amp;quot;);
+        return true;
+    }
+    System.out.println(&amp;quot;索引無效，操作失敗&amp;quot;);
+    return false;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;total表示當前數組中用戶總數，這個i &amp;lt; total - 1蠻關鍵的，我原先沒想到這邊要-1，還想著讓他把後面的null往前搬就好，沒考慮到末尾可能會越位的情況。&lt;/p&gt;
+&lt;p&gt;搬完跟customers[total - 1] = null搭配使用，這樣才是健壯的&lt;/p&gt;
+- https://yoziming.github.io/post/211126-%E5%B0%9A%E8%AA%B2java-day11/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY10筆記</title>
+        <link>https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/</link>
+        <pubDate>Thu, 25 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/ -&lt;h1 id=&#34;封裝的設計思想&#34;&gt;封裝的設計思想&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;高內聚:類的內部數據操作細節自己完成，不允許外部干涉&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;低耦合:對外露出少量的方法(API)供使用&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;舉例:微波爐，我不需要用戶控制燈光、波照、轉盤等等，只要他放入東西按下&amp;quot;解凍&amp;quot;即可。即所謂的&amp;quot;一鍵XX&amp;quot;功能。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;封裝性的體現&#34;&gt;封裝性的體現&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;將類的屬性私有化(private)，通過公共的(public)的set與get方法讓外部調用，舉例:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Animal a1 = new Animal();
+        a1.setAge(10);
+        System.out.println(a1.getAge());
+    }
+}
+
+class Animal {
+    private int age;
+
+    public void setAge(int i) {
+        age = i;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&amp;quot;小工具&amp;quot;)&lt;/li&gt;
+&lt;li&gt;單例模式(將構造器私有化)&lt;/li&gt;
+&lt;li&gt;&amp;hellip;等等&lt;/li&gt;
+&lt;li&gt;需要權限修飾符來配合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;權限修飾符&#34;&gt;權限修飾符&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;private:當前類內部可以調用&lt;/li&gt;
+&lt;li&gt;default(缺省、就是不寫):同一個包內可以調用&lt;/li&gt;
+&lt;li&gt;protected:不同包的子類&lt;/li&gt;
+&lt;li&gt;public:同一個工程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;修飾的對象&#34;&gt;修飾的對象&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;以上4種可以用於修飾&lt;strong&gt;類的內部結構&lt;/strong&gt;:屬性、方法、構造器、內部類&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;class本身的修飾只能是缺省或public&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;構造器constructor&#34;&gt;構造器(constructor)&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;作用:創立物件、初始化物件的屬性&lt;/li&gt;
+&lt;li&gt;說明:如果沒有顯示定義構造器，則系統默認提供一個空參的構造器&lt;/li&gt;
+&lt;li&gt;格式:權限修飾符 類名(形參列表){}，注意&lt;strong&gt;構造器名=類名&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;在一個類中可以定義多個構造器，彼此構成重載，舉例:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Animal a1 = new Animal(5);
+        Animal a2 = new Animal(4, &amp;quot;狗&amp;quot;);
+
+    }
+}
+
+class Animal {
+    private int age;
+    private String kind;
+
+    public Animal(int a) {
+        age = a;
+        System.out.println(&amp;quot;初始化並定義年齡為&amp;quot; + a);
+    }
+
+    public Animal(int a, String k) {
+        age = a;
+        kind = k;
+        System.out.println(&amp;quot;初始化並定義年齡為&amp;quot; + a + &amp;quot;，種類為&amp;quot; + kind);
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;初始化的順序&#34;&gt;初始化的順序&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;默認初始化:0或null那種，例如private int age;，new一個實例出來age默認是0&lt;/li&gt;
+&lt;li&gt;顯式初始化:定義屬性時直接寫好的，例如private int age=18;&lt;/li&gt;
+&lt;li&gt;代碼塊初始化:專門做初始化的一個{}區(若有人手很賤把代碼塊放在顯式初始化之上，則代碼塊會比顯式先執行，但看到這樣做的人先拖出去打)&lt;/li&gt;
+&lt;li&gt;構造器初始化，造實例時同時賦值&lt;/li&gt;
+&lt;li&gt;造完物件後調用賦值&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;javabean&#34;&gt;JavaBean&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JavaBean是一個遵循特定寫法的Java類，是一種Java語言編寫的可重用元件&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;它的方法命名，構造及行為必須符合特定的約定：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;這個類必須具有一個公共的(public)空參構造器&lt;/li&gt;
+&lt;li&gt;所有屬性私有化（private）&lt;/li&gt;
+&lt;li&gt;私有化的屬性必須通過public型別的方法（getter和setter）暴露給其他程式，並且方法的命名也必須遵循一定的命名規範。&lt;/li&gt;
+&lt;li&gt;這個類應是可序列化的（比如可以實現Serializable 介面，用於實現bean的永續性）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;uml類圖&#34;&gt;UML類圖&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Unified Modeling Language，統一建模語言，用於快速表示類&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211123131818447.png&#34; alt=&#34;image-20211123131818447&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;三個分區:從上到下為類名、屬性、方法&lt;/li&gt;
+&lt;li&gt;權限修飾符:- private、+ public、# protected&lt;/li&gt;
+&lt;li&gt;()內表示形參&lt;/li&gt;
+&lt;li&gt;:後表示返回值類型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;關鍵字this的使用&#34;&gt;關鍵字This的使用&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;可以用來修飾屬性、方法、構造器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;this.XX，就是表明&amp;quot;&lt;strong&gt;當前物件&lt;/strong&gt;&amp;quot;，用在例如:形參與屬性同名時&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用在本類中構造器調用&lt;strong&gt;其他構造器&lt;/strong&gt;，最多一個且必須聲明在首行，舉例:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;private int age;
+private String kind;
+
+public Animal(int age) {
+    this.age = age;
+    System.out.println(&amp;quot;初始化並定義年齡為&amp;quot; + age);
+}
+
+public Animal(int age, String k) {
+    this(age); // 調用形參為age的，就是上面那個構造器
+    kind = k;
+    System.out.println(&amp;quot;，種類為&amp;quot; + kind);
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習題-銀行用戶清單&#34;&gt;練習題-銀行用戶清單&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;造一個Account類，可以顯示餘額、存取錢&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Account {
+    private double balance;
+
+    public Account(double init_balance) {
+        this.balance = init_balance;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amt) {
+        if (amt &amp;gt; 0) {
+            balance += amt;
+            System.out.println(&amp;quot;存錢成功&amp;quot;);
+            return;
+        }
+        System.out.println(&amp;quot;金額錯誤&amp;quot;);
+    }
+
+    public void withdraw(double amt) {
+        if (balance &amp;gt;= amt) {
+            balance -= amt;
+            System.out.println(&amp;quot;取錢成功&amp;quot;);
+            return;
+        }
+        System.out.println(&amp;quot;金額錯誤&amp;quot;);
+    }
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;造一個Customer類，可以顯示用戶名跟他名下的Account&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Customer {
+    private String name;
+    private Account account;
+
+    public Customer(String name) {
+        this.name = name;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;造一個Bank類，可以存用戶列表為數組，跟用戶數量&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Bank {
+    private Customer[] customers;
+    private int numberOfCustomer = 0;
+
+    public Bank(int n) {
+        customers = new Customer[n];
+        System.out.println(&amp;quot;初始化了一個客戶清單，上限個數為&amp;quot; + n);
+    }
+
+    public void addCustomer(String name) {
+        Customer cust = new Customer(name);
+        customers[numberOfCustomer++] = cust;
+        System.out.println(&amp;quot;添加客戶成功&amp;quot;);
+    }
+
+    public Customer getCustomer(int index) {
+        if (index &amp;gt;= 0 &amp;amp;&amp;amp; index &amp;lt; numberOfCustomer) {
+            return customers[index];
+        }
+        return null;
+
+    }
+
+    public int getNumberOfCustomer() {
+        return numberOfCustomer;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;調用&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Bank b1 = new Bank(10);
+        b1.addCustomer(&amp;quot;Tom&amp;quot;);
+        b1.getCustomer(0).setAccount(new Account(1000));
+        b1.getCustomer(0).getAccount().withdraw(400);
+        double balance = b1.getCustomer(0).getAccount().getBalance();
+        System.out.println(&amp;quot;用戶&amp;quot; + b1.getCustomer(0).getName() +
+                &amp;quot;的餘額為&amp;quot; + balance);
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;mvc設計模式&#34;&gt;MVC設計模式&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;太基礎不多提了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;M:數據庫，資料存這&lt;/li&gt;
+&lt;li&gt;C:控制器，一切操作都寫這&lt;/li&gt;
+&lt;li&gt;V:視圖，用戶實際交互的UI&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;package的使用&#34;&gt;Package的使用&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;為了方便管理，類似命名空間的概念&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用package聲明類或接口所屬的包，聲明在文件首行&lt;/li&gt;
+&lt;li&gt;包名屬於標示符，遵循規範(全小寫aaa.bbb.ccc)，見明知意&lt;/li&gt;
+&lt;li&gt;每&amp;quot;.&amp;ldquo;一次，代表一層文件目錄&lt;/li&gt;
+&lt;li&gt;同一個包下，不能存在同名的類、接口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;import的使用&#34;&gt;Import的使用&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;格式:import 包名&lt;/li&gt;
+&lt;li&gt;聲明在包名和類的聲明之間(第二區塊的意思)&lt;/li&gt;
+&lt;li&gt;可以用XXX.*來導入XXX下所有包(一層而已，之下的子包還是需要顯式導入)&lt;/li&gt;
+&lt;li&gt;當前包與系統預設的(如java.lang)包可以不用寫導入&lt;/li&gt;
+&lt;li&gt;若想調用&lt;strong&gt;當前包的子包&lt;/strong&gt;則還是需要顯式導入&lt;/li&gt;
+&lt;li&gt;若想調用&lt;strong&gt;不同包下同名的類&lt;/strong&gt;，則需在調用時使用&amp;quot;全類名&amp;rdquo;，舉例:java.lang.String&lt;/li&gt;
+&lt;li&gt;import static可以導入指定類或接口下的靜態屬性或方法 (很少用)&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211125-%E5%B0%9A%E8%AA%B2java-day10/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY09筆記</title>
+        <link>https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/</link>
+        <pubDate>Wed, 24 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/ -&lt;h1 id=&#34;細說方法&#34;&gt;細說方法&lt;/h1&gt;
+&lt;h3 id=&#34;方法的重載overload&#34;&gt;方法的重載(overload)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定義:同一各類中，允許存在一個以上的同名方法，只要他們的參數個數或參數類型不同即可&lt;/li&gt;
+&lt;li&gt;跟方法的權限修飾符、返回值類型、形參變量名、方法體&lt;strong&gt;無關&lt;/strong&gt;，判斷重點在於參數本身&lt;/li&gt;
+&lt;li&gt;可能會自動類型提升，舉例:傳入的是int形，方法中沒有int但有double，就會調用double&lt;/li&gt;
+&lt;li&gt;典型的例子就是內建的println()&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;可變個數形參&#34;&gt;可變個數形參&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;格式:方法名(形參類型 &amp;hellip; 形參名)&lt;/li&gt;
+&lt;li&gt;調用時傳入的形參數量可以是0到多個，包含數組&lt;/li&gt;
+&lt;li&gt;與本類中方法名相同，形參不同的方法間構成重載(可共存)&lt;/li&gt;
+&lt;li&gt;與本類中方法名相同，形參類型也相同的數組之間不構成重載(不可共存)
+&lt;ul&gt;
+&lt;li&gt;PS.這是歷史遺留問題，因為可變個數形參是JDK5加入的，以前都是用數組&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;方法內把它當作數組使用，遍歷itar (i=0;i&amp;lt;形參名.length;i++){}&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;必須聲明在末尾&lt;/strong&gt;，且最多只能有一個&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法參數的值傳遞&#34;&gt;方法參數的值傳遞&lt;/h3&gt;
+&lt;h4 id=&#34;先複習一下變量的賦值規則&#34;&gt;先複習一下變量的賦值規則&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;變量是基本數據類型(byte、short、int、long、char、float、double、boolean)，賦值的是變量所保存的數據值&lt;/li&gt;
+&lt;li&gt;變量是引用類型(引用類型就只有null跟地址值兩種情況)，賦值給的是所保存數據的地址值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;名詞解釋&#34;&gt;名詞解釋&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;形參:方法定義時，聲明的小括號中的參數&lt;/li&gt;
+&lt;li&gt;實參:方法調用時，實際傳給形參的數據&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;傳參規則&#34;&gt;傳參規則&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;跟變量的賦值規則其實相同&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;如果參數是基本數據類型，實參賦給形參的是&lt;strong&gt;數據值&lt;/strong&gt;(類似給一份副本)&lt;/li&gt;
+&lt;li&gt;如果參數是引用類型，實參賦給形參的是&lt;strong&gt;地址值&lt;/strong&gt;(包含變量的數據類型)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;陷阱題&#34;&gt;陷阱題&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;println在char[]這有個特例，要避免踩坑就是調用時多看看方法格式&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] arr1 = new int[]{1, 2, 3};
+System.out.println(arr1); // [I@1b6d3586
+char[] arr2 = new char[]{&#39;a&#39;, &#39;b&#39;, &#39;c&#39;};
+System.out.println(arr2); // abc
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;練習-在方法中引用其他類的方法並調用&#34;&gt;練習-在方法中引用其他類的方法並調用&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        PassObject t1 = new PassObject();
+        Circle c = new Circle();
+        t1.printAreas(c, 5);
+        System.out.println(c.radius);
+    }
+}
+
+class Circle {
+    double radius;
+
+    public double findArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class PassObject {
+    public void printAreas(Circle c, int t) {
+        System.out.println(&amp;quot;Radius\t\tArea&amp;quot;);
+        for (int i = 1; i &amp;lt;= t; i++) {
+            c.radius = i;
+            System.out.println(c.radius + &amp;quot;\t\t&amp;quot; + c.findArea());
+        }
+        c.radius = t + 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;遞歸方法&#34;&gt;遞歸方法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;方法中調用自己達成類似for的效果，但注意必須能收斂&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;求1到n之和&#34;&gt;求1到n之和&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public int getSum(int n) {
+    if (n == 1) {
+        return 1;
+    } else {
+        return n + getSum(n - 1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;求某已知數列&#34;&gt;求某已知數列&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;已知數列f(0)=1,	f(1)=4,	f(n+2)=2*f(n+1)+f(n)，求f(10)=?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public int f(int n) {
+    if (n == 0) {
+        return 1;
+    } else if (n == 1) {
+        return 4;
+    } else {
+        return 2 * f(n - 1) + f(n - 2);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;重點在不能寫f(n+2)=2*f(n+1)+f(n)，寫+2就死龜了，要左右都-2&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211124-%E5%B0%9A%E8%AA%B2java-day09/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY08筆記</title>
+        <link>https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/</link>
+        <pubDate>Tue, 23 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/ -&lt;h1 id=&#34;物件導向&#34;&gt;物件導向&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Object-oriented programming中國翻為&amp;quot;面向對象&amp;quot;，台灣則翻為物件導向&lt;/p&gt;
+&lt;p&gt;我個人也覺得&amp;quot;物件導向&amp;quot;翻的比較信雅達，可以參考這篇知乎問答的解釋&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/22515658/answer/120754062&#34;&gt;https://www.zhihu.com/question/22515658/answer/120754062&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;概念&#34;&gt;概念&lt;/h3&gt;
+&lt;p&gt;首先用咖啡機煮咖啡為例:&lt;/p&gt;
+&lt;h5 id=&#34;過程導向process-oriented&#34;&gt;過程導向(Process-oriented)&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;過程導向強調的是功能行為，以&lt;strong&gt;函數為最小單位，考慮如何做&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;執行加咖啡豆方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;執行加水方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;執行煮咖啡方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;執行喝咖啡方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;物件導向object-oriented&#34;&gt;物件導向(Object-oriented)&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;物件導向則是先將功能封裝進物件，強調具備功能的物件，以&lt;strong&gt;類/物件為最小單位，考慮誰來做&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在執行煮咖啡操作前要抽象出：人和咖啡機（分類），然後開始執行：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;人.加咖啡豆&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;人.加水&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;咖啡機.煮&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;人.喝咖啡&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;物件導向的三大特徵&#34;&gt;物件導向的三大特徵&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;封裝(Encapsulation)&lt;/li&gt;
+&lt;li&gt;繼承(Inheritance)&lt;/li&gt;
+&lt;li&gt;多態(Polymorphism)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;類和實例&#34;&gt;類和實例&lt;/h3&gt;
+&lt;p&gt;類(class):抽象的模板、概念上的定義&lt;/p&gt;
+&lt;p&gt;物件(object):是實際存在的個體，也稱為實例(Instance)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;比如說有輪子、吃汽油跑的是汽車類。小弟的車new march則為實例&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;類的設計&#34;&gt;類的設計&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;設計類其實就是設計類的成員&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;屬性(field):成員變量，又稱域、字段、欄位&lt;/p&gt;
+&lt;p&gt;行為(method):成員方法，又稱函數&lt;/p&gt;
+&lt;p&gt;舉例:汽車類的屬性有輪子大小、有品牌名稱；汽車的行為有吃汽油跑&lt;/p&gt;
+&lt;h3 id=&#34;練習-在java創建類並實例化&#34;&gt;練習-在JAVA創建類並實例化&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Car {
+    // 屬性
+    String brand;
+    String owner;
+    boolean isNew = true; // 可以給預設值
+
+    // 行為(方法)
+    public void crash() {
+        if (isNew) {
+            System.out.println(owner + &amp;quot;新買的&amp;quot; + brand + &amp;quot;出車禍，很嘔&amp;quot;);
+        } else {
+            System.out.println(&amp;quot;老車，撞就撞了&amp;quot;);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // 實例化
+        car c1 = new Car();
+        c1.owner = &amp;quot;小弟&amp;quot;;
+        c1.brand = &amp;quot;march&amp;quot;;
+
+        // 調用
+        c1.crash();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;屬性成員變量與局部變量的差異&#34;&gt;屬性(成員變量)與局部變量的差異&lt;/h3&gt;
+&lt;h5 id=&#34;聲明的位置&#34;&gt;聲明的位置&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;屬性:直接放在類的一對{}內&lt;/li&gt;
+&lt;li&gt;局部變量:聲明在方法、方法形餐、代碼塊、構造器形參、構造器內部的變量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;記憶體中位置&#34;&gt;記憶體中位置&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;屬性:對於非static的屬性，放在堆。
+&lt;ul&gt;
+&lt;li&gt;static為線程共享，在類加載階段就實例化，放在方法區&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;局部變量:放在棧&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;權限修飾符&#34;&gt;權限修飾符&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;封裝時會用到&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;屬性:可以在聲明時修飾權限，常見的有private、public、protected、缺省&lt;/li&gt;
+&lt;li&gt;局部變量:只允許使用final&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;默認初始化狀態&#34;&gt;默認初始化狀態&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;屬性:根據其類型有對應的默認值，也可以在聲明時自定義&lt;/li&gt;
+&lt;li&gt;局部變量:沒有默認初始化值，調用之前一定要顯示賦值，否則報錯。
+&lt;ul&gt;
+&lt;li&gt;形參則是調用時賦值即可&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法的聲明與使用&#34;&gt;方法的聲明與使用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;方法:描述類應該具有的功能，例如:狗類會汪汪叫&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;聲明格式&#34;&gt;聲明格式&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;方法名是標示符，依規範用小駝峰(舉例:touchCat)表示&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;權限修飾符 返回值類型 方法名(形參列表){
+//方法體
+}
+舉例:public void sleep(int hour){} // void=無返回值
+&lt;/code&gt;&lt;/pre&gt;&lt;h5 id=&#34;權限修飾符-1&#34;&gt;權限修飾符&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;常見的4種為private、public、protected、缺省&lt;/li&gt;
+&lt;li&gt;進階的有static、final、abstract後面封裝時再講&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;返回值與形參&#34;&gt;返回值與形參&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;有沒有返回值跟形參，要看具體情境判斷&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如果有返回值，必須在聲明時指定返回值的類型，且方法中必須使用&amp;quot;return 數據&amp;quot;返回該類型的變量或常量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若沒有返回值，聲明時用void，通常就不用return；也可以用，但只能純&amp;quot;return&amp;quot;表示結束方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以聲明0或多個形參，格式:數據類型1 形參1,數據類型2 形參2,&amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;使用注意&#34;&gt;使用注意&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;方法中可以調用當前類的屬性或其他方法&lt;/li&gt;
+&lt;li&gt;也可以調用自己(遞歸調用)，但切記要能閉合而不是造成無限循環&lt;/li&gt;
+&lt;li&gt;方法中不能再定義方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習-建立一個學生類的數組&#34;&gt;練習-建立一個學生類的數組&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;創建一個學生類，包含學號1~20、隨機的年級與成績，用數組表示&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Student[] stus = new Student[20];
+        for (int i = 0; i &amp;lt; 20; i++) {
+            stus[i] = new Student(); // 相當於給數組中的每個元素賦值
+            stus[i].number = i + 1;
+            stus[i].state = (int) (Math.random() * 6 + 1);
+            stus[i].score = (int) (Math.random() * 101);
+        }
+        for (int i = 0; i &amp;lt; stus.length; i++) {
+            System.out.println(&amp;quot;學號&amp;quot; + stus[i].number + &amp;quot;,年級是&amp;quot; + stus[i].state + &amp;quot;,成績是&amp;quot; + stus[i].score);
+        }
+    }
+}
+
+class Student {
+    int number;
+    int state;
+    int score;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;重點:new了數組stus後，其中每一個物件stus[n]也都需要new才能使用&lt;/p&gt;
+&lt;h3 id=&#34;匿名物件&#34;&gt;匿名物件&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一次性使用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;new 類名.欲調用的屬性或方法
+或在參數中直接new Circle()調用一個預設的類的實例
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;h3 id=&#34;學習物件導向的三條主線&#34;&gt;學習物件導向的三條主線&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;類及類的成員:屬性、方法、構造器；代碼塊、內部類&lt;/li&gt;
+&lt;li&gt;物件導向特徵:封裝、繼承、多態、抽象&lt;/li&gt;
+&lt;li&gt;其他關鍵字:this、super、abstract、interface、static、final、package、import&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;一切都是物件&#34;&gt;一切都是物件&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在JAVA中我們把功能、結構都封裝到類中，通過類的實例化來調用具體的功能&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;類與物件的操作順序&#34;&gt;類與物件的操作順序&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;創建類，定義屬性、方法&lt;/li&gt;
+&lt;li&gt;類的實例化(new一個該類的物件)&lt;/li&gt;
+&lt;li&gt;調用物件的結構(物件.屬性、物件.方法)&lt;/li&gt;
+&lt;/ol&gt;
+- https://yoziming.github.io/post/211123-%E5%B0%9A%E8%AA%B2java-day08/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY07筆記</title>
+        <link>https://yoziming.github.io/post/211122-%E5%B0%9A%E8%AA%B2java-day07/</link>
+        <pubDate>Mon, 22 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211122-%E5%B0%9A%E8%AA%B2java-day07/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211122-%E5%B0%9A%E8%AA%B2java-day07/ -&lt;h1 id=&#34;數組常用算法&#34;&gt;數組常用算法&lt;/h1&gt;
+&lt;h3 id=&#34;數據結構&#34;&gt;數據結構&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;程序=數據結構+演算法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;數據間的邏輯關係:集合、一對一、一對多、多對多&lt;/li&gt;
+&lt;li&gt;數據的儲存結構:
+&lt;ul&gt;
+&lt;li&gt;線性表:順序表(如:數組)、鏈表、棧、隊列&lt;/li&gt;
+&lt;li&gt;樹形結構:二叉樹&lt;/li&gt;
+&lt;li&gt;圖形結構&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;演算法-algorithm&#34;&gt;演算法-Algorithm&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;檢索&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;加密&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習題-帕斯卡三角&#34;&gt;練習題-帕斯卡三角&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;形狀不是很漂亮&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211120160204410.png&#34; alt=&#34;image-20211120160204410&#34;&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[][] arr = new int[10][];
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    arr[i] = new int[i + 1];
+    // 兩外邊都是1
+    arr[i][0] = 1; 
+    arr[i][i] = 1;
+    if (i &amp;gt; 1) {
+        for (int j = 1; j &amp;lt; arr[i].length - 1; j++) {
+            arr[i][j] = arr[i - 1][j - 1] + arr[i - 1][j];
+        }
+    }
+}
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    for (int j = 0; j &amp;lt; arr[i].length; j++) {
+        System.out.print(arr[i][j] + &amp;quot;\t&amp;quot;);
+    }
+    System.out.println();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;題外話-關於行列&#34;&gt;題外話-關於行列&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;台灣教育部規定跟小學老師教的是&amp;quot;直行橫列&amp;quot;，但這個已經不合時宜了&lt;/p&gt;
+&lt;p&gt;比如說&amp;quot;一行文字&amp;quot;，現代人直覺想到是橫的一行字；程式碼&amp;quot;line幾&amp;quot;我們也說&amp;quot;第幾行&amp;quot;&lt;/p&gt;
+&lt;p&gt;如果溝通時混淆可以用英文，這有個記憶小訣竅&lt;/p&gt;
+&lt;p&gt;column，看col中的l就是直的，列。而row，寫w是橫著寫過去，所以是橫的，行&lt;/p&gt;
+&lt;p&gt;中國、日本都是這樣用，確實比較合理。現在連公文都橫式了，台灣教育部不改革真的失職&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;難題-螺旋矩陣&#34;&gt;難題-螺旋矩陣&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;這個leetcode中等難度了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int n = 5;
+int[][] arr = new int[n][n];
+int count = 0; // 填入的數值
+int maxX = n - 1; // x軸最大下標
+int maxY = n - 1;
+int minX = 0; // x軸最小下標
+int minY = 0;
+while (minX &amp;lt;= maxX) {
+    for (int x = minX; x &amp;lt;= maxX; x++) { // 左到右
+        arr[minY][x] = ++count; // y不變，x從0、1、2..直到填滿
+    }
+    minY++; // 走到右上角頂了，此時x固定，開始加+Y往下走
+    for (int y = minY; y &amp;lt;= maxY; y++) { // 右到下
+        arr[y][maxX] = ++count;
+    }
+    maxX--;
+    for (int x = maxX; x &amp;gt;= minX; x--) { // 下到左
+        arr[maxY][x] = ++count;
+    }
+    maxY--;
+    for (int y = maxY; y &amp;gt;= minY; y--) { // 左到上
+        arr[y][minX] = ++count;
+    }
+    minX++;
+}
+// 印
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    for (int j = 0; j &amp;lt; arr[i].length; j++) {
+        System.out.print(arr[i][j] + &amp;quot;\t&amp;quot;);
+    }
+    System.out.println();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;java產生隨機數&#34;&gt;JAVA產生隨機數&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Math.random()方法是返回一個0到1之間，前閉後開[)aka含前不含後的double值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(int)(Math.random()*10) // 返回0到9的隨機整數
+(int)(Math.random()*n) // 返回0到n-1的隨機整數
+(int)(Math.random()*100)+1 // 返回1到100的隨機整數
+(int)(Math.random() * (99 - 10 + 1) + 10) // 返回2位正整數[10,99]
+(int)(Math.random()*(MAX-min+1)) + min // 返回min到m的隨機整數
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;數組的淺複製&#34;&gt;數組的淺複製&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JAVA中引用類型互相賦值其實是傳遞指針，舉例:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] arr1 = {1, 2, 3};
+int[] arr2;
+arr2 = arr1; // 其實是指到同一個記憶體地址了，畢竟沒有new東西
+arr2[0] = 9;
+System.out.print(&amp;quot;arr2=\t&amp;quot;);
+for (int j : arr2) { // 順便練習一下for-each遍歷數組
+    System.out.print(j + &amp;quot;\t&amp;quot;);
+}
+System.out.print(&amp;quot;arr1=\t&amp;quot;);
+for (int j : arr1) {
+    System.out.print(j + &amp;quot;\t&amp;quot;);
+}
+// arr1跟arr2的[0]都變成9
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;真正複製數組&#34;&gt;真正複製數組&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;new一個然後一一對應賦值，舉例:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] arr2 = new int[10];
+for (int i = 0; i &amp;lt; arr1.length; i++) {
+    arr2[i] = arr1[i];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;數組序列反轉&#34;&gt;數組序列反轉&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;記得/2，不然又全換回去&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 0; i &amp;lt; arr.length / 2; i++) {
+    int tmp = arr[i];
+    arr[i] = arr[arr.length - i - 1];
+    arr[arr.length - i - 1] = tmp;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 方法2
+for (int i = 0, j = arr.length - 1; i &amp;lt; j; i++, j--) {
+    int tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;數組的查找&#34;&gt;數組的查找&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;比對String是否相同使用.equals()&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;String[] arr = {&amp;quot;李四&amp;quot;, &amp;quot;王五&amp;quot;, &amp;quot;劉六&amp;quot;, &amp;quot;張三&amp;quot;};
+String dest = &amp;quot;張三&amp;quot;;
+boolean flag = true;
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    if (dest.equals(arr[i])) {
+        flag = false;
+        System.out.println(&amp;quot;找到對應元素，下標為&amp;quot; + i);
+    }
+}
+if (flag) {
+    System.out.println(&amp;quot;查無結果&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;二分查找&#34;&gt;二分查找&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;重點在於建立head、middle、end三個下標索引&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] arr = {1, 20, 22, 41, 52, 53, 67, 75, 80, 99};
+int dest = 80;
+// 二分查找
+int head = 0; // 索引首
+int end = arr.length - 1; // 索引尾
+boolean flag = true;
+while (head &amp;lt;= end) {
+	int mid = (head + end) / 2; // 這個mid每輪都要更新不能放在while外
+	if (dest == arr[mid]) {
+		System.out.println(&amp;quot;找到了，下標為&amp;quot; + mid);
+		flag = false;
+		break;
+	} else if (dest &amp;lt; arr[mid]) {
+		end = mid - 1;
+	} else {
+		head = mid + 1;
+	}
+}
+if (flag) {
+	System.out.println(&amp;quot;沒找到&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;排序&#34;&gt;排序&lt;/h1&gt;
+&lt;h3 id=&#34;衡量排序法優劣的指標&#34;&gt;衡量排序法優劣的指標&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;時間複雜度:比較的次數、移動的次數&lt;/li&gt;
+&lt;li&gt;空間複查度:所需記憶體&lt;/li&gt;
+&lt;li&gt;穩定性:若序列中A與B的關鍵字值相等，排序後A、B次序保持不變，稱為穩定的&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;排序分類&#34;&gt;排序分類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;內部排序:不需要額外的儲存器(如硬碟)，在記憶體中就能完成&lt;/li&gt;
+&lt;li&gt;外部排序:參與的數據量極大，需藉由外部儲存協助完成，常見的有多路歸併排序。可以認為外部排序是多次配部排序組成。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;十大經典排序法&#34;&gt;十大經典排序法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/hustcc/JS-Sorting-Algorithm&#34;&gt;https://github.com/hustcc/JS-Sorting-Algorithm&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;動態圖文講解+各大語言實例，簡直完美&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;確定性算法的五大特徵&#34;&gt;確定性算法的五大特徵&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;輸入:有0或多個輸入數據，必須清楚描述與定義&lt;/li&gt;
+&lt;li&gt;輸出:至少1個輸出結果，不可沒有結果&lt;/li&gt;
+&lt;li&gt;有限性:不可無限循環，且每步驟在可接受的時間內完成&lt;/li&gt;
+&lt;li&gt;明確性:每一步都有明確含意，不可有歧意&lt;/li&gt;
+&lt;li&gt;可行性:每一步都是清楚可行的，能讓用戶紙筆記算求出答案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;java冒泡排序bubble-sort&#34;&gt;JAVA冒泡排序(Bubble Sort)&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;N個元素要進行冒泡排序，最多總共進行N-1趟排序，第i趟的比較次數為(N-i)次&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 0; i &amp;lt; arr.length - 1; i++) { // 外圈循環趟數
+    for (int j = 0; j &amp;lt; arr.length - i - 1; j++) { // 內圈比較次數
+        if (arr[j] &amp;gt; arr[j + 1]) { // 若前比後大則交換。排完由小到大
+            int temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;arrays工具類的使用&#34;&gt;Arrays工具類的使用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;util包提供常用的功能如下，還有很多可以自己探索&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Arrays.equals(arr1,arr2)，判斷2數組是否完全相符
+Arrays.toString(arr)，將arr完整轉成string，方便印出
+Arrays.fill(arr,n)，將n作為元素填滿數組，方便初始化
+Arrays.sort(arr)，快速排序
+Arrays.binarySearch(arr,dest)，二分查找返回下標或負數(找不到)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;生成0到99長度為n的序列並排序&#34;&gt;生成0到99長度為n的序列並排序&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// creat and print array
+int n = 10; // arr.length
+int[] arr = new int[n];
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    arr[i] = (int) (Math.random() * 100);
+}
+System.out.println(&amp;quot;arr=&amp;quot; + Arrays.toString(arr));
+// sort
+Arrays.sort(arr);
+// print array after sort
+System.out.println(&amp;quot;arr&#39;=&amp;quot; + Arrays.toString(arr));
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;數組常見的錯誤&#34;&gt;數組常見的錯誤&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;ArrayIndexOutOfBoundsException，下標越界&lt;/li&gt;
+&lt;li&gt;NullPointerException，空指針異常，比如想存取一個引用類型其中某元素但沒賦值的情況&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211122-%E5%B0%9A%E8%AA%B2java-day07/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY06筆記</title>
+        <link>https://yoziming.github.io/post/211121-%E5%B0%9A%E8%AA%B2java-day06/</link>
+        <pubDate>Sun, 21 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211121-%E5%B0%9A%E8%AA%B2java-day06/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211121-%E5%B0%9A%E8%AA%B2java-day06/ -&lt;h1 id=&#34;數組array&#34;&gt;數組Array&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;多個相同類型的數據按一定的順序排列的集合&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;結構&#34;&gt;結構&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;數組名&lt;/li&gt;
+&lt;li&gt;元素&lt;/li&gt;
+&lt;li&gt;下標aka角標/索引&lt;/li&gt;
+&lt;li&gt;長度(元素的個數)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;特性&#34;&gt;特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;數組本身是引用數據類型，其中的元素可以是任何類型&lt;/li&gt;
+&lt;li&gt;數組的排列是有序的&lt;/li&gt;
+&lt;li&gt;在記憶體中開闢一整塊連續的空間，數組名引用的是這塊連續空間的首地址&lt;/li&gt;
+&lt;li&gt;長度確定後就&lt;strong&gt;不可更改&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;聲明與初始化&#34;&gt;聲明與初始化&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;數組必須初始化才能使用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;方法1-靜態初始化，創建時填入已知的元素內容，由系統判定長度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] array1; // 聲明
+array1 = new int[]{1, 2, 3}; // 靜態初始化:同時對元素賦值了
+// 也可以合併成
+int[] array1 = new int[]{1, 2, 3};
+// 可以再縮寫成 (類型推斷)
+int[] array1 = {1, 2, 3};
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;方法2-動態初始化，創建時填入已知的長度，元素內容為0或空(系統默認，後述)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[] array3 = new int[3]; // 動態初始化，注意後面的[5]是指長度
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;訪問數組內的元素&#34;&gt;訪問數組內的元素&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;沒特別的，一樣從0~長度-1。長度=array.length&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;舉例:array[0]、array[1]&amp;hellip;array[array.length-1]&lt;/p&gt;
+&lt;h3 id=&#34;遍歷&#34;&gt;遍歷&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;直接print數組會得到類似[I@1b6d3586這樣的一個地址&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 0; i &amp;lt; array.length; i++) {
+    System.out.println(array[i]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以上可用for-each縮寫&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int j : array) {
+    System.out.println(j);
+}
+// 這是JAVA5後增加的for-each寫法，用在不管下標，專門只遍歷的情境，格式為
+for(元素的數據類型 變量 : Collection集合or數組){
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;各種元素的系統默認值&#34;&gt;各種元素的系統默認值&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;剛剛提到動態初始化時，只定了長度，元素內容由系統賦予默認值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;整型(byte、short、int)為0&lt;/li&gt;
+&lt;li&gt;浮點數為0.0&lt;/li&gt;
+&lt;li&gt;char為\u0000(ASCII碼的null)，不是&#39;0&amp;rsquo;也不是空格(空格的編號是\u0020)，就顯示為空，要注意&lt;/li&gt;
+&lt;li&gt;boolean為false&lt;/li&gt;
+&lt;li&gt;引用數據類型則為null，就是空&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;一維數組在記憶體中的情況&#34;&gt;一維數組在記憶體中的情況&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;比較複雜，引用課堂的截圖&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1Kb411W75N?p=146&amp;amp;t=763.1&#34;&gt;https://www.bilibili.com/video/BV1Kb411W75N?p=146&amp;amp;t=763.1&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211119215010800.png&#34; alt=&#34;image-20211119215010800&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;棧裡面放局部變量&lt;/li&gt;
+&lt;li&gt;堆裡面放new出來的東西&lt;/li&gt;
+&lt;li&gt;這張圖是簡單表示執行右上角的程式碼時記憶體中發生的事&lt;/li&gt;
+&lt;li&gt;有瑕疵，因為string也是引用類型，那個劉德華、張學友其實不是那樣&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習題-學生成績分級&#34;&gt;練習題-學生成績分級&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;輸入學生人數與成績，找出最高分，並依照最高分-10以內為A級、-20為B、-30為C、其餘不及格&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Scanner scan = new Scanner(System.in);
+System.out.println(&amp;quot;輸入學生人數&amp;lt;數字正整數&amp;gt;...&amp;quot;);
+int stuNum = scan.nextInt();
+int[] stuScore = new int[stuNum];
+int maxScore = 0;
+for (int i = 0; i &amp;lt; stuNum; i++) {
+    System.out.println(&amp;quot;輸入學生編號&amp;quot; + (i + 1) + &amp;quot;的成績&amp;lt;數字正整數&amp;gt;...&amp;quot;);
+    stuScore[i] = scan.nextInt();
+    if (stuScore[i] &amp;gt; maxScore) {
+        maxScore = stuScore[i];
+    }
+}
+System.out.println(&amp;quot;成績登記完畢，最高分為&amp;quot; + maxScore);
+for (int i = 0; i &amp;lt; stuNum; i++) {
+    if ((maxScore - stuScore[i]) &amp;lt;= 10) {
+        System.out.println(&amp;quot;學生編號&amp;quot; + (i + 1) + &amp;quot;的成績為A等級&amp;quot;);
+    } else if ((maxScore - stuScore[i]) &amp;lt;= 20) {
+        System.out.println(&amp;quot;學生編號&amp;quot; + (i + 1) + &amp;quot;的成績為B等級&amp;quot;);
+    } else if ((maxScore - stuScore[i]) &amp;lt;= 30) {
+        System.out.println(&amp;quot;學生編號&amp;quot; + (i + 1) + &amp;quot;的成績為C等級&amp;quot;);
+    } else {
+        System.out.println(&amp;quot;學生編號&amp;quot; + (i + 1) + &amp;quot;的成績不及格&amp;quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;二維數組&#34;&gt;二維數組&lt;/h1&gt;
+&lt;h3 id=&#34;聲明&#34;&gt;聲明&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 靜態初始
+int[][] arr1 = new int[][]{{1, 2}, {3, 4, 5}, {6}};
+// 靜態+類型推斷
+int[][] arr2 = {{1, 2}, {3, 4, 5}, {6}};
+// 動態初始1
+String[][] arr3 = new String[4][5]; //相當於一個4X5的表格
+// 動態初始2
+String[][] arr4 = new String[3][]; // 已知行，省略列。反之報錯
+String[][][] arr6 = new String[3][][]; //相當於3X?X?的表格，總之第一個[](外層元素)必須指定長度
+
+// 也正確的寫法，容易混淆不建議
+int[] arr5[] = {{1, 2}, {3, 4, 5}, {6}};
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;遍歷-1&#34;&gt;遍歷&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[][] arr = {{1, 2, 3}, {4, 5}};
+for (int i = 0; i &amp;lt; arr.length; i++) {
+    for (int j = 0; j &amp;lt; arr[i].length; j++) {
+        System.out.print(arr[i][j]);
+    }
+    System.out.println();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;記憶體解析&#34;&gt;記憶體解析&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int[][] arr = new int[3][4];
+System.out.println(arr);
+// [[I@1b6d3586，[[表示二維數組
+System.out.println(arr[0]);
+// 得到[I@4554617c，[表示一維數組，I表示類型是int，@地址位置
+int[][] arr2 = new int[3][];
+System.out.println(arr2[0]); // 得到null
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;image-20211120132815535.png&#34; alt=&#34;image-20211120132815535&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;外層元素在棧，也是外層元素(第一個[])必須指定長度的原因&lt;/p&gt;
+&lt;h3 id=&#34;練習題-二維數組邏輯判斷&#34;&gt;練習題-二維數組邏輯判斷&lt;/h3&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211120135915226.png&#34; alt=&#34;image-20211120135915226&#34;&gt;&lt;/p&gt;
+- https://yoziming.github.io/post/211121-%E5%B0%9A%E8%AA%B2java-day06/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>台灣人常唸錯的IT英文單字</title>
+        <link>https://yoziming.github.io/post/211120-%E5%8F%B0%E7%81%A3it%E4%BA%BA%E5%B8%B8%E5%94%B8%E9%8C%AF%E7%9A%84%E8%8B%B1%E6%96%87%E5%96%AE%E5%AD%97/</link>
+        <pubDate>Sat, 20 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211120-%E5%8F%B0%E7%81%A3it%E4%BA%BA%E5%B8%B8%E5%94%B8%E9%8C%AF%E7%9A%84%E8%8B%B1%E6%96%87%E5%96%AE%E5%AD%97/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211120-%E5%8F%B0%E7%81%A3it%E4%BA%BA%E5%B8%B8%E5%94%B8%E9%8C%AF%E7%9A%84%E8%8B%B1%E6%96%87%E5%96%AE%E5%AD%97/ -&lt;h1 id=&#34;台灣人常唸錯的it英文單字&#34;&gt;台灣人常唸錯的IT英文單字&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;非母語有一些口音在所難免，沒有說一定要最正宗精準的發音，只是不要太離譜至於產生歧意，能夠順利溝通交流才是最重要的&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;cache，錯誤念法&amp;quot;catch&amp;quot;，正確念法它和&amp;quot;cash&amp;quot;同音&lt;/p&gt;
+&lt;p&gt;archive，錯誤念法&amp;quot;阿起府&amp;quot;，正確念法&amp;quot;阿-凱f&amp;quot;，f幾乎不發音&lt;/p&gt;
+&lt;p&gt;SQL，錯誤念法&amp;quot;circle&amp;quot;，正確念法&amp;quot;see-qual&amp;quot;&lt;/p&gt;
+&lt;p&gt;hidden，錯誤念法&amp;quot;嗨-等&amp;quot;，正確念法&amp;quot;he-等&amp;quot;&lt;/p&gt;
+&lt;p&gt;suite，錯誤念法&amp;quot;訴-特&amp;quot;，正確念法&amp;quot;sweet&amp;quot;，發音相同都是swēt&lt;/p&gt;
+&lt;p&gt;virtual，錯誤念法&amp;quot;V-糗&amp;quot;，正確念法&amp;quot;ver-秋歐&amp;quot;，虛擬的&lt;/p&gt;
+&lt;p&gt;visual，正確念法&amp;quot;V-九歐&amp;quot;，視覺的，微軟的Visual Studio Code是這個&lt;/p&gt;
+&lt;p&gt;mobile，錯誤念法&amp;quot;哞比歐&amp;quot;，正確念法&amp;quot;ㄇㄡ-ㄅㄛˇ&amp;quot;&lt;/p&gt;
+&lt;p&gt;maintain，man-ten，動詞維護&lt;/p&gt;
+&lt;p&gt;maintenance，名詞維護，正確念法&amp;quot;咩-特-ㄋㄜˇ-死&amp;quot;4個音，重音在特&lt;/p&gt;
+&lt;p&gt;module，正確念法&amp;quot;媽-啾&amp;quot;&lt;/p&gt;
+&lt;p&gt;Azure，正確念法&amp;quot;阿九兒&amp;quot;，連一起速念&lt;/p&gt;
+&lt;p&gt;parameter，錯誤念法&amp;quot;怕拉-咪特&amp;quot;，正確念法&amp;quot;ㄆ˙-ㄌㄩㄚ-ㄇ-特&amp;quot;4個音，第一是輕聲ㄆ，重音在第二個音節&lt;/p&gt;
+&lt;p&gt;error，錯誤念法&amp;quot;ㄟ摟&amp;quot;，正確念法&amp;quot;ㄟ-惹&amp;quot;&lt;/p&gt;
+&lt;p&gt;copy，錯誤念法&amp;quot;摳比&amp;quot;，正確念法&amp;quot;咖痞&amp;quot;&lt;/p&gt;
+&lt;p&gt;lambda，正確念法&amp;quot;ㄌ一ㄢ-打&amp;quot;&lt;/p&gt;
+&lt;p&gt;image，錯誤念法&amp;quot;一美舉&amp;quot;，正確念法&amp;quot;一米舉&amp;quot;&lt;/p&gt;
+&lt;p&gt;Algorithm，正確念法&amp;quot;凹狗-rithm&amp;quot;&lt;/p&gt;
+&lt;p&gt;width，錯誤念法&amp;quot;wide&amp;quot;，正確念法&amp;quot;with&amp;quot;，當作d不存在&lt;/p&gt;
+&lt;p&gt;query，錯誤念法&amp;quot;誇-李&amp;quot;，正確念法&amp;quot;ㄎㄨㄧ-ㄜˇ-ry&amp;quot;3音連速念&lt;/p&gt;
+&lt;p&gt;confirm，錯誤念法&amp;quot;康鳳&amp;quot;，正確念法&amp;quot;ken-firm&amp;quot;，firm=&amp;ldquo;份兒&amp;quot;連念。這是認證、確認的意思&lt;/p&gt;
+&lt;p&gt;conform，錯誤念法&amp;quot;康鳳&amp;rdquo;，正確念法&amp;quot;ken-form&amp;quot;。這是符合的意思，兩字常常誤用誤念&lt;/p&gt;
+&lt;p&gt;register，錯誤念法&amp;quot;re-季-ster&amp;quot;，正確念法&amp;quot;ㄌㄩㄝ-幾-ster&amp;quot;&lt;/p&gt;
+&lt;p&gt;Arduino，正確念法&amp;quot;阿督衣no&amp;quot;&lt;/p&gt;
+&lt;p&gt;result，錯誤念法&amp;quot;re-造&amp;quot;，正確念法&amp;quot;re-奏特&amp;quot;，奏特連念&lt;/p&gt;
+&lt;p&gt;chrome，錯誤念法&amp;quot;恐龍米&amp;quot;，正確念法&amp;quot;窟窿&amp;quot;連念到近乎一個音&lt;/p&gt;
+&lt;p&gt;null，有些人念&amp;quot;怒偶&amp;quot;，正宗念法應為&amp;quot;鬧&amp;quot;、或&amp;quot;NO&amp;quot;，但這跟區域有關係，就算誤念成nil大概也能懂，不用太強求&lt;/p&gt;
+&lt;p&gt;record，做名詞紀錄時，正確念法&amp;quot;ㄌㄩㄝ-渴d&amp;quot;，d幾乎不發音&lt;/p&gt;
+&lt;p&gt;record，做動詞紀錄時，正確念法&amp;quot;re-扣d&amp;quot;，規律幾乎都是名詞重音在前，動詞重音在後&lt;/p&gt;
+&lt;p&gt;resume，做名詞履歷時，正確念法&amp;quot;ㄌㄩㄝ-su-美&amp;quot;，重音在前&lt;/p&gt;
+&lt;p&gt;resume，做動詞恢復時，正確念法&amp;quot;re-zoom&amp;quot;，重音在後&lt;/p&gt;
+&lt;p&gt;modem，錯誤念法&amp;quot;某店&amp;quot;，正確念法&amp;quot;ㄇㄡ-等&amp;quot;&lt;/p&gt;
+&lt;p&gt;cancel，正確念法&amp;quot;ken-叟&amp;quot;，取消&lt;/p&gt;
+&lt;p&gt;cancer，正確念法&amp;quot;ken-ser&amp;quot;，癌症，兩字常常誤用誤念&lt;/p&gt;
+&lt;p&gt;guarantee，正確念法&amp;quot;ㄍㄟ-掄-替&amp;quot;&lt;/p&gt;
+&lt;p&gt;standard，錯誤念法&amp;quot;stan-打&amp;quot;，正確念法&amp;quot;stan-得兒&amp;quot;&lt;/p&gt;
+&lt;p&gt;execute，正確念法&amp;quot;ㄟ-ser-cute&amp;quot;&lt;/p&gt;
+&lt;p&gt;compile，正確念法&amp;quot;康-派-偶&amp;quot;，動詞編譯&lt;/p&gt;
+&lt;p&gt;compiler，正確念法&amp;quot;康-派l-惹&amp;quot;，l幾乎不發音，名詞編譯器&lt;/p&gt;
+&lt;p&gt;exit，正確念法&amp;quot;ㄟㄎ-sit&amp;quot;，常誤念成exist&lt;/p&gt;
+&lt;p&gt;vehicle，正確念法&amp;quot;V-诶口&amp;quot;&lt;/p&gt;
+- https://yoziming.github.io/post/211120-%E5%8F%B0%E7%81%A3it%E4%BA%BA%E5%B8%B8%E5%94%B8%E9%8C%AF%E7%9A%84%E8%8B%B1%E6%96%87%E5%96%AE%E5%AD%97/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>尚硅谷JAVA基礎課-DAY05筆記</title>
+        <link>https://yoziming.github.io/post/211120-%E5%B0%9A%E8%AA%B2java-day05/</link>
+        <pubDate>Sat, 20 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211120-%E5%B0%9A%E8%AA%B2java-day05/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211120-%E5%B0%9A%E8%AA%B2java-day05/ -&lt;h1 id=&#34;嵌套循環&#34;&gt;嵌套循環&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就是for中有for，有時候需要多花點時間理解&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;內層循環整個遍歷完，外層循環才執行一次&lt;/li&gt;
+&lt;li&gt;假設外層循環要執行m次，內層循環要執行n次。整個跑完內層循環一共執行了m*n次&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習題-印菱形&#34;&gt;練習題-印菱形&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Scanner scan = new Scanner(System.in);
+System.out.println(&amp;quot;輸入想印的菱形邊長n=...&amp;quot;);
+int n = scan.nextInt();
+// 上半部分(含中間最長邊)
+for (int i = 1; i &amp;lt;= n; i++) {
+    for (int j = 0; j &amp;lt; n - i; j++) {
+        System.out.print(&amp;quot; &amp;quot;);
+    }
+    for (int k = 0; k &amp;lt; i; k++) {
+        System.out.print(&amp;quot;* &amp;quot;);
+    }
+    System.out.println();
+}
+// 下半部分(從最長-1開始)
+for (int i = 1; i &amp;lt;= n; i++) {
+    for (int j = 0; j &amp;lt; i; j++) {
+        System.out.print(&amp;quot; &amp;quot;);
+    }
+    for (int k = 0; k &amp;lt; n - i; k++) {
+        System.out.print(&amp;quot;* &amp;quot;);
+    }
+    System.out.println();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;練習題-乘法表&#34;&gt;練習題-乘法表&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 1; i &amp;lt;= 9; i++) {
+    for (int j = 1; j &amp;lt;= 9; j++) {
+        System.out.print(i + &amp;quot;*&amp;quot; + j + &amp;quot;=&amp;quot; + i * j + &amp;quot;\t&amp;quot;);
+    }
+    System.out.println();
+}
+// 只想要半邊則第二行j&amp;lt;=9改成j
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;練習題-找完全數&#34;&gt;練習題-找完全數&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;完全數（Perfect number），又稱完美數或完備數，是一些特殊的自然數：它所有的真因子（即除了自身以外的因數）的和，恰好等於它本身。例如6，它有因數1、2、3、6，除去它本身6外，其餘3個數相加，{1}+{2}+{3}=6&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 1; i &amp;lt;= 1000; i++) {
+    int sum = 0;
+    for (int j = 1; j &amp;lt; i; j++) {
+        if (i % j == 0) {
+            sum += j;
+        }
+    }
+    if (sum == i) {
+        System.out.println(i + &amp;quot;為完全數&amp;quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;練習題-找質數&#34;&gt;練習題-找質數&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;直觀版&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;boolean flag = true; // 若把這行放在第一個循環中，則會聲明99次，占資源
+for (int i = 2; i &amp;lt;= 10000; i++) {
+    for (int j = 2; j &amp;lt; i; j++) {
+        if (i % j == 0) { // i被某數(2~自己-1)除盡
+            flag = false; // 不是質數
+        }
+    }
+    if (flag) {
+        System.out.println(i + &amp;quot;是質數&amp;quot;);
+    }
+    flag = true; // 重置flag
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;小優化版&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;boolean flag = true; // 若把這行放在第一個循環中，則會聲明99次，占資源
+for (int i = 2; i &amp;lt;= 10000; i ++) {
+    for (int j = 2; j &amp;lt; Math.sqrt(i); j++) { // 優化1.開平方
+        if (i % j == 0) { // i被某數(2~自己-1)除盡
+            flag = false; // 不是質數
+            break; // 優化2.找到一個因數就停
+        }
+    }
+    if (flag) {
+        System.out.println(i + &amp;quot;是質數&amp;quot;);
+    }
+    flag = true; // 重置flag
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;label簡潔版&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;label:
+for (int i = 2; i &amp;lt;= 10000; i++) {
+    for (int j = 2; j &amp;lt; Math.sqrt(i); j++) { // 優化1.開平方
+        if (i % j == 0) { // i被某數(2~自己-1)除盡
+            continue label; // 找到任何因數就跳出(這裡要連跳出兩層，所以用label)
+        }
+    }
+    System.out.println(i + &amp;quot;是質數&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;補充-計算運行耗時&#34;&gt;補充-計算運行耗時&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;學到單元測試之前先用耗時當作運行效率的參考&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;long start = System.currentTimeMillis();
+// ...待測程式碼
+long end = System.currentTimeMillis();
+System.out.println(&amp;quot;耗時為&amp;quot; + (end - start) + &amp;quot;毫秒&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;break與continue&#34;&gt;break與continue&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;break會&lt;strong&gt;跳出循環體&lt;/strong&gt;，舉例:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 1; i &amp;lt;= 10; i++) {
+    if (i % 5 == 0) {
+        break;
+    }
+    System.out.print(i);
+}
+// 結果為1234
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;continue是&lt;strong&gt;跳過該次&lt;/strong&gt;循環體語句，舉例:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;for (int i = 1; i &amp;lt;= 10; i++) {
+    if (i % 5 == 0) {
+        continue;
+    }
+    System.out.print(i);
+}
+// 結果為12346789
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;共通點:break跟continue之下都不能再聲明執行語句，否則報錯&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;break跟continue都只會跳過&lt;strong&gt;一層&lt;/strong&gt;(就近原則)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以在break跟continue後面接label使用達成跳轉，強烈不推薦&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;實作練習-家庭收支系統&#34;&gt;實作練習-家庭收支系統&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import java.util.Objects;
+import java.util.Scanner;
+
+public class FamilyAccount {
+    public static void main(String[] args) {
+        int money = 10000;
+        String detail = &amp;quot;收支\t變動\t餘額\t說明\n初始\t金額\t&amp;quot; + money + &amp;quot;\t系統給你的&amp;quot;;
+        Scanner scan = new Scanner(System.in);
+        boolean flag = true;
+        while (flag) {
+            System.out.println(&amp;quot;===家庭收支系統===&amp;quot;);
+            System.out.println(&amp;quot;===1.查看明細===&amp;quot;);
+            System.out.println(&amp;quot;===2.登記收入===&amp;quot;);
+            System.out.println(&amp;quot;===3.登記支出===&amp;quot;);
+            System.out.println(&amp;quot;===4.退    出===&amp;quot;);
+            System.out.println(&amp;quot;請輸入&amp;lt;1-4&amp;gt;...&amp;quot;);
+            String input = scan.next(); // 獲取使用者輸入
+            switch (input) {
+                case &amp;quot;1&amp;quot;:
+                    System.out.println(&amp;quot;===1.查看明細===&amp;quot;);
+                    System.out.println(detail);
+                    System.out.println(&amp;quot;明細結束!&amp;quot;);
+                    break;
+                case &amp;quot;2&amp;quot;:
+                    System.out.println(&amp;quot;===2.登記收入===&amp;quot;);
+                    System.out.println(&amp;quot;輸入金額...&amp;quot;);
+                    String moneyInStr = scan.next();
+                    int moneyIn = Integer.parseInt(moneyInStr);
+                    money += moneyIn;
+                    System.out.println(&amp;quot;輸入說明...&amp;quot;);
+                    String infoIn = scan.next();
+                    detail += &amp;quot;\n收入\t&amp;quot; + moneyInStr + &amp;quot;\t\t&amp;quot; + money + &amp;quot;\t&amp;quot; + infoIn;
+                    System.out.println(&amp;quot;登記成功!&amp;quot;);
+                    break;
+                case &amp;quot;3&amp;quot;:
+                    System.out.println(&amp;quot;===3.登記支出===&amp;quot;);
+                    System.out.println(&amp;quot;輸入金額...&amp;quot;);
+                    String moneyOutStr = scan.next();
+                    int moneyOut = Integer.parseInt(moneyOutStr);
+                    money -= moneyOut;
+                    System.out.println(&amp;quot;輸入說明...&amp;quot;);
+                    String infoOut = scan.next();
+                    detail += &amp;quot;\n支出\t&amp;quot; + moneyOutStr + &amp;quot;\t\t&amp;quot; + money + &amp;quot;\t&amp;quot; + infoOut;
+                    System.out.println(&amp;quot;登記成功!&amp;quot;);
+                    break;
+                case &amp;quot;4&amp;quot;:
+                    System.out.println(&amp;quot;確認退出?&amp;lt;Y/N&amp;gt;不分大小寫...&amp;quot;);
+                    String confirmExit = scan.next(); // 獲取使用者輸入
+                    if (Objects.equals(confirmExit, &amp;quot;y&amp;quot;) || Objects.equals(confirmExit, &amp;quot;Y&amp;quot;)) {
+                        flag = false;
+                        System.out.println(&amp;quot;歡迎下次使用!&amp;quot;);
+                        break;
+                    } else if (Objects.equals(confirmExit, &amp;quot;n&amp;quot;) || Objects.equals(confirmExit, &amp;quot;N&amp;quot;)) {
+                        System.out.println(&amp;quot;繼續使用&amp;quot;);
+                        break;
+                    }
+                default:
+                    System.out.println(&amp;quot;輸入有誤，請重新輸入&amp;quot;);
+            }
+        }
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;知識點&#34;&gt;知識點&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;scan.next()收到空白內容(\t、\n、&amp;quot; &amp;ldquo;)它當作啥事都沒發生，比如我想接收&amp;quot;Y&amp;rdquo;，輸入&amp;quot;   Y&amp;quot;竟然也符合&lt;/li&gt;
+&lt;li&gt;比對string使用Objects.equals(目標string物件, &amp;ldquo;內容&amp;rdquo;)&lt;/li&gt;
+&lt;li&gt;string轉int使用int int_val = Integer.parseInt(str);&lt;/li&gt;
+&lt;li&gt;一串含換行的string中若有中文跟數字組合想用\t實現上下行對齊時，數字後面要\t\t&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211120-%E5%B0%9A%E8%AA%B2java-day05/ - yoziming</description>
+        </item>
+    
+    
+  </channel>
+</rss> 

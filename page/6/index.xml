@@ -1,0 +1,781 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yoziming&#39; Blog</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on yoziming&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>Redis基本操作</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-redis%E5%9F%BA%E7%A4%8E/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-redis%E5%9F%BA%E7%A4%8E/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-redis%E5%9F%BA%E7%A4%8E/ -&lt;h1 id=&#34;redis基本操作&#34;&gt;Redis基本操作&lt;/h1&gt;
+&lt;p&gt;0.啟動cmd&amp;gt;redis-cli&lt;/p&gt;
+&lt;p&gt;1.數據結構類似JSON都是Key-Value&lt;/p&gt;
+&lt;p&gt;2.五大數據類型String、Hash、List、Set、Zset&lt;/p&gt;
+&lt;p&gt;2-1.String:最基本的字串，value最大值=512M&lt;/p&gt;
+&lt;p&gt;指令:set(如果存在就相當於修改)、get、del (很多指令可以用tab協助完成)&lt;/p&gt;
+&lt;p&gt;setex(幾秒後自毀)&lt;/p&gt;
+&lt;p&gt;2-2.Hash:類似於Map&lt;/p&gt;
+&lt;p&gt;指令:hset key field value、hget、hdel&lt;/p&gt;
+&lt;p&gt;一次設多項(空格隔開)hmset、hmget&lt;/p&gt;
+&lt;p&gt;hlen:統計有幾個元素&lt;/p&gt;
+&lt;p&gt;hexists:看field是否存在&lt;/p&gt;
+&lt;p&gt;2-3.List:是個有序的鏈表，元素的值可以重複，可以把東西加在頭或尾&lt;/p&gt;
+&lt;p&gt;指令:lpush 從左往管子裡塞東西，一直推擠過去&lt;/p&gt;
+&lt;p&gt;lrange 0 end (最左是0 1 2 3&amp;hellip;，也可以用負數 -1表示最後一個 -2表示倒數第2&lt;/p&gt;
+&lt;p&gt;比如說lrange 0 -1 =從左開始全顯示&lt;/p&gt;
+&lt;p&gt;rpush 從右邊加東西 (就順序上來說比較習慣)&lt;/p&gt;
+&lt;p&gt;lpop / rpop 從左或右取出數據(彈走了)&lt;/p&gt;
+&lt;p&gt;del key 刪掉就沒了&lt;/p&gt;
+&lt;p&gt;lindex 按照索引下標獲得元素(從左到右0開始)&lt;/p&gt;
+&lt;p&gt;llen 長度&lt;/p&gt;
+&lt;p&gt;2-4.Set:String類型的無序集合(元素的值不能重複)&lt;/p&gt;
+&lt;p&gt;舉例 存放email不該重複 (重複加了無效)&lt;/p&gt;
+&lt;p&gt;指令saad&lt;/p&gt;
+&lt;p&gt;smembers 印出所有值&lt;/p&gt;
+&lt;p&gt;sismember 判斷值是否成員&lt;/p&gt;
+&lt;p&gt;srem 刪除指定值&lt;/p&gt;
+- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-redis%E5%9F%BA%E7%A4%8E/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Reflect反射</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-reflect%E5%8F%8D%E5%B0%84/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-reflect%E5%8F%8D%E5%B0%84/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-reflect%E5%8F%8D%E5%B0%84/ -&lt;h1 id=&#34;reflect反射&#34;&gt;reflect反射&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func reflectTest01(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+	// n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value
+	n1 := 10 + rVal.Int() //用.Int()轉換後就可以了
+	// n3 := rVal.Float()//像這樣也不行的，一定要確認類型
+	fmt.Println(&amp;quot;n1=&amp;quot;, n1)
+	// fmt.Println(&amp;quot;n3=&amp;quot;, n3)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	n2 := iV.(int)
+	fmt.Println(&amp;quot;n2=&amp;quot;, n2)
+}
+
+func reflectTest02(b interface{}) {
+	//通過反射獲取傳入的各種訊息
+	//先拿reflect.Type
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+
+	//把rVal轉回interface{}
+	iV := rVal.Interface()
+	//斷言回來
+	n2, ok := iV.(Student)
+	if !ok {
+		fmt.Println(&amp;quot;從interface{}轉換回Student失敗&amp;quot;)
+	}
+	fmt.Println(&amp;quot;n2=&amp;quot;, n2)
+	fmt.Println(&amp;quot;n2.Name=&amp;quot;, n2.Name)
+
+	//獲取變量對應的kind，可以從Type也能從val拿。
+	//比如這個type是包名.Student，kind是stuct，可以說定義上kind包含type
+	fmt.Println(&amp;quot;kind=&amp;quot;, rType.Kind())
+	fmt.Println(&amp;quot;kind=&amp;quot;, rVal.Kind())
+
+}
+
+type Student struct {
+	Name string
+	Age  int
+}
+
+func main() {
+	var num int = 100
+	reflectTest01(num)
+	fmt.Println(&amp;quot;===============================&amp;quot;)
+	stu := Student{
+		Name: &amp;quot;tom&amp;quot;,
+		Age:  20,
+	}
+	reflectTest02(stu)
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;修改變量&#34;&gt;修改變量&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func reflect01(b interface{}) {
+	rVal := reflect.ValueOf(b)
+	fmt.Println(&amp;quot;rVal=&amp;quot;, rVal)
+	rType := reflect.TypeOf(b)
+	fmt.Println(&amp;quot;rType=&amp;quot;, rType)
+
+	iV := rVal.Interface()
+	vNew, ok := iV.(float64)
+	if ok {
+		fmt.Println(&amp;quot;轉換成功 vNew=&amp;quot;, vNew)
+	} else {
+		fmt.Println(&amp;quot;err&amp;quot;)
+	}
+}
+func main() {
+	var v float64 = 1.2
+	reflect01(v)
+
+	// var str string = &amp;quot;tom&amp;quot;  //錯誤示範
+	// fs := reflect.ValueOf(str)
+	// fs.SetString(&amp;quot;jack&amp;quot;)
+	// fmt.Println(str)
+
+	var str string = &amp;quot;tom&amp;quot;
+	fs := reflect.ValueOf(&amp;amp;str)
+	fs.Elem().SetString(&amp;quot;jack&amp;quot;)
+	fmt.Println(str)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;實踐&#34;&gt;實踐&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Monster struct {
+	Name  string `json:&amp;quot;name&amp;quot;`
+	Age   int    `json:&amp;quot;age&amp;quot;`
+	Score float64
+}
+
+//方法打印m值
+func (m Monster) Print() {
+	fmt.Println(m)
+}
+
+//方法 求2和
+func (m Monster) GetSum(n1, n2 int) int {
+	return n1 + n2
+}
+
+//方法 接收4值給Monster
+func (m Monster) Set(n string, a int, s float64) {
+	m.Name = n
+	m.Age = a
+	m.Score = s
+}
+
+//反射實例
+func TestStruct(a interface{}) {
+	typ := reflect.TypeOf(a)
+	val := reflect.ValueOf(a)
+	kd := val.Kind()
+	if kd != reflect.Struct {
+		fmt.Println(&amp;quot;傳入的不是結構體&amp;quot;)
+		return
+	}
+	//獲取該結構有幾字段
+	num := val.NumField()
+	fmt.Println(&amp;quot;struct有幾個字段=&amp;quot;, num)
+
+	//遍歷所有字段
+	for i := 0; i &amp;lt; num; i++ {
+		fmt.Printf(&amp;quot;Field%d 值為%v\n&amp;quot;, i, val.Field(i))
+		//獲取struct標籤
+		tagVal := typ.Field(i).Tag.Get(&amp;quot;json&amp;quot;)
+		if tagVal != &amp;quot;&amp;quot; {
+			fmt.Printf(&amp;quot;Field%d tag為%v\n&amp;quot;, i, tagVal)
+		}
+	}
+	//獲取結構體有幾個方法
+	numOfMethod := val.NumMethod()
+	fmt.Println(&amp;quot;方法有&amp;quot;, numOfMethod)
+	//調用第[]個方法且call調用他(傳入參數值)
+	//但他這個是方法的首字(asc碼)當排序的 我們的方法是G P S開頭 (1)=第2個
+	val.Method(1).Call(nil)
+	//試著調用getsum 他call傳入的是要[]reflect.Value
+	var params []reflect.Value
+	params = append(params, reflect.ValueOf(10))
+	params = append(params, reflect.ValueOf(20))
+	res := val.MethodByName(&amp;quot;GetSum&amp;quot;).Call(params)
+	fmt.Println(&amp;quot;res=&amp;quot;, res[0].Int())
+}
+
+func main() {
+
+	var a Monster = Monster{
+		Name:  &amp;quot;牛梅王&amp;quot;,
+		Age:   500,
+		Score: 87,
+	}
+	TestStruct(a)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-reflect%E5%8F%8D%E5%B0%84/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>RPC</title>
+        <link>https://yoziming.github.io/post/210927-rpc/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210927-rpc/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210927-rpc/ -&lt;h3 id=&#34;server&#34;&gt;server&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/ 用接口，讓服務端註冊RPC的時候，就能確保他合法
+
+type World struct{}
+
+func (w *World) HelloWorld(name string, resp *string) error {
+	*resp = name + &amp;quot;你好&amp;quot;
+	return nil
+	// 如果這個return的返回值不為空，
+	// 那無論傳出的參數是否有值，服務端都不會給東西
+	// (就你給你error)
+}
+
+// 用接口，讓服務端註冊RPC的時候，就能確保他合法
+type MyInerface interface {
+	HelloWorld(string *string) error
+}
+
+// 調用方法時，給i傳參，參數是實現HelloWorld方法的對象
+func RegsiterService(i MyInerface) {
+	rpc.RegisterName(&amp;quot;hello&amp;quot;, i)
+}
+func main() {
+	// 1.註冊RPC服務 綁定對象方法
+	err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World))
+	if err != nil {
+		fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err)
+	}
+
+	// 2.開始監聽
+	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;listener failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;server開始監聽...&amp;quot;)
+	defer listener.Close()
+	// 3.建立連接
+	conn, err := listener.Accept()
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;連接成功&amp;quot;)
+	defer conn.Close()
+	// 4.綁訂服務
+	jsonrpc.ServeConn(conn)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;client&#34;&gt;client&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;net/rpc&amp;quot;
+	&amp;quot;net/rpc/jsonrpc&amp;quot;
+)
+
+func main01() {
+	// 1.用RPC連接服務器
+	// conn, err := rpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	conn, err := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;Accept failed&amp;quot;, err)
+		return
+	}
+	defer conn.Close()
+	// 2.遠程調用函數
+	var reply = &amp;quot;&amp;quot;
+	err = conn.Call(&amp;quot;hello.HelloWorld&amp;quot;, &amp;quot;張三&amp;quot;, &amp;amp;reply)
+	if err != nil {
+		fmt.Println(&amp;quot;Call failed&amp;quot;, err)
+		return
+	}
+	fmt.Println(reply)
+}
+
+func main() {
+	// myClient := InitClient(&amp;quot;127.0.0.1:8899&amp;quot;)
+	// var resp string
+	// err := myClient.HelloWorld(&amp;quot;李四&amp;quot;, &amp;amp;resp)
+	// if err != nil {
+	// 	fmt.Println(&amp;quot;HelloWorld failed&amp;quot;, err)
+	// 	return
+	// }
+	// fmt.Println(resp, err)
+}
+
+type MyClient struct {
+	c *rpc.Client
+}
+
+// 把c初始化下面才能調用
+// func InitClient(addr string) {
+// 	conn, _ := jsonrpc.Dial(&amp;quot;tcp&amp;quot;, addr)
+// 	return MyClient{c: conn}
+// }
+
+func (m *MyClient) HelloWorld(a string, b *string) error {
+	return m.c.Call(&amp;quot;hello.HelloWorld&amp;quot;, a, b)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-rpc/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Split切分字串</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ -&lt;h1 id=&#34;split切分字串&#34;&gt;Split切分字串&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
+func Split(str, sep string) []string {
+	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
+	var ret = make([]string, 0, strings.Count(str, sep)+1)
+	index := strings.Index(str, sep)
+	for index &amp;gt;= 0 {
+		ret = append(ret, str[:index])
+		str = str[index+len(sep):]
+		index = strings.Index(str, sep)
+	}
+	ret = append(ret, str)
+	return ret
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-split%E5%88%87%E5%88%86%E5%AD%97%E4%B8%B2/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Test單元測試</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ -&lt;h1 id=&#34;test單元測試&#34;&gt;Test單元測試&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;單元測試目的是驗證程式碼(例如一個方法)本身的邏輯是否正確&lt;/li&gt;
+&lt;li&gt;單元測試應排除外部依賴（Database、File System IO）&lt;/li&gt;
+&lt;li&gt;單元測試應該是隨時隨地都要能正確執行&lt;/li&gt;
+&lt;li&gt;單元測試的標題需要具備好的可讀性、明確、標題與測試的內容精確吻合
+例：「public void GetTest_帶入會員ID＿應回該ID搜尋到的會員資料DTO」，盡量符合：受測方法＿傳入參數意義＿期望得到的結果&lt;/li&gt;
+&lt;li&gt;一個測試只應該關注一件事情，如果受測目標有多種狀況，應該分成好幾個測試去涵蓋所有邏輯&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;3A原則&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Arrange = 準備受測物件、參數、預期結果&lt;/li&gt;
+&lt;li&gt;Act = 執行受測方法&lt;/li&gt;
+&lt;li&gt;Assert = 驗證執行結果與預測結果是否一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;calgo&#34;&gt;cal.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func addUpper(n int) int {
+	res := 0
+	for i := 0; i &amp;lt;= n; i++ {
+		res = +i
+	}
+	return res
+}
+
+func getSub(n1, n2 int) int {
+	return n1 - n2
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;cal_testgo&#34;&gt;cal_test.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TestAddUpper(t *testing.T) {
+	//調用
+	res := addUpper(10)
+	if res != 55 {
+		t.Fatalf(&amp;quot;AddUpper(10)執行錯誤 期望=%v 實際=%v&amp;quot;, 55, res)
+	}
+	t.Logf(&amp;quot;執行正確&amp;quot;)
+}
+
+func TestHello(t *testing.T) {
+	fmt.Println(&amp;quot;hello&amp;quot;)
+}
+
+func TestGetSub(t *testing.T) {
+	res2 := getSub(5, 10)
+	if res2 != 10 {
+		t.Fatalf(&amp;quot;getSub(5, 10)執行錯誤 期望=%v 實際=%v&amp;quot;, 10, res2)
+	}
+	t.Logf(&amp;quot;執行正確&amp;quot;)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;測性能&#34;&gt;測性能&lt;/h2&gt;
+&lt;h4 id=&#34;splitgo&#34;&gt;Split.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// abc,b=&amp;gt;[a c]
+func Split(str, sep string) []string {
+	// str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot;
+	var ret = make([]string, 0, strings.Count(str, sep)+1)
+	index := strings.Index(str, sep)
+	for index &amp;gt;= 0 {
+		ret = append(ret, str[:index])
+		str = str[index+len(sep):]
+		index = strings.Index(str, sep)
+	}
+	ret = append(ret, str)
+	return ret
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;split_testgo&#34;&gt;Split_test.go&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func BenchmarkSplit(b *testing.B) {
+	for i := 0; i &amp;lt; b.N; i++ {
+		Split(&amp;quot;a:b:c&amp;quot;, &amp;quot;:&amp;quot;)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-test%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>WaitGroup鎖</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-waitgroup%E9%8E%96/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-waitgroup%E9%8E%96/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-waitgroup%E9%8E%96/ -&lt;h1 id=&#34;waitgroup鎖&#34;&gt;WaitGroup鎖&lt;/h1&gt;
+&lt;h3 id=&#34;讀寫鎖&#34;&gt;讀寫鎖&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var x = 0
+var wg sync.WaitGroup
+var rwlock sync.RWMutex
+
+func write() {
+	rwlock.Lock()
+	x = x + 1
+	time.Sleep(time.Millisecond * 10)
+	rwlock.Unlock()
+	wg.Done()
+}
+
+func read() {
+	// lock.Lock()
+	rwlock.RLock() //鎖讀
+	time.Sleep(time.Millisecond)
+	rwlock.RUnlock()
+	// lock.Unlock()
+	wg.Done()
+}
+
+func main() {
+	start := time.Now()
+	for i := 0; i &amp;lt; 10; i++ {
+		wg.Add(1)
+		go write()
+	}
+	for i := 0; i &amp;lt; 1000; i++ {
+		wg.Add(1)
+		go read()
+	}
+	wg.Wait()
+	end := time.Now()
+	fmt.Println(end.Sub(start))
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;互斥鎖&#34;&gt;互斥鎖&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var x = 0
+var wg sync.WaitGroup
+var lock sync.Mutex
+
+func add() {
+	for i := 0; i &amp;lt; 50000; i++ {
+		lock.Lock()
+		x = x + 1
+		lock.Unlock()
+	}
+	wg.Done()
+}
+
+func main() {
+	wg.Add(2)
+	go add()
+	go add()
+	wg.Wait()
+	fmt.Println(x)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-waitgroup%E9%8E%96/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>二維數組</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E4%BA%8C%E7%B6%AD%E6%95%B8%E7%B5%84/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E4%BA%8C%E7%B6%AD%E6%95%B8%E7%B5%84/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E4%BA%8C%E7%B6%AD%E6%95%B8%E7%B5%84/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+// 000000
+// 001000
+// 020300
+// 000000
+func main() {
+	var arr [4][6]int
+	arr[1][2] = 1
+	arr[2][1] = 2
+	arr[2][3] = 3
+	//遍歷
+	for i := 0; i &amp;lt; len(arr); i++ {
+		for j := 0; j &amp;lt; len(arr[i]); j++ {
+			fmt.Print(arr[i][j], &amp;quot; &amp;quot;)
+		}
+		fmt.Println()
+	}
+	//遍歷range
+	for i, v := range arr {
+		for j, v2 := range v {
+			fmt.Printf(&amp;quot;arr[%v][%v]=%v \t&amp;quot;, i, j, v2)
+		}
+
+		fmt.Println()
+	}
+	//三班五學生
+	var score [3][5]float64
+	for i := 0; i &amp;lt; len(score); i++ {
+		for j := 0; j &amp;lt; len(score[i]); j++ {
+			fmt.Printf(&amp;quot;輸入第%v班第%v位成績&amp;quot;, i+1, j+1)
+			fmt.Scanln(&amp;amp;score[i][j])
+		}
+
+	}
+	cal(score)
+
+}
+func cal(score [3][5]float64) {
+	total := 0.0
+	for i := 0; i &amp;lt; len(score); i++ {
+		sum := 0.0
+		for j := 0; j &amp;lt; len(score[i]); j++ {
+			sum = sum + score[i][j]
+		}
+		total += sum
+		fmt.Printf(&amp;quot;第%d班的總分為%v 平均分%v \n&amp;quot;, i+1, sum, sum/5)
+	}
+	fmt.Printf(&amp;quot;總分為%v 平均分%v \n&amp;quot;, total, total/15)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E4%BA%8C%E7%B6%AD%E6%95%B8%E7%B5%84/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>冒泡排序</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/ -&lt;h1 id=&#34;冒泡排序&#34;&gt;冒泡排序&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var arr1 = [...]int{5, 9, 6, 8, 7, 3, 4, 2, 1, 6}
+
+func main() {
+	s1 := arr1[:]
+	bubbleSort(s1)
+	fmt.Println(arr1)
+}
+
+func bubbleSort(x []int) {
+	for j := 1; j &amp;lt; len(x); j++ {
+		for i := 0; i &amp;lt; len(x)-1; i++ {
+			if x[i] &amp;gt; x[i+1] {
+				x[i], x[i+1] = x[i+1], x[i]
+			}
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>函數封裝的金字塔</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E5%B0%81%E8%A3%9D%E7%9A%84%E9%87%91%E5%AD%97%E5%A1%94/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E5%B0%81%E8%A3%9D%E7%9A%84%E9%87%91%E5%AD%97%E5%A1%94/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E5%B0%81%E8%A3%9D%E7%9A%84%E9%87%91%E5%AD%97%E5%A1%94/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+)
+
+var input int
+
+func jin(input int) {
+
+	for i := 1; i &amp;lt;= input; i++ {
+		for k := 1; k &amp;lt;= input-i; k++ {
+			fmt.Print(&amp;quot; &amp;quot;)
+		}
+		for j := 1; j &amp;lt;= 2*i-1; j++ {
+			if j == 1 || j == 2*i-1 || i == input {
+				fmt.Print(&amp;quot;*&amp;quot;)
+			} else {
+				fmt.Print(&amp;quot; &amp;quot;)
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func main() {
+	fmt.Println(&amp;quot;層數=?&amp;quot;)
+	fmt.Scanln(&amp;amp;input)
+	jin(input)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E5%B0%81%E8%A3%9D%E7%9A%84%E9%87%91%E5%AD%97%E5%A1%94/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>函數綁定方法</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E7%B6%81%E5%AE%9A%E6%96%B9%E6%B3%95/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E7%B6%81%E5%AE%9A%E6%96%B9%E6%B3%95/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E7%B6%81%E5%AE%9A%E6%96%B9%E6%B3%95/ -&lt;h1 id=&#34;函數綁定方法&#34;&gt;函數綁定方法&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;方法:結構體的行為，自訂義的結構都可以有方法，方法是作用在指定類型上(綁定的)&lt;/p&gt;
+&lt;p&gt;方法就是跟一種類型綁定的函數，因為綁定數據類型了就可以偷雞，具體表現在省指針&lt;/p&gt;
+&lt;p&gt;定義方法時候寫的是func(a ABC) //後面怎樣調用都是值拷貝&lt;/p&gt;
+&lt;p&gt;定義方法時候寫的是func(a *ABC)//後面怎樣調用都是真實地址&lt;/p&gt;
+&lt;p&gt;要調用方法，只能透過那種類型的的數據變量 例如a1.ABC&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+)
+
+type Person struct {
+	Name string
+}
+
+//給Person類型綁定一個方法
+func (p Person) test() {
+	p.Name = &amp;quot;jack&amp;quot;
+	fmt.Println(&amp;quot;test()=&amp;quot;, p.Name)
+}
+
+//給Person類型添加一個speak方法，輸出xxx是好人
+func (p Person) speak() {
+	fmt.Println(p.Name, &amp;quot;是一個好人&amp;quot;)
+}
+
+//添加一個計算方法算+1...+100
+func (p Person) count() {
+	res := 0
+	for i := 1; i &amp;lt;= 100; i++ {
+		res += i
+	}
+	fmt.Println(p.Name, &amp;quot;計算的結果是&amp;quot;, res)
+}
+
+//添加一個計算方法算+1...+n
+func (p Person) count2(n int) {
+	res := 0
+	for i := 1; i &amp;lt;= n; i++ {
+		res += i
+	}
+	fmt.Println(p.Name, &amp;quot;計算的結果是&amp;quot;, res)
+}
+
+//添加一個方法計算2個值的和並返回
+func (p Person) getSum(n1, n2 int) int {
+	return n1 + n2
+}
+
+//為了提高效率，通常把方法跟結構的指針綁定
+type Circle struct {
+	radius float64
+}
+
+func (c *Circle) area() float64 {
+	c.radius = 10.0                   //因為傳來的是指針，如果在函數裡改他就等於改真實地址了
+	return 3.14 * c.radius * c.radius //語法糖 本來應該是要寫(*c)來計算的
+}
+
+//給某方法實現方法String()
+type Student struct {
+	Name string
+	Age  int
+}
+
+func (stu *Student) String() string {
+	str := fmt.Sprintf(&amp;quot;Name=%v Age=%v&amp;quot;, stu.Name, stu.Age)
+	return str
+}
+
+//練習題
+type MeUtils struct {
+	//123
+}
+
+func (mu MeUtils) Print(m int, n int) {
+	for i := 1; i &amp;lt;= m; i++ {
+		for j := 1; j &amp;lt;= n; j++ {
+			fmt.Print(&amp;quot;*&amp;quot;)
+		}
+		fmt.Println()
+	}
+
+}
+
+func main() {
+	var p Person
+	p.Name = &amp;quot;tom&amp;quot;
+	p.test() //調用方法
+	fmt.Println(&amp;quot;main=&amp;quot;, p.Name)
+	//test()//報錯的
+	//總的來說就是把test方法跟Person類型綁定，而這個test只能用Person類型調用
+	//傳的是形參 (函數裡的是一個副本)
+	//---------------------------------------------以下開始應用練習
+	p.speak()
+	p.count()
+	p.count2(1000)
+	res := p.getSum(10, 20)
+	fmt.Println(res)
+
+	//創建變量嘗試調用area
+	var c Circle
+	c.radius = 5.0
+	res2 := c.area() //語法糖 本來應該是要寫(&amp;amp;c).area()的
+	fmt.Println(res2)
+
+	//調用Student
+	stu1 := Student{
+		Name: &amp;quot;tom&amp;quot;,
+		Age:  18,
+	}
+	//如果實現了*Student類型的String方法就會自動調用
+	fmt.Println(&amp;amp;stu1)
+
+	//練習題
+	var mu MeUtils
+	mu.Print(5, 10)
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-%E5%87%BD%E6%95%B8%E7%B6%81%E5%AE%9A%E6%96%B9%E6%B3%95/ - yoziming</description>
+        </item>
+    
+    
+  </channel>
+</rss> 

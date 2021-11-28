@@ -1,0 +1,1072 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yoziming&#39; Blog</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on yoziming&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>迷宮遞迴</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/ -&lt;h1 id=&#34;迷宮遞迴&#34;&gt;迷宮遞迴&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func SetWay(myMap *[8][7]int, a int, b int) bool {
+	//a,b 表示對地圖的那個點測試
+
+	//找到出口
+	if myMap[6][5] == 2 {
+		return true
+	} else {
+		//繼續找
+		if myMap[a][b] == 0 { //可探測的點
+			myMap[a][b] = 2            //踩上去了，再探上下左右，但是我知道要往下往右探
+			if SetWay(myMap, a+1, b) { //下
+				return true
+			} else if SetWay(myMap, a, b+1) { //右
+				return true
+			} else if SetWay(myMap, a-1, b) { //上
+				return true
+			} else if SetWay(myMap, a, b-1) { //左
+				return true
+			} else { //死路
+				myMap[a][b] = 3
+				return false
+			}
+		} else { //不可探測的點
+			return false
+		}
+	}
+}
+func main() {
+	//定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路
+	var myMap [8][7]int
+
+	//四周設置圍牆
+	for i := 0; i &amp;lt; 7; i++ {
+		myMap[0][i] = 1
+		myMap[7][i] = 1
+	}
+	for i := 0; i &amp;lt; 8; i++ {
+		myMap[i][0] = 1
+		myMap[i][6] = 1
+	}
+	myMap[3][1] = 1
+	myMap[3][2] = 1
+
+	//看樣子
+	for i := 0; i &amp;lt; 8; i++ {
+		for j := 0; j &amp;lt; 7; j++ {
+			fmt.Print(myMap[i][j], &amp;quot; &amp;quot;)
+		}
+		fmt.Println()
+	}
+
+	SetWay(&amp;amp;myMap, 1, 1)
+	fmt.Println(&amp;quot;已探完&amp;quot;)
+
+	for i := 0; i &amp;lt; 8; i++ {
+		for j := 0; j &amp;lt; 7; j++ {
+			fmt.Print(myMap[i][j], &amp;quot; &amp;quot;)
+		}
+		fmt.Println()
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E8%BF%B7%E5%AE%AE%E9%81%9E%E8%BF%B4/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>雙向鏈表</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E9%9B%99%E5%90%91%E9%8F%88%E8%A1%A8/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E9%9B%99%E5%90%91%E9%8F%88%E8%A1%A8/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E9%9B%99%E5%90%91%E9%8F%88%E8%A1%A8/ -&lt;h1 id=&#34;雙向鏈表&#34;&gt;雙向鏈表&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type HeroNode struct {
+	no   int
+	name string
+	pre  *HeroNode //表示指向前一個節點
+	next *HeroNode //表示指向下一個節點
+}
+
+//給鏈表插入節點
+func Insert(head *HeroNode, newHeroNode *HeroNode) {
+	//先找到最後的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		}
+		temp = temp.next //不斷往下找
+	}
+	//把newHeroNode加到屁股
+	temp.next = newHeroNode
+	newHeroNode.pre = temp
+}
+
+//根據No從小到大插入
+func InsertNo(head *HeroNode, newHeroNode *HeroNode) {
+	//想找到適當的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		} else if temp.next.no &amp;gt; newHeroNode.no {
+			//表示new要插到temp後
+			break
+		} else if temp.next.no == newHeroNode.no {
+			//表示new這個編號已存在
+			fmt.Println(newHeroNode.no, &amp;quot;該編號已存在&amp;quot;)
+			return
+		}
+		temp = temp.next //不斷往下找
+
+	}
+	//把newHeroNode加到找到的地方
+	newHeroNode.next = temp.next
+	newHeroNode.pre = temp
+	if temp.next != nil {
+		temp.next.pre = newHeroNode //temp的下一個的前一個=新
+	}
+	temp.next = newHeroNode
+}
+
+//根據no刪除一個節點
+func DelHeroNode(head *HeroNode, id int) {
+	//想找到適當的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		} else if temp.next.no == id {
+			//表示找到了
+			fmt.Println(id, &amp;quot;該編號已刪除&amp;quot;)
+			temp.next = temp.next.next
+			if temp.next != nil {
+				temp.next.pre = temp
+			}
+			return
+		}
+		temp = temp.next //不斷往下找
+	}
+
+}
+
+//顯示
+func List(head *HeroNode) {
+	//創建一個輔助
+	temp := head
+	if temp.next == nil { //空鏈表?
+		fmt.Println(&amp;quot;空&amp;quot;)
+		return
+	}
+	for {
+		fmt.Printf(&amp;quot;[%d,%s]==&amp;gt;&amp;quot;, temp.next.no, temp.next.name)
+		temp = temp.next      //不斷往下找
+		if temp.next == nil { //到尾了
+			fmt.Println(&amp;quot;完畢&amp;quot;)
+			break
+		}
+	}
+}
+
+func main() {
+	//創建一個頭節點(空的)
+	head := &amp;amp;HeroNode{}
+	hero1 := &amp;amp;HeroNode{
+		no:   1,
+		name: &amp;quot;宋江&amp;quot;,
+	}
+	hero2 := &amp;amp;HeroNode{
+		no:   2,
+		name: &amp;quot;李奎&amp;quot;,
+	}
+	hero3 := &amp;amp;HeroNode{
+		no:   3,
+		name: &amp;quot;李軌&amp;quot;,
+	}
+	InsertNo(head, hero3)
+	InsertNo(head, hero1)
+	InsertNo(head, hero2)
+
+	List(head)
+	DelHeroNode(head, 3)
+	List(head)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E9%9B%99%E5%90%91%E9%8F%88%E8%A1%A8/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>channel通道</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/ -&lt;h1 id=&#34;channel通道&#34;&gt;channel通道&lt;/h1&gt;
+&lt;h2 id=&#34;lock-sync與chan基本認識&#34;&gt;lock sync與chan基本認識&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//階乘1-n 把各個數放到map中 用goroutine完成
+var (
+	myMap = make(map[int]int, 10)
+	//聲明一個全局的互斥鎖
+	lock sync.Mutex
+	//來點管道 記得要make初始化才能用
+	intChan chan int = make(chan int, 3)
+
+	//聲明類型為空接口可以接收任意類型
+	allChan chan interface{} = make(chan interface{}, 5)
+	//注意後面沒聲明容量則不給用
+)
+
+type Cat struct {
+	Name string
+	Age  int
+}
+
+func test(n int) {
+	res := 1
+	for i := 1; i &amp;lt;= n; i++ {
+		res = res * i
+	}
+	//把res放進mayMap
+	//加鎖
+	lock.Lock()
+	myMap[n] = res
+	//解鎖
+	lock.Unlock()
+}
+
+func main() {
+	//啟用多個協程
+	for i := 1; i &amp;lt;= 1; i++ {
+		go test(i)
+	}
+	//如果不加鎖concurrent map iteration and map write
+	lock.Lock()
+	for i, v := range myMap {
+		fmt.Printf(&amp;quot;map[%d]=%v\n&amp;quot;, i, v)
+	}
+	lock.Unlock()
+
+	//看看管道
+	fmt.Println(intChan)
+	//出來是一個地址，表示誰要經過這 (當然本身也有一個地址但不重要)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+
+	//向管道寫入數據
+	intChan &amp;lt;- 10
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	num1 := 5
+	intChan &amp;lt;- num1
+	intChan &amp;lt;- 1
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	//intChan &amp;lt;- 12 //超過3個太長報錯
+
+	//從管道取數據
+	var num2 int = &amp;lt;-intChan
+	fmt.Println(num2)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+	//先進先出，取完超過一樣報錯
+	num3 := &amp;lt;-intChan
+	fmt.Println(num3)
+	fmt.Printf(&amp;quot;長度=%v 容量=%v\n&amp;quot;, len(intChan), cap(intChan))
+
+	//關於allChan
+	allChan &amp;lt;- 10
+	allChan &amp;lt;- &amp;quot;ABC&amp;quot;
+	cat1 := Cat{&amp;quot;小花&amp;quot;, 3}
+	allChan &amp;lt;- cat1
+	//可以亂塞一通
+
+	//想拿到第三個元素 先把兩個推出來
+	&amp;lt;-allChan
+	&amp;lt;-allChan
+
+	newCat := &amp;lt;-allChan //從管道中取出來的cat1
+	fmt.Printf(&amp;quot;類型=%T 值=%v\n&amp;quot;, newCat, newCat)
+	// fmt.Printf(&amp;quot;%v\n&amp;quot;, newCat.Name) //雖然類型一樣但這樣用不通過
+	//必須類型斷言
+	a := newCat.(Cat)
+	fmt.Printf(&amp;quot;%v\n&amp;quot;, a.Name)
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;只讀或寫&#34;&gt;只讀或寫&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//chan可以只讀或只寫
+	// chan1 chan int //可讀可寫
+	var chan2 chan&amp;lt;- int = make(chan int, 3) //只寫
+	chan2 &amp;lt;- 20
+	// num:=&amp;lt;-chan2//報錯
+	fmt.Println(chan2)
+
+	var chan3 &amp;lt;-chan int = make(chan int, 3)
+	num2 := &amp;lt;-chan3
+	fmt.Println(num2)
+	chan3 &amp;lt;- 10 //報錯
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;遍歷chan&#34;&gt;遍歷chan&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//用close關掉channel就不能往內加(但是可以拿出)
+	var intChan chan int = make(chan int, 3)
+	intChan &amp;lt;- 100
+	intChan &amp;lt;- 200
+	close(intChan)
+	// intChan &amp;lt;- 300 //錯誤
+	n1 := &amp;lt;-intChan
+	fmt.Println(n1)
+
+	//遍歷
+	intChan2 := make(chan int, 100)
+	for i := 0; i &amp;lt; 100; i++ {
+		intChan2 &amp;lt;- i * 2 //放100個數據(2,4,6...進去)
+	}
+	//得用for:=range用一般for遍歷會報錯
+	//如果已經close遍歷完就會自動停止，如果沒有先關掉會deadlock
+	close(intChan2)
+	for v := range intChan2 {
+		fmt.Println(v)
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;阻塞&#34;&gt;阻塞&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func writeData(intChan chan int) {
+	for i := 1; i &amp;lt;= 50; i++ {
+		intChan &amp;lt;- i
+		fmt.Printf(&amp;quot;writeData=%v\n&amp;quot;, i)
+		// time.Sleep(time.Second / 1000)
+	}
+	close(intChan) //寫完就關
+}
+func readData(intChan chan int, exitChan chan bool) {
+	for {
+		v, ok := &amp;lt;-intChan
+		// time.Sleep(time.Second / 1000)
+		if !ok {
+			break
+		}
+		fmt.Printf(&amp;quot;readData讀取到數據=%v\n&amp;quot;, v)
+	}
+	//讀取完=任務完成 其實這裡不管對exitChan做啥都無所謂，重點是有調用他就能阻塞main
+	exitChan &amp;lt;- true
+	close(exitChan)
+}
+
+func main() {
+
+	intChan := make(chan int, 5)
+	//即使管道小 寫的慢讀得快或相反，他會排隊，重點不要阻塞死鎖就能繼續
+	exitChan := make(chan bool, 1)
+
+	go writeData(intChan)
+	go readData(intChan, exitChan)
+	if &amp;lt;-exitChan { //重點就是這個判斷調用到一個管道有跨到子函數的就能阻塞住main
+		fmt.Println(&amp;quot;任務完成&amp;quot;)
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;用select解決阻塞&#34;&gt;用select解決阻塞&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func sayH() {
+	for i := 0; i &amp;lt; 10; i++ {
+		time.Sleep(time.Second / 10)
+		fmt.Println(&amp;quot;hello&amp;quot;)
+	}
+}
+
+func test() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(&amp;quot;test錯誤&amp;quot;, err)
+		}
+	}()
+	myMap := make(map[int]string)
+	myMap[0] = &amp;quot;我家&amp;quot;
+	fmt.Println(myMap)
+}
+
+func main() {
+
+	go sayH()
+	go test()
+	fmt.Println(&amp;quot;hellom&amp;quot;)
+
+	intChan := make(chan int, 10)
+	for i := 0; i &amp;lt; 10; i++ {
+		intChan &amp;lt;- i
+	}
+
+	stringChan := make(chan string, 5)
+	for i := 0; i &amp;lt; 5; i++ {
+		stringChan &amp;lt;- &amp;quot;hello&amp;quot; + fmt.Sprintf(&amp;quot;%d&amp;quot;, i)
+	}
+	//傳統方法遍歷，如果不關閉會阻塞 就導致deadlock
+	//實際開發不好確定哪時候關閉，就用select解決
+	for {
+		select {
+		//就算沒關閉，只要阻塞他就往其他case移動
+		case v := &amp;lt;-intChan:
+			fmt.Printf(&amp;quot;intChan取出%d\n&amp;quot;, v)
+		case v := &amp;lt;-stringChan:
+			fmt.Printf(&amp;quot;stringChan取出%s\n&amp;quot;, v)
+		default:
+			fmt.Println(&amp;quot;取完了&amp;quot;)
+			return
+		}
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-channel%E9%80%9A%E9%81%93/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>const常量</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/ -&lt;h1 id=&#34;const常量&#34;&gt;const常量&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;常量 聲明時必須賦值、不能修改、只能是bool、數值、string，賦值需是一個確定的值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	const tax int = 10
+	const x = 9 / 3
+	// const c = 9 / a //因為a可能是一個變量所以這樣不行
+	// var a int = 3
+	fmt.Println(tax, x)
+
+	const (
+		a = iota //表示a=0
+		b        //b=a+1
+		c        //c=b+1
+	)
+	fmt.Println(a, b, c)
+
+	const (
+		d = iota
+		e
+		f, g = iota, iota
+	)
+	fmt.Println(d, e, f, g)
+
+	//其他程式語言常量會用全大寫，go中沒限制，且一樣用首字母大小來控制使用範圍
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-const%E5%B8%B8%E9%87%8F/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>defer臨走前啟用</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/ -&lt;h1 id=&#34;defer臨走前啟用&#34;&gt;defer臨走前啟用&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;退出函數前才執行&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func sum(n1, n2 int) int {
+	defer fmt.Println(&amp;quot;ok1&amp;quot;, n1)
+	defer fmt.Println(&amp;quot;ok2&amp;quot;, n2)
+	//defer棧先入後出
+	n1++
+	n2++
+	res := n1 + n2
+	fmt.Println(&amp;quot;ok3 res=&amp;quot;, res)
+	return res
+
+}
+func main() {
+	res := sum(10, 20)
+	fmt.Println(&amp;quot;res=&amp;quot;, res)
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-defer%E8%87%A8%E8%B5%B0%E5%89%8D%E5%95%9F%E7%94%A8/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>goroutine</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-goroutine%E4%B8%A6%E7%99%BC/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-goroutine%E4%B8%A6%E7%99%BC/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-goroutine%E4%B8%A6%E7%99%BC/ -&lt;h1 id=&#34;goroutine&#34;&gt;goroutine&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;進程=程序在操作系統中的一次進行過程&lt;/p&gt;
+&lt;p&gt;線程=執行實例的最小單位&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;一個進程可以創建多個線程且併發執行&lt;/li&gt;
+&lt;li&gt;一個程序至少包含一個進程，一個進程至少包含一個線程&lt;/li&gt;
+&lt;li&gt;併發=多線程程序在單核上運行&lt;/li&gt;
+&lt;li&gt;併行=多線程程序在多核上運行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;GO的主線程(可以理解為進程)，一個GO進程上可以起很多協程，協程可以理解為輕量級的線程，協程特點:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;有獨立的棧空間&lt;/li&gt;
+&lt;li&gt;共享程序堆空間&lt;/li&gt;
+&lt;li&gt;調度由用戶控制&lt;/li&gt;
+&lt;li&gt;為輕量級的線程&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func test() {
+	for i := 0; i &amp;lt; 10; i++ {
+		fmt.Println(&amp;quot;test()Hello,world&amp;quot; + strconv.Itoa(i))
+		time.Sleep(time.Second / 10)
+	}
+}
+
+func main() {
+	go test() //開啟一個協程
+	//如果主線程退出了，即使協程還沒執行完，也會退出
+	//協程可以自己先結束
+	for i := 0; i &amp;lt; 10; i++ {
+		fmt.Println(&amp;quot;main()Hello,go&amp;quot; + strconv.Itoa(i))
+		time.Sleep(time.Second / 10)
+	}
+	go test() //開啟一個協程，主線程退出了，即使協程還沒執行完，也會退出
+
+	//查邏輯CPU數量
+	cpuNum := runtime.NumCPU()
+	fmt.Println(cpuNum)
+	//設置最大線程數量
+	runtime.GOMAXPROCS(cpuNum)
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-goroutine%E4%B8%A6%E7%99%BC/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Go使用mysql與事務操作</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-go%E4%BD%BF%E7%94%A8mysql%E8%88%87%E4%BA%8B%E5%8B%99%E6%93%8D%E4%BD%9C/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-go%E4%BD%BF%E7%94%A8mysql%E8%88%87%E4%BA%8B%E5%8B%99%E6%93%8D%E4%BD%9C/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-go%E4%BD%BF%E7%94%A8mysql%E8%88%87%E4%BA%8B%E5%8B%99%E6%93%8D%E4%BD%9C/ -&lt;h1 id=&#34;go使用mysql與事務操作&#34;&gt;Go使用mysql與事務操作&lt;/h1&gt;
+&lt;h3 id=&#34;基本操作&#34;&gt;基本操作&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
+	&amp;quot;database/sql&amp;quot;
+	&amp;quot;fmt&amp;quot;
+
+	_ &amp;quot;github.com/go-sql-driver/mysql&amp;quot;
+)
+
+var db *sql.DB // 是一個連接池對象
+
+// user 接收數據
+type user struct {
+	id   int
+	name string
+	age  int
+}
+
+func initDB() (err error) {
+	dsn := &amp;quot;root:root@tcp(127.0.0.1:3306)/sql_test&amp;quot;
+	db, err = sql.Open(&amp;quot;mysql&amp;quot;, dsn) // 這個db要用全局的，重要!
+	if err != nil {
+		return
+	}
+	err = db.Ping()
+	if err != nil {
+		return
+	} else {
+		fmt.Println(&amp;quot;連接成功&amp;quot;)
+	}
+	return
+}
+
+// 查詢一個
+func find1() {
+	var u1 user
+	sqlStr := `select id, name, age from user where id=?;`
+	rowObj := db.QueryRow(sqlStr, 1)
+	err := rowObj.Scan(&amp;amp;u1.id, &amp;amp;u1.name, &amp;amp;u1.age)
+	if err != nil {
+		fmt.Println(&amp;quot;Scan failed!&amp;quot;, err)
+		return
+	}
+	fmt.Println(u1)
+}
+
+// findMore 查詢多個
+func findMore() {
+	sqlStr := `select id, name, age from user where id &amp;gt; ?;`
+	rows, _ := db.Query(sqlStr, 0)
+	defer rows.Close()
+
+	for rows.Next() {
+		var u user
+		err := rows.Scan(&amp;amp;u.id, &amp;amp;u.name, &amp;amp;u.age)
+		if err != nil {
+			return
+		}
+		fmt.Println(u)
+	}
+}
+
+func update(newAge int, id int) {
+	sqlStr := &amp;quot;update user set age=? where id = ?&amp;quot;
+	ret, err := db.Exec(sqlStr, newAge, id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	n, err := ret.RowsAffected()
+	if err != nil {
+		return
+	}
+	fmt.Println(&amp;quot;更新了&amp;quot;, n, &amp;quot;行數據&amp;quot;)
+}
+
+func delete(id int) {
+	sqlStr := &amp;quot;delete from user where id = ?&amp;quot;
+	ret, err := db.Exec(sqlStr, id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	n, err := ret.RowsAffected()
+	if err != nil {
+		return
+	}
+	fmt.Println(&amp;quot;更新了&amp;quot;, n, &amp;quot;行數據&amp;quot;)
+}
+
+func main() {
+	err := initDB()
+	if err != nil {
+		fmt.Println(&amp;quot;init DB failed&amp;quot;, err)
+	}
+
+	preInsert()
+	// findMore()
+	// update(90, 2)
+	// delete(2)
+	findMore()
+}
+
+func insert() {
+	sqlStr := `insert into user(name, age) values(&amp;quot;AAC&amp;quot;, 18)`
+	ret, err := db.Exec(sqlStr)
+	if err != nil {
+		fmt.Println(&amp;quot;insert failed!&amp;quot;, err)
+		return
+	}
+	// 插入後能拿到對應的ID
+	id, _ := ret.LastInsertId()
+	fmt.Println(&amp;quot;id=&amp;quot;, id)
+}
+
+func preInsert() {
+	sqlStr := &amp;quot;insert into user(name, age) values(?,?)&amp;quot;
+	stmt, err := db.Prepare(sqlStr)
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+	for i := 1; i &amp;lt; 10; i++ {
+		_, _ = stmt.Exec(&amp;quot;人物&amp;quot;, i)
+
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;mysql事務操作&#34;&gt;mysql事務操作&lt;/h3&gt;
+&lt;p&gt;事務：一個最小的不可再分的工作單元；通常一個事務對應一個完整的業務(例如銀行帳戶轉帳業務，該業務就是一個最小的工作單元)，同時這個完整的業務需要執行多次的DML(insert、update、delete)語句共同聯合完成。A轉帳給B，這裡面就需要執行兩次update操作。在MySQL中只有使用了Innodb資料庫引擎的資料庫或表才支援事務。交易處理可以用來維護資料庫的完整性，保證成批的SQL語句要麼全部執行，要麼全部不執行。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;事務的ACID&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;通常事務必須滿足4個條件（ACID）：原子性（Atomicity，或稱不可分割性）、一致性（Consistency）、隔離性（Isolation，又稱獨立性）、持久性（Durability）。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;原子性 一個事務（transaction）中的所有操作，要麼全部完成，要麼全部不完成，不會結束在中間某個環節。事務在執行過程中發生錯誤，會被回滾（Rollback）到事務開始前的狀態，就像這個事務從來沒有執行過一樣。&lt;/li&gt;
+&lt;li&gt;一致性 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。&lt;/li&gt;
+&lt;li&gt;隔離性 資料庫允許多個併發事務同時對其資料進行讀寫和修改的能力，隔離性可以防止多個事務併發執行時由於交叉執行而導致資料的不一致。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和序列化（Serializable）。&lt;/li&gt;
+&lt;li&gt;持久性 交易處理結束後，對資料的修改就是永久的，即便系統故障也不會丟失。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import (
+	&amp;quot;database/sql&amp;quot;
+	&amp;quot;fmt&amp;quot;
+
+	_ &amp;quot;github.com/go-sql-driver/mysql&amp;quot;
+)
+
+var db *sql.DB // 是一個連接池對象
+
+// user 接收數據
+type user struct {
+	id   int
+	name string
+	age  int
+}
+
+func initDB() (err error) {
+	dsn := &amp;quot;root:root@tcp(127.0.0.1:3306)/sql_test&amp;quot;
+	db, err = sql.Open(&amp;quot;mysql&amp;quot;, dsn) // 這個db要用全局的，重要!
+	if err != nil {
+		return
+	}
+	err = db.Ping()
+	if err != nil {
+		return
+	} else {
+		fmt.Println(&amp;quot;連接成功&amp;quot;)
+	}
+	return
+}
+
+func transaction() {
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println(&amp;quot;begin failed!&amp;quot;, err)
+		return
+	}
+
+	sqlStr1 := &amp;quot;update user set age=age-2 where id=1&amp;quot;
+	sqlStr2 := &amp;quot;update user set age=age+2 where id=3&amp;quot;
+	ret1, err := tx.Exec(sqlStr1)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	affRow1, err := ret1.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	ret2, err := tx.Exec(sqlStr2)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	affRow2, err := ret2.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	fmt.Println(affRow1, affRow2)
+	if affRow1 == 1 &amp;amp;&amp;amp; affRow2 == 1 {
+		tx.Commit()
+		fmt.Println(&amp;quot;已提交&amp;quot;)
+	} else {
+		tx.Rollback()
+	}
+
+}
+
+func findMore() {
+	sqlStr := `select id, name, age from user where id &amp;gt; ?;`
+	rows, _ := db.Query(sqlStr, 0)
+	defer rows.Close()
+
+	for rows.Next() {
+		var u user
+		err := rows.Scan(&amp;amp;u.id, &amp;amp;u.name, &amp;amp;u.age)
+		if err != nil {
+			return
+		}
+		fmt.Println(u)
+	}
+}
+
+func main() {
+
+	initDB()
+	findMore()
+	transaction()
+	findMore()
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-go%E4%BD%BF%E7%94%A8mysql%E8%88%87%E4%BA%8B%E5%8B%99%E6%93%8D%E4%BD%9C/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>JSON序列化</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-json%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-json%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-json%E5%BA%8F%E5%88%97%E5%8C%96/ -&lt;h1 id=&#34;json序列化&#34;&gt;JSON序列化&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JSON 格式 {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;}  {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;,&amp;ldquo;鍵2&amp;rdquo;:&amp;ldquo;值2&amp;rdquo;} {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;,&amp;ldquo;鍵2&amp;rdquo;:[&amp;ldquo;值2數組&amp;rdquo;,值2數組]}&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Monster struct {
+	Name string  `json:&amp;quot;name&amp;quot;` //反射機制
+	Age  int     `json:&amp;quot;age&amp;quot;`
+	Sal  float64 `json:&amp;quot;sal&amp;quot;`
+}
+
+func test1() {
+	monster1 := Monster{
+		Name: &amp;quot;牛魔王&amp;quot;,
+		Age:  50,
+		Sal:  8000.0,
+	}
+	data, err := json.Marshal(&amp;amp;monster1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(data))
+}
+
+//把map序列化
+func testMap() {
+	var mapA map[string]interface{} = make(map[string]interface{})
+	mapA[&amp;quot;name&amp;quot;] = &amp;quot;紅孩兒&amp;quot;
+	mapA[&amp;quot;age&amp;quot;] = 18
+	data, err := json.Marshal(&amp;amp;mapA)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(data))
+
+}
+
+//切片序列化
+func testSlice() {
+	var slice1 []map[string]interface{}
+	var m1 map[string]interface{} = make(map[string]interface{})
+	m1[&amp;quot;name&amp;quot;] = &amp;quot;珍娜&amp;quot;
+	m1[&amp;quot;age&amp;quot;] = 40
+	slice1 = append(slice1, m1)
+	var m2 map[string]interface{} = make(map[string]interface{})
+	m2[&amp;quot;name&amp;quot;] = &amp;quot;索爾&amp;quot;
+	m2[&amp;quot;age&amp;quot;] = 25
+	slice1 = append(slice1, m2)
+	data, err := json.Marshal(slice1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(data))
+
+}
+
+//基本數據類型序列化，沒啥意義 因為他沒有key 就只會轉出一個string
+func testFloat64() {
+	var num1 float64 = 123.45
+	data, err := json.Marshal(num1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(data))
+
+}
+
+//反序列化
+func unmarshal() {
+	str := `{&amp;quot;name&amp;quot;:&amp;quot;牛魔王&amp;quot;,&amp;quot;age&amp;quot;:50,&amp;quot;sal&amp;quot;:8000}`
+	//用`...`包起來保留原格式
+
+	//定義一個實例來接收 這個接收的格式一定要能符合對應
+	var heroes Monster
+	err := json.Unmarshal([]byte(str), &amp;amp;heroes)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(heroes)
+}
+func unmarshalMap() {
+	str := `{&amp;quot;age&amp;quot;:18,&amp;quot;name&amp;quot;:&amp;quot;紅孩兒&amp;quot;}`
+	var a map[string]interface{}
+	//不用make因為unmarshal函數內封裝了
+	err := json.Unmarshal([]byte(str), &amp;amp;a)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(a)
+}
+
+func main() {
+	test1()
+	testMap()
+	testSlice()
+	testFloat64()
+	unmarshal()
+	unmarshalMap()
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-json%E5%BA%8F%E5%88%97%E5%8C%96/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Map集合</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-map%E9%9B%86%E5%90%88/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-map%E9%9B%86%E5%90%88/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-map%E9%9B%86%E5%90%88/ -&lt;h1 id=&#34;map集合&#34;&gt;Map集合&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	// map[key類型] value類型
+	var m1 map[int]int = make(map[int]int)
+
+	//key類型通常是int or string
+	//value 通常是數字 or string or map or struct
+	//只聲明不會給內存，要make才初始化才能用(跟切片一樣)
+	m1[1] = 100
+	m1[2] = 200
+	m1[3] = 300
+	m1[1] = 1000
+	//key不能重複，後賦予的頂掉前面
+	fmt.Println(m1)
+
+	var m2 = make(map[string]string)
+	m2[&amp;quot;AV&amp;quot;] = &amp;quot;sss&amp;quot;
+	fmt.Println(m2)
+
+	//推薦寫法
+	m3 := make(map[string]string)
+	m3[&amp;quot;一號&amp;quot;] = &amp;quot;台北&amp;quot;
+	m3[&amp;quot;二奧&amp;quot;] = &amp;quot;桃園&amp;quot;
+	fmt.Println(m3)
+
+	m4 := map[int]int{1: 10, 2: 20, 3: 30}
+	fmt.Println(m4)
+
+	//學生姓名+性別
+	m5 := make(map[string](map[string]string))
+	m5[&amp;quot;stu01&amp;quot;] = make(map[string]string) //不能少
+	m5[&amp;quot;stu01&amp;quot;][&amp;quot;name&amp;quot;] = &amp;quot;tom&amp;quot;
+	m5[&amp;quot;stu01&amp;quot;][&amp;quot;sex&amp;quot;] = &amp;quot;男&amp;quot;
+	m5[&amp;quot;stu02&amp;quot;] = make(map[string]string) //不能少
+	m5[&amp;quot;stu02&amp;quot;][&amp;quot;name&amp;quot;] = &amp;quot;mary&amp;quot;
+	m5[&amp;quot;stu02&amp;quot;][&amp;quot;sex&amp;quot;] = &amp;quot;女&amp;quot;
+	fmt.Println(m5)
+	fmt.Println(m5[&amp;quot;stu01&amp;quot;])
+	fmt.Println(m5[&amp;quot;stu01&amp;quot;][&amp;quot;sex&amp;quot;])
+
+	var m6 = make(map[int]int)
+	m6[1] = 10
+	m6[2] = 20
+	delete(m6, 1) //delete=刪除key
+	delete(m6, 3) //delete空的東西也不會報錯
+	//沒有辦法把key全刪除，要就用遍歷
+	fmt.Println(m6)
+	//重新分配一次=清空，但是格式要跟本來一樣
+	m6 = make(map[int]int)
+	fmt.Println(m6)
+
+	//查找
+	var m7 = make(map[int]int)
+	m7[1] = 111
+	m7[2] = 222
+	val, ok := m7[2] //把一個map中的一個key賦給a,b 其中a=value b=bool(是否存在)
+	fmt.Println(val, ok)
+	if ok {
+		fmt.Printf(&amp;quot;m7存在key&#39;1&#39;且值為%v\n&amp;quot;, val)
+	} else {
+		fmt.Printf(&amp;quot;m7不存在key&#39;n&#39;\n&amp;quot;)
+	}
+
+	//遍歷
+	//因為map裡面的key-value不一定是連續的數字，所以不能用for而要用for:=range
+	//m5 := make(map[string](map[string]string))
+
+	for k, v := range m5 {
+		fmt.Printf(&amp;quot;k=%v \n&amp;quot;, k)
+		for k2, v2 := range v {
+			fmt.Printf(&amp;quot;	k2=%v v=%v \n&amp;quot;, k2, v2)
+		}
+
+	}
+
+	//長度=有幾對
+	m8 := map[int]int{1: 10, 2: 20, 3: 30}
+	fmt.Println(len(m8))
+
+	//map切片
+	//使用一個map來記錄monster的name跟age，且monster數量可以動態變化
+
+	var mon []map[string]string = make([]map[string]string, 2)
+	if mon[0] == nil {
+		mon[0] = make(map[string]string, 2)
+		mon[0][&amp;quot;name&amp;quot;] = &amp;quot;牛魔王&amp;quot;
+		mon[0][&amp;quot;age&amp;quot;] = &amp;quot;500&amp;quot;
+	}
+	if mon[1] == nil {
+		mon[1] = make(map[string]string, 2)
+		mon[1][&amp;quot;name&amp;quot;] = &amp;quot;玉兔&amp;quot;
+		mon[1][&amp;quot;age&amp;quot;] = &amp;quot;300&amp;quot;
+	}
+
+	// if mon[2] == nil {
+	// 	mon[2] = make(map[string]string, 2)
+	// 	mon[2][&amp;quot;name&amp;quot;] = &amp;quot;111&amp;quot;
+	// 	mon[2][&amp;quot;age&amp;quot;] = &amp;quot;3440&amp;quot;
+	// } //這樣寫越界
+	//用append 先定義monster信息
+	newMon := map[string]string{
+		&amp;quot;name&amp;quot;: &amp;quot;新妖怪&amp;quot;,
+		&amp;quot;age&amp;quot;:  &amp;quot;200&amp;quot;,
+	}
+	mon = append(mon, newMon)
+
+	fmt.Println(mon)
+
+	//用結構體更好，例如學號是唯一
+	type Stu struct {
+		Name    string
+		Age     int
+		Address string
+	}
+	stumaps := make(map[string]Stu)
+	//創建學生
+	stu1 := Stu{&amp;quot;tom&amp;quot;, 18, &amp;quot;經&amp;quot;}
+	stu2 := Stu{&amp;quot;mary&amp;quot;, 50, &amp;quot;KJH&amp;quot;}
+	stumaps[&amp;quot;no1&amp;quot;] = stu1
+	stumaps[&amp;quot;no2&amp;quot;] = stu2
+	fmt.Println(stumaps)
+	//遍歷
+	for k, v := range stumaps {
+		fmt.Printf(&amp;quot;學號=%v\n&amp;quot;, k)
+		fmt.Printf(&amp;quot;	姓名=%v\n&amp;quot;, v.Name)
+		fmt.Printf(&amp;quot;	年紀=%v\n&amp;quot;, v.Age)
+		fmt.Printf(&amp;quot;	住址=%v\n&amp;quot;, v.Address)
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-map%E9%9B%86%E5%90%88/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>new與make的區別</title>
+        <link>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-new%E8%88%87make%E7%9A%84%E5%8D%80%E5%88%A5/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-new%E8%88%87make%E7%9A%84%E5%8D%80%E5%88%A5/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-new%E8%88%87make%E7%9A%84%E5%8D%80%E5%88%A5/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	num1 := 100
+	fmt.Printf(&amp;quot;類型=%T,值=%v,地址=%v\n&amp;quot;, num1, num1, &amp;amp;num1)
+	num2 := new(int) //*int
+	fmt.Printf(&amp;quot;類型=%T,值=%v,地址=%v\n&amp;quot;, num2, num2, &amp;amp;num2)
+
+	//new用來分配類型
+	//make用來分配內存
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-%E5%B0%9A%E8%AA%B2go-new%E8%88%87make%E7%9A%84%E5%8D%80%E5%88%A5/ - yoziming</description>
+        </item>
+    
+    
+  </channel>
+</rss> 

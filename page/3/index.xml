@@ -1,0 +1,844 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yoziming&#39; Blog</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on yoziming&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>MySQL常用語句 &amp; Workbench</title>
+        <link>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</link>
+        <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/ -&lt;h1 id=&#34;mysql-常用語句&#34;&gt;MySQL 常用語句&lt;/h1&gt;
+&lt;p&gt;資料庫database&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;create database XXX;
+show databases;
+use XXX;
+drop database XXX;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;資料表table&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;create table mytable(school char(5),name char(10),id int);
+show tables;
+describe mytable; // 顯示這表有哪些欄位跟屬性
+drop table mytable;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;select * from mytable; // 顯示mytable中所有資料
+
+insert into mytable(school, name, id) values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);
+insert into mytable values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);
+
+update mytable set name = &#39;HaHa&#39; where id = &#39;123&#39;;
+
+delete from mytable where name = &#39;HaHa&#39;;
+delete from 表格; // 把表格內資料都刪除(但格式宣告還在)
+
+select * from mytable where id = &#39;123&#39; order by name DESC;  // 資料表查詢+條件+排序 (DESC 代表由大到小排序)
+
+load data local infile &amp;quot;c:\\data.txt&amp;quot; into table mytable; //匯入
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;mysql-workbench-常用操作&#34;&gt;MySQL Workbench 常用操作&lt;/h1&gt;
+&lt;h3 id=&#34;欲編輯某張表的某個資料&#34;&gt;欲編輯某張表的某個資料&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;在左方導航點開那張表，移到它的右上角可以看資訊、進入編輯模式等等&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211016183042070.png&#34; alt=&#34;image-20211016183042070&#34;&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;對資料欄位左鍵2下修改，改完之後按Apply，會跳出sql語句的確定視窗，再次Apply後應用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;導出入資料&#34;&gt;導出/入資料 &lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;上方選到 Server &amp;gt; Data Import，會出現這個畫面&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211016183300110.png&#34; alt=&#34;image-20211016183300110&#34;&gt;&lt;/p&gt;
+&lt;p&gt;照著按就是了，導出也差不多，不過導出可以選擇是否含格式還是單純資料值&lt;/p&gt;
+- https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker啟用Redis</title>
+        <link>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</link>
+        <pubDate>Sat, 02 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/ -&lt;h1 id=&#34;docker啟用redis&#34;&gt;Docker啟用Redis&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull redis:6.0
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;拉一個6.0版本的redis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;–name redis6 ：將 Container 取名為 redis6&lt;/li&gt;
+&lt;li&gt;-p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器)&lt;/li&gt;
+&lt;li&gt;-d :後台執行 Container ，並返回ID&lt;/li&gt;
+&lt;li&gt;redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec -it redis6 bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;-i ：即使沒有附加也保持STDIN 打開&lt;/li&gt;
+&lt;li&gt;-t ：分配一個偽終端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;資料庫測試&#34;&gt;資料庫測試&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;redis-cli
+set hello world
+get hello
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker啟用Mysql</title>
+        <link>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</link>
+        <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ -&lt;h1 id=&#34;docker啟用mysql&#34;&gt;Docker啟用Mysql&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull mysql/mysql-server:8.0
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;拉一個8.0版本的mysql&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-d&lt;/code&gt;：同&lt;code&gt;--detach&lt;/code&gt;，以背景模式執行。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-v ~/mysql-docker-data:/var/lib/mysql&lt;/code&gt;：同&lt;code&gt;--volume&lt;/code&gt;，掛載host目錄到container目錄，也就是host的&lt;code&gt;~/mysql-docker-data&lt;/code&gt;會保存container &lt;code&gt;/var/lib/mysql&lt;/code&gt;的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-it&lt;/code&gt;：同&lt;code&gt;--interactive&lt;/code&gt;加&lt;code&gt;--tty&lt;/code&gt;，作用為運行container時可登入其bash操作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--name mysql8&lt;/code&gt;，命名container名稱為&lt;code&gt;mysql8&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-p&lt;/code&gt;：同&lt;code&gt;--publish&lt;/code&gt;。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-e&lt;/code&gt;：同&lt;code&gt;--env&lt;/code&gt;，設定環境變數。&lt;code&gt;MYSQL_ROOT_PASSWORD&lt;/code&gt;設定MySQL root帳號的登入密碼為&lt;code&gt;1234&lt;/code&gt;，&lt;code&gt;MYSQL_DATABASE&lt;/code&gt;設定資料庫名稱為&lt;code&gt;mydb&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql:8&lt;/code&gt;：&lt;code&gt;mysql&lt;/code&gt;為image名稱，&lt;code&gt;8&lt;/code&gt;為image tag。所以運行的是&lt;code&gt;mysql:8&lt;/code&gt;的image。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-authentication-plugin=mysql_native_password&lt;/code&gt;：把儲存密碼的方式改為MySQL 5的&lt;code&gt;mysql_native_password&lt;/code&gt;，因為MySQL 8的儲存方式預設為&lt;code&gt;caching_sha2_password&lt;/code&gt;，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;檢視運行中的容器&#34;&gt;檢視運行中的容器&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec mysql8 mysql -u root -p
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker exec&lt;/code&gt;指令的作用為在運行的container執行指令，所以意思就是在&lt;code&gt;mysql8&lt;/code&gt;這個container執行&lt;code&gt;mysql -u root -p&lt;/code&gt;的指令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker container exec -it mysql8 /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;遇到權限問題用這個&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;進入mysql&#34;&gt;進入Mysql&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -uroot -p
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;新增-1-個開放外部連線的帳號&#34;&gt;新增 1 個開放外部連線的帳號&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;
+GRANT ALL ON your_database.* TO &#39;user01&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;IDENTIFIED BY &amp;lsquo;1234&amp;rsquo;=密碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;允許-mysql-被遠程訪問&#34;&gt;允許 MySQL 被遠程訪問&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;grant all privileges on *.* to &#39;root&#39;@&#39;%&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;這是一個強力手段(有權限風險)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;flush privileges;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;刷新&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker常用語句</title>
+        <link>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+        <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/ -&lt;h1 id=&#34;docker常用語句&#34;&gt;Docker常用語句&lt;/h1&gt;
+&lt;h2 id=&#34;抓映象檔&#34;&gt;抓映象檔&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker pull xxx
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;檢視運行中的容器&#34;&gt;檢視運行中的容器&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;進入-container&#34;&gt;進入 Container&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker exec -it  &amp;lt;container_id&amp;gt;  /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;-i ：即使沒有附加也保持STDIN 打開&lt;/li&gt;
+&lt;li&gt;-t ：分配一個偽終端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;查看字元編碼&#34;&gt;查看字元編碼&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;locale
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;臨時改成utf8&#34;&gt;臨時改成UTF8&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;export  LANG=&amp;quot;en_US.UTF-8&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;永久設置需在Dockerfile中設置環境字元集環境變數&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ENV LANG=&amp;quot;en_US.UTF-8&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Docker啟用MinIO</title>
+        <link>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</link>
+        <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/ -&lt;h1 id=&#34;docker啟用minio儲存&#34;&gt;Docker啟用MinIO儲存&lt;/h1&gt;
+&lt;h2 id=&#34;執行-image&#34;&gt;執行 Image&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run -d --name minio -e &amp;quot;MINIO_ROOT_USER=root&amp;quot; -e &amp;quot;MINIO_ROOT_PASSWORD=root1234&amp;quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &amp;quot;:9001&amp;quot; 
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--name minio&lt;/code&gt;，命名container名稱為&lt;code&gt;minio&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-v /data/minio:/data/minio&lt;/code&gt;該命令將主機 &lt;code&gt;/data/minio&lt;/code&gt; 目錄對映到容器中的 &lt;code&gt;/data/minio&lt;/code&gt; 目錄中&lt;/li&gt;
+&lt;li&gt;MinIO 還提供了圖形管理介面，在瀏覽器輸入 &lt;code&gt;ip:9001&lt;/code&gt;即可檢視&lt;/li&gt;
+&lt;li&gt;不管是圖形介面操作，還是客戶端操作，預設賬號密碼都為 &lt;code&gt;minioadmin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-e&lt;/code&gt;環境變數，這裡用了自定義賬號密碼，賬號不能小於 3 字元，密碼不能小於 8 字元&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;go初始化&#34;&gt;Go初始化&lt;/h2&gt;
+&lt;p&gt;導入&lt;code&gt;github.com/minio/minio-go/v7&lt;/code&gt;，注意這個後面的&lt;code&gt;v7&lt;/code&gt;，在自動引包時可能會漏掉，導致使用到舊版的同名函數而報錯&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;InitMinio&lt;/span&gt;() {
+	ctx := context.&lt;span style=&#34;color:#008b45&#34;&gt;Background&lt;/span&gt;()
+	endpoint := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;localhost:9000&amp;#34;&lt;/span&gt;
+	accessKeyID := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;root&amp;#34;&lt;/span&gt;
+	secretAccessKey := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;root1234&amp;#34;&lt;/span&gt;
+	useSSL := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;false&lt;/span&gt;
+
+	&lt;span style=&#34;color:#228b22&#34;&gt;// Initialize minio client object.
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	minioClient, err := minio.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(endpoint, &amp;amp;minio.Options{
+		Creds:  credentials.&lt;span style=&#34;color:#008b45&#34;&gt;NewStaticV4&lt;/span&gt;(accessKeyID, secretAccessKey, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;),
+		Secure: useSSL,
+	})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+	}
+
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 創建預設的bucket
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;// Make a new bucket called mymusic.
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	bucketName := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;mymusic&amp;#34;&lt;/span&gt;
+	location := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;us-east-1&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;// 這個是AWS用的，詳細查他官方
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	
+
+	err = minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;MakeBucket&lt;/span&gt;(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		&lt;span style=&#34;color:#228b22&#34;&gt;// Check to see if we already own this bucket (which happens if you run this twice)
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		exists, errBucketExists := minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;BucketExists&lt;/span&gt;(ctx, bucketName)
+		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; errBucketExists == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; &amp;amp;&amp;amp; exists {
+			log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;We already own %s\n&amp;#34;&lt;/span&gt;, bucketName)
+		} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+			log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+		}
+	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully created %s\n&amp;#34;&lt;/span&gt;, bucketName)
+	}
+	    &lt;span style=&#34;color:#228b22&#34;&gt;// 試著上傳一個.zip
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    objectName := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;golden-oldies.zip&amp;#34;&lt;/span&gt;
+    filePath := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/tmp/golden-oldies.zip&amp;#34;&lt;/span&gt;
+    contentType := &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;application/zip&amp;#34;&lt;/span&gt;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// Upload the zip file with FPutObject
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    info, err := minioClient.&lt;span style=&#34;color:#008b45&#34;&gt;FPutObject&lt;/span&gt;(ctx, bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+        log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+    }
+
+    log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully uploaded %s of size %d\n&amp;#34;&lt;/span&gt;, objectName, info.Size)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;配合gin框架範例&#34;&gt;配合Gin框架範例&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 假定要上傳頭像，先獲取圖片文件資訊
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	file, _ := ctx.&lt;span style=&#34;color:#008b45&#34;&gt;FormFile&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;)
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 這裡使用minioClient.PutObject（）方法上傳，入參是file.Open()。
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	f, _ := file.&lt;span style=&#34;color:#008b45&#34;&gt;Open&lt;/span&gt;()
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 新增一個哈希命名規則防止圖片覆蓋
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	m5 := md5.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;()
+	m5.&lt;span style=&#34;color:#008b45&#34;&gt;Write&lt;/span&gt;([]&lt;span style=&#34;color:#658b00&#34;&gt;byte&lt;/span&gt;(file.Filename+時間或uuid等等)
+	fileName_hash := hex.&lt;span style=&#34;color:#008b45&#34;&gt;EncodeToString&lt;/span&gt;(m5.&lt;span style=&#34;color:#008b45&#34;&gt;Sum&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;))
+	&lt;span style=&#34;color:#228b22&#34;&gt;// 上傳到minio 
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	info, err := model.MinioClient.&lt;span style=&#34;color:#008b45&#34;&gt;PutObject&lt;/span&gt;(ctx, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;, fileName_hash, f, -&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;, minio.PutObjectOptions{ContentType: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;avatar&amp;#34;&lt;/span&gt;})
+	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+		log.&lt;span style=&#34;color:#008b45&#34;&gt;Fatalln&lt;/span&gt;(err)
+		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt;
+	}
+	log.&lt;span style=&#34;color:#008b45&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Successfully uploaded %s of size %d\n&amp;#34;&lt;/span&gt;, file.Filename, info.Size)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;細節補充&#34;&gt;細節補充&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;minio儲存的單位是 BUCKETS(桶)，創建完之後預設的Access Policy為Private，外部無法訪問，要改成public才行&lt;/li&gt;
+&lt;li&gt;預設上傳的檔案網址就是http://{endpoint}/{buckets}/{Filename}，只要BUCKETS是public就能直接訪問&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>consul基礎使用練習</title>
+        <link>https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/</link>
+        <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/ -&lt;h1 id=&#34;consul基礎使用練習&#34;&gt;consul基礎使用練習&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;想像去郵局辦事，consul類似於發號碼牌的那個機器&lt;/p&gt;
+&lt;p&gt;伺服端(櫃台人員)去找consul註冊服務，比如說櫃台1~3提供儲蓄，櫃台4~6提供郵寄服務&lt;/p&gt;
+&lt;p&gt;客戶進來透過服務發現，把要辦的事丟給consul，它查看哪個櫃台健康，幫你匹配對應的服務或叫號&lt;/p&gt;
+&lt;p&gt;(感覺這例子不太完善，就&amp;hellip;類似的理解啦，實際用了才會懂)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下載&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# 官網:
+https://www.consul.io/downloads
+# ubuntu shell: (下載&amp;gt;解壓縮&amp;gt;把二進位執行檔丟進去)
+wget https://releases.hashicorp.com/consul/1.10.3/consul_1.10.3_linux_amd64.zip
+unzip consul_1.10.3_linux_amd64.zip
+sudo mv consul /usr/local/bin/
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;測試&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;consul -h
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;啟動server&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;consul agent -server -bootstrap-expect 1 -data-dir /tmp/consul -node=n1 -bind=192.168.234.128 -ui -rejoin -config-dir=/etc/consul.d/ -client 0.0.0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這個IP=192.168.234.128=ubuntu的ip&lt;/p&gt;
+&lt;p&gt;*若/etc/consul.d/不存在要先自己創&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;查看服務&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;http://192.168.234.128:8500/
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;註冊自訂的健康檢查服務，範例:&lt;/p&gt;
+&lt;p&gt;剛剛自訂的配置檔路徑/etc/consul.d/下新增一個web.json&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;{&amp;quot;service&amp;quot;: {
+    &amp;quot;name&amp;quot;: &amp;quot;web&amp;quot;,
+    &amp;quot;tags&amp;quot;: [&amp;quot;extract&amp;quot;, &amp;quot;verify&amp;quot;, &amp;quot;compare&amp;quot;, &amp;quot;idcard&amp;quot;],
+    &amp;quot;address&amp;quot;: &amp;quot;192.168.234.128&amp;quot;,
+    &amp;quot;port&amp;quot;: 9000,
+    &amp;quot;check&amp;quot;: {
+        &amp;quot;id&amp;quot;: &amp;quot;api&amp;quot;,
+        &amp;quot;name&amp;quot;: &amp;quot;HTTP API on port 9000&amp;quot;,
+        &amp;quot;http&amp;quot;: &amp;quot;http://localhost:9000&amp;quot;,
+        &amp;quot;interval&amp;quot;: &amp;quot;10s&amp;quot;,
+        &amp;quot;timeout&amp;quot;: &amp;quot;1s&amp;quot;
+        }
+   }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重啟server並查看服務&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image-20210929143815247.png&#34; alt=&#34;image-20210929143815247&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;結果是不健康，因為沒有東西回應它&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;透過consul來傳遞一個簡單服務案例&#34;&gt;透過consul來傳遞一個簡單服務案例:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;person.proto&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;syntax=&amp;quot;proto3&amp;quot;;
+package pb;
+option go_package=&amp;quot;/.;pb&amp;quot;;
+message Person{
+    string name=1;
+    int32 age=2;
+}
+
+service hello{
+    rpc sayHello(Person) returns(Person);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;server&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;context&amp;quot;
+	&amp;quot;fmt&amp;quot;
+
+	&amp;quot;github.com/hashicorp/consul/api&amp;quot;
+	&amp;quot;github.com/my/repo/consul/pb&amp;quot;
+)
+
+type Children struct {
+}
+
+// 綁定方法實現接口
+func (c *Children) SayHello(ctx context.Context, p *pb.Person) (*pb.Person, error) {
+	p.Name = &amp;quot;hello&amp;quot; + p.Name
+	return p, nil
+}
+
+func main() {
+	// 1. 把grpc註冊到consul，初始化
+	consulConfig := api.DefaultConfig()
+
+	// 2. 創建consul對象
+	consulClient, err := api.NewClient(consulConfig)
+	if err != nil {
+		fmt.Println(&amp;quot;api.NewClient err&amp;quot;, err)
+		return
+	}
+
+	// 3. 告訴consul將要註冊的服務消息
+	reg := api.AgentServiceRegistration{
+		ID:      &amp;quot;bj38&amp;quot;,
+		Tags:    []string{&amp;quot;grpc&amp;quot;, &amp;quot;consul&amp;quot;},
+		Name:    &amp;quot;grpc And Consul&amp;quot;,
+		Address: &amp;quot;127.0.0.1&amp;quot;,
+		Port:    8800,
+		Check: &amp;amp;api.AgentServiceCheck{
+			CheckID:  &amp;quot;consul grpc test&amp;quot;,
+			TCP:      &amp;quot;127.0.0.1:8800&amp;quot;,
+			Timeout:  &amp;quot;1s&amp;quot;,
+			Interval: &amp;quot;5s&amp;quot;,
+		},
+	}
+	// 4. 註冊到consul上
+	consulClient.Agent().ServiceRegister(&amp;amp;reg)
+	fmt.Println(&amp;quot;服務啟動...&amp;quot;)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;client&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;context&amp;quot;
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;strconv&amp;quot;
+
+	&amp;quot;github.com/hashicorp/consul/api&amp;quot;
+	&amp;quot;github.com/my/repo/consul/pb&amp;quot;
+	&amp;quot;google.golang.org/grpc&amp;quot;
+)
+
+func main() {
+	// 初始化consul
+	consulConfig := api.DefaultConfig()
+	consulClient, err := api.NewClient(consulConfig)
+	if err != nil {
+		fmt.Println(&amp;quot;api.NewClient err&amp;quot;, err)
+	}
+
+	// 服務發現，從consul上獲取健康的服務
+	services, _, err := consulClient.Health().Service(&amp;quot;grpc And Consul&amp;quot;, &amp;quot;grpc&amp;quot;, true, nil)
+	if err != nil {
+		fmt.Println(&amp;quot;consulClient.Health().Service err&amp;quot;, err)
+		return
+	}
+	// 拼接出服務的IP跟端口
+	fmt.Println(services[0].Service.Address)
+	fmt.Println(services[0].Service.Port)
+	addr := services[0].Service.Address + &amp;quot;:&amp;quot; + strconv.Itoa(services[0].Service.Port)
+
+	grpcConn, _ := grpc.Dial(addr, grpc.WithInsecure())
+
+	grpcClient := pb.NewHelloClient(grpcConn)
+	var person pb.Person
+	person.Name = &amp;quot;Tom~&amp;quot;
+	person.Age = 18
+
+	p, err := grpcClient.SayHello(context.TODO(), &amp;amp;person)
+	fmt.Println(p, err)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;記得隨便用個cmd 開啟consul當橋梁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ consul agent -dev
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210928-consul%E4%BD%BF%E7%94%A8%E7%B7%B4%E7%BF%92/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Golang下透過grpc調用服務案例</title>
+        <link>https://yoziming.github.io/post/210927-grpc/</link>
+        <pubDate>Mon, 27 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210927-grpc/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210927-grpc/ -&lt;h2 id=&#34;golang下透過grpc調用服務案例&#34;&gt;Golang下透過grpc調用服務案例&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;grpc簡單說就是跨平台(跨語言)調用各種服務的通用轉接口&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;對.proto文件使用轉譯指令:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;案例:透過grpc遠程傳遞一個調用teacher資料類型的服務&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;.proto:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;syntax=&amp;quot;proto3&amp;quot;;
+
+option go_package=&amp;quot;/.;pb&amp;quot;;
+
+message Teacher{
+    int32 age=1;
+    string name=2;
+}
+
+service SayName{
+    rpc SayHello(Teacher) returns(Teacher);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;server:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Children struct{}
+
+// 綁定類方法
+func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {
+	t.Name += &amp;quot;is sleeping&amp;quot;
+	return t, nil
+}
+
+func main() {
+	// 初始一個grpc對象
+	grpcServer := grpc.NewServer()
+
+	// 註冊服務
+	pb.RegisterSayNameServer(grpcServer, new(Children))
+
+	// 監聽
+	listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1:8899&amp;quot;)
+	if err != nil {
+		fmt.Println(&amp;quot;listen err&amp;quot;, err)
+		return
+	}
+	fmt.Println(&amp;quot;server監聽中...&amp;quot;)
+	defer listener.Close()
+
+	// 啟動服務
+	grpcServer.Serve(listener)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;client:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	// 連接grpc服務
+	grpcConn, err := grpc.Dial(&amp;quot;127.0.0.1:8899&amp;quot;, grpc.WithInsecure())
+	if err != nil {
+		fmt.Println(&amp;quot;conn err&amp;quot;, err)
+		return
+	}
+	defer grpcConn.Close()
+
+	// 初起化客戶端
+	gprcClient := pb.NewSayNameClient(grpcConn)
+
+	// 創建並初始化接收對象
+	var teacher pb.Teacher
+	teacher.Age = 18
+	teacher.Name = &amp;quot;Mary&amp;quot;
+
+	// 調用遠程服務
+	t, err := gprcClient.SayHello(context.TODO(), &amp;amp;teacher)
+	fmt.Println(t, err)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210927-grpc/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>Golang中使用ProtoBuf</title>
+        <link>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</link>
+        <pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ -&lt;h2 id=&#34;golang中使用protobuf&#34;&gt;Golang中使用ProtoBuf&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;protobuf類似json，它體積更小效率更高，規範統一(沒有大小寫等困擾)。&lt;/p&gt;
+&lt;p&gt;缺點是改動協議就要重新生成、數據本身是二進位沒有可讀性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下載，window系統選.exe，解壓縮放到$GOPATH/bin&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://github.com/protocolbuffers/protobuf/releases
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安裝golang對應的庫跟插件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;go get github.com/golang/protobuf/proto
+go get github.com/golang/protobuf/protoc-gen-go
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;測試&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc -h 或 protoc --version
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;沒報錯就是成功&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;消息體舉例，xxx.proto&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 指定版本，不打3就會是2
+syntax=&amp;quot;proto3&amp;quot;;
+
+// 指定輸出位置&amp;amp;go包名，沒寫轉換不了
+// option go_package =&amp;quot;path;name&amp;quot;;
+option go_package =&amp;quot;/.&amp;quot;;  // 放在同一目錄下包名為__(空)
+
+// 定義消息體，分配唯一編號 (不能用19000~19999)
+message Student{
+     int32 age = 1; // 可以不從1開始，但不可重複
+     string name = 2;
+     People p=3;
+     repeated int32 score=4; // 數組
+     Week w=5;
+     // 聯合體
+     oneof data{
+         string teacher=6;
+         string class=7;
+     }
+ }
+
+// 消息體可以嵌套
+message People{
+    int32 weight=1;
+}
+
+// 定義枚舉類型
+enum Week{
+    Monday=0; // 必須從0開始
+    Turesday=1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;生成go文件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;成功轉換出來的就會是一個xxx.pb.go的文件，可以點開看一下，它就是轉換成go語言的版本，記住不要修改這個檔案(他第一行就叫你不要修改)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;添加rpc服務&#34;&gt;添加rpc服務&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;語法:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;service 服務名{
+	rpc 函數名(參數:消息體) returns (返回值:消息)
+}
+舉例:
+service bj{
+    rpc Say(People) returns (Student);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;但是rpc用的很廣，他不知道你要轉成給誰用的，於是要調用另一個生成的指令&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;protoc --go_out=plugins=grpc:. *.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這就是grpc了，到下章繼續&amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>GitHub&#43;Hugo自建簡單Blog流程</title>
+        <link>https://yoziming.github.io/post/210926-bulidblogwithhugo/</link>
+        <pubDate>Sun, 26 Sep 2021 02:01:58 +0530</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210926-bulidblogwithhugo/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210926-bulidblogwithhugo/ -&lt;h1 id=&#34;githubhugo自建簡易blog流程&#34;&gt;GitHub+Hugo自建簡易Blog流程&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;看了很多教學有各種高級的自動部署、netlify後台等等，照做卻老是在一些關鍵點卡住。我這個土路雖然蠢笨但確實能做出東西，同樣新手可以試試。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;安裝Chocolatey //程式安裝器，讓你從終端裝各種東西很方便&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://chocolatey.org/install
+到這個網址，官方提供很多方法安裝，非常簡單快速一行搞定
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;安裝hugo，有些佈景主題要用到加強版(extended)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;choco install hugo -confirm
+choco install hugo-extended -confirm
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;hugo new site &amp;lt;資料夾名稱&amp;gt; //建立一個root，相當於你個人網站的原始資料母巢&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;挑主題，到https://themes.gohugo.io/&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;套用主題，範例&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; cd &amp;lt;資料夾名稱&amp;gt;
+ git init
+ git submodule add https://github.com/AmazingRise/hugo-theme-diary.git themes/diary
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;依照主題的說明文件修改根目錄下的config.toml
+注意，config.toml中的第一項baseURL網址不要有&amp;quot;https://www.ooxx&amp;quot;，否則會造成一些未知的BUG。正確網址應為&amp;quot;https://你的username.github.io/&amp;quot;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;到content/post/下開始寫一篇blog&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;開啟本地預覽，指令hugo server -F   //防止時差問題用-F&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;隨意一個地方開啟網址http://localhost:1313/ 看看網站&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;網站沒問題就打包，指令hugo，會在root資料夾下多出一個public資料夾，裡面就是一個完整的網站準備丟去網路上發布&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;去gitHub建一個Repository(倉庫)，名稱強制為 你的username.github.io&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;下載GitHub Desktop客戶端，可以把他理解成一個雲端，我要把本地public資料夾的內容透過它丟去gitHub上剛剛建的那個Repository(倉庫)裡，之後就能透過網站提供的gitPage功能實現個人網站的搭建&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在gitHub網頁點進創建的username.github.io專案，右上角綠色&amp;quot;Code&amp;quot;點開，用桌面程式開啟&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;程式開啟後他會要你選擇一個本地的位置去連結該倉庫，直接連結到root/public下看似方便但會導致一些麻煩&amp;amp;錯誤，菜雞如我是放在根目錄同級的位置，姑且稱這個資料夾叫雲端&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;把根目錄下public/裡面的內容copy一份到剛剛建立的雲端資料夾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;此時回到GitHub Desktop客戶端它會說檢測到本地有新東西準備要上傳，左下角Summary填一個描述(隨意填但必要，他就是讓你描述一下這批上傳的動作，以後冤有頭債有主)，然後點Commit to main，至此一切準備就緒&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;到右邊點第一次叫publish之類，後面那個按鍵會變成push origin，即是把資料正式上傳到網路上&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;等個幾秒後到&amp;quot;https://username.github.io/&amp;ldquo;看看成果&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;之後要更新就是content/post/下建立新的.md，寫完內容然後hugo打包之後push&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;關於插入圖片&#34;&gt;關於插入圖片&lt;/h1&gt;
+&lt;p&gt;hugo常見有2種做法&lt;/p&gt;
+&lt;h3 id=&#34;方法1&#34;&gt;方法1&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;在.\static\images\下放入的圖片會被打包上傳，然後從相對路徑引用那個圖片&lt;/li&gt;
+&lt;li&gt;適和用在全站通用的資源，比如背景圖、縮圖&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法2&#34;&gt;方法2&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在.\content\post\下，每當有用到圖片一篇文章的就新增一個資料夾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;資料夾可以命名可自訂，然後進去把.md檔改名為&amp;quot;index.md&amp;rdquo;，圖片放同層&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;範例:&lt;img src=&#34;image-20211128105331357.png&#34; alt=&#34;image-20211128105331357&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;這個方法比較好整理，每篇用到的圖片放在自己的資料夾中&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;一鍵更新&#34;&gt;一鍵更新&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;透過.bat一鍵打包+git發布上傳到你的github專案倉庫&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;既然是個人的倉庫，首先要解決一個權限問題，否則隨便路人都可以亂上傳到你的倉庫豈不是亂套&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;作法簡單來說，在電腦本機生成一個key(一串暗號)，然後到github網頁上設定，約好拿這個key來的人就允許上傳&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;生成本機key&#34;&gt;生成本機key&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ ssh-keygen                                   # 產生金鑰
+Generating public/private rsa key pair.
+Enter file in which to save the key :   
+# 金鑰存放路徑，預設會放到我的文件/.ssh
+# 放哪不是特別重要，有強迫症可以自己改，否則直接按Enter
+
+Enter passphrase (empty for no passphrase):    # 密碼，可設定可不設定，設定的話每次上傳會多需要輸入一次密碼
+Enter same passphrase again:                   # 再輸入一次密碼
+The key fingerprint is:                        # 之後會顯示你的 fingerprint，到這裡就完成 key 的產生了
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;將key報備到專案&#34;&gt;將key報備到專案&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;到生成的路徑，找id_rsa.pub，右鍵筆記本編輯打開，會看到很長一行開頭是&amp;quot;ssh-rsa &amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;.&amp;quot;，全選複製&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211128105840868.png&#34; alt=&#34;image-20211128105840868&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;回你的github專案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211128105742295.png&#34; alt=&#34;image-20211128105742295&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;內容貼上剛剛複製的那行&lt;/li&gt;
+&lt;li&gt;自己給這個key起個名，懶得命名可以取剛剛那串最尾的&amp;quot;使用者@電腦&amp;quot;當名稱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;建立批次執行檔&#34;&gt;建立批次執行檔&lt;/h3&gt;
+&lt;p&gt;起一個.bat檔案，放在hugo的根目錄(跟config.toml同層)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;@echo off
+set pan=.\public\
+set repo=git@github.com:yoziming/yoziming.github.io.git
+set branch=master
+if exist %pan% (
+    echo &amp;quot;clean public directory&amp;quot;
+    rd /S /Q %pan%
+    echo &amp;quot;Hugo again for new site&amp;quot;
+    hugo
+) else (
+    echo &amp;quot;can not find public directory&amp;quot;
+    echo &amp;quot;Hugo again for new site&amp;quot;
+    hugo
+)
+if exist %pan% (
+    cd %pan%
+    echo &amp;quot;git init and commit&amp;quot;
+    git init
+    git add --all
+    git commit -m &amp;quot;update site at %time%&amp;quot;
+    echo &amp;quot;set remote repository and push forcely&amp;quot;
+    git remote add origin %repo%
+    git push -f origin master:master -v
+) else (
+    echo &amp;quot;can not find public directory, hugo fail!&amp;quot;
+)
+pause
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;其中這2行要自己編輯&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;set repo=git@github.com:yoziming/yoziming.github.io.git
+// 修改成你的用戶名
+set branch=master
+/* branch是倉庫裡的分支，預設有可能是main，這邊是用master
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;更改專案預設分支&#34;&gt;更改專案預設分支&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211128104929795.png&#34; alt=&#34;image-20211128104929795&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;更改個人頁面的資料來源&#34;&gt;更改個人頁面的資料來源&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211128104750907.png&#34; alt=&#34;image-20211128104750907&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;完成&#34;&gt;完成&lt;/h3&gt;
+&lt;p&gt;以後更新只要執行這個bat瞬間就搞定&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211128105931063.png&#34; alt=&#34;image-20211128105931063&#34;&gt;&lt;/p&gt;
+- https://yoziming.github.io/post/210926-bulidblogwithhugo/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>圖片測試</title>
+        <link>https://yoziming.github.io/post/210925-imagetest/</link>
+        <pubDate>Sat, 25 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210925-imagetest/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210925-imagetest/ -&lt;ul&gt;
+&lt;li&gt;圖片1 使用建立新資料夾後的相對路徑&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;400.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;圖片2  使用\static\images\之下的資源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yoziming.github.io/images/dark-abstract-1877-hd-wallpapers.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;圖片3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image-20210927145513469.png&#34; alt=&#34;image-20210927145513469&#34;&gt;&lt;/p&gt;
+- https://yoziming.github.io/post/210925-imagetest/ - yoziming</description>
+        </item>
+    
+    
+  </channel>
+</rss> 

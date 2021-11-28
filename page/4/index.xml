@@ -1,0 +1,1126 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yoziming&#39; Blog</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on yoziming&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>MVC &amp; Microservices</title>
+        <link>https://yoziming.github.io/post/210910-mvc-microservices/</link>
+        <pubDate>Fri, 10 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210910-mvc-microservices/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210910-mvc-microservices/ -&lt;h2 id=&#34;mvc架構&#34;&gt;MVC架構&lt;/h2&gt;
+&lt;p&gt;Model:模型，管理資料庫(增刪改查)、業務邏輯、物件結構定義&lt;/p&gt;
+&lt;p&gt;View:視圖，使用者實際在看、操作的介面(UI)，前端&lt;/p&gt;
+&lt;p&gt;Controller:控制，接收請求、回覆結果，決定工作流程，算是Model跟View的中間人&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image-20211012085838544.png&#34; alt=&#34;image-20211012085838544&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;微服務架構microservices&#34;&gt;微服務架構（Microservices）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;單一職責:把業務邏輯拆分成無數個小區塊(Blocks)，負責單一任務，服務之間透過管道來通訊。&lt;/li&gt;
+&lt;li&gt;輕量級通訊:使用不依賴語言或平台的格式，例如XML、JSON、protobuf。通常基於HTTP協議、符合REST風格來達成標準化、無狀態化。&lt;/li&gt;
+&lt;li&gt;獨立開發、測試、部屬:顧名思義，都拆開了就可以分開做，不像傳統架構牽一髮而動全身。&lt;/li&gt;
+&lt;li&gt;容器化:微服務既然能獨立作業了，就可以放到容器(Container)中，互相隔離互不干擾，達成快速部署、節省資源。Docker是目前最普遍的容器技術，Kubernetes(K8s)是常用來管理容器、協調整合的平台。&lt;/li&gt;
+&lt;/ol&gt;
+- https://yoziming.github.io/post/210910-mvc-microservices/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>一次性隊列</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/ -&lt;h1 id=&#34;一次性隊列&#34;&gt;一次性隊列&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//用結構體管理隊列
+type Queue struct {
+	maxSize int
+	array   [3]int
+	front   int //隊列首(不包含)
+	rear    int //隊尾(含)
+}
+
+//添加數據val到隊列
+func (q *Queue) AddQueue(val int) (err error) {
+	//先判斷是否已滿
+	if q.rear == q.maxSize-1 {
+		return errors.New(&amp;quot;queue full&amp;quot;)
+	}
+	q.rear++
+	q.array[q.rear] = val
+	return
+}
+
+//取出數據
+func (q *Queue) GetQueue() (val int, err error) {
+	//先判斷是否為空
+	if q.rear == q.front {
+		return -1, errors.New(&amp;quot;queue empty&amp;quot;)
+	}
+	q.front++
+	val = q.array[q.front]
+	return val, err
+
+}
+
+//顯示隊列
+func (q *Queue) ShowQueue() {
+	fmt.Println(&amp;quot;當前隊列=&amp;quot;)
+	for i := q.front + 1; i &amp;lt;= q.rear; i++ {
+		fmt.Printf(&amp;quot;array[%d]=%d\t&amp;quot;, i, q.array[i])
+	}
+	fmt.Println(&amp;quot;隊列顯示完畢&amp;quot;)
+}
+
+func main() {
+	//創建一個隊列
+	queue1 := Queue{
+		maxSize: 3,
+		front:   -1,
+		rear:    -1,
+	}
+	var key string
+	var val int
+	for {
+		fmt.Println(&amp;quot;\n等待操作中...&amp;quot;)
+		fmt.Println(&amp;quot;輸入add 添加&amp;quot;)
+		fmt.Println(&amp;quot;輸入get 取出&amp;quot;)
+		fmt.Println(&amp;quot;輸入show 顯示&amp;quot;)
+		fmt.Println(&amp;quot;輸入exit 離開&amp;quot;)
+
+		fmt.Scanln(&amp;amp;key)
+		switch key {
+		case &amp;quot;add&amp;quot;:
+			fmt.Println(&amp;quot;輸入要加入的數值...&amp;quot;)
+			fmt.Scanln(&amp;amp;val)
+			err := queue1.AddQueue(val)
+			if err != nil {
+				fmt.Println(err.Error())
+			} else {
+				fmt.Println(&amp;quot;加入成功&amp;quot;)
+			}
+		case &amp;quot;get&amp;quot;:
+			val, err := queue1.GetQueue()
+			if err != nil {
+				fmt.Println(err.Error())
+			} else {
+				fmt.Println(&amp;quot;取出成功&amp;quot;, val)
+			}
+
+		case &amp;quot;show&amp;quot;:
+			queue1.ShowQueue()
+		case &amp;quot;exit&amp;quot;:
+			os.Exit(0)
+		}
+
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%B8%80%E6%AC%A1%E6%80%A7%E9%9A%8A%E5%88%97/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>二分樹的3種遍歷</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ -&lt;h1 id=&#34;二分樹的3種遍歷&#34;&gt;二分樹的3種遍歷&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+
+type Hero struct {
+	No    int
+	Name  string
+	Left  *Hero
+	Right *Hero
+}
+
+//前序遍歷 先輸出root 再輸出左子樹 再輸出右子樹，會中左右一層層往下
+func PreOrder(node *Hero) {
+	if node != nil {
+		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
+		PreOrder(node.Left)
+		PreOrder(node.Right)
+	}
+}
+
+//中序遍歷 左子樹 root 右子樹
+func InfixOrder(node *Hero) {
+	if node != nil {
+		InfixOrder(node.Left)
+		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
+		InfixOrder(node.Right)
+	}
+}
+
+//後序遍歷 左子樹  右子樹 root，會一路到最左最下開始打
+func PostOrder(node *Hero) {
+	if node != nil {
+		PostOrder(node.Left)
+		PostOrder(node.Right)
+		fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name)
+
+	}
+}
+
+func main() {
+	//建一個二分樹
+	root := &amp;amp;Hero{
+		No:   1,
+		Name: &amp;quot;宋江&amp;quot;,
+	}
+
+	left1 := &amp;amp;Hero{
+		No:   2,
+		Name: &amp;quot;無用&amp;quot;,
+	}
+
+	right1 := &amp;amp;Hero{
+		No:   3,
+		Name: &amp;quot;你軌&amp;quot;,
+	}
+	root.Left = left1
+	root.Right = right1
+	right2 := &amp;amp;Hero{
+		No:   4,
+		Name: &amp;quot;林沖&amp;quot;,
+	}
+	right1.Right = right2
+	node21 := &amp;amp;Hero{
+		No:   21,
+		Name: &amp;quot;無用-下左&amp;quot;,
+	}
+	node22 := &amp;amp;Hero{
+		No:   22,
+		Name: &amp;quot;無用-下右&amp;quot;,
+	}
+	left1.Left = node21
+	left1.Right = node22
+
+	PreOrder(root)
+	fmt.Println(&amp;quot;==========&amp;quot;)
+	InfixOrder(root)
+	fmt.Println(&amp;quot;==========&amp;quot;)
+	PostOrder(root)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E4%BA%8C%E5%88%86%E6%A8%B9%E7%9A%843%E7%A8%AE%E9%81%8D%E6%AD%B7/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>哈希表數據結構</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ -&lt;h1 id=&#34;哈希表數據結構&#34;&gt;哈希表數據結構&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;os&amp;quot;
+)
+
+type Emp struct {
+	Id   int
+	Name string
+	Next *Emp
+}
+
+func (e *Emp) ShowMe() {
+	fmt.Printf(&amp;quot;链表%d 找到该雇员 %d\n&amp;quot;, e.Id%7, e.Id)
+}
+
+//不帶表頭，即第一個節點就放雇員資料
+type EmpLink struct {
+	Head *Emp
+}
+
+func (e *EmpLink) FindByIdEmpLink(id int) *Emp {
+	cur := e.Head
+	for {
+		if cur != nil &amp;amp;&amp;amp; cur.Id == id {
+			return cur
+		} else if cur == nil {
+			break
+		}
+		cur = cur.Next
+	}
+	return nil
+}
+
+//給EmpLink寫增加雇員方法，編號從小到大
+func (e *EmpLink) AddEmpLink(emp *Emp) {
+	cur := e.Head      //輔助指針
+	var pre *Emp = nil //輔助指針pre在cur前面
+	//如果當前EmpLink是空的
+	if cur == nil {
+		e.Head = emp
+		return
+	}
+	//給emp找位置並插入
+	for {
+		if cur != nil {
+			if cur.Id &amp;gt; emp.Id { //找到
+				break
+			}
+			pre = cur
+			cur = cur.Next
+		} else {
+			break
+		}
+	}
+	pre.Next = emp
+	emp.Next = cur
+}
+
+func (e *EmpLink) ShowLink() {
+	//如果當前EmpLink是空的
+	if e.Head == nil {
+		fmt.Println(&amp;quot;當前鏈表為空&amp;quot;)
+		return
+	}
+	cur := e.Head
+	for {
+		if cur != nil {
+			fmt.Printf(&amp;quot;雇員ID=%d 名字=%s ~&amp;gt;&amp;quot;, cur.Id, cur.Name)
+			cur = cur.Next
+		} else {
+			break
+		}
+	}
+	fmt.Println()
+}
+
+//鏈表數組
+type HashTable struct {
+	LinkArr [7]EmpLink
+}
+
+//給HashTable寫增加雇員方法
+func (h *HashTable) Add(emp *Emp) {
+	//使用散列函數，確定雇員添到哪個鏈表
+	linkNo := h.HashFun(emp.Id)
+	//添加
+	h.LinkArr[linkNo].AddEmpLink(emp)
+}
+
+//顯示所有HashTable雇員方法
+func (h *HashTable) ShowAll() {
+	for i := 0; i &amp;lt; len(h.LinkArr); i++ {
+		h.LinkArr[i].ShowLink()
+	}
+}
+
+//查找
+func (h *HashTable) FindById(id int) *Emp {
+	linkNo := h.HashFun(id)
+	return h.LinkArr[linkNo].FindByIdEmpLink(id)
+}
+
+//散列函數
+func (h *HashTable) HashFun(id int) int {
+	return id % 7 //得到一個值，就是鏈表的下標
+}
+
+func main() {
+	key := 0
+	id := 0
+	name := &amp;quot;&amp;quot;
+	var hashTable HashTable
+	for {
+		fmt.Println(&amp;quot;===雇員系統===&amp;quot;)
+		fmt.Println(&amp;quot;\t1.添加&amp;quot;)
+		fmt.Println(&amp;quot;\t2.顯示&amp;quot;)
+		fmt.Println(&amp;quot;\t3.查找&amp;quot;)
+		fmt.Println(&amp;quot;\t4.退出&amp;quot;)
+		fmt.Scanln(&amp;amp;key)
+		switch key {
+		case 1:
+			fmt.Println(&amp;quot;輸入雇員ID&amp;quot;)
+			fmt.Scanln(&amp;amp;id)
+			fmt.Println(&amp;quot;輸入雇員 name&amp;quot;)
+			fmt.Scanln(&amp;amp;name)
+			emp := &amp;amp;Emp{
+				Id:   id,
+				Name: name,
+			}
+			hashTable.Add(emp)
+		case 2:
+			hashTable.ShowAll()
+		case 3:
+			fmt.Println(&amp;quot;輸入欲查雇員ID&amp;quot;)
+			fmt.Scanln(&amp;amp;id)
+			emp := hashTable.FindById(id)
+			if emp == nil {
+				fmt.Println(&amp;quot;不存在&amp;quot;)
+			} else {
+				emp.ShowMe()
+			}
+		case 4:
+			os.Exit(0)
+		default:
+			fmt.Println(&amp;quot;輸入錯誤&amp;quot;)
+		}
+	}
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>單向鏈表</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ -&lt;h1 id=&#34;單向鏈表&#34;&gt;單向鏈表&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type HeroNode struct {
+	no   int
+	name string
+	next *HeroNode //表示指向下一個節點
+}
+
+//給鏈表插入節點
+func Insert(head *HeroNode, newHeroNode *HeroNode) {
+	//先找到最後的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		}
+		temp = temp.next //不斷往下找
+	}
+	//把newHeroNode加到屁股
+	temp.next = newHeroNode
+}
+
+//根據No從小到大插入
+func InsertNo(head *HeroNode, newHeroNode *HeroNode) {
+	//想找到適當的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		} else if temp.next.no &amp;gt; newHeroNode.no {
+			//表示new要插到temp後
+			break
+		} else if temp.next.no == newHeroNode.no {
+			//表示new這個編號已存在
+			fmt.Println(newHeroNode.no, &amp;quot;該編號已存在&amp;quot;)
+			return
+		}
+		temp = temp.next //不斷往下找
+
+	}
+	//把newHeroNode加到找到的地方
+	newHeroNode.next = temp.next
+	temp.next = newHeroNode 
+}
+
+//根據no刪除一個節點
+func DelHeroNode(head *HeroNode, id int) {
+	//想找到適當的節點，創建一個輔助
+	temp := head
+	for {
+		if temp.next == nil { //表示找到最後
+			break
+		} else if temp.next.no == id {
+			//表示找到了
+			fmt.Println(id, &amp;quot;該編號已刪除&amp;quot;)
+			temp.next = temp.next.next
+			return
+		}
+		temp = temp.next //不斷往下找
+	}
+
+}
+
+//顯示
+func List(head *HeroNode) {
+	//創建一個輔助
+	temp := head
+	if temp.next == nil { //空鏈表?
+		fmt.Println(&amp;quot;空&amp;quot;)
+		return
+	}
+	for {
+		fmt.Printf(&amp;quot;[%d,%s]==&amp;gt;&amp;quot;, temp.next.no, temp.next.name)
+		temp = temp.next      //不斷往下找
+		if temp.next == nil { //到尾了
+			fmt.Println(&amp;quot;完畢&amp;quot;)
+			break
+		}
+	}
+}
+
+func main() {
+	//創建一個頭節點(空的)
+	head := &amp;amp;HeroNode{}
+	hero1 := &amp;amp;HeroNode{
+		no:   1,
+		name: &amp;quot;宋江&amp;quot;,
+	}
+	hero2 := &amp;amp;HeroNode{
+		no:   2,
+		name: &amp;quot;李奎&amp;quot;,
+	}
+	hero3 := &amp;amp;HeroNode{
+		no:   3,
+		name: &amp;quot;李軌&amp;quot;,
+	}
+	hero4 := &amp;amp;HeroNode{
+		no:   3,
+		name: &amp;quot;321&amp;quot;,
+	}
+	InsertNo(head, hero3)
+	InsertNo(head, hero1)
+	InsertNo(head, hero2)
+	InsertNo(head, hero4)
+	List(head)
+	DelHeroNode(head, 2)
+	List(head)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>插入&amp;選擇&amp;快速排序</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%8F%92%E5%85%A5%E9%81%B8%E6%93%87%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%8F%92%E5%85%A5%E9%81%B8%E6%93%87%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%8F%92%E5%85%A5%E9%81%B8%E6%93%87%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/ -&lt;h1 id=&#34;插入選擇快速排序&#34;&gt;插入&amp;amp;選擇&amp;amp;快速排序&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//選擇排序
+func SelectSort(array *[6]int) {
+	for j := 0; j &amp;lt; len(array)-1; j++ {
+		min := array[j]
+		minIndex := j
+		//尋找最小的下標
+		for i := j + 1; i &amp;lt; len(array); i++ {
+			if min &amp;gt; array[i] {
+				min = array[i]
+				minIndex = i
+			}
+		}
+		if minIndex != j {
+			array[j], array[minIndex] = array[minIndex], array[j]
+		}
+		fmt.Printf(&amp;quot;第%d次交換後 %v\n&amp;quot;, j+1, *array)
+	}
+
+}
+
+//插入排序
+func InsertSort(arr *[6]int) {
+	for j := 1; j &amp;lt; len(arr); j++ {
+		//給第二個元素找位置
+		insertVal := arr[j]
+		insertIndex := j - 1 //下標
+		//由大到小
+		for insertIndex &amp;gt;= 0 &amp;amp;&amp;amp; arr[insertIndex] &amp;lt; insertVal {
+			arr[insertIndex+1] = arr[insertIndex] //數據後移
+			insertIndex--
+		}
+		//插入
+		if insertIndex+1 != j {
+			arr[insertIndex+1] = insertVal
+		}
+		fmt.Printf(&amp;quot;第%d次插入後 %v\n&amp;quot;, j, *arr)
+	}
+
+}
+
+//快速排序
+func QuickSort(left int, right int, array *[6]int) {
+	l := left
+	r := right
+	pivot := array[(left+right)/2] //中軸
+
+	//比pivot小就放到左邊，反之亦然
+	for l &amp;lt; r {
+		for array[l] &amp;lt; pivot {
+			l++
+		}
+		for array[r] &amp;gt; pivot {
+			r--
+		}
+		if l &amp;gt;= r { //表示分割完成
+			break
+		}
+		//如果沒完成就交換
+		array[l], array[r] = array[r], array[l]
+		//改善
+		if array[l] == pivot {
+			r--
+		}
+		if array[r] == pivot {
+			l++
+		}
+	}
+	//防卡住
+	if l == r {
+		l++
+		r--
+	}
+	if left &amp;lt; r {
+		QuickSort(left, r, array)
+	}
+	if right &amp;gt; l {
+		QuickSort(l, right, array)
+	}
+
+}
+
+func main() {
+	// var array = [6]int{10, 34, 19, 100, 80, -5}
+	// // SelectSort(&amp;amp;array)
+	// // InsertSort(&amp;amp;array)
+	// // fmt.Println(array)
+	// QuickSort(0, len(array)-1, &amp;amp;array)
+	// fmt.Println(array)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%8F%92%E5%85%A5%E9%81%B8%E6%93%87%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>模擬棧&amp;四則運算</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%A8%A1%E6%93%AC%E6%A3%A7%E5%9B%9B%E5%89%87%E9%81%8B%E7%AE%97/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%A8%A1%E6%93%AC%E6%A3%A7%E5%9B%9B%E5%89%87%E9%81%8B%E7%AE%97/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%A8%A1%E6%93%AC%E6%A3%A7%E5%9B%9B%E5%89%87%E9%81%8B%E7%AE%97/ -&lt;h1 id=&#34;模擬棧四則運算&#34;&gt;模擬棧&amp;amp;四則運算&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//模擬棧的使用
+type Stack struct {
+	MaxTop int //最大可存個數
+	Top    int //頂
+	arr    [20]int
+}
+
+func (s *Stack) Push(val int) (err error) {
+	//先判斷是否滿
+	if s.Top == s.MaxTop-1 {
+		fmt.Println(&amp;quot;stack full&amp;quot;)
+		return errors.New(&amp;quot;stack full&amp;quot;)
+	}
+	//放入數據
+	s.Top++
+	s.arr[s.Top] = val
+	return
+}
+
+func (s *Stack) Pop() (val int, err error) {
+	//先判斷是否空
+	if s.Top == -1 {
+		fmt.Println(&amp;quot;stack empty&amp;quot;)
+		return 0, errors.New(&amp;quot;stack empty&amp;quot;)
+	}
+	//彈出數據
+	val = s.arr[s.Top]
+	s.Top--
+	return val, nil
+}
+
+//遍歷
+func (s *Stack) List() {
+	//先判斷是否空
+	if s.Top == -1 {
+		fmt.Println(&amp;quot;stack empty&amp;quot;)
+		return
+	}
+	fmt.Println(&amp;quot;stack now=&amp;quot;)
+	for i := s.Top; i &amp;gt;= 0; i-- {
+		fmt.Printf(&amp;quot;arr[%d]=%d\n&amp;quot;, i, s.arr[i])
+	}
+}
+
+//判斷字符是數字還運算符號
+func (s *Stack) IsOper(val int) bool {
+	if val == 42 || val == 43 || val == 45 || val == 47 {
+		//ASC碼的+-*/
+		return true
+	} else {
+		return false
+	}
+}
+
+//運算
+func (s *Stack) Cal(n1, n2, oper int) int {
+	res := 0
+	switch oper {
+	case 42:
+		res = n2 * n1
+	case 43:
+		res = n2 + n1
+	case 45:
+		res = n2 - n1
+	case 47:
+		res = n2 / n1
+	default:
+		fmt.Println(&amp;quot;運算符號錯誤&amp;quot;)
+	}
+	return res
+}
+
+//優先級
+func (s *Stack) Priority(oper int) int {
+	res := 0
+	if oper == 42 || oper == 47 {
+		res = 1
+	} else if oper == 43 || oper == 45 {
+		res = 0
+	}
+	return res
+}
+
+func main() {
+	// stack := &amp;amp;Stack{
+	// 	MaxTop: 5,  //最多存5個
+	// 	Top:    -1, //表示棧為空
+	// }
+	// stack.Push(1)
+	// stack.Push(2)
+	// stack.Push(3)
+	// stack.Push(4)
+	// stack.Push(5)
+	// stack.Push(6)
+	// p1, _ := stack.Pop()
+	// fmt.Println(&amp;quot;彈出&amp;quot;, p1)
+	// p1, _ = stack.Pop()
+	// fmt.Println(&amp;quot;彈出&amp;quot;, p1)
+	// p1, _ = stack.Pop()
+	// fmt.Println(&amp;quot;彈出&amp;quot;, p1)
+	// p1, _ = stack.Pop()
+	// fmt.Println(&amp;quot;彈出&amp;quot;, p1)
+	// p1, _ = stack.Pop()
+	// fmt.Println(&amp;quot;彈出&amp;quot;, p1)
+
+	//四則運算練習
+
+	//數字棧
+	numStack := &amp;amp;Stack{
+		MaxTop: 20,
+		Top:    -1,
+	}
+
+	//運算符號
+	operStack := &amp;amp;Stack{
+		MaxTop: 20,
+		Top:    -1,
+	}
+
+	exp := &amp;quot;30+20*6+1&amp;quot;
+	n1 := 0
+	n2 := 0
+	oper := 0
+	res := 0
+	keepNum := &amp;quot;&amp;quot;
+
+	//定義一個index來掃描
+	index := 0
+	for {
+		ch := exp[index : index+1]  //字符串
+		temp := int([]byte(ch)[0])  //對應的ASC碼
+		if operStack.IsOper(temp) { //說明是符號
+			if operStack.Top == -1 { //說明是空棧
+				operStack.Push(temp) //就入
+			} else {
+				if operStack.Priority(operStack.arr[operStack.Top]) &amp;gt;= operStack.Priority(temp) {
+					//比較一下棧頂的運算符號優先級，如果有先乘除的
+					n1, _ = numStack.Pop()
+					n2, _ = numStack.Pop()
+					oper, _ = operStack.Pop()
+					res = operStack.Cal(n1, n2, oper)
+					//算完塞回去
+					numStack.Push(res)
+					operStack.Push(temp)
+				} else {
+					operStack.Push(temp)
+				}
+			}
+		} else {
+			//處理多位數，看index後面是不是運算符號
+			//拼接
+			keepNum += ch
+
+			if index == len(exp)-1 { //如果已經到最後
+				val, _ := strconv.ParseInt(keepNum, 10, 64)
+				numStack.Push(int(val))
+			} else {
+				if operStack.IsOper(int([]byte(exp[index+1 : index+2])[0])) {
+					val, _ := strconv.ParseInt(keepNum, 10, 64)
+					numStack.Push(int(val))
+					keepNum = &amp;quot;&amp;quot;
+				}
+			}
+			//從ASC轉回數字
+			// val, _ := strconv.ParseInt(ch, 10, 64)
+			// numStack.Push(int(val))
+		}
+		//判斷是否繼續掃描
+		if index+1 == len(exp) {
+			break
+		}
+		index++
+	}
+
+	for {
+		if operStack.Top == -1 {
+			break
+		}
+		n1, _ = numStack.Pop()
+		n2, _ = numStack.Pop()
+		oper, _ = operStack.Pop()
+		res = operStack.Cal(n1, n2, oper)
+		//算完塞回去
+		numStack.Push(res)
+	}
+	final, _ := numStack.Pop()
+	fmt.Printf(&amp;quot;算式%s=%v&amp;quot;, exp, final)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E6%A8%A1%E6%93%AC%E6%A3%A7%E5%9B%9B%E5%89%87%E9%81%8B%E7%AE%97/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>環形單向鏈表</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%92%B0%E5%BD%A2%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%92%B0%E5%BD%A2%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%92%B0%E5%BD%A2%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ -&lt;h1 id=&#34;環形單向鏈表&#34;&gt;環形單向鏈表&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type CatNode struct {
+	no   int
+	name string
+	next *CatNode
+}
+
+func Insert(head *CatNode, newCatNode *CatNode) {
+	//判斷是否第一隻貓
+	if head.next == nil {
+		head.no = newCatNode.no
+		head.name = newCatNode.name
+		head.next = head //構成環形
+		fmt.Println(*newCatNode, &amp;quot;已初始化並加入環形鏈表&amp;quot;)
+		return
+	}
+
+	//定義一個變量找到環形最後一個
+	temp := head
+	for {
+		if temp.next == head {
+			break
+		}
+		temp = temp.next
+
+	}
+	temp.next = newCatNode
+	fmt.Println(*newCatNode, &amp;quot;已加入環形鏈表&amp;quot;)
+	newCatNode.next = head
+
+}
+
+func Del(head *CatNode, id int) *CatNode {
+	temp := head
+	helper := head
+	if temp.next == nil {
+		fmt.Println(&amp;quot;這是一個空鏈表&amp;quot;)
+		return head
+	}
+	if temp.next == head { //只有一點
+		temp.next = nil
+		fmt.Println(id, &amp;quot;已刪除&amp;quot;)
+		return head
+	}
+
+	//helper放到尾
+	for {
+		if helper.next == head {
+			break
+		}
+		helper = helper.next
+	}
+
+	flag := true
+	for {
+		if temp.next == head { //說明比到最後一個了
+			break
+		}
+		if temp.no == id {
+			if temp == head { //說明刪除的是頭
+				head = head.next
+			}
+			helper.next = temp.next
+			fmt.Println(id, &amp;quot;已刪除&amp;quot;)
+			flag = false
+			break
+		}
+		temp = temp.next     //移動比較用
+		helper = helper.next //一旦找到要刪除的點
+	}
+	if flag {
+		if temp.no == id {
+			helper.next = temp.next
+			fmt.Println(id, &amp;quot;已刪除&amp;quot;)
+		} else {
+			fmt.Println(id, &amp;quot;找不到&amp;quot;)
+		}
+	}
+	return head
+}
+
+func List(head *CatNode) {
+	temp := head
+	if temp.next == nil {
+		fmt.Println(&amp;quot;空的環形鏈表&amp;quot;)
+		return
+	}
+	for {
+		fmt.Printf(&amp;quot;貓id=%d name=%s ~&amp;gt;&amp;quot;, temp.no, temp.name)
+		if temp.next == head {
+			break
+		}
+		temp = temp.next
+	}
+	fmt.Println()
+}
+
+func main() {
+	head := &amp;amp;CatNode{}
+	cat1 := &amp;amp;CatNode{
+		no:   1,
+		name: &amp;quot;tom&amp;quot;,
+	}
+	cat2 := &amp;amp;CatNode{
+		no:   2,
+		name: &amp;quot;bbb&amp;quot;,
+	}
+	cat3 := &amp;amp;CatNode{
+		no:   3,
+		name: &amp;quot;ccc&amp;quot;,
+	}
+
+	Insert(head, cat1)
+	Insert(head, cat2)
+	Insert(head, cat3)
+	List(head)
+	// Del(head, 2)
+	// List(head)
+	head = Del(head, 4)
+	List(head)
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%92%B0%E5%BD%A2%E5%96%AE%E5%90%91%E9%8F%88%E8%A1%A8/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>稀疏數組</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%A8%80%E7%96%8F%E6%95%B8%E7%B5%84/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%A8%80%E7%96%8F%E6%95%B8%E7%B5%84/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%A8%80%E7%96%8F%E6%95%B8%E7%B5%84/ -&lt;h1 id=&#34;稀疏數組&#34;&gt;稀疏數組&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type ValNode struct {
+	row int //橫的
+	col int //直的
+	val int
+}
+
+func main() {
+	//創建數組範例
+	var chessMap [11][11]int
+	chessMap[1][2] = 1
+	chessMap[2][3] = 2
+
+	//輸出看樣子
+	for _, v := range chessMap {
+		for _, v2 := range v {
+			fmt.Printf(&amp;quot;%d\t&amp;quot;, v2)
+		}
+		fmt.Println()
+	}
+
+	//轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片
+	var sparseArr []ValNode
+	//紀錄規模跟預設值
+	valNode0 := ValNode{
+		row: 11,
+		col: 11,
+		val: 0,
+	}
+	sparseArr = append(sparseArr, valNode0)
+
+	for i, v := range chessMap {
+		for j, k := range v {
+			if k != 0 {
+				valNodeFind := ValNode{
+					row: i,
+					col: j,
+					val: k,
+				}
+				sparseArr = append(sparseArr, valNodeFind)
+			}
+		}
+	}
+	//輸出這個數組看看
+	for i, valNode := range sparseArr {
+		fmt.Printf(&amp;quot;%d: %d %d %d\n&amp;quot;, i, valNode.row, valNode.col, valNode.val)
+	}
+
+	//恢復
+	var chessMapRe [11][11]int
+	for i, v := range sparseArr {
+		if i != 0 { //跳過第一row
+			chessMapRe[v.row][v.col] = v.val
+
+		}
+	}
+
+	//輸出看樣子
+	for _, v := range chessMapRe {
+		for _, v2 := range v {
+			fmt.Printf(&amp;quot;%d\t&amp;quot;, v2)
+		}
+		fmt.Println()
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%A8%80%E7%96%8F%E6%95%B8%E7%B5%84/ - yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>約瑟夫問題</title>
+        <link>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/</guid>
+        <description>yoziming&#39; Blog https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/ -&lt;h1 id=&#34;約瑟夫問題&#34;&gt;約瑟夫問題&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Boy struct {
+	No   int
+	Next *Boy //指向下一個小孩的指針
+}
+
+func addBoy(num int) *Boy {
+	//num表示小孩的個數，*Boy返回第一個小孩的指針
+	first := &amp;amp;Boy{}
+	temp := &amp;amp;Boy{}
+	if num &amp;lt; 1 {
+		fmt.Println(&amp;quot;num值錯誤&amp;quot;)
+		return first
+	}
+
+	for i := 1; i &amp;lt;= num; i++ {
+		boy := &amp;amp;Boy{
+			No: i,
+		}
+		if i == 1 {
+			first = boy //不變
+			temp = boy
+			temp.Next = first
+		} else {
+			temp.Next = boy
+			temp = boy
+			temp.Next = first //構成環形
+		}
+	}
+	return first
+}
+
+func show(first *Boy) {
+	if first.Next == nil {
+		fmt.Println(&amp;quot;列表為空&amp;quot;)
+		return
+	}
+	temp := first
+	for {
+		fmt.Printf(&amp;quot;編號%d~&amp;gt;&amp;quot;, temp.No)
+		if temp.Next == first {
+			break
+		}
+		temp = temp.Next
+	}
+}
+
+func play(first *Boy, k int, m int) {
+	//從第k人開始報數m出列
+	if first.Next == nil {
+		fmt.Println(&amp;quot;列表為空&amp;quot;)
+		return
+	}
+	tail := first
+	for {
+		if tail.Next == first {
+			break
+		}
+		tail = tail.Next
+	}
+	//讓first移動到k
+	for i := 0; i &amp;lt; k-1; i++ {
+		first = first.Next
+		tail = tail.Next
+	}
+
+	//開始數m
+	for {
+		for i := 1; i &amp;lt;= m-1; i++ {
+			first = first.Next
+			tail = tail.Next
+		}
+		fmt.Println(first.No, &amp;quot;出列&amp;quot;)
+		first = first.Next
+		tail.Next = first
+
+		//退出
+		if tail == first {
+			break
+		}
+	}
+	fmt.Println(first.No, &amp;quot;為最後一個&amp;quot;)
+}
+func main() {
+	first := addBoy(41)
+	show(first)
+	fmt.Println()
+	play(first, 1, 3)
+}
+
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-%E5%B0%9A%E8%AA%B2go-%E6%95%B8%E6%93%9A%E7%B5%90%E6%A7%8B-%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/ - yoziming</description>
+        </item>
+    
+    
+  </channel>
+</rss> 
