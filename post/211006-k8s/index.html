@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Kubernetes基礎認識</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="k8s可說是目前必學的知識點">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Kubernetes基礎認識" />
+<meta property="og:description" content="k8s可說是目前必學的知識點" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211006-k8s/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-10-06T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes基礎認識"/>
+<meta name="twitter:description" content="k8s可說是目前必學的知識點"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#kubernetes%e5%9f%ba%e7%a4%8e%e8%aa%8d%e8%ad%98" onclick="onNavClick(`#kubernetes基礎認識-nav`)" id="kubernetes基礎認識-nav">
+									Kubernetes基礎認識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bb%b6%e4%bc%b8%e8%a7%80%e5%bf%b5" onclick="onNavClick(`#延伸觀念-nav`)" id="延伸觀念-nav">
+									延伸觀念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#kubernetes%e5%9f%ba%e7%a4%8e%e8%aa%8d%e8%ad%98" onclick="onNavClick(`#kubernetes基礎認識-nav`)" id="kubernetes基礎認識-nav">
+									Kubernetes基礎認識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bb%b6%e4%bc%b8%e8%a7%80%e5%bf%b5" onclick="onNavClick(`#延伸觀念-nav`)" id="延伸觀念-nav">
+									延伸觀念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/docker.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Kubernetes基礎認識
+                    
+                    <div class="post-subtitle">
+                        k8s可說是目前必學的知識點
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-10-06 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/docker">docker</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="kubernetes基礎認識">Kubernetes基礎認識</h1>
+<blockquote>
+<p>自動化地以容器的形式管理你的應用程式
+To host your application in the form of containers in a automated fashion</p>
+</blockquote>
+<p><img src="image-20211014130933320.png" alt="image-20211014130933320"></p>
+<h2 id="名詞解釋">名詞解釋</h2>
+<ul>
+<li>
+<p>Cluster:集群，計算、儲存資源的集合。一個Cluster通常包含一個Controller Plane和數個Node，視需求而定(也可能有Multi-Controller Plane 的集群)</p>
+<ul>
+<li>Controller Plane:(以前叫Mater)控制主節點，調度指揮所
+<ul>
+<li>APIserver:管理整個 K8s 所需 API 的接口(Endpoint)，提供HTTP Rest介面的關鍵服務處理程序，是集群中各個節點的溝通橋樑</li>
+<li>etcd:存資料</li>
+<li>Scheduler:資源調配，例如調度Pod運行在哪個Node</li>
+<li>Controller-manager:總經理，負責管理並運行 <code>controller</code> ，controller定義各種Pod的部屬特性(如最常用的Deployment)來滿足不同的業務場景</li>
+</ul>
+</li>
+<li>Node:節點，讓物件(resource-objects)運行的實體或虛擬機器
+<ul>
+<li>kubelet:對應api-server的接口，可以看成每個Node上的&quot;實際執行者&quot;或&quot;操作者&quot;，負責接收來自api-server的訊息，並做出相對應的動作，例如，負責Pod對應的容器的建立、啟動或停止等。</li>
+<li>kube-proxy:維護網路規則(iptables)，這些規則允許從群集內部或外部的與Pod進行通訊。</li>
+<li>Container Runtime:容器的運行引擎，預設是Docker，也支援其他滿足CRI標準的。
+<ul>
+<li>Pod:可被調度的最小單位，每個Pod包含一或多個容器，Pod內共享生命週期、資源、通信(使用同一個網路namespace，即相同的IP與port)、儲存空間。通常使用是一個Pod中放一個容器；當需要高度共享資源時才會用一個Pod內多個容器的形式</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="延伸觀念">延伸觀念</h2>
+<ul>
+<li>Deployment:部屬，例如把Pod做橫向擴展，適用自動管理，或達成無停機系統升級</li>
+<li>Service:服務，Deployment可以部屬多個Pod，每個Pod都有自己的IP，隨時都在生滅浮動，外界如何訪問? 答案就是透過Service，可以說Controller負責運行Pod，而Service負責訪問Pod。</li>
+<li>Ingress:Service 中是將每個 Service 元件對外的 port number 跟 Node 上的 port number 做 mapping，這樣在我們的 Service 變多時，port number 以及分流規則的管理變得相當困難。而 Ingress 可以透過 HTTP/HTTPS，在我們眾多的 Service 前搭建一個 reverse-proxy。這樣 Ingress 可以幫助我們統一一個對外的 port number，並且根據 hostname 或是 pathname 決定封包要轉發到哪個 Service 上</li>
+<li>Namespace:命名空間，假如有多個用戶使用同一個Cluster，想把他們創建的Controller、Pod等資源分開，就靠Namespace。Namespace將物理的Cluster從邏輯上切成多個虛擬Cluster，每一個虛擬Cluster就是一個Namespace，不同Namespace中的資源完全隔離。K8s默認創建2個Namespace:
+<ul>
+<li>default:如果不指定，資源就預設放這</li>
+<li>kube-system:K8s自己創建的系統資源會放在這個Namespace中</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-10-06</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211010-ubuntu-common-operations/">
+			下一篇<br>ubuntu常用操作
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211005-mysql-cmdworkbench/">
+			上一篇<br>MySQL常用語句 &amp; Workbench
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>java on 柚子茶室</title>
+    <link>https://yoziming.github.io/tags/java/</link>
+    <description>Recent content in java on 柚子茶室</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Thu, 09 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Map、HashMap、Collections工具類</title>
+      <link>https://yoziming.github.io/post/211209-agg-ja-24/</link>
+      <pubDate>Thu, 09 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211209-agg-ja-24/</guid>
+      <description>Map Map接口:雙列數據，保存具有映射關係(key-value)成對的物件
+分類  HashMap:主要實現類，線程不安全、效率高、可以存null  LinkedHashMap:遍歷時可以按照添加順序排列   TreeMap:可以按照key(必須都是同類)來排序，底層是紅黑樹 Hashtable:古老的實現類，注意t是小寫，線程安全、效率低、不能存null  Properties:常用來處理配置文件，key跟value都是String類型    結構  key:無序、不可重複的，使用Set儲存。key決定存放位置，key的所在類必須重寫equals()與hashCode() value:無序，可重複的，使用Collection儲存，value的所在類必須重寫equals() 一對key與value構成一個Entry物件，使用Set儲存，當然也是無序、不可重複的  HashMap源碼分析  以JDK7為例
+  HashMap map = new HashMap():實例化時，底層創建了一個長度16的一維數組Entry[] table map.put(key1, value1):放數據時，調用key1所在類的hashcode()方法算出哈希值，以此哈希值再經過某些位運算，得到在Entry[] table數組中的存放位置，此時:  若位置是空的，放入成功 若已經有人(可能有一個數據或鏈表)，就來比較key1跟佔位者(可能有多個，全都要比一遍)的哈希值  如果哈希值都不同，添加成功(放成鏈表) 如果key1的哈希值跟已存在的某數據(舉例為key2, value2)哈希值相同，此時再比較key1所在類的equals()方法，此時:  如果equals()返回false，表示key不同只是恰好哈希值一樣，添加成功(放成鏈表) 如果equals()返回true，表示兩者key真的一樣，那就進入至尊對決，此時把put()方法理解為覆蓋，將舊的value2換成新的value1   所謂放成鏈表跟前面Set提到的一樣，類似於&amp;quot;卜&amp;quot;字的概念，從該位置延伸出去存放新的元素     擴容:超過臨界值(容量*負載因子)且要存的位置非空就會擴容，預設的擴容方式為造一個新的兩倍長數組，然後將原有的複製過來  預設容量:16 預設負載因子:0.75 擴容的邏輯是這樣的，為了減少哈希碰撞(就是不希望分支的鏈表太多太長)，所以不會等他裝到滿才擴容。假如負載因子0.9可能老是撞車分支很多，負載因子0.2可能一直在擴容，折衷就定負載因子0.75效率高    JDK8的改動  new HashMap():實例化時，底層沒有創建數組，首次調用put()方法才創建，類似懶漢式 底層數組用Node[]取代Entry[] 當數組某一個位置上的元素以鏈表形式存在的數據&amp;gt;8且當前主幹數組長度&amp;gt;64時，將鏈表改為紅黑樹儲存，提高查找效率  LinkedHashMap 繼承了HashMap的Node，但又多了before跟after兩個屬性，所以形成雙向鏈表可以再添加時記錄前後順序</description>
+    </item>
+    
+    <item>
+      <title>集合:Collection、疊代器Iiterator、List、Set</title>
+      <link>https://yoziming.github.io/post/211208-agg-ja-23/</link>
+      <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211208-agg-ja-23/</guid>
+      <description>集合概述  集合、數組都是用來儲存多個數據(在記憶體中)的結構，簡稱Java容器 數組在聲明時長度跟數據類型就定死了，還強制是有序的，增刪改查都不變 Java集合分成兩種體系，有各種接口與實現類:  Collection接口:單列數據，用來存一個一個的物件  List接口:元素有序、可重複，又稱為&amp;quot;動態數組&amp;quot;  ArrayList LinkedList Vector   Set接口:元素無序、不可重複  HashSet LinkedHashSet TreeSet     Map接口:雙列數據，保存具有映射關係(key-value)成對的物件  HashMap  LinkedHashMap   TreeMap Hashtable  Properties        Collection Collection接口本身沒有直接的實現類，而是要通過其子類List與Set各自的實現類來完成物件的實例化
+方法  用一個實現Collection接口的實例物件調用，例如:Collection coll = new ArrayList();
+   add(Object e):將Object e加入集合中
+  size():返回元素個數
+  addAll(Collection c):將集合c的內容全加進來
+  clear():清空元素，注意不是刪除集合本身，只是清掉其中的元素
+  isEmpty():判定是否為空</description>
+    </item>
+    
+    <item>
+      <title>枚舉類enum、註解annotation</title>
+      <link>https://yoziming.github.io/post/211207-agg-ja-22/</link>
+      <pubDate>Tue, 07 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211207-agg-ja-22/</guid>
+      <description>枚舉類(enum)  當類的物件數量是有限定的、確定的，例如:星期、性別、季節、支付方式、XX狀態 需要定義一組常量時，強烈建議使用枚舉類 如果類中只有一個物件，可以用單例模式 enum，發音&amp;quot;衣-囊&amp;quot;，名詞枚舉 enumerate，發音&amp;quot;以-new-merate&amp;quot;，動詞枚舉  自訂枚舉類  JDK 5以前
+   聲明物件的屬性，用private final修飾
+  將構造器私有化，給物件屬性賦上預想好的值
+  在本類中預先創立好物件，用public static final修飾
+  提供toSting方法
+  提供其他訴求，例如:get屬性等等
+  範例:
+class PayMethod { private final String name; private final String desc; private PayMethod(String name, String desc) { this.name = name; this.desc = desc; } public static final PayMethod CASH = new PayMethod(&amp;#34;現金&amp;#34;, &amp;#34;真金白銀&amp;#34;); public static final PayMethod VISA = new PayMethod(&amp;#34;VISA卡&amp;#34;, &amp;#34;VISA金融卡&amp;#34;); public static final PayMethod ONLINE = new PayMethod(&amp;#34;電子支付&amp;#34;, &amp;#34;街口支付&amp;#34;); @Override public String toString() { return &amp;#34;PayMethod{&amp;#34; + &amp;#34;name=&amp;#39;&amp;#34; + name + &amp;#39;\&amp;#39;&amp;#39; + &amp;#34;, desc=&amp;#39;&amp;#34; + desc + &amp;#39;\&amp;#39;&amp;#39; + &amp;#39;}&amp;#39;; } } // 調用，因為是靜態，直接類名.</description>
+    </item>
+    
+    <item>
+      <title>日期時間、比較器、其他常用類</title>
+      <link>https://yoziming.github.io/post/211206-agg-ja-21/</link>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211206-agg-ja-21/</guid>
+      <description>日期時間(JDK 8前)  提前說下，這些過時的類型跟方法實際95%用不上，了解一下就夠了
+  System類中的currentTimeMillis():返回當下與1970年1月1日之間的時間差，單位毫秒  這一長串的數字稱為時間戳    java.util.Date類   創建
+  使用空參構造器:創建一個當前時間的物件，格式為Wed Dec 01 13:35:20 CST 2021
+  形參傳入時間戳，創建一個該時間戳的物件
+    方法
+ toString():顯示時間 getTime():返回時間戳    java.sql.Date類  本身是java.util.Date的子類，用來對應數據庫中的日期變量  為了區分，最好使用全類名例如:java.sql.Date d2 = new java.sql.Date(d1.getTime()); 創建:形參必須傳入時間戳 方法:  toString():顯示時間，格式只有日期，如:2021-12-01 getTime():返回時間戳     java.util.Date語java.sql.Date轉換:形參中填入getTime()即可互轉  SimpleDateFormat類   顧名思義，把Date類格式化成String用的
+  創建一個形參為你想要的格式(如常見的&amp;quot;yyyy-MM-dd hh:mm:ss&amp;quot;)的SimpleDateFormat物件
+  用此物件調用format(date物件)方法返回想要的String，舉例:
+Date d1 = new Date(); SimpleDateFormat sdf = new SimpleDateFormat(&amp;#34;yyyy-MM-dd hh:mm:ss&amp;#34;); String s1 = sdf.</description>
+    </item>
+    
+    <item>
+      <title>String相關常用類與方法</title>
+      <link>https://yoziming.github.io/post/211205-agg-ja-20/</link>
+      <pubDate>Sun, 05 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211205-agg-ja-20/</guid>
+      <description>String類 String類特性  表示字符串，內容以&amp;quot;&amp;ldquo;包裹表示，稱為字面量的定義方式 是一個final類，不可被繼承 實現了Serializable接口，可以序列化 實現了Comparable接口，表示可以比較大小 內部定義了一個final char[] value數組來實際儲存數據，代表不可變的字符序列  當我們用字面量(區別於new)定義了一個String str1=&amp;ldquo;abc&amp;rdquo;，相當於在方法區的字符串常量池中新增了一個&amp;quot;abc&amp;quot;序列，其為不可變的 字符串常量池中不會儲存內容相同的字符串，比如我再新增一個str2=&amp;ldquo;abc&amp;rdquo;，則他們指向同一地址。  延伸str6=&amp;ldquo;a&amp;rdquo;+&amp;ldquo;bc&amp;rdquo;，在聲明時字面量相加，等於常量跟常量拼接，都是在常量池，所以指向同樣位置   而當我把str1=&amp;ldquo;hello&amp;rdquo;，或是用+拼接了其他內容，或是用replace取代了其中某一位的字，都是在常量池重新開闢空間，所謂不可變是這個意思   如果是用String str3=new String(&amp;ldquo;abc&amp;rdquo;);方法生成，則是創在堆中，str3本身是指向堆的地址，去比==都是false。這個動作實際開闢了2個記憶體空間，它在堆中的value才指向常量池  如果是new一個構造器生成時賦予的name傳入形參則跟new String是不同的，傳入形參也是類似於字面量的方法(因為顯然多在堆中開闢位置是毫無必要的) 若是用+拼接有任何涉及到變量的，例如str4=str1+&amp;ldquo;def&amp;rdquo;，都是相當於在堆空間new的操作，==去比較時全都false 但如果變量被final修飾(正常不會有人這麼做)，相當於這個變量存在常量池，又會是常量跟常量拼接，所以指向同樣位置 若是用intern()方法，例如str5=str1.intern();，返回值是在常量池中，==比較是true    面試題-判斷結果 public class StringTest { String str = new String(&amp;#34;good&amp;#34;); char[] ch = {&amp;#39;t&amp;#39;, &amp;#39;e&amp;#39;, &amp;#39;s&amp;#39;, &amp;#39;t&amp;#39;}; public void change(String str, char[] ch) { str = &amp;#34;bad&amp;#34;; ch[0] = &amp;#39;b&amp;#39;; } public static void main(String[] args) { StringTest ex = new StringTest(); ex.</description>
+    </item>
+    
+    <item>
+      <title>線程安全、線程通信、JDK5.0特性、線程池</title>
+      <link>https://yoziming.github.io/post/211204-agg-ja-19/</link>
+      <pubDate>Sat, 04 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211204-agg-ja-19/</guid>
+      <description>線程安全 線程的生命週期 Thread.State類中定義了:
+ 新建:Thread類的物件被創建 就緒:start()後等待分配CPU資源的階段，可能是獲取了同步鎖、被notify() 運行:拿到實際資源、開始執行run()方法 阻塞:被暫時掛起，可能是sleep()或是被join()、或等待同步鎖、wait() 死亡:跑完或提前stop()、出錯了  同步代碼塊   解決多線程安全問題
+  格式:
+synchronized (同步器) { // 需要同步的代碼 }   同步器可以是任何物件，只需要滿足&amp;quot;它是多個線程共用的&amp;quot;，比如同類中的一個變量
+ 若是靠實現Runnable接口方法的多線程，可以用this，因為只有一個該類，當前對象是同一個 如果是繼承類實現的多線程，則可以用static變量，或是考慮&amp;quot;類名.class&amp;quot;(這玩意也是唯一的)    但這樣做實質等於單線程了，效率不高
+  同步方法   解決多線程安全問題
+  舉例:
+public class SynTest implements Runnable { int ticket = 100; @Override public void run() { show(); } private synchronized void show() { for (; ticket &amp;gt; 0; ) { try { Thread.</description>
+    </item>
+    
+    <item>
+      <title>IntelliJ IDEA Live Templates</title>
+      <link>https://yoziming.github.io/post/211203-intellij_idea-live_templates/</link>
+      <pubDate>Fri, 03 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211203-intellij_idea-live_templates/</guid>
+      <description>IntelliJ IDEA Live Templates  盤點IDEA中tab的實用招式
+ 基本 psvm或main ▶ main 方法 for fori ▶ for (int i = 0; i &amp;lt; ; i++) itar ▶ for (int i = 0; i &amp;lt; arr.length; i++) iter ▶ for-each 數組或泛型物件.for ▶ for-each 數組物件.forr ▶ for (int i = arr.length - 1; i &amp;gt;= 0; i--) // 反向 print sout ▶ System.out.println(); souf ▶ System.out.printf(&amp;#34;&amp;#34;); &amp;#34;say something&amp;#34;.sout ▶ System.out.println(&amp;#34;say something&amp;#34;); obj.sout ▶ System.</description>
+    </item>
+    
+    <item>
+      <title>多線程:名詞解釋、基本用法</title>
+      <link>https://yoziming.github.io/post/211203-agg-ja-18/</link>
+      <pubDate>Fri, 03 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211203-agg-ja-18/</guid>
+      <description>多線程 名詞解釋    英文 台灣 中國 意義     Program 程式 程序 靜態的程式碼集合   Process 程序(進程) 進程 動態、被執行中且載入記憶體的program，也是 OS 分配資源的最小單位。打開工作管理員看到的就是這個   Thread 執行緒 線程 一個進程裡至少會有一個線程，表示內部的一條執行路徑。把進程比喻為一個工廠，線程則是工廠裡面的工人，負責任務的實際執行。同一個Process內的Thread使用相同的Memory Space，但這些Thread各自擁有其Stack。換句話說，Thread能透過reference存取到相同的Object，但是local variable卻是各自獨立的。白話:共享方法區跟堆，獨立棧跟計數器   Coroutine 協程 協程 輕量級的執行緒，由使用者掌控，例如GO的goroutine   Concurrent 並行 並發 一個 CPU 會去做多件事，但是同一個時間點之內只會做一件事，像是早上做 Job1、下午做 Job2、晚上做 Job3不斷的切換，目標是希望能做更多的事   Parallel 平行 並行 多個 CPU 在同一個時間點內會去做多件事，例如會有三個人同時分別在做 Job1、Job2、Job3 的事情。目標是希望能把事情更快速的做完。    需求來源  希望同時執行複數的任務，例如一邊執行main方法，GC一邊收垃圾 需要等待的狀況，例如等用戶輸入、等IO、等網路連接  Java多線程-方法一   造一個類，繼承Thread</description>
+    </item>
+    
+    <item>
+      <title>項目練習3-開發團隊調度系統</title>
+      <link>https://yoziming.github.io/post/211202-agg-ja-17/</link>
+      <pubDate>Thu, 02 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211202-agg-ja-17/</guid>
+      <description>項目練習3-開發團隊調度系統  雖然不是特別難，實做一遍還是會遇到不少坑，以下個人復盤的筆記
+  A類中用到B類的物件，引包後可以直接&amp;quot;private B類 物件名=new B類&amp;quot;一個預設的來用 忽略大小寫可用equalsIgnoreCase 繼承的子類重複用到結構類似的方法，提取出相同因子在父類做一個public的然後去子類各自重寫，也能用來解決孫子super不到爺爺的困境 遍歷時注意.length的長度是在數組建立時就定死了，絕對不等於當前數組內的元素個數，如果遍歷.length有可能去遍歷到後面null的指針而報錯 單純只是想遍歷最好用for-each 手動複製數組使用System.arraycopy 方法形參是父類，想篩選傳進來的是否為某具體子類，用&amp;quot;if(!(物件 instanceof 子類))可以優雅的判斷 switch-case如果沒有return記得break  </description>
+    </item>
+    
+    <item>
+      <title>異常處理:try、catch、finally、throw</title>
+      <link>https://yoziming.github.io/post/211201-agg-ja-16/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211201-agg-ja-16/</guid>
+      <description>異常的分類 在Java中，程序執行中的異常分為Exception與Error，他們都繼承自Throwable
+(語法錯誤跟邏輯錯誤那不叫異常)
+Error   錯誤，JVM系統內部錯誤虛擬機無法解決的問題、資源耗盡等嚴重情況，比如:
+  無限迴圈產生堆疊溢位(Stack Overflow)
+  寫錯分配導致記憶體不足(Out-Of-Memory)，
+    解決方法就是把它寫對
+  Exception   例外，發生了出乎預料的事，又依&amp;quot;受不受檢&amp;quot;分成
+  Checked Exception:又稱編譯時異常，通常在原始碼中必須顯式地catch並且處理，比如:
+  IOException、讀取文件不存在
+  ClassNotFoundException
+  這部分在compile time就會檢查
+    Unchecked Exception:又稱RuntimeException，運行時異常，比如:
+ NullPointerException，空指針訪問 ArrayIndexOutOfBoundsException，數組角標越界 ClassCastException，類型轉換異常 NumberFormatException，數字類型不合 InputMismatchException，輸入數據不符合，例如scan int結果來了字串 ArithmeticException，算法異常，例如把某數除以0 通常是透過撰寫相應程式以避免的邏輯錯誤, 可以根據當下的情境來判斷是不是要catch    異常處理 代碼執行時，一旦出現異常，就會在異常處生成一個對應異常類的物件，並將其拋出，拋出後的代碼就不再執行
+try-catch   格式:
+try { int num = Integer.parseInt(str); } catch (NumberFormatException e) { e.</description>
+    </item>
+    
+    <item>
+      <title>抽象abstract、接口interface、內部類</title>
+      <link>https://yoziming.github.io/post/211130-agg-ja-15/</link>
+      <pubDate>Tue, 30 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211130-agg-ja-15/</guid>
+      <description>抽象abstract  隨著繼承不斷疊代，子類越來越具體，而父類越來越通用。
+類的設計必須保證子類與父類共有特徵，有時候我們將父類設計得非常抽象，以至於它沒有具體的實例，這樣的類稱為抽象類。
+ 定義  abstract屬於Java中的關鍵字，可以用來修飾類與方法，以下分別說明  abstract修飾類  此類不能實例化 必定有構造器被繼承 開發中都會提供抽象類的子類，讓子類形成實例來調用 不能修飾final類，final類規定不能被繼承，玩毛線  abstract修飾方法  稱為抽象方法，只有聲明，沒有方法體 (就沒要讓你具體用) 此方法不能被調用 包含抽象方法的類，必定是一個抽象類。反之抽象類不一定要有抽象方法 實際開發中的調用必須是被子類繼承後重寫，所有的抽象方法都被重寫後此子類才能實例化(否則，存在繼承來的抽象方法你就是個抽象類) 不能修飾私有private方法，因為抽象就是為了被繼承，抽象與其矛盾 不能修飾靜態static方法，靜態方法跟類共存亡，可以直接被類調用，通常是去弄靜態屬性的，抽象與其矛盾 不能修飾final方法，final方法規定是不能被重寫，抽象與其矛盾  應用-模板方法設計 在軟體開發中，實現某種功能時，整體中很固定、通用的方法，在父類中就寫好了；而其他不確定、易變的就先抽象起來，交給子類去實現
+匿名子類的匿名對象  在一次性使用的場合，不想實際造一個匿名類的實體子類，可以在new 匿名類()後面接{}，{內直接重寫方法，範例:
+ abstract public class Person { abstract public void work(); } public class Student extends Person { @Override public void work() { System.out.println(&amp;#34;學生讀書&amp;#34;); } public static void main(String[] args) { method(new Student()); method(new Person() { @Override public void work() { System.</description>
+    </item>
+    
+    <item>
+      <title>關鍵字:static、main、final、代碼塊、單例模式</title>
+      <link>https://yoziming.github.io/post/211129-agg-ja-14/</link>
+      <pubDate>Mon, 29 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211129-agg-ja-14/</guid>
+      <description>關鍵字static  意義:靜態的，類中共用的，生命週期跟隨類的 使用對象:屬性、方法、內部類、代碼塊，以下分別說明  使用static修飾屬性   稱為&amp;quot;靜態變量&amp;quot;或&amp;quot;類變量&amp;quot;
+  先複習關於變量的知識
+   實例變量是每個造出來的物件各自有的，比如:大明跟小明各自的age不同 類變量是整個類共用的，比如:大明跟小明的nation都是TW  類變量隨著類的加載而加載，可以通過&amp;quot;類.靜態變量&amp;quot;進行調用 物件沒創建之前類變量就已經存在 由於類只會加載一次，靜態變量在記憶體中也只存在一份，位於方法區的靜態域   在哪應用靜態屬性:  類中共用的，生命週期跟隨類的  舉例:構造器中自動生成編號的基數(比如從1001開始、1002..)   常量也常聲明為static，再加上final修飾  舉例:Math.PI      使用static修飾方法  稱為靜態方法，規則大致與上面相同 隨著類的加載而加載，可以通過&amp;quot;類.靜態方法&amp;quot;進行調用 不能在靜態方法中調用非靜態的屬性或方法(畢竟沒有物件) 在靜態方法中，不能使用this或super關鍵字(物件都沒出生當然不能用) 在哪應用靜態方法:  操作靜態屬性的方法，通常設為靜態 工具類的方法，比如Math、Array、Collections    單例(singleton)設計模式   定義:整個系統中，強制某個類只存在一個實例，減少資源消耗
+  應用場合:
+ 網站的計數器，只造一個，不然難以同步 日誌:通常是一個日誌文件一直被開著，最好只有一個實例去操作它 數據庫的連接池 Windows的Task Manager跟Recycle Bin也是很典型的單例    &amp;ldquo;餓漢式&amp;quot;實現:
+  私有化的構造器</description>
+    </item>
+    
+    <item>
+      <title>多態:instanceof、object類、包裝類</title>
+      <link>https://yoziming.github.io/post/211128-agg-ja-13/</link>
+      <pubDate>Sun, 28 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211128-agg-ja-13/</guid>
+      <description>多態性  類似go接口的概念，就是為了讓子類能調用父類的方法
+白話:為了實現代碼的通用性
+   一個事物的多種形態
+  父類的引用指向子類的物件(子類的物件賦給父類的引用)，舉例:
+Father obj = new Child();   使用:虛擬方法調用，編譯期只能調用父類中聲明的方法，但運行時執行的是子類重寫父類的方法。多態只有在運行那一個才知道要調用哪個方法，即多態是個運行時行為，又稱為動態綁定
+ 白話:編譯看左，運行看右    前提:類的繼承關係、方法的重寫，缺一不可
+  目的:避免重複寫很多重載的方法
+  體現:
+  舉例Person類 之下有子類 Chinese、Japanese、American Person類有welcome方法，被各自子類以該國語言重寫過 我的某功能調用welcome時能接受Person類，依照實際子類物件呈現不同語言的welcome結果 該功能即不需要Chinese、Japanese、American都寫一次   public class Atest { public static void main(String[] args) { Atest test = new Atest(); test.func(new Dog()); // 多態體現在這  } public void func(Animal animal) { //Animal animal=new Dog();  animal.</description>
+    </item>
+    
+    <item>
+      <title>繼承:方法重寫、super、物件實例化</title>
+      <link>https://yoziming.github.io/post/211127-agg-ja-12/</link>
+      <pubDate>Sat, 27 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211127-agg-ja-12/</guid>
+      <description>繼承 好處  減少代碼冗餘、提高復用性 便於功能擴展 為多態鋪路  格式 class A extends B{} // A延展了B A:子類、派生類、subclass B:父類、超類、基類、superclass 繪圖時，通常用實心箭頭從子指向父，例如:Student→Person，表示學生類繼承了人類
+特性  A繼承B之後，子類A就獲取了B聲明的所有屬性與方法，包含了私有(private)的，但是由於封裝性的影響，子類無法直接調用父類私有(private)的屬性與方法 不允許多重繼承(一人只能有一個老爸) 可以多層繼承(允許有孫子，孫子也會繼承爺爺的特性) 一個父類可以有多個子類(允許家族開枝散葉) 所有類都繼承自java.lang.Object，換言之所有類都具有Object類的特性  權限修飾符protected的應用  之前提過protected的範圍是不同包的子類也能用，就是應在這了  實際發開中用的比較少一點    方法的重寫   子類繼承父類後，對父類同名同參數的方法，進行覆蓋
+  子類重寫的方法權限修飾符必須不小於父類被重寫的方法
+ 白話:不能把公車私有化，權限範圍不能縮小 注意:不能重寫父類中聲明為private的方法(本身就見不到)，可以在子類中硬寫一個同名的方法，但那就不是構成重寫    若父類被重寫的方法返回值是void，子類重寫的方法也必須返回void
+  若父類被重寫的方法返回值是A類型，子類重寫的方法返回值可以是A類或A類的子類
+ 舉例:父類返回值是動物類，子類可以重寫返回動物類或貓類狗類    若父類被重寫的方法返回值是基本數據類型，子類重寫的方法返回值必須是相同基本數據類
+ 舉例:父類返回double子類也必須是double，不能是int期待他自動類型提升    拋出異常(throws)的規則與返回值相同
+  以上白話小結:權限不能小於爸爸、返回值不能大於爸爸
+  補充:子類與父類同名同參數的方法要嘛都聲明為非static的(考慮重寫)，要嘛都聲明為static的(不是重寫，靜態類的方法不能被覆蓋)
+  關鍵字super 用來表示父類中的屬性、方法、構造器</description>
+    </item>
+    
+    <item>
+      <title>項目練習2-客戶訊息管理</title>
+      <link>https://yoziming.github.io/post/211126-agg-ja-11/</link>
+      <pubDate>Fri, 26 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211126-agg-ja-11/</guid>
+      <description>項目練習-客戶訊息管理  有點基礎這部分都蠻簡單的
+ 有個知識點是這邊在&amp;quot;刪除用戶&amp;quot;的功能用到了循環鏈表的概念
+public boolean deleteCustomer(int index) { if (customers[index] != null) { for (int i = index; i &amp;lt; total - 1; i++) { // 不能搬到total，否則[i+1]會越位  customers[i] = customers[i + 1]; } customers[total - 1] = null; total--; System.out.println(&amp;#34;刪除用戶成功!&amp;#34;); return true; } System.out.println(&amp;#34;索引無效，操作失敗&amp;#34;); return false; } total表示當前數組中用戶總數，這個i &amp;lt; total - 1蠻關鍵的，我原先沒想到這邊要-1，還想著讓他把後面的null往前搬就好，沒考慮到末尾可能會越位的情況。
+搬完再跟customers[total - 1] = null搭配使用，這樣才是健壯的</description>
+    </item>
+    
+    <item>
+      <title>封裝性、構造器、this、包</title>
+      <link>https://yoziming.github.io/post/211125-agg-ja-10/</link>
+      <pubDate>Thu, 25 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211125-agg-ja-10/</guid>
+      <description>封裝的設計思想   高內聚:類的內部數據操作細節自己完成，不允許外部干涉
+  低耦合:對外露出少量的方法(API)供使用
+   舉例:微波爐，我不需要用戶控制燈光、波照、轉盤等等，只要他放入東西按下&amp;quot;解凍&amp;quot;即可。即所謂的&amp;quot;一鍵XX&amp;quot;功能。
+ 封裝性的體現  將類的屬性私有化(private)，通過公共的(public)的set與get方法讓外部調用，舉例:  public class Main { public static void main(String[] args) { Animal a1 = new Animal(); a1.setAge(10); System.out.println(a1.getAge()); } } class Animal { private int age; public void setAge(int i) { age = i; } public int getAge() { return age; } }  不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&amp;quot;小工具&amp;quot;) 單例模式(將構造器私有化) &amp;hellip;等等 需要權限修飾符來配合  權限修飾符  JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)
+  private:限當前類內部使用 default(缺省，就是不寫):同一個包名就可以調用 protected:不同包它的子類可以調用 public:相當於開放的  修飾的對象  以上4種可以用於修飾類的內部結構:屬性、方法、構造器、內部類 class本身的修飾只能是缺省或public，一個.</description>
+    </item>
+    
+    <item>
+      <title>細說方法、重載、值傳遞</title>
+      <link>https://yoziming.github.io/post/211124-agg-ja-09/</link>
+      <pubDate>Wed, 24 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211124-agg-ja-09/</guid>
+      <description>細說方法 方法的重載(overload)  定義:同一各類中，允許存在一個以上的同名方法，只要他們的參數個數或參數類型不同即可 跟方法的權限修飾符、返回值類型、形參變量名、方法體無關，判斷重點在於參數本身 可能會自動類型提升，舉例:傳入的是int形，方法中沒有int但有double，就會調用double 典型的例子就是內建的println()  可變個數形參  格式:方法名(形參類型 &amp;hellip; 形參名) 調用時傳入的形參數量可以是0到多個，包含數組 與本類中方法名相同，形參不同的方法間構成重載(可共存) 與本類中方法名相同，形參類型也相同的數組之間不構成重載(不可共存)  PS.這是歷史遺留問題，因為可變個數形參是JDK5加入的，以前都是用數組   方法內把它當作數組使用，遍歷itar (i=0;i&amp;lt;形參名.length;i++){} 必須聲明在末尾，且最多只能有一個  方法參數的值傳遞 先複習一下變量的賦值規則  變量是基本數據類型(byte、short、int、long、char、float、double、boolean)，賦值的是變量所保存的數據值 變量是引用類型(引用類型就只有null跟地址值兩種情況)，賦值給的是所保存數據的地址值  名詞解釋  形參:方法定義時，聲明的小括號中的參數 實參:方法調用時，實際傳給形參的數據  傳參規則  跟變量的賦值規則其實相同
+  如果參數是基本數據類型，實參賦給形參的是數據值(類似給一份副本) 如果參數是引用類型，實參賦給形參的是地址值(包含變量的數據類型)  陷阱題  println在char[]這有個特例，要避免踩坑就是調用時多看看方法格式
+ int[] arr1 = new int[]{1, 2, 3}; System.out.println(arr1); // [I@1b6d3586 char[] arr2 = new char[]{&amp;#39;a&amp;#39;, &amp;#39;b&amp;#39;, &amp;#39;c&amp;#39;}; System.out.println(arr2); // abc 練習-在方法中引用其他類的方法並調用 public class Main { public static void main(String[] args) { PassObject t1 = new PassObject(); Circle c = new Circle(); t1.</description>
+    </item>
+    
+    <item>
+      <title>物件導向:基本概念與學習路線</title>
+      <link>https://yoziming.github.io/post/211123-agg-ja-08/</link>
+      <pubDate>Tue, 23 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211123-agg-ja-08/</guid>
+      <description>物件導向  Object-oriented programming中國翻為&amp;quot;面向對象&amp;quot;，台灣則翻為物件導向
+我個人也覺得&amp;quot;物件導向&amp;quot;翻的比較信雅達，可以參考這篇知乎問答的解釋
+https://www.zhihu.com/question/22515658/answer/120754062
+ 概念 首先用咖啡機煮咖啡為例:
+過程導向(Process-oriented)  過程導向強調的是功能行為，以函數為最小單位，考慮如何做
+   執行加咖啡豆方法
+  執行加水方法
+  執行煮咖啡方法
+  執行喝咖啡方法
+  物件導向(Object-oriented)  物件導向則是先將功能封裝進物件，強調具備功能的物件，以類/物件為最小單位，考慮誰來做
+ 在執行煮咖啡操作前要抽象出：人和咖啡機（分類），然後開始執行：
+  人.加咖啡豆
+  人.加水
+  咖啡機.煮
+  人.喝咖啡
+  物件導向的三大特徵  封裝(Encapsulation) 繼承(Inheritance) 多態(Polymorphism)  類和實例 類(class):抽象的模板、概念上的定義
+物件(object):是實際存在的個體，也稱為實例(Instance)
+ 比如說有輪子、吃汽油跑的是汽車類。小弟的車new march則為實例
+ 類的設計  設計類其實就是設計類的成員
+ 屬性(field):成員變量，又稱域、字段、欄位
+行為(method):成員方法，又稱函數
+舉例:汽車類的屬性有輪子大小、有品牌名稱；汽車的行為有吃汽油跑
+練習-在JAVA創建類並實例化 class Car { // 屬性  String brand; String owner; boolean isNew = true; // 可以給預設值  // 行為(方法)  public void crash() { if (isNew) { System.</description>
+    </item>
+    
+    <item>
+      <title>數組的填值、複製、查找、排序、常用工具類</title>
+      <link>https://yoziming.github.io/post/211122-agg-ja-07/</link>
+      <pubDate>Mon, 22 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211122-agg-ja-07/</guid>
+      <description>數組常用算法 數據結構  程序=數據結構+演算法
+  數據間的邏輯關係:集合、一對一、一對多、多對多 數據的儲存結構:  線性表:順序表(如:數組)、鏈表、棧、隊列 樹形結構:二叉樹 圖形結構    演算法-Algorithm   排序
+  檢索
+  加密
+  &amp;hellip;
+  練習題-帕斯卡三角  形狀不是很漂亮
+ int[][] arr = new int[10][]; for (int i = 0; i &amp;lt; arr.length; i++) { arr[i] = new int[i + 1]; // 兩外邊都是1  arr[i][0] = 1; arr[i][i] = 1; if (i &amp;gt; 1) { for (int j = 1; j &amp;lt; arr[i].</description>
+    </item>
+    
+    <item>
+      <title>數組Array</title>
+      <link>https://yoziming.github.io/post/211121-agg-ja-06/</link>
+      <pubDate>Sun, 21 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211121-agg-ja-06/</guid>
+      <description>數組Array  多個相同類型的數據按一定的順序排列的集合
+ 結構  數組名 元素 下標aka角標/索引 長度(元素的個數)  特性  數組本身是引用數據類型，其中的元素可以是任何類型 數組的排列是有序的 在記憶體中開闢一整塊連續的空間，數組名引用的是這塊連續空間的首地址 長度確定後就不可更改  聲明與初始化  數組必須初始化才能使用
+  方法1-靜態初始化，創建時填入已知的元素內容，由系統判定長度  int[] array1; // 聲明 array1 = new int[]{1, 2, 3}; // 靜態初始化:同時對元素賦值了 // 也可以合併成 int[] array1 = new int[]{1, 2, 3}; // 可以再縮寫成 (類型推斷) int[] array1 = {1, 2, 3};  方法2-動態初始化，創建時填入已知的長度，元素內容為0或空(系統默認，後述)  int[] array3 = new int[3]; // 動態初始化，注意後面的[5]是指長度 訪問數組內的元素  沒特別的，一樣從0~長度-1。長度=array.length
+ 舉例:array[0]、array[1]&amp;hellip;array[array.length-1]</description>
+    </item>
+    
+    <item>
+      <title>嵌套循環、break、continue、項目練習1-家庭收支</title>
+      <link>https://yoziming.github.io/post/211120-agg-ja-05/</link>
+      <pubDate>Sat, 20 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211120-agg-ja-05/</guid>
+      <description>嵌套循環  就是for中有for，有時候需要多花點時間理解
+  內層循環整個遍歷完，外層循環才執行一次 假設外層循環要執行m次，內層循環要執行n次。整個跑完內層循環一共執行了m*n次  練習題-印菱形 Scanner scan = new Scanner(System.in); System.out.println(&amp;#34;輸入想印的菱形邊長n=...&amp;#34;); int n = scan.nextInt(); // 上半部分(含中間最長邊) for (int i = 1; i &amp;lt;= n; i++) { for (int j = 0; j &amp;lt; n - i; j++) { System.out.print(&amp;#34; &amp;#34;); } for (int k = 0; k &amp;lt; i; k++) { System.out.print(&amp;#34;* &amp;#34;); } System.out.println(); } // 下半部分(從最長-1開始) for (int i = 1; i &amp;lt;= n; i++) { for (int j = 0; j &amp;lt; i; j++) { System.</description>
+    </item>
+    
+    <item>
+      <title>流程控制:if、switch、for、while</title>
+      <link>https://yoziming.github.io/post/211119-agg-ja-04/</link>
+      <pubDate>Fri, 19 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211119-agg-ja-04/</guid>
+      <description>分支控制 if-else  基礎都一樣不多贅述
+   特殊情況有人不加{}，這種情境下就近原則且只控制一行(到第一個;為止)
+if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); System.out.println(&amp;#34;b&amp;#34;); System.out.println(&amp;#34;c&amp;#34;); 結果為 b c   只有單行時可以接else且也會就近選擇
+if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); else System.out.println(&amp;#34;d&amp;#34;); 結果為d   多行時直接報錯
+if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); System.out.println(&amp;#34;b&amp;#34;); System.out.println(&amp;#34;c&amp;#34;); else 報錯   小結:不加{}的全部拖出去打
+  switch-case   結構:
+switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... default: // 預設執行語句 }   如果不加break;就不會跳出，而是會穿透且之下的語句全都執行一遍
+  基於上述特性，可以合併使用，舉例:</description>
+    </item>
+    
+    <item>
+      <title>IntelliJ IDEA設定與常用快捷鍵</title>
+      <link>https://yoziming.github.io/post/211117-intellij_idea-shortkey/</link>
+      <pubDate>Thu, 18 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211117-intellij_idea-shortkey/</guid>
+      <description>IDEA基礎設定   安裝的根目錄，舉例&amp;hellip;\IntelliJ IDEA 2021.2.3\bin\idea64.exe.vmoptions
+編輯這個idea64.exe.vmoptions，改成-Xmx1024m -Xms2048m
+  ctrl+alt+s開啟設定 -&amp;gt; plugins插件 -&amp;gt; 搜尋chinese -&amp;gt; 安裝重啟 -&amp;gt; 中文化
+  plugins插件 -&amp;gt; 搜尋save actions-&amp;gt; 安裝重啟 -&amp;gt; 存檔時自動格式化
+  外觀-使用自定義字體打勾-Sarasa mono&amp;hellip;，大小改14
+   強烈建議使用更紗黑體Sarasa-Gothic https://github.com/be5invis/Sarasa-Gothic 特性:融合Iosevka(程式碼常用的等寬字型)跟Source Han Sans(思源黑)，有等距、繁簡中日韓不缺字，簡直完美
+   編譯器-字體-一樣改，大小我是設18、行高1.1
+  編譯器-代碼樣式-Java-空行-保持最大空白行，前三項我都設1，太多空白可自動刪除
+  佈景主題推薦one dark，這也是最多人用的
+  Rainbow Brackets 括弧變色
+  IDEA常用快捷鍵 視窗  Close All Tabs : alt + w Terminal : ctrl + alt + 0  選取  选中下一个相同内容的快捷键(vs code中的Ctrl+D)：Alt + J 依照個人習慣我還是把它改成ctrl + D了，原本ctrl + D(複製當前行)改成alt+ shift + ↓  以「行」為單位  複製 : ctrl + D 移動 : ctrl + shift + ↑/↓ 註解 : ctrl + / 刪除 : ctrl+x(其實是剪下)  以「區塊」為單位  擴增選取 : ctrl + W 遞減選取 : ctrl + shift + W 更改大小寫 : ctrl + shift + U  自動功能 :  自動補全 : alt + enter 自動產生 : alt + Ins 自動排版 : ctrl + alt + L 自動移出未使用 import : ctrl + alt + O  顯示形參列表:ctrl+p 查找當前文件結構(有哪些方法、屬性):ctrl+F12 </description>
+    </item>
+    
+    <item>
+      <title>運算符:邏輯運算、自增減、賦值、位運算、三元</title>
+      <link>https://yoziming.github.io/post/211118-agg-ja-03/</link>
+      <pubDate>Thu, 18 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211118-agg-ja-03/</guid>
+      <description>運算符 加減乘除  基本都一樣不再贅述
+ % 取餘的規則  結果的符號與被取餘的數符號相同，舉例-12%5=-2、12%-5=2、-12%-5=-2 實際開發中取餘常用來判斷是否能除盡  自增自減的規則  ++a，(前++)先運算後取值，舉例a=2;b=++a;結果a=3;b=3 a++，先取值後運算，舉例a=2;b=a++;結果a=3;b=2 &amp;ndash;a，先運算後取值，舉例a=2;b=&amp;ndash;a;結果a=1;b=1 a&amp;ndash;，先取值後運算，舉例a=2;b=a&amp;ndash;;結果a=1;b=2 自增減不會改變數據類型(但可能會溢位) 不可連用，舉例a++++會報錯  另外+也能用在字符串聯接，舉例&amp;quot;he&amp;quot;+&amp;ldquo;llo&amp;rdquo;=&amp;ldquo;hello&amp;rdquo;
+= 賦值的規則  可以連續賦值，舉例int i1,i2; i1=i2=10; int i3=10,j3=20; +=、-=、*=、/=、%= 不會改變數據類型 面試題n=10; n+=(n++)+(++n); n=? 解: 拆成 n = n + 10 + 12 =32  邏輯運算符  乍看邏輯跟短路結果是一樣，實際使用上差異為短路後的東西就不執行了 舉例: b=false; n=10; b &amp;amp;&amp;amp; (n++&amp;gt;0)=false，但n=10  位運算符   操作的都是整數 &amp;laquo; 向左移一位相當於*2，&amp;raquo;向右移一位相當於/2，有可能溢位   三元運算符  結構: (條件表達式) ? 表達式1 : 表達式2 說明: 條件表達式=boolean，如果是true則執行表達式1，反之執行2 表達式1 與 表達式2 要求一致(至少能裝進同一個類型) 其實就是簡易版的if，可以嵌套使用  優先級   基本原則是從上到下，從左到右，括號優先 自增減、賦值運算、三元運算才從右往左看  </description>
+    </item>
+    
+    <item>
+      <title>關鍵字、變量、數據類型、數據轉換</title>
+      <link>https://yoziming.github.io/post/211117-agg-ja-02/</link>
+      <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211117-agg-ja-02/</guid>
+      <description>關鍵字 關鍵字  有特殊含意與用途，所有關鍵字都是小寫
+ 例如:if、new&amp;hellip;等等，後面都會一一接觸到
+保留字  未來版本可能會用到而保留
+ 例如:goto、const
+標識符(identifier)  可以自己命名的(類、變量、函數&amp;hellip;等)就叫標識符
+   由字母、數字、_、$組成
+  數字不可為開頭
+  能包含關鍵字但不能純用關鍵字
+  嚴格區分大小寫
+  不能包含空格
+標識符的命名規範  不強制但最好遵守
+   包名:多單詞所有字母小寫aaabbbccc
+  類名、接口名:大駝峰(首字母大寫)AaaBbbCcc
+  變量名、方法名:開頭小寫後面首字母大寫(小駝峰)aaaBbbCcc
+  常量名:全大寫，用下畫線相連AAA_BBB_CCC
+  命名要有意義，見名知意
+  變量(variable)  記憶體中的一個儲存區域，使用的基本單位
+  必須先聲明，後使用 作用域在其定義所在的一對{}內，只在其作用域中有效 同一作用域中不可重複  數據類型 基礎數據類型  六種數字類型（四個整數型，兩個浮點型），一種字符類型，還有一種布爾型。
+ byte  byte數據類型是8位、有符號的，以二進制補碼表示的整數 最小值是-128（-2^7）最大值是127（2^7-1）默認值是0 byte類型用在大型數組中節約空間，主要代替整數，因為byte變量佔用的空間只有int類型的四分之一 例子：byte a = 100，byte b = -50。  short  short數據類型是16位、有符號的以二進制補碼表示的整數 最小值是-32768（-2^15）最大值是32767（2^15 - 1）默認值是0 Short數據類型也可以像byte那樣節省空間。 一個short變量是int型變量所佔空間的二分之一 例子：short s = 1000，short r = -20000。  int  int數據類型是32位、有符號的以二進制補碼表示的整數 最小值是-2,147,483,648（-2^31）最大值是2,147,483,647（2^31 - 1）默認值是0 一般整型變量默認為int類型 例子：int a = 100000, int b = -200000。  long  long數據類型是64位、有符號的以二進制補碼表示的整數 最小值是-9,223,372,036,854,775,808（-2^63） 最大值是9,223,372,036,854,775,807（2^63 -1） 這種類型主要使用在需要比較大整數的系統上 必須以L(大小都可)結尾，不加自動被當成int 默認值是0L 例子： long a = 100000L，Long b = -200000L。  float  float的儲存結構是1個符號位，8個指數位，23個尾數，符合IEEE 754標準的浮點數 可以看做float只有24位來表示精度，所以int或long轉float可能會有精度損失。 必須以F(大小都可)結尾，不加報錯 默認值是0.</description>
+    </item>
+    
+    <item>
+      <title>Java簡介、名詞認識、環境配置、HelloWorld</title>
+      <link>https://yoziming.github.io/post/211116-agg-ja-01/</link>
+      <pubDate>Tue, 16 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211116-agg-ja-01/</guid>
+      <description>認識Java、環境配置 常用DOS操作  就是windows的cmd，影視中駭客情節常常出現的小黑窗，可以用文字操作基本的軟體功能
+   cd=進入指定目錄
+  cd..=回上層
+  cd=回到根目錄
+  變更硬碟目錄=直接輸入d:
+  dir=列出當前目錄下的清單
+  del=刪除檔案(對文件夾使用=刪除文件內所有檔案)
+  md=創建目錄
+  rd=刪除目錄
+  exit=退出
+  Java體系在不同平台的版本演化  Java SE，標準版，桌面級應用等，基礎API Java EE，企業版，主要用於Web開發，包含Servlet、JSP等技術 Java ME，小型版，古老的PDA、手機等，已過時 Java Card，面向小程序(Applets)，運行在小設備(如智能卡)等平台  Java語言特性  由繼承的脈絡可說JAVA是類C語言
+  強制物件導向:總是基於&amp;quot;某件東西去做事&amp;quot;，得先搞懂何謂&amp;quot;類&amp;quot;與&amp;quot;物件&amp;quot;  三大特性:封裝、繼承、多態   健壯性:強類型、異常處理、GC(垃圾回收)、丟棄指針等 跨平台:只要平台能跑JVM(虛擬機)就能跑JAVA  Java的運行環境  JDK包含JRE包含JVM
+  JDK，Java Development Kit，開發工具包，給開發人員用的，包含了JRE以及編譯工具(javac.exe)、打包工具(jar.exe)&amp;hellip;等等。 JRE，Java Runtime Environment，運行環境，包含JVM虛擬機和運作需要的核心類庫等等，簡單說就是運行由JDK做好的東西。  Java環境配置   下載JDK 8u202版本，最後的商用免費版(若純個人使用不論版本都是免費的)</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Map、HashMap、Collections工具類</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day24筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Map、HashMap、Collections工具類" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day24筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211209-agg-ja-24/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-09T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Map、HashMap、Collections工具類"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day24筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#map" onclick="onNavClick(`#map-nav`)" id="map-nav">
+									Map
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#結構-nav`)" id="結構-nav">
+									結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#hashmap%e6%ba%90%e7%a2%bc%e5%88%86%e6%9e%90" onclick="onNavClick(`#hashmap源碼分析-nav`)" id="hashmap源碼分析-nav">
+									HashMap源碼分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#map%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#map常用方法-nav`)" id="map常用方法-nav">
+									Map常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8d%e6%ad%b7map" onclick="onNavClick(`#遍歷map-nav`)" id="遍歷map-nav">
+									遍歷Map
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#treemap" onclick="onNavClick(`#treemap-nav`)" id="treemap-nav">
+									TreeMap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#properties" onclick="onNavClick(`#properties-nav`)" id="properties-nav">
+									Properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#collections%e5%b7%a5%e5%85%b7%e9%a1%9e" onclick="onNavClick(`#collections工具類-nav`)" id="collections工具類-nav">
+									Collections工具類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#常用方法-nav`)" id="常用方法-nav">
+									常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#map" onclick="onNavClick(`#map-nav`)" id="map-nav">
+									Map
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#結構-nav`)" id="結構-nav">
+									結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#hashmap%e6%ba%90%e7%a2%bc%e5%88%86%e6%9e%90" onclick="onNavClick(`#hashmap源碼分析-nav`)" id="hashmap源碼分析-nav">
+									HashMap源碼分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#map%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#map常用方法-nav`)" id="map常用方法-nav">
+									Map常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8d%e6%ad%b7map" onclick="onNavClick(`#遍歷map-nav`)" id="遍歷map-nav">
+									遍歷Map
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#treemap" onclick="onNavClick(`#treemap-nav`)" id="treemap-nav">
+									TreeMap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#properties" onclick="onNavClick(`#properties-nav`)" id="properties-nav">
+									Properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#collections%e5%b7%a5%e5%85%b7%e9%a1%9e" onclick="onNavClick(`#collections工具類-nav`)" id="collections工具類-nav">
+									Collections工具類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#常用方法-nav`)" id="常用方法-nav">
+									常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Map、HashMap、Collections工具類
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day24筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-09 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="map">Map</h1>
+<p>Map接口:雙列數據，保存具有映射關係(key-value)成對的物件</p>
+<h3 id="分類">分類</h3>
+<ul>
+<li>HashMap:主要實現類，線程不安全、效率高、可以存null
+<ul>
+<li>LinkedHashMap:遍歷時可以按照添加順序排列</li>
+</ul>
+</li>
+<li>TreeMap:可以按照key(必須都是同類)來排序，底層是紅黑樹</li>
+<li>Hashtable:古老的實現類，注意t是小寫，線程安全、效率低、不能存null
+<ul>
+<li>Properties:常用來處理配置文件，key跟value都是String類型</li>
+</ul>
+</li>
+</ul>
+<h3 id="結構">結構</h3>
+<ul>
+<li>key:無序、不可重複的，使用Set儲存。key決定存放位置，key的所在類必須重寫equals()與hashCode()</li>
+<li>value:無序，可重複的，使用Collection儲存，value的所在類必須重寫equals()</li>
+<li>一對key與value構成一個Entry物件，使用Set儲存，當然也是無序、不可重複的</li>
+</ul>
+<h3 id="hashmap源碼分析">HashMap源碼分析</h3>
+<blockquote>
+<p>以JDK7為例</p>
+</blockquote>
+<ul>
+<li>HashMap map = new HashMap():實例化時，底層創建了一個長度16的一維數組Entry[] table</li>
+<li>map.put(key1, value1):放數據時，調用key1所在類的hashcode()方法算出哈希值，以此哈希值再經過<strong>某些位運算</strong>，得到在Entry[] table數組中的存放位置，此時:
+<ul>
+<li>若位置是空的，放入成功</li>
+<li>若已經有人(可能有一個數據或鏈表)，就來比較key1跟佔位者(可能有多個，全都要比一遍)的哈希值
+<ul>
+<li>如果哈希值都不同，添加成功(放成鏈表)</li>
+<li>如果key1的哈希值跟已存在的某數據(舉例為key2, value2)哈希值相同，此時再比較key1所在類的equals()方法，此時:
+<ul>
+<li>如果equals()返回false，表示key不同只是恰好哈希值一樣，添加成功(放成鏈表)</li>
+<li>如果equals()返回true，表示兩者key真的一樣，<del>那就進入至尊對決</del>，此時把put()方法理解為覆蓋，將舊的value2換成新的value1</li>
+</ul>
+</li>
+<li>所謂放成鏈表跟前面Set提到的一樣，類似於&quot;卜&quot;字的概念，從該位置延伸出去存放新的元素</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>擴容:超過臨界值(容量*負載因子)且要存的位置非空就會擴容，預設的擴容方式為造一個新的兩倍長數組，然後將原有的複製過來
+<ul>
+<li>預設容量:16</li>
+<li>預設負載因子:0.75</li>
+<li>擴容的邏輯是這樣的，為了減少哈希碰撞(就是不希望分支的鏈表太多太長)，所以不會等他裝到滿才擴容。假如負載因子0.9可能老是撞車分支很多，負載因子0.2可能一直在擴容，折衷就定負載因子0.75效率高</li>
+</ul>
+</li>
+</ul>
+<h5 id="jdk8的改動">JDK8的改動</h5>
+<ul>
+<li>new HashMap():實例化時，底層沒有創建數組，首次調用put()方法才創建，類似懶漢式</li>
+<li>底層數組用Node[]取代Entry[]</li>
+<li>當數組某一個位置上的元素以鏈表形式存在的數據&gt;8且當前主幹數組長度&gt;64時，將鏈表改為紅黑樹儲存，提高查找效率</li>
+</ul>
+<h5 id="linkedhashmap">LinkedHashMap</h5>
+<p>繼承了HashMap的Node，但又多了before跟after兩個屬性，所以形成雙向鏈表可以再添加時記錄前後順序</p>
+<h3 id="map常用方法">Map常用方法</h3>
+<blockquote>
+<p>預設使用一個HashMap的實例物件作為調用的主體演示</p>
+</blockquote>
+<ul>
+<li>Object put(Object  key, Object  value):添加或修改，並且返回null或被取代的value</li>
+<li>void putAll(Map m):將m所有的對都放進去</li>
+<li>Object remove(Object  key):移除指定key的鍵值對，返回被刪除的value</li>
+<li>void clear():清空當前map中所有數據，注意與map=null不同，只是清空數據，本身還在</li>
+<li>Object get(Object  key):獲取對應的value</li>
+<li>boolean containsKey(Object  key):是否有此key</li>
+<li>boolean containsValue(Object  value):是否有此value</li>
+<li>int size():返回鍵值對個數</li>
+<li>boolean isEmpty():是否size=0</li>
+<li>boolean equals(Object  key):判斷當前map與obj是否相等</li>
+</ul>
+<h3 id="遍歷map">遍歷Map</h3>
+<blockquote>
+<p>切出Collection的部分再用Iterator來遍歷</p>
+</blockquote>
+<ul>
+<li>
+<p>Set keySet():返回所有key構成的Set集合</p>
+</li>
+<li>
+<p>Collection values():返回所有value構成的Collection集合</p>
+</li>
+<li>
+<p>Set entrySet():返回所有key-value構成的Set集合，得到的元素每個都是entry，故也能強轉回去Map再進行一些操作，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">HashMap map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap();
+map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;A&#34;</span>, 123);
+map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;B&#34;</span>, 1234);
+map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;c&#34;</span>, 14564);
+Set entrySet = map.<span style="color:#658b00">entrySet</span>();
+Iterator iterator = entrySet.<span style="color:#658b00">iterator</span>();
+<span style="color:#8b008b;font-weight:bold">while</span> (iterator.<span style="color:#658b00">hasNext</span>()) {
+    Object obj = iterator.<span style="color:#658b00">next</span>();
+    Map.<span style="color:#658b00">Entry</span> entry = (Map.<span style="color:#658b00">Entry</span>) obj;
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(entry.<span style="color:#658b00">getKey</span>() + <span style="color:#cd5555">&#34;=&gt;&#34;</span> + entry.<span style="color:#658b00">getValue</span>());
+}
+</code></pre></div></li>
+</ul>
+<h3 id="treemap">TreeMap</h3>
+<blockquote>
+<p>實際發開中非常少用，了解即可</p>
+</blockquote>
+<p>規定了key必須都是同類，單看key其實就是TreeSet，排序的規則都是一樣的必須重寫compareTo()或compare()方法</p>
+<ul>
+<li>
+<p>自然排序:加入的類若實現了Comparable接口，此時比較兩個物件是用重寫的compareTo()方法而非equals()，要注意自己重寫時的比較邏輯，否則可能會產生兩個物件被誤認為重複元素的況狀</p>
+</li>
+<li>
+<p>訂製排序:用自訂的比較器，此時比較兩個物件是用重寫的compare()方法而非equals()，舉例:</p>
+</li>
+</ul>
+<h3 id="properties">Properties</h3>
+<ul>
+<li>key跟value都是String類型，常用於配置文件</li>
+<li>有個load(文件流)與getProperty(String)方法，專門用來讀取配置文件的訊息</li>
+</ul>
+<h1 id="collections工具類">Collections工具類</h1>
+<ul>
+<li>雖然叫做Collections，但他能操作Set、List還有Map等集合</li>
+<li>既然是工具類，顯然都是靜態方法</li>
+</ul>
+<h3 id="常用方法">常用方法</h3>
+<ul>
+<li>
+<p>reverse(List):反轉List中元素的順序</p>
+</li>
+<li>
+<p>shuffle(List):隨機排序List中的元素</p>
+</li>
+<li>
+<p>sort(List):按照元素自然排序</p>
+</li>
+<li>
+<p>sort(List, Comparator):依照指定的Comparator對元素排序</p>
+</li>
+<li>
+<p>swap(List, int, int):交換索引位置</p>
+</li>
+<li>
+<p>Object max(Collection):根據自然排序返回最大值；也有min方法</p>
+</li>
+<li>
+<p>Object max(Collection, Comparator):根據指定的Comparator返回最大值</p>
+</li>
+<li>
+<p>int frequency(Collection, Object):返回Object出現次數</p>
+</li>
+<li>
+<p>void copy(List dest, List src):將scr的內容複製到dest中，要注意長度，想被貼上的list長度不能比原來的短，可以新建一個填滿null的等長數組去接，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList();
+<span style="color:#228b22">// 對list塞了一些元素後，想作為src複製到新的dest
+</span><span style="color:#228b22"></span>List dest = Arrays.<span style="color:#658b00">asList</span>(<span style="color:#8b008b;font-weight:bold">new</span> Object[list.<span style="color:#658b00">size</span>()]);
+Collections.<span style="color:#658b00">copy</span>(dest,list);
+</code></pre></div></li>
+<li>
+<p>boolean replaceAll(List list, 舊, 新):全替換</p>
+</li>
+<li>
+<p><strong>synchronizedXXX(xxx):返回一個線程安全的xxx集合</strong></p>
+</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>Map:由Set存成key(無序不可重複)，由Collection存成value(無序可重複)，key與value組合成無序不可重複的Entry或說Node結構</li>
+<li>HashMap的底層原理:16位長的數組，put元素時算key的hashCode()再位移運算得出要放的位置，若已經有東西，再比key的euqals()方法，若false表示哈希值恰好相同，在此處分支成鏈表結構儲存；若euqals()返回true表示key完全相等，則進行覆蓋的操作</li>
+<li>Hashtable:古老、線程安全、效率低，過時不用；但其下有Properties常用來存配置，特色是K-V都是String</li>
+<li>HashTree:key的部分就是SetTree，要求key都是同類，重寫compareTo()或compare()方法後可以用key排序</li>
+<li>遍歷Map，用keySet方法取出key為一個Set就能用Iterator遍歷了，還可以用這個key調用get方法獲取對應的value執行各種操作</li>
+<li>Collection是一個抽象接口，其下有List跟Set與對應的實現類用來存取單列數據</li>
+<li>Collections是一個工具類，有很多靜態方法去操作List、Set還有Map</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-09</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211212-slash-file-name/">
+			下一篇<br>路徑、正反斜槓與檔名的一些規則
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211208-agg-ja-23/">
+			上一篇<br>集合:Collection、疊代器Iiterator、List、Set
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>集合:Collection、疊代器Iiterator、List、Set</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day23筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="集合:Collection、疊代器Iiterator、List、Set" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day23筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211208-agg-ja-23/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-08T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="集合:Collection、疊代器Iiterator、List、Set"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day23筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#集合概述-nav`)" id="集合概述-nav">
+									集合概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#collection" onclick="onNavClick(`#collection-nav`)" id="collection-nav">
+									Collection
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%96%8a%e4%bb%a3%e5%99%a8iterator" onclick="onNavClick(`#疊代器iterator-nav`)" id="疊代器iterator-nav">
+									疊代器Iterator
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#list%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#list接口-nav`)" id="list接口-nav">
+									List接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#list%e7%89%b9%e6%80%a7" onclick="onNavClick(`#list特性-nav`)" id="list特性-nav">
+									List特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#list%e6%96%b9%e6%b3%95" onclick="onNavClick(`#list方法-nav`)" id="list方法-nav">
+									List方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#set%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#set接口-nav`)" id="set接口-nav">
+									Set接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#set%e7%89%b9%e6%80%a7" onclick="onNavClick(`#set特性-nav`)" id="set特性-nav">
+									Set特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#set%e5%af%a6%e7%8f%be%e9%a1%9e" onclick="onNavClick(`#set實現類-nav`)" id="set實現類-nav">
+									Set實現類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#set%e9%9d%a2%e8%a9%a6%e9%a1%8c" onclick="onNavClick(`#set面試題-nav`)" id="set面試題-nav">
+									Set面試題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#集合概述-nav`)" id="集合概述-nav">
+									集合概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#collection" onclick="onNavClick(`#collection-nav`)" id="collection-nav">
+									Collection
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%96%8a%e4%bb%a3%e5%99%a8iterator" onclick="onNavClick(`#疊代器iterator-nav`)" id="疊代器iterator-nav">
+									疊代器Iterator
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#list%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#list接口-nav`)" id="list接口-nav">
+									List接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#list%e7%89%b9%e6%80%a7" onclick="onNavClick(`#list特性-nav`)" id="list特性-nav">
+									List特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#list%e6%96%b9%e6%b3%95" onclick="onNavClick(`#list方法-nav`)" id="list方法-nav">
+									List方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#set%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#set接口-nav`)" id="set接口-nav">
+									Set接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#set%e7%89%b9%e6%80%a7" onclick="onNavClick(`#set特性-nav`)" id="set特性-nav">
+									Set特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#set%e5%af%a6%e7%8f%be%e9%a1%9e" onclick="onNavClick(`#set實現類-nav`)" id="set實現類-nav">
+									Set實現類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#set%e9%9d%a2%e8%a9%a6%e9%a1%8c" onclick="onNavClick(`#set面試題-nav`)" id="set面試題-nav">
+									Set面試題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    集合:Collection、疊代器Iiterator、List、Set
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day23筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-08 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="集合概述">集合概述</h1>
+<ul>
+<li>集合、數組都是用來儲存多個數據(在記憶體中)的結構，簡稱Java容器</li>
+<li>數組在聲明時長度跟數據類型就定死了，還強制是有序的，增刪改查都不變</li>
+<li>Java集合分成兩種體系，有各種接口與實現類:
+<ul>
+<li>Collection接口:單列數據，用來存一個一個的物件
+<ul>
+<li>List接口:元素有序、可重複，又稱為&quot;動態數組&quot;
+<ul>
+<li>ArrayList</li>
+<li>LinkedList</li>
+<li>Vector</li>
+</ul>
+</li>
+<li>Set接口:元素無序、不可重複
+<ul>
+<li>HashSet</li>
+<li>LinkedHashSet</li>
+<li>TreeSet</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Map接口:雙列數據，保存具有映射關係(key-value)成對的物件
+<ul>
+<li>HashMap
+<ul>
+<li>LinkedHashMap</li>
+</ul>
+</li>
+<li>TreeMap</li>
+<li>Hashtable
+<ul>
+<li>Properties</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="collection">Collection</h1>
+<p>Collection接口本身沒有直接的實現類，而是要通過其子類List與Set各自的實現類來完成物件的實例化</p>
+<h3 id="方法">方法</h3>
+<blockquote>
+<p>用一個實現Collection接口的實例物件調用，例如:Collection coll = new ArrayList();</p>
+</blockquote>
+<ul>
+<li>
+<p>add(Object e):將Object e加入集合中</p>
+</li>
+<li>
+<p>size():返回元素個數</p>
+</li>
+<li>
+<p>addAll(Collection c):將集合c的內容全加進來</p>
+</li>
+<li>
+<p>clear():清空元素，注意不是刪除集合本身，只是清掉其中的元素</p>
+</li>
+<li>
+<p>isEmpty():判定是否為空</p>
+</li>
+<li>
+<p>contains(Object obj):判斷集合中是否存在obj物件，注意這邊調用的是該類的equals()方法，也就是說預設類型他是比內容；而若自訂的類沒有重寫equals()方法，則會是比地址值(相當於&quot;==&quot;)，一般來說在<strong>集合用到自訂類我們都要求該類必須重寫equals()方法</strong>，不然太搞</p>
+</li>
+<li>
+<p>containsAll(Collection c):判斷當前集合是否包含整個集合c，與順序無關，每個元素都有就算</p>
+</li>
+<li>
+<p>boolean remove(Object obj):判斷集合中是否存在obj物件，有則<strong>移除一個</strong>並返回true</p>
+</li>
+<li>
+<p>containsAll(Collection c):只要當前集合跟集合c有共通的項目，就<strong>全部移除</strong>(相當於數學上的差集)，並返回true</p>
+</li>
+<li>
+<p>retainAll(Collection c):判斷當前集合與集合c的交集，只保留相同部分(重複的他不會去修改數量)</p>
+</li>
+<li>
+<p>equals():判斷兩個集合所有元素是否相等，注意順序有差</p>
+</li>
+<li>
+<p>toArray():將集合轉成並返回數組</p>
+<ul>
+<li>Arrays.asList():Arrays的靜態方法，將數組轉為List，使用時注意可能將數組形參視為&quot;一整個引用類型物件&quot;，前後類別要特別寫清楚，有懷疑就用size方法看看元素個數是否吻合</li>
+</ul>
+</li>
+<li>
+<p>iterator():返回Iterator接口的疊代器實例，用於遍歷集合元素</p>
+</li>
+</ul>
+<h3 id="疊代器iterator">疊代器Iterator</h3>
+<blockquote>
+<p>專門用來遍歷Collection集合的接口</p>
+</blockquote>
+<ul>
+<li>
+<p>Collection繼承自Iterable接口，表明該類可以用於疊代器</p>
+</li>
+<li>
+<p>當某個類實現Iterable接口時，我們就能稱這個類是一個&quot;可數&quot;的類，也就是可以使用iterator()方法獲取一個疊代器Iterator，然後使用這個Iterator實例去遍歷這個類</p>
+</li>
+<li>
+<p>Iterator接口:如果某個類實現了Iterable接口，那麼他也需要創建一個內部類去實現一個Iterator類，讓調用Iterable接口中的iterator()時，能夠獲取到一個iterator實例</p>
+</li>
+<li>
+<p>調用時<strong>創建一個疊代器物件</strong>，此時疊代器的<strong>游標指向在第一元素之前</strong>，並且有幾個常用的方法:</p>
+<ul>
+<li>
+<p>.next():顯示下一個元素內容，並將指針後移一位</p>
+</li>
+<li>
+<p>.hasNext():判斷是否存在下一個元素內容，返回布林，可以用while配合循環遍歷集合，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Iterator iterator = col.<span style="color:#658b00">iterator</span>();
+<span style="color:#8b008b;font-weight:bold">while</span> (iterator.<span style="color:#658b00">hasNext</span>()) {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(iterator.<span style="color:#658b00">next</span>());
+}
+<span style="color:#228b22">// 純遍歷用foreach更快，foreach相較之下的特性是失去了索引
+</span></code></pre></div></li>
+<li>
+<p>.remove():只能用在next()之後且一對一，用於刪除剛剛返回的元素；注意跟Collection本身的remove(Object obj)方法不一樣</p>
+</li>
+</ul>
+</li>
+<li>
+<p>疊代器本身不作為容器，只是看門幫忙數數的，不要搞錯主體</p>
+</li>
+<li>
+<p>foreach的代碼底層就是調用了疊代器，舉例:for (Object o : arr){&hellip;，他是創建了一個臨時的Object o，每次疊代把arr取出的元素賦給Object o，之後執行下面代碼的操作，可別傻傻的對o進行賦值之類的操作，沒用的</p>
+</li>
+</ul>
+<h1 id="list接口">List接口</h1>
+<h3 id="list特性">List特性</h3>
+<p>特性為有序、可重複，又稱為&quot;動態數組&quot;，此接口有三個實現類分別為:</p>
+<ul>
+<li>ArrayList:主要實現類，線程不安全、效率高，底層使用Object[]結構，他的源碼分析(基於JDK7):
+<ul>
+<li>在new一個ArrayList時，底層創建了一個長度10的Object[]數組
+<ul>
+<li>在JDK8的話，這邊創造的是長度為空的數組，類似於懶漢式，有真的用到才擴容</li>
+</ul>
+</li>
+<li>add時判斷元素個數，若超過了現有則擴容，預設擴為原來的1.5倍，同時整組複製過去新家</li>
+<li>啟示:開發中用到ArrayList時，最好選帶參數、指定好預估數量的構造器</li>
+</ul>
+</li>
+<li>LinkedList:對於頻繁的插入、刪除操作效率高，因為底層是雙向鏈表
+<ul>
+<li>雙向鏈表，每一節都包含前後兩個node的指向資訊</li>
+</ul>
+</li>
+<li>Vector:過時的實現類，線程安全、效率低，底層使用Object[]結構
+<ul>
+<li>底層創建了一個長度10的Object[]數組，擴容時為2倍</li>
+<li>即使他是線程安全的，實際開發中也不會用他，而是用Collections工具類中的synchronizedList方法，可以說Vector近乎廢棄了</li>
+</ul>
+</li>
+</ul>
+<h3 id="list方法">List方法</h3>
+<p>由於list是有序的，所以有些方法不太一樣(有些重寫有些重載，注意形參)，主要是針對指定位置的操作，例如:</p>
+<ul>
+<li>
+<p>void add(int index,Object obj):在index處插入元素</p>
+</li>
+<li>
+<p>blooean addAll(int index,Collection c):在index處插入集合中的每個元素，注意不要把&quot;整個集合&quot;當成一個元素而誤用add方法</p>
+</li>
+<li>
+<p>int indexOf(Object obj):返回指定obj首次出現位置；lastIndexOf:最末</p>
+</li>
+<li>
+<p>Object remove(int index):刪除指定位置的元素並返回刪除的元素，使用時<strong>注意形參</strong>，不要跟Collection的boolean remove(Object obj)搞錯</p>
+</li>
+<li>
+<p>Object set(int index,Object obj):用obj取代指定位置的元素並返回被取代的元素</p>
+</li>
+<li>
+<p>List sublist(int 含頭,int 不含尾):切出新的sub</p>
+</li>
+</ul>
+<h1 id="set接口">Set接口</h1>
+<h3 id="set特性">Set特性</h3>
+<ul>
+<li>元素無序:所謂無序並不等於隨機，他底層也是數組(其實是HashMap的key部分)，但在儲存時並非依照數組索引一個一個加進去，而是先計算元素的哈希值，以這個哈希值再通過某種算法計算後決定放哪</li>
+<li>不可重複:保證添加的元素按照equals()判斷時不能返回ture，即相同的元素只能存在一個</li>
+<li>底層邏輯:當我添加一個元素b，先算b的哈希值，從b的哈希再算出存放位置，此時:
+<ul>
+<li>若存放位置為空，則添加b成功</li>
+<li>若存放位置已經有元素a存在(或以鏈表形式存在的多個元素)，則比較a跟b的哈希值:
+<ul>
+<li>若哈希值不同，則添加b成功(插到鏈表裡)</li>
+<li>若哈希值相同，則再比較equals()方法
+<ul>
+<li>返回true表示a跟b真的是一樣的東西，添加b失敗</li>
+<li>返回false表示他們只是恰好哈希值一樣，添加b成功(插到鏈表裡)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>所謂的&quot;插到鏈表&quot;，即是說這個位置換成一個鏈表去儲存多個元素，可以想像成&quot;卜&quot;字的樣子:
+<ul>
+<li>JDK7是頭插法，直觀的一個一個排隊接上去</li>
+<li>JDK8是尾插法，新來的擠佔分支口，把舊的元素一個一個往外推</li>
+</ul>
+</li>
+<li>鏈表長度超過8則會改成紅黑樹，巨難巨複雜，暫時先知道就好</li>
+<li>當set使用<strong>自訂類，必須重寫equals跟hashcode方法</strong>，不然拖出去打</li>
+</ul>
+<h3 id="set實現類">Set實現類</h3>
+<blockquote>
+<p>Set的實現類底層其實都是用到對應的map</p>
+<p>實際開發中比較少用，並且沒有額外定義的方法</p>
+</blockquote>
+<ul>
+<li>
+<p>HashSet:主力，線程不安全、可以儲存null</p>
+<ul>
+<li>LinkedHashSet:子類，遍歷時可以按照&quot;添加的順序&quot;排列
+<ul>
+<li>其實就是添加元素時額外記錄了前後索引(想像成一個曲折的的雙向鏈表，類似有一群小朋友每個人都知道自己前後一號是誰，平時散裝著亂跑無所謂，但是要排隊遍歷時能夠找出順序)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>TreeSet:底層為紅黑樹結構，可以按照添加對象的指定屬性進行排序，要求添加的元素必須是同類物件</p>
+<ul>
+<li>
+<p>自然排序:加入的類若實現了Comparable接口，此時比較兩個物件是用重寫的compareTo()方法而非equals()，要注意自己重寫時的比較邏輯，否則可能會產生兩個物件被誤認為重複元素的況狀</p>
+</li>
+<li>
+<p>訂製排序:用自訂的比較器，此時比較兩個物件是用重寫的compare()方法而非equals()，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Comparator com = <span style="color:#8b008b;font-weight:bold">new</span> Comparator() {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">compare</span>(Object o1, Object o2) {
+        <span style="color:#228b22">// 想比較的屬性
+</span><span style="color:#228b22"></span>    }
+};
+TreeSet set = <span style="color:#8b008b;font-weight:bold">new</span> TreeSet(com);
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="應用">應用</h3>
+<p>去除list內的重複項-裝到set裡，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">HashSet set = <span style="color:#8b008b;font-weight:bold">new</span> HashSet();
+set.<span style="color:#658b00">addAll</span>(list);
+</code></pre></div><h3 id="set面試題">Set面試題</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Person</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> id;
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Person</span>(<span style="color:#00688b;font-weight:bold">int</span> id, String name) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">id</span> = id;
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">name</span> = name;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">toString</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;Person{&#34;</span> +
+                <span style="color:#cd5555">&#34;id=&#34;</span> + id +
+                <span style="color:#cd5555">&#34;, name=&#39;&#34;</span> + name + <span style="color:#cd5555">&#39;\&#39;&#39;</span> +
+                <span style="color:#cd5555">&#39;}&#39;</span>;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">equals</span>(Object o) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span> == o) <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+        <span style="color:#8b008b;font-weight:bold">if</span> (o == <span style="color:#8b008b;font-weight:bold">null</span> || getClass() != o.<span style="color:#658b00">getClass</span>()) <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+        Person person = (Person) o;
+        <span style="color:#8b008b;font-weight:bold">return</span> id == person.<span style="color:#658b00">id</span> &amp;&amp; Objects.<span style="color:#658b00">equals</span>(name, person.<span style="color:#658b00">name</span>);
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">hashCode</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> Objects.<span style="color:#658b00">hash</span>(id, name);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        HashSet set = <span style="color:#8b008b;font-weight:bold">new</span> HashSet();
+        Person p1 = <span style="color:#8b008b;font-weight:bold">new</span> Person(101, <span style="color:#cd5555">&#34;AA&#34;</span>);
+        Person p2 = <span style="color:#8b008b;font-weight:bold">new</span> Person(102, <span style="color:#cd5555">&#34;BB&#34;</span>);
+        set.<span style="color:#658b00">add</span>(p1);
+        set.<span style="color:#658b00">add</span>(p2);
+        p1.<span style="color:#658b00">name</span> = <span style="color:#cd5555">&#34;CC&#34;</span>; <span style="color:#228b22">// 此時放的位置是以原AA算的，但內容被改為CC
+</span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(set.<span style="color:#658b00">remove</span>(p1)); <span style="color:#228b22">// 返回false，因為p1內容現在是101CC，而原先的位置是101AA，不同位置
+</span><span style="color:#228b22"></span>        set.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> Person(101, <span style="color:#cd5555">&#34;CC&#34;</span>)); <span style="color:#228b22">// 能放進去，即使內容一樣，但哈希計算後放的位置不同
+</span><span style="color:#228b22"></span>        set.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> Person(101, <span style="color:#cd5555">&#34;AA&#34;</span>)); <span style="color:#228b22">// 能放進去，即使同位置有人，但比equals不一樣
+</span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(set);
+    }
+}
+</code></pre></div><h1 id="小結">小結</h1>
+<ul>
+<li>
+<p>Collection用到自訂類，必須重寫euqals方法，否則物件是否存在時(例如:contains、remove)會判斷錯誤</p>
+</li>
+<li>
+<p>比較:</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>線程安全</th>
+<th>效率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ArrayList</td>
+<td>N</td>
+<td>高</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td>N</td>
+<td>雙向鏈表，針對頻繁插入刪除</td>
+</tr>
+<tr>
+<td>Vector</td>
+<td>Y</td>
+<td>低，已廢棄的上古類</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>List有序可重複、Set無序不可重複</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-08</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211209-agg-ja-24/">
+			下一篇<br>Map、HashMap、Collections工具類
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211207-agg-ja-22/">
+			上一篇<br>枚舉類enum、註解annotation
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
