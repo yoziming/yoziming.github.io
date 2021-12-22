@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>實作練習-家庭收支小app</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="go自學筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="實作練習-家庭收支小app" />
+<meta property="og:description" content="go自學筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210820-agg-go-proj-%E5%AE%B6%E5%BA%AD%E6%94%B6%E6%94%AF%E5%B0%8Fapp/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="實作練習-家庭收支小app"/>
+<meta name="twitter:description" content="go自學筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c%e7%b7%b4%e7%bf%92-%e5%ae%b6%e5%ba%ad%e6%94%b6%e6%94%af%e5%b0%8fapp" onclick="onNavClick(`#實作練習-家庭收支小app-nav`)" id="實作練習-家庭收支小app-nav">
+									實作練習-家庭收支小app
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c%e7%b7%b4%e7%bf%92-%e5%ae%b6%e5%ba%ad%e6%94%b6%e6%94%af%e5%b0%8fapp" onclick="onNavClick(`#實作練習-家庭收支小app-nav`)" id="實作練習-家庭收支小app-nav">
+									實作練習-家庭收支小app
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/golang-guigu.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    實作練習-家庭收支小app
+                    
+                    <div class="post-subtitle">
+                        go自學筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7golang%E7%AD%86%E8%A8%98">尚硅谷Golang筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="實作練習-家庭收支小app">實作練習-家庭收支小app</h1>
+<pre tabindex="0"><code>type MyMoney struct {
+	key     string  //鍵入值
+	note    string  //收支說明
+	balance float64 //餘額
+	money   float64 //收支
+	flag    bool    //判斷是否有明細
+	details string  //詳細
+	loop    bool    //循環
+}
+
+//綁定方法
+func (mm *MyMoney) MainMenu() {
+	for {
+		if !mm.loop {
+			break
+		}
+		fmt.Println(&quot;\n-----------------家庭收支记账软件-----------------&quot;)
+		fmt.Println(&quot;                  1 收支明细&quot;)
+		fmt.Println(&quot;                  2 登记收入&quot;)
+		fmt.Println(&quot;                  3 登记支出&quot;)
+		fmt.Println(&quot;                  4 退出软件&quot;)
+		fmt.Print(&quot;請選擇(1-4)...&quot;)
+		fmt.Scanln(&amp;mm.key)
+
+		switch mm.key {
+		case &quot;1&quot;:
+			mm.showDetails()
+		case &quot;2&quot;:
+			mm.income()
+		case &quot;3&quot;:
+			mm.outcome()
+		case &quot;4&quot;:
+			mm.exit()
+		default:
+			fmt.Println(&quot;輸入錯誤，返回主選單&quot;)
+		}
+	}
+}
+
+func (mm *MyMoney) showDetails() {
+	fmt.Println(&quot;\n-----------------收支明细-----------------&quot;)
+	if mm.flag {
+		fmt.Println(mm.details)
+	} else {
+		fmt.Println(&quot;當前沒有明細&quot;)
+	}
+}
+
+func (mm *MyMoney) income() {
+	fmt.Println(&quot;\n-----------------登记收入-----------------&quot;)
+	fmt.Println(&quot;輸入收入金額...&quot;)
+	fmt.Scanln(&amp;mm.money)
+	mm.balance += mm.money
+	fmt.Println(&quot;輸入收入說明...&quot;)
+	fmt.Scanln(&amp;mm.note)
+	mm.details += fmt.Sprintf(&quot;\n收入\t%v\t	%v\t	%v&quot;, mm.balance, mm.money, mm.note)
+	mm.flag = true
+}
+
+func (mm *MyMoney) outcome() {
+	fmt.Println(&quot;本次支出金额:&quot;)
+	fmt.Scanln(&amp;mm.money)
+	//这里需要做一个必要的判断
+	mm.balance -= mm.money
+	fmt.Println(&quot;本次支出说明:&quot;)
+	fmt.Scanln(&amp;mm.note)
+	mm.details += fmt.Sprintf(&quot;\n支出\t%v\t	%v\t	%v&quot;, mm.balance, mm.money, mm.note)
+	mm.flag = true
+}
+
+func (mm *MyMoney) exit() {
+	fmt.Println(&quot;確定使否退出?(Y/N)&quot;)
+	choice := &quot;&quot;
+	for {
+		fmt.Scanln(&amp;choice)
+		if choice == &quot;Y&quot; || choice == &quot;N&quot; {
+			break
+		}
+		fmt.Println(&quot;錯誤，確定使否退出?(Y/N)&quot;)
+	}
+	if choice == &quot;Y&quot; {
+		fmt.Println(&quot;\n-----------------結束-----------------&quot;)
+		mm.loop = false
+	} else {
+		mm.loop = true
+	}
+}
+
+//工廠模式
+func NewMyMoney() *MyMoney {
+	return &amp;MyMoney{
+		key:     &quot;&quot;,
+		loop:    true,
+		balance: 10000.0,
+		money:   0.0,
+		note:    &quot;&quot;,
+		flag:    false,
+		details: &quot;收支\t账户金额\t收支金额\t说 明&quot;,
+	}
+}
+
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-08-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210820-agg-go-proj-%E5%AE%A2%E6%88%B6%E5%90%8D%E5%96%AE%E7%AE%A1%E7%90%86%E7%B3%BB%E7%B5%B1/">
+			下一篇<br>實作練習-客戶名單管理系統
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210820-agg-go-proj-%E9%BB%9E%E5%B0%8D%E9%BB%9E%E8%81%8A%E5%A4%A9/">
+			上一篇<br>實作練習-點對點聊天
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+                <p style="opacity: 0.6" align="center">
+                    <small>此篇文章的評論功能已經停用。</small>
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

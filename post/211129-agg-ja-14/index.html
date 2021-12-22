@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>關鍵字:static/main/final、代碼塊與單例模式</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day14筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="關鍵字:static/main/final、代碼塊與單例模式" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day14筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211129-agg-ja-14/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-29T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="關鍵字:static/main/final、代碼塊與單例模式"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day14筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97static" onclick="onNavClick(`#關鍵字static-nav`)" id="關鍵字static-nav">
+									關鍵字static
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8static%e4%bf%ae%e9%a3%be%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#使用static修飾屬性-nav`)" id="使用static修飾屬性-nav">
+									使用static修飾屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8static%e4%bf%ae%e9%a3%be%e6%96%b9%e6%b3%95" onclick="onNavClick(`#使用static修飾方法-nav`)" id="使用static修飾方法-nav">
+									使用static修飾方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e4%be%8bsingleton%e8%a8%ad%e8%a8%88%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#單例singleton設計模式-nav`)" id="單例singleton設計模式-nav">
+									單例(singleton)設計模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97main" onclick="onNavClick(`#關鍵字main-nav`)" id="關鍵字main-nav">
+									關鍵字main
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bb%a3%e7%a2%bc%e5%a1%8a" onclick="onNavClick(`#代碼塊-nav`)" id="代碼塊-nav">
+									代碼塊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97final" onclick="onNavClick(`#關鍵字final-nav`)" id="關鍵字final-nav">
+									關鍵字final
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97static" onclick="onNavClick(`#關鍵字static-nav`)" id="關鍵字static-nav">
+									關鍵字static
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8static%e4%bf%ae%e9%a3%be%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#使用static修飾屬性-nav`)" id="使用static修飾屬性-nav">
+									使用static修飾屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8static%e4%bf%ae%e9%a3%be%e6%96%b9%e6%b3%95" onclick="onNavClick(`#使用static修飾方法-nav`)" id="使用static修飾方法-nav">
+									使用static修飾方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e4%be%8bsingleton%e8%a8%ad%e8%a8%88%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#單例singleton設計模式-nav`)" id="單例singleton設計模式-nav">
+									單例(singleton)設計模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97main" onclick="onNavClick(`#關鍵字main-nav`)" id="關鍵字main-nav">
+									關鍵字main
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bb%a3%e7%a2%bc%e5%a1%8a" onclick="onNavClick(`#代碼塊-nav`)" id="代碼塊-nav">
+									代碼塊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97final" onclick="onNavClick(`#關鍵字final-nav`)" id="關鍵字final-nav">
+									關鍵字final
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    關鍵字:static/main/final、代碼塊與單例模式
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day14筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-29 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="關鍵字static">關鍵字static</h1>
+<ul>
+<li>意義:靜態的，類中共用的，生命週期跟隨類的</li>
+<li>使用對象:屬性、方法、內部類、代碼塊，以下分別說明</li>
+</ul>
+<h3 id="使用static修飾屬性">使用static修飾屬性</h3>
+<ul>
+<li>
+<p>稱為&quot;靜態變量&quot;或&quot;類變量&quot;</p>
+</li>
+<li>
+<p>先複習關於變量的知識</p>
+</li>
+</ul>
+<p><img src="image-20211126131625719.png" alt="image-20211126131625719"></p>
+<ul>
+<li>實例變量是每個造出來的物件各自有的，比如:大明跟小明各自的age不同</li>
+<li>類變量是整個類共用的，比如:大明跟小明的nation都是TW
+<ul>
+<li>類變量隨著類的加載而加載，可以通過&quot;類.靜態變量&quot;進行調用</li>
+<li>物件沒創建之前類變量就已經存在</li>
+<li>由於類只會加載一次，靜態變量在記憶體中也只存在一份，位於方法區的靜態域</li>
+</ul>
+</li>
+<li>在哪應用靜態屬性:
+<ul>
+<li>類中共用的，生命週期跟隨類的
+<ul>
+<li>舉例:構造器中自動生成編號的基數(比如從1001開始、1002..)</li>
+</ul>
+</li>
+<li>常量也常聲明為<code>static</code>，再加上<code>final</code>修飾
+<ul>
+<li>舉例:<code>Math.PI</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="使用static修飾方法">使用static修飾方法</h3>
+<ul>
+<li>稱為靜態方法，規則大致與上面相同</li>
+<li>隨著類的加載而加載，可以通過&quot;類.靜態方法&quot;進行調用</li>
+<li>不能在靜態方法中調用非靜態的屬性或方法(畢竟沒有物件)</li>
+<li>在靜態方法中，不能使用<code>this</code>或<code>super</code>關鍵字(物件都沒出生當然不能用)</li>
+<li>在哪應用靜態方法:
+<ul>
+<li>操作靜態屬性的方法，通常設為靜態</li>
+<li>工具類的方法，比如<code>Math</code>、<code>Array</code>、<code>Collections</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="單例singleton設計模式">單例(singleton)設計模式</h3>
+<ul>
+<li>
+<p>定義:整個系統中，強制某個類只存在一個實例，減少資源消耗</p>
+</li>
+<li>
+<p>應用場合:</p>
+<ul>
+<li>網站的計數器，只造一個，不然難以同步</li>
+<li>日誌:通常是一個日誌文件一直被開著，最好只有一個實例去操作它</li>
+<li>數據庫的連接池</li>
+<li>Windows的Task Manager跟Recycle Bin也是很典型的單例</li>
+</ul>
+</li>
+<li>
+<p>&ldquo;餓漢式&quot;實現:</p>
+<ul>
+<li>
+<p>私有化的構造器</p>
+</li>
+<li>
+<p>內部創建類靜態的實例 (一上來就造好，只給你訪問這個)</p>
+</li>
+<li>
+<p>提供外部的靜態方法，返回類的實例</p>
+</li>
+<li>
+<p>優劣:加載時間長，但線程安全</p>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Bank</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#008b45">Bank</span>() {
+    }
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> Bank instance = <span style="color:#8b008b;font-weight:bold">new</span> Bank();
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> Bank <span style="color:#008b45">getInstance</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> instance;
+    }
+}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>&ldquo;懶漢式&quot;實現:</p>
+<ul>
+<li>
+<p>私有化的構造器</p>
+</li>
+<li>
+<p>聲明類的靜態實例，但<strong>不初始化</strong>(沒用到就不造所以稱為懶)</p>
+</li>
+<li>
+<p>聲明外部的、靜態的返回當前類實例的方法</p>
+</li>
+<li>
+<p>優劣:延遲創建，但線程不安全，需要加鎖</p>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Order</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#008b45">Order</span>() {
+    }
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> Order instance = <span style="color:#8b008b;font-weight:bold">null</span>;
+<span style="color:#228b22">// synchronized=上同步鎖
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">synchronized</span> <span style="color:#8b008b;font-weight:bold">static</span> Order <span style="color:#008b45">getInstance</span>() {
+        <span style="color:#8b008b;font-weight:bold">if</span> (instance == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            instance = <span style="color:#8b008b;font-weight:bold">new</span> Order();
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> instance;
+    }
+}
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h1 id="關鍵字main">關鍵字main</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {}
+</code></pre></div><ul>
+<li>其實就是一個靜態的方法，作為入口，生命週期是跟隨類本身</li>
+<li>以往寫的東西老是造對象然後透過實例調用，其實也可以透過static修飾然後直接&quot;類.屬性或方法&quot;來調用</li>
+<li>形參(<code>String[] args</code>)，其實就是命令行，可以跟控制台互動在調用的時候加入一些參數</li>
+</ul>
+<h1 id="代碼塊">代碼塊</h1>
+<blockquote>
+<p>類似go中的init，初始化時執行的區塊</p>
+</blockquote>
+<ul>
+<li>
+<p>定義:在類中用大括弧<code>{}</code>包裹的區塊</p>
+</li>
+<li>
+<p>修飾:只能考慮使用<code>static</code></p>
+</li>
+<li>
+<p>區別:</p>
+<ul>
+<li>
+<p><code>static</code>靜態初始化塊:隨著<strong>類的加載</strong>而執行，而且只執行一次，通常用來初始化類的信息</p>
+</li>
+<li>
+<p>非靜態初始化塊:隨著實體<strong>物件的創立</strong>而執行，在創立物件時，將物件的屬性進行初始化</p>
+</li>
+</ul>
+</li>
+<li>
+<p>可以存在多個，執行順序按上下決定，但不建議這樣做</p>
+</li>
+<li>
+<p>若創立一個物件，代碼塊的執行先於構造器</p>
+<ul>
+<li>由父及子，靜態先行</li>
+</ul>
+</li>
+</ul>
+<h1 id="關鍵字final">關鍵字final</h1>
+<ul>
+<li>
+<p>意義:最終的</p>
+</li>
+<li>
+<p>使用對象:類、方法、變量，以下分別說明</p>
+<ul>
+<li>
+<p>用<code>final</code>修飾類:此類不能被繼承(絕子絕孫)，例如<code>String</code>類、<code>System</code>類、<code>StringBuffer</code>類</p>
+</li>
+<li>
+<p>用final修飾方法:此方法不能被重寫，例如Object類中的<code>getClass();</code></p>
+</li>
+<li>
+<p>用final修飾成員變量:修飾實例變量時，此時的&quot;變量&quot;就是一個常變量，即每個物件的這個屬性可能不同，但出生時就定死了不會再改(舉例:每個人的生日)，可以考慮的位置有:</p>
+<ul>
+<li>顯式初始化</li>
+<li>代碼塊中初始化</li>
+<li>構造器中初始化</li>
+</ul>
+</li>
+<li>
+<p><code>static final</code>用來修飾類的屬性(類變量):全局常量，整個類都會用到，加載類的時候就定死不會改的東西，用於:比如物理常數</p>
+</li>
+<li>
+<p>用<code>final</code>修飾局部變量:修飾局部變量時，類似<code>const</code>，就是一個不能再改的常量，用於:比如想定死一個形參的變量值、寫到一個方法中用到的某變量不想它被改變</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li><code>static</code>修飾的屬性:生命週期跟隨類、隨著類加載一次，存在方法區的靜態域</li>
+<li>單例模式:希望整個類只有一個實例達省資源，把構造器私有化，接著分成餓漢模式:提前造一個，對外唯一<code>get</code>方法調用它；懶漢模式:聲明靜態實例為<code>null</code>，要用時若<code>null</code>就造一個給你調用，否則就調生好那個給你用</li>
+<li>代碼塊:起到一個<code>init</code>的作用，執行優先於構造器</li>
+<li><code>final</code>:不想被繼承的類、不想被重寫的方法、不想被改的變量</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-29</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211130-agg-ja-15/">
+			下一篇<br>抽象abstract、接口interface、內部類
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211128-agg-ja-13/">
+			上一篇<br>多態:關鍵字instanceof、Object類與包裝類
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

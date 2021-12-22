@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>抽象abstract、接口interface、內部類</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day15筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="抽象abstract、接口interface、內部類" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day15筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211130-agg-ja-15/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-30T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="抽象abstract、接口interface、內部類"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day15筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e8%b1%a1abstract" onclick="onNavClick(`#抽象abstract-nav`)" id="抽象abstract-nav">
+									抽象abstract
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e7%be%a9" onclick="onNavClick(`#定義-nav`)" id="定義-nav">
+									定義
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#abstract%e4%bf%ae%e9%a3%be%e9%a1%9e" onclick="onNavClick(`#abstract修飾類-nav`)" id="abstract修飾類-nav">
+									abstract修飾類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#abstract%e4%bf%ae%e9%a3%be%e6%96%b9%e6%b3%95" onclick="onNavClick(`#abstract修飾方法-nav`)" id="abstract修飾方法-nav">
+									abstract修飾方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8-%e6%a8%a1%e6%9d%bf%e6%96%b9%e6%b3%95%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#應用-模板方法設計-nav`)" id="應用-模板方法設計-nav">
+									應用-模板方法設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%bf%e5%90%8d%e5%ad%90%e9%a1%9e%e7%9a%84%e5%8c%bf%e5%90%8d%e5%b0%8d%e8%b1%a1" onclick="onNavClick(`#匿名子類的匿名對象-nav`)" id="匿名子類的匿名對象-nav">
+									匿名子類的匿名對象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a5%e5%8f%a3interface" onclick="onNavClick(`#接口interface-nav`)" id="接口interface-nav">
+									接口interface
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e7%be%a9-1" onclick="onNavClick(`#定義-1-nav`)" id="定義-1-nav">
+									定義
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a7%e9%83%a8%e9%a1%9einner-class" onclick="onNavClick(`#內部類inner-class-nav`)" id="內部類inner-class-nav">
+									內部類inner class
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%88%90%e5%93%a1%e5%85%a7%e9%83%a8%e9%a1%9e" onclick="onNavClick(`#成員內部類-nav`)" id="成員內部類-nav">
+									成員內部類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b1%80%e9%83%a8%e5%85%a7%e9%83%a8%e9%a1%9e" onclick="onNavClick(`#局部內部類-nav`)" id="局部內部類-nav">
+									局部內部類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e8%b1%a1abstract" onclick="onNavClick(`#抽象abstract-nav`)" id="抽象abstract-nav">
+									抽象abstract
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e7%be%a9" onclick="onNavClick(`#定義-nav`)" id="定義-nav">
+									定義
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#abstract%e4%bf%ae%e9%a3%be%e9%a1%9e" onclick="onNavClick(`#abstract修飾類-nav`)" id="abstract修飾類-nav">
+									abstract修飾類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#abstract%e4%bf%ae%e9%a3%be%e6%96%b9%e6%b3%95" onclick="onNavClick(`#abstract修飾方法-nav`)" id="abstract修飾方法-nav">
+									abstract修飾方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8-%e6%a8%a1%e6%9d%bf%e6%96%b9%e6%b3%95%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#應用-模板方法設計-nav`)" id="應用-模板方法設計-nav">
+									應用-模板方法設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%bf%e5%90%8d%e5%ad%90%e9%a1%9e%e7%9a%84%e5%8c%bf%e5%90%8d%e5%b0%8d%e8%b1%a1" onclick="onNavClick(`#匿名子類的匿名對象-nav`)" id="匿名子類的匿名對象-nav">
+									匿名子類的匿名對象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a5%e5%8f%a3interface" onclick="onNavClick(`#接口interface-nav`)" id="接口interface-nav">
+									接口interface
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e7%be%a9-1" onclick="onNavClick(`#定義-1-nav`)" id="定義-1-nav">
+									定義
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a7%e9%83%a8%e9%a1%9einner-class" onclick="onNavClick(`#內部類inner-class-nav`)" id="內部類inner-class-nav">
+									內部類inner class
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%88%90%e5%93%a1%e5%85%a7%e9%83%a8%e9%a1%9e" onclick="onNavClick(`#成員內部類-nav`)" id="成員內部類-nav">
+									成員內部類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b1%80%e9%83%a8%e5%85%a7%e9%83%a8%e9%a1%9e" onclick="onNavClick(`#局部內部類-nav`)" id="局部內部類-nav">
+									局部內部類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    抽象abstract、接口interface、內部類
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day15筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-30 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="抽象abstract">抽象abstract</h1>
+<blockquote>
+<p>隨著繼承不斷疊代，子類越來越具體，而父類越來越通用。</p>
+<p>類的設計必須保證子類與父類共有特徵，有時候我們將父類設計得非常抽象，以至於它沒有具體的實例，這樣的類稱為<strong>抽象類</strong>。</p>
+</blockquote>
+<h3 id="定義">定義</h3>
+<ul>
+<li><code>abstract</code>屬於Java中的關鍵字，可以用來修飾類與方法，以下分別說明</li>
+</ul>
+<h3 id="abstract修飾類">abstract修飾類</h3>
+<ul>
+<li>此類不能實例化</li>
+<li>必定有構造器被繼承</li>
+<li>開發中都會提供抽象類的子類，讓子類形成實例來調用</li>
+<li>不能修飾<code>final</code>類，<code>final</code>類規定不能被繼承，玩毛線</li>
+</ul>
+<h3 id="abstract修飾方法">abstract修飾方法</h3>
+<ul>
+<li>稱為抽象方法，只有聲明，沒有方法體 (就沒要讓你具體用)</li>
+<li>此方法不能被調用</li>
+<li>包含抽象方法的類，必定是一個抽象類。反之抽象類不一定要有抽象方法</li>
+<li>實際開發中的調用必須是被子類繼承後重寫，所有的抽象方法都被重寫後此子類才能實例化(否則，存在繼承來的抽象方法你就是個抽象類)</li>
+<li>不能修飾私有<code>private</code>方法，因為抽象就是為了被繼承，抽象與其矛盾</li>
+<li>不能修飾靜態<code>static</code>方法，靜態方法跟類共存亡，可以直接被類調用，通常是去弄靜態屬性的，抽象與其矛盾</li>
+<li>不能修飾<code>final</code>方法，<code>final</code>方法規定是不能被重寫，抽象與其矛盾</li>
+</ul>
+<h3 id="應用-模板方法設計">應用-模板方法設計</h3>
+<p>在軟體開發中，實現某種功能時，整體中很固定、通用的方法，在父類中就寫好了；而其他不確定、易變的就先抽象起來，交給子類去實現</p>
+<h3 id="匿名子類的匿名對象">匿名子類的匿名對象</h3>
+<blockquote>
+<p>在一次性使用的場合，不想實際造一個匿名類的實體子類，可以在<code>new 匿名類()</code>後面接<code>{}</code>，<code>{</code>內直接重寫方法，範例:</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">abstract</span> <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Person</span> {
+    <span style="color:#8b008b;font-weight:bold">abstract</span> <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">work</span>();
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Student</span> <span style="color:#8b008b;font-weight:bold">extends</span> Person {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">work</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;學生讀書&#34;</span>);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        method(<span style="color:#8b008b;font-weight:bold">new</span> Student());
+        method(<span style="color:#8b008b;font-weight:bold">new</span> Person() {
+            <span style="color:#707a7c">@Override</span>
+            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">work</span>() {
+                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;用一次的街友&#34;</span>);
+            }
+        });
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method</span>(Person person) {
+        person.<span style="color:#658b00">work</span>();
+    }
+}
+</code></pre></div><h1 id="接口interface">接口interface</h1>
+<blockquote>
+<p>繼承是is a的關係，例如學生是人，關係重點在於&quot;是不是&quot;；而接口則是&quot;能不能&quot;的關係。Java中，接口跟類是並列的兩個結構(平級關係)</p>
+</blockquote>
+<h3 id="定義-1">定義</h3>
+<ul>
+<li>
+<p>使用關鍵字<code>interface 接口名{}</code></p>
+</li>
+<li>
+<p>JDK7以前:只能定義全局常量<code>public static final</code>，和抽象方法<code>public abstract</code></p>
+</li>
+<li>
+<p>JDK8包含以上兩種，還可以定義靜態方法、默認方法</p>
+</li>
+<li>
+<p>範例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">Flyable</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> MAX_SPEED = 7900;
+    <span style="color:#00688b;font-weight:bold">int</span> MIN_SPEED = 1; <span style="color:#228b22">// 關鍵字可以省略
+</span><span style="color:#228b22"></span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">abstract</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">fly</span>();
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">stop</span>(); <span style="color:#228b22">// 關鍵字可以省略
+</span><span style="color:#228b22"></span>    }
+</code></pre></div></li>
+<li>
+<p>接口中不能定義構造器，它是不能實例化的</p>
+</li>
+<li>
+<p>接口通過讓類實現(<code>implement</code>)來使用</p>
+</li>
+<li>
+<p>如果實現類覆蓋(重寫)了接口中的所有方法，則此實現類可以實例化；</p>
+</li>
+<li>
+<p>反之，沒有完全實現接口的類，就只能是一個抽象類</p>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Plane</span> <span style="color:#8b008b;font-weight:bold">implements</span> Flyable{
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">fly</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;飛機起飛&#34;</span>);
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">stop</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;飛機停止&#34;</span>);
+    }
+}
+</code></pre></div></li>
+<li>
+<p>一個類可以實現多個接口，(算是JAVA彌補單繼承的一個解決方案)，格式範例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A2</span> <span style="color:#8b008b;font-weight:bold">extends</span> A1 implement CC,DD,EE
+</code></pre></div></li>
+<li>
+<p>接口之間可以繼承，而且可以多繼承，格式範例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">AA</span> <span style="color:#8b008b;font-weight:bold">extends</span> BB,CC
+</code></pre></div></li>
+</ul>
+<h3 id="使用">使用</h3>
+<ul>
+<li>接口實現了多態性</li>
+<li>接口其實是定義了一種規範</li>
+<li>比如我把某方法的形參用接口，管你啥類只要實現了這個接口，此類實例化的物件就可以調用這個方法，(用起來跟go的沒啥區別)</li>
+<li>Java8特性:
+<ul>
+<li>接口中定義的靜態方法，只能透過接口去調用(類似工具類)</li>
+<li>默認方法:使用<code>default</code>修飾，實現類的物件，可以調用接口中的默認方法；若實現時重寫了方法，那調用的還是重寫的方法。只是說用<code>default</code>修飾，可以免去把抽象方法一一實現的過程而直接調用默認的方法</li>
+<li>如果實現類繼承的父類和實現的接口聲明了同名同參的方法，沒有重寫的情況下，優先調用父類的那個，稱為類優先原則</li>
+<li>如果實現類實現了多個接口，其中存在複數同名同參的方法，在沒有重寫的情況下，報錯-接口衝突</li>
+<li>假如有重寫，但想調用接口中的默認方法:<code>接口名.super.方法名</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="內部類inner-class">內部類inner class</h1>
+<p>Java允許在類A中聲明一個類B，此時B是內部類，A稱為外部類。他們在編譯時都會生成字節碼文件(XX.class)</p>
+<p>內部類可分成:成員內部類(靜態、非靜態)與局部內部類(方法內、代碼塊內、構造器內)，以下細說</p>
+<h3 id="成員內部類">成員內部類</h3>
+<ul>
+<li>
+<p>作為外部類的成員</p>
+<ul>
+<li>可以調用外部類的結構</li>
+<li>可以被<code>static</code>修飾</li>
+<li>可以被4種權限修飾</li>
+</ul>
+</li>
+<li>
+<p>另一方面，本身作為一個類</p>
+<ul>
+<li>類內可以定義屬性、方法、構造器&hellip;等等</li>
+<li>內部類可以被繼承(甚至可以被其他類以&quot;<code>extends 外部類.內部類</code>&ldquo;的方式繼承，但如果內部類沒有<code>static</code>的話，還需要提前建立一個封閉實例，很難搞)，可以被<code>abstract</code>修飾</li>
+<li>可以被<code>final</code>修飾來表示不能被繼承</li>
+</ul>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Animal</span> {
+    String name;
+
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">eat</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;eat something&#34;</span>);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Cat</span> {
+        <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">show</span>() {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;小貓睡覺&#34;</span>);
+        }
+    }
+
+    <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Dog</span> {
+        <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">show</span>() {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;小狗看門&#34;</span>);
+            Animal.<span style="color:#658b00">this</span>.<span style="color:#658b00">eat</span>(); <span style="color:#228b22">// 調用外部類的方法，
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 其實&#34;Animal.this.&#34;可以省略
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div></li>
+<li>
+<p>實例化:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 創建靜態的成員內部類
+</span><span style="color:#228b22"></span>Animal.<span style="color:#658b00">Cat</span> c1 = <span style="color:#8b008b;font-weight:bold">new</span> Animal.<span style="color:#658b00">Cat</span>();
+c1.<span style="color:#658b00">show</span>();
+
+<span style="color:#228b22">// 創建非靜態的成員內部類實例，需要先有一個外部成員實例，再用這個實例去new
+</span><span style="color:#228b22"></span>Animal a1 = <span style="color:#8b008b;font-weight:bold">new</span> Animal();
+Animal.<span style="color:#658b00">Dog</span> d1 = a1.<span style="color:#658b00">new</span> <span style="color:#008b45">Dog</span>();
+d1.<span style="color:#658b00">show</span>();
+</code></pre></div></li>
+<li>
+<p>區分調用的屬性或方法:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">用<span style="color:#a61717;background-color:#e3d2d2">`</span><span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#a61717;background-color:#e3d2d2">`</span>指向當前內部類<span style="color:#a61717;background-color:#e3d2d2">，</span>用<span style="color:#cd5555">&#34;外部類名.this.&#34;</span>指向外部類
+當然最好還是不要有重名的屬性或方法
+</code></pre></div></li>
+<li>
+<p>編譯時生成字節碼文件格式為&rdquo;<code>外部類$內部類.class</code>&quot;</p>
+</li>
+</ul>
+<h3 id="局部內部類">局部內部類</h3>
+<ul>
+<li>
+<p>局部內部類可以聲明在方法內、代碼塊內、構造器內</p>
+</li>
+<li>
+<p>局部內部類中，若用到其外一層的屬性，則這個屬性必須是<code>final</code>的，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">someMethod</span>() {
+   <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> age = 18;
+    <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AA</span> { <span style="color:#228b22">// 局部內部類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">show</span>(){
+           age=10; <span style="color:#228b22">// 會報錯，因為這個age相當於是外面傳進來的副本
+</span><span style="color:#228b22"></span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(age);
+        }
+    }
+}
+</code></pre></div></li>
+<li>
+<p>實際開發中較少用，比較可能見到是在android開發中，某方法為了實現某個接口，而暫時創建的一個局部內部類。類似上面提到過的匿名子類的匿名對象的用法，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 比如點某按鈕就要跳出某訊息的方法
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">onCreate</span>() {
+    <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> number = 10;
+    <span style="color:#228b22">// View.onClickListener()是一個接口需要被實現
+</span><span style="color:#228b22"></span>    button.<span style="color:#658b00">setOnClickListener</span>(<span style="color:#8b008b;font-weight:bold">new</span> View.<span style="color:#658b00">onClickListener</span>() {
+       <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">onClick</span>(){
+           System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;點按鈕後產生的訊息&#34;</span>+number);
+        }
+    });
+}
+</code></pre></div></li>
+<li>
+<p>編譯時生成字節碼文件格式為&quot;<code>外部類$數字 內部類.class</code>&quot;</p>
+</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>抽象類:不能實例化、單繼承、有構造器</li>
+<li>接口:不能實例化、多繼承、接口不會有構造器、可以有默認方法</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-30</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211201-agg-ja-16/">
+			下一篇<br>異常處理:try-catch、finally與throws
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211129-agg-ja-14/">
+			上一篇<br>關鍵字:static/main/final、代碼塊與單例模式
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

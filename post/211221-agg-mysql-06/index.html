@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>資料庫的具體結構、創建與管理</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL基礎課-06">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="資料庫的具體結構、創建與管理" />
+<meta property="og:description" content="尚硅谷MySQL基礎課-06" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211221-agg-mysql-06/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-21T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-21T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="資料庫的具體結構、創建與管理"/>
+<meta name="twitter:description" content="尚硅谷MySQL基礎課-06"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#資料庫的結構-nav`)" id="資料庫的結構-nav">
+									資料庫的結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e5%90%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#命名規則-nav`)" id="命名規則-nav">
+									命名規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#database%e5%ba%ab%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#database庫的指令-nav`)" id="database庫的指令-nav">
+									database庫的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#創建資料庫-nav`)" id="創建資料庫-nav">
+									創建資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#刪改資料庫-nav`)" id="刪改資料庫-nav">
+									刪改資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%ae%a1%e7%90%86%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#管理資料庫-nav`)" id="管理資料庫-nav">
+									管理資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#table%e8%a1%a8%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#table表的指令-nav`)" id="table表的指令-nav">
+									table表的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%a1%a8" onclick="onNavClick(`#創建表-nav`)" id="創建表-nav">
+									創建表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e5%85%a8%e6%96%b0%e5%89%b5" onclick="onNavClick(`#完全新創-nav`)" id="完全新創-nav">
+									完全新創
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%96%bc%e7%8f%be%e6%9c%89%e7%9a%84%e8%a1%a8" onclick="onNavClick(`#基於現有的表-nav`)" id="基於現有的表-nav">
+									基於現有的表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e8%a1%a8%e4%b8%ad%e6%ac%84%e4%bd%8d%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#查看表中欄位屬性-nav`)" id="查看表中欄位屬性-nav">
+									查看表中欄位屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%87%8d%e5%91%bd%e5%90%8d%e8%a1%a8" onclick="onNavClick(`#重命名表-nav`)" id="重命名表-nav">
+									重命名表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e8%a1%a8" onclick="onNavClick(`#刪除表-nav`)" id="刪除表-nav">
+									刪除表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%85%e7%a9%ba%e8%a1%a8" onclick="onNavClick(`#清空表-nav`)" id="清空表-nav">
+									清空表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#column%e6%ac%84%e4%bd%8d%e5%88%97%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#column欄位列的指令-nav`)" id="column欄位列的指令-nav">
+									column欄位(列)的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e6%96%b0%e6%ac%84%e4%bd%8d" onclick="onNavClick(`#插入新欄位-nav`)" id="插入新欄位-nav">
+									插入新欄位
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e6%ac%84%e4%bd%8d%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#修改欄位屬性-nav`)" id="修改欄位屬性-nav">
+									修改欄位屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%84%e4%bd%8d%e6%94%b9%e5%90%8d" onclick="onNavClick(`#欄位改名-nav`)" id="欄位改名-nav">
+									欄位改名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e4%b8%80%e5%80%8b%e5%88%97" onclick="onNavClick(`#刪除一個列-nav`)" id="刪除一個列-nav">
+									刪除一個列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%bb%b6%e4%bc%b8%e7%9f%a5%e8%ad%98" onclick="onNavClick(`#延伸知識-nav`)" id="延伸知識-nav">
+									延伸知識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%98%bf%e8%a3%a1%e5%b7%b4%e5%b7%b4java%e9%96%8b%e7%99%bc%e6%89%8b%e5%86%8a%e4%b9%8bmysql%e6%ac%84%e4%bd%8d%e5%91%bd%e5%90%8d" onclick="onNavClick(`#阿裡巴巴java開發手冊之mysql欄位命名-nav`)" id="阿裡巴巴java開發手冊之mysql欄位命名-nav">
+									阿裡巴巴《Java開發手冊》之MySQL欄位命名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e7%90%86%e8%a7%a3%e6%b8%85%e7%a9%ba%e8%a1%a8%e5%88%aa%e9%99%a4%e8%a1%a8%e7%ad%89%e6%93%8d%e4%bd%9c%e9%9c%80%e8%ac%b9%e6%85%8e" onclick="onNavClick(`#如何理解清空表刪除表等操作需謹慎-nav`)" id="如何理解清空表刪除表等操作需謹慎-nav">
+									如何理解清空表、刪除表等操作需謹慎？！
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql8%e6%96%b0%e7%89%b9%e6%80%a7ddl%e7%9a%84%e5%8e%9f%e5%ad%90%e5%8c%96" onclick="onNavClick(`#mysql8新特性ddl的原子化-nav`)" id="mysql8新特性ddl的原子化-nav">
+									MySQL8新特性—DDL的原子化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e5%be%8c%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#課後練習-nav`)" id="課後練習-nav">
+									課後練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#資料庫的結構-nav`)" id="資料庫的結構-nav">
+									資料庫的結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e5%90%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#命名規則-nav`)" id="命名規則-nav">
+									命名規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#database%e5%ba%ab%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#database庫的指令-nav`)" id="database庫的指令-nav">
+									database庫的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#創建資料庫-nav`)" id="創建資料庫-nav">
+									創建資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#刪改資料庫-nav`)" id="刪改資料庫-nav">
+									刪改資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%ae%a1%e7%90%86%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#管理資料庫-nav`)" id="管理資料庫-nav">
+									管理資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#table%e8%a1%a8%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#table表的指令-nav`)" id="table表的指令-nav">
+									table表的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%a1%a8" onclick="onNavClick(`#創建表-nav`)" id="創建表-nav">
+									創建表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e5%85%a8%e6%96%b0%e5%89%b5" onclick="onNavClick(`#完全新創-nav`)" id="完全新創-nav">
+									完全新創
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%96%bc%e7%8f%be%e6%9c%89%e7%9a%84%e8%a1%a8" onclick="onNavClick(`#基於現有的表-nav`)" id="基於現有的表-nav">
+									基於現有的表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e8%a1%a8%e4%b8%ad%e6%ac%84%e4%bd%8d%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#查看表中欄位屬性-nav`)" id="查看表中欄位屬性-nav">
+									查看表中欄位屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%87%8d%e5%91%bd%e5%90%8d%e8%a1%a8" onclick="onNavClick(`#重命名表-nav`)" id="重命名表-nav">
+									重命名表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e8%a1%a8" onclick="onNavClick(`#刪除表-nav`)" id="刪除表-nav">
+									刪除表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%85%e7%a9%ba%e8%a1%a8" onclick="onNavClick(`#清空表-nav`)" id="清空表-nav">
+									清空表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#column%e6%ac%84%e4%bd%8d%e5%88%97%e7%9a%84%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#column欄位列的指令-nav`)" id="column欄位列的指令-nav">
+									column欄位(列)的指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e6%96%b0%e6%ac%84%e4%bd%8d" onclick="onNavClick(`#插入新欄位-nav`)" id="插入新欄位-nav">
+									插入新欄位
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e6%ac%84%e4%bd%8d%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#修改欄位屬性-nav`)" id="修改欄位屬性-nav">
+									修改欄位屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%84%e4%bd%8d%e6%94%b9%e5%90%8d" onclick="onNavClick(`#欄位改名-nav`)" id="欄位改名-nav">
+									欄位改名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e4%b8%80%e5%80%8b%e5%88%97" onclick="onNavClick(`#刪除一個列-nav`)" id="刪除一個列-nav">
+									刪除一個列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%bb%b6%e4%bc%b8%e7%9f%a5%e8%ad%98" onclick="onNavClick(`#延伸知識-nav`)" id="延伸知識-nav">
+									延伸知識
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%98%bf%e8%a3%a1%e5%b7%b4%e5%b7%b4java%e9%96%8b%e7%99%bc%e6%89%8b%e5%86%8a%e4%b9%8bmysql%e6%ac%84%e4%bd%8d%e5%91%bd%e5%90%8d" onclick="onNavClick(`#阿裡巴巴java開發手冊之mysql欄位命名-nav`)" id="阿裡巴巴java開發手冊之mysql欄位命名-nav">
+									阿裡巴巴《Java開發手冊》之MySQL欄位命名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e7%90%86%e8%a7%a3%e6%b8%85%e7%a9%ba%e8%a1%a8%e5%88%aa%e9%99%a4%e8%a1%a8%e7%ad%89%e6%93%8d%e4%bd%9c%e9%9c%80%e8%ac%b9%e6%85%8e" onclick="onNavClick(`#如何理解清空表刪除表等操作需謹慎-nav`)" id="如何理解清空表刪除表等操作需謹慎-nav">
+									如何理解清空表、刪除表等操作需謹慎？！
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql8%e6%96%b0%e7%89%b9%e6%80%a7ddl%e7%9a%84%e5%8e%9f%e5%ad%90%e5%8c%96" onclick="onNavClick(`#mysql8新特性ddl的原子化-nav`)" id="mysql8新特性ddl的原子化-nav">
+									MySQL8新特性—DDL的原子化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e5%be%8c%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#課後練習-nav`)" id="課後練習-nav">
+									課後練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    資料庫的具體結構、創建與管理
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL基礎課-06
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-21 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7mysql%E7%AD%86%E8%A8%98">尚硅谷MySQL筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="資料庫的結構">資料庫的結構</h1>
+<ul>
+<li>所謂資料庫的具體結構層級如下:
+<ul>
+<li>DBMS資料庫管理系統 &gt; database資料庫 &gt; table表 &gt; column欄位</li>
+</ul>
+</li>
+<li>創建database、table、column都需要自己命名</li>
+</ul>
+<h2 id="命名規則">命名規則</h2>
+<ul>
+<li>庫名、表名不得超過30字符；變量限制為29字符</li>
+<li>只能包含大小寫英數字與<code>_</code>下劃線</li>
+<li>不可包含空格</li>
+<li>同一DBM中庫不可重名，同一庫中表不可重名，同一表中字段不可重名</li>
+<li>不可與關鍵字、保留字等衝突</li>
+<li>命名與資料類型須保持一致性
+<ul>
+<li>常用的幾類類型:</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>資料類型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INT</td>
+<td>從-2^31到2^31-1的整型數據。存儲大小為 4個位元組</td>
+</tr>
+<tr>
+<td>CHAR(size)</td>
+<td>定長字元資料。若未指定，預設為1個字元，最大長度255</td>
+</tr>
+<tr>
+<td>VARCHAR(size)</td>
+<td>可變長字元資料，根據字串實際長度保存，<strong>必須指定長度</strong></td>
+</tr>
+<tr>
+<td>FLOAT(M,D)</td>
+<td>單精確度，佔用4個位元組，M=整數位元+小數位，D=小數位。 D&lt;=M&lt;=255,0&lt;=D&lt;=30，默認M+D&lt;=6</td>
+</tr>
+<tr>
+<td>DOUBLE(M,D)</td>
+<td>雙精度，佔用8個位元組，D&lt;=M&lt;=255,0&lt;=D&lt;=30，默認M+D&lt;=15</td>
+</tr>
+<tr>
+<td>DECIMAL(M,D)</td>
+<td>高精度小數，佔用M+2個位元組，D&lt;=M&lt;=65，0&lt;=D&lt;=30，最大取值範圍與DOUBLE相同。</td>
+</tr>
+<tr>
+<td>DATE</td>
+<td>日期型資料，格式&rsquo;YYYY-MM-DD'</td>
+</tr>
+<tr>
+<td>BLOB</td>
+<td>二進位形式的長文本資料，最大可達4G</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>長文本資料，最大可達4G</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="database庫的指令">database庫的指令</h2>
+<blockquote>
+<p>必須具備相應權限</p>
+</blockquote>
+<h3 id="創建資料庫">創建資料庫</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test_database_01<span style="color:#bbb"> </span><span style="color:#658b00">character</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8mb4&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>用<code>if not exists</code>避免報錯，指定<code>character set</code>避免5.7版本的用了奇奇怪怪的編碼</li>
+</ul>
+<h3 id="刪改資料庫">刪改資料庫</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#658b00">char</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;big5&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">drop</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test_database_01;<span style="color:#bbb">
+</span></code></pre></div><h3 id="管理資料庫">管理資料庫</h3>
+<ul>
+<li>查看當前所有的資料庫</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASES</span>;<span style="color:#bbb"> </span><span style="color:#228b22">#有一個S，代表多個資料庫
+</span></code></pre></div><ul>
+<li>查看當前正在使用的資料庫</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span>();<span style="color:#bbb">  </span><span style="color:#228b22">#使用的一個 mysql 中的全域函數
+</span></code></pre></div><ul>
+<li>查看指定庫下所有的表</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLES</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料庫名</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>查看資料庫的創建資訊</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料庫名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>使用/切換資料庫</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">USE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料庫名</span>;<span style="color:#bbb">
+</span></code></pre></div><blockquote>
+<p>注意要操作表格和資料之前必須先說明是對哪個資料庫進行操作，否則就要對所有物件加上“資料庫名.”</p>
+</blockquote>
+<hr>
+<h2 id="table表的指令">table表的指令</h2>
+<blockquote>
+<p>基於某個database，用[]中括號表示為可選填項目</p>
+</blockquote>
+<ul>
+<li>指令的格式基本都是 <code>欲執行的操作 table 表名</code></li>
+</ul>
+<h3 id="創建表">創建表</h3>
+<h4 id="完全新創">完全新創</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>(<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">欄位</span><span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料類型</span><span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">約束條件</span>]<span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">預設值</span>],<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">欄位</span><span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料類型</span><span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">約束條件</span>]<span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">預設值</span>],<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">欄位</span><span style="color:#b452cd">3</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料類型</span><span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">約束條件</span>]<span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">預設值</span>],<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">……</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>[<span style="color:#a61717;background-color:#e3d2d2">表約束條件</span>]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>範例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>student(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>id<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span>auto_increment,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>birthday<span style="color:#bbb"> </span><span style="color:#658b00">date</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">primary</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">key</span><span style="color:#bbb"> </span>(id)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>student;<span style="color:#bbb">
+</span></code></pre></div><h4 id="基於現有的表">基於現有的表</h4>
+<blockquote>
+<p>基於某張表的篩選結果，創建同時導入資料</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>emp1<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>範例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 從employees表篩出部門50的資料，指定成為一張新表
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>dept50<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employee_id,last_name,salary*<span style="color:#b452cd">12</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#34;year_salary&#34;</span>,hire_date<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id=<span style="color:#b452cd">50</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="查看表中欄位屬性">查看表中欄位屬性</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>tablename;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 更詳細的包含編碼資料等
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">full</span><span style="color:#bbb"> </span>columns<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>tablename;<span style="color:#bbb">
+</span></code></pre></div><h3 id="重命名表">重命名表</h3>
+<ul>
+<li>方式一：使用<code>RENAME</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">RENAME</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>emp<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">TO</span><span style="color:#bbb"> </span>myemp;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>方式二：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>dept<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">RENAME</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">TO</span>]<span style="color:#bbb"> </span>detail_dept;<span style="color:#bbb">  </span><span style="color:#228b22">-- [TO]可以省略
+</span></code></pre></div><ul>
+<li>必須是物件的擁有者</li>
+</ul>
+<h3 id="刪除表">刪除表</h3>
+<ul>
+<li>
+<p>在MySQL中，當一張資料表<code>沒有與其他任何資料表形成關聯關係</code>時，可以將當前資料表直接刪除</p>
+</li>
+<li>
+<p>資料和結構都被刪除</p>
+</li>
+<li>
+<p>所有正在運行的相關事務被提交</p>
+</li>
+<li>
+<p>所有相關索引被刪除</p>
+</li>
+<li>
+<p>語法格式</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span>]<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料表</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>[,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料表</span><span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料表</span>n];<span style="color:#bbb">
+</span></code></pre></div><p><code>IF EXISTS</code>的含義為：如果當前資料庫中存在相應的資料表，則刪除資料表；如果當前資料庫中不存在相應的資料表，則忽略刪除語句，不再執行刪除資料表的操作。</p>
+<ul>
+<li>舉例：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>dept80;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>DROP TABLE</code> 語句不能回滾</li>
+</ul>
+<h3 id="清空表">清空表</h3>
+<ul>
+<li>
+<p><code>TRUNCATE TABLE</code>語句：</p>
+<ul>
+<li>刪除表中所有的資料</li>
+<li>釋放表的存儲空間</li>
+</ul>
+</li>
+<li>
+<p>舉例：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">TRUNCATE<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>detail_dept;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>
+<p>TRUNCATE語句<strong>不能回滾</strong>，而使用 DELETE 語句刪除資料，可以回滾</p>
+</li>
+<li>
+<p>對比：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>autocommit<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#00688b">FALSE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 先把自動提交(存檔)關閉，因為ROLLBACK只能回復一步
+</span><span style="color:#228b22">-- 如果DELETE FROM=ture，相當於DELETE FROM完馬上自動存檔，GG
+</span><span style="color:#228b22"></span><span style="color:#bbb">  
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emp2;<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#228b22">#TRUNCATE TABLE emp2;
+</span><span style="color:#228b22"></span><span style="color:#bbb">  
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emp2;<span style="color:#bbb">
+</span><span style="color:#bbb">  
+</span><span style="color:#bbb"></span>ROLLBACK;<span style="color:#bbb">
+</span><span style="color:#bbb">  
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emp2;<span style="color:#bbb">
+</span></code></pre></div><blockquote>
+<p>【參考】TRUNCATE TABLE 比 DELETE 速度快，且使用的系統和事務日誌資源少，但 TRUNCATE 無事務且不觸發 TRIGGER，有可能造成事故，故不建議在開發代碼中使用此語句。</p>
+<p>說明：TRUNCATE TABLE 在功能上與不帶 WHERE 子句的 DELETE 語句相同</p>
+</blockquote>
+<hr>
+<h2 id="column欄位列的指令">column欄位(列)的指令</h2>
+<blockquote>
+<p>column=欄位、直的列、字段</p>
+</blockquote>
+<ul>
+<li>基於某張表，格式都是<code>alter table 表名 操作 欄位名</code></li>
+</ul>
+<h3 id="插入新欄位">插入新欄位</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">add</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料類型</span><span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">預設值</span>]<span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">指定位置</span>];<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>範例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>dept50<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">add</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">after</span><span style="color:#bbb"> </span>last_name;<span style="color:#bbb">
+</span></code></pre></div><h3 id="修改欄位屬性">修改欄位屬性</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資料類型</span><span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">預設值</span>]<span style="color:#bbb"> </span>[<span style="color:#a61717;background-color:#e3d2d2">指定位置</span>];<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>範例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>dept50<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">default</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;cleaner&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">after</span><span style="color:#bbb"> </span>employee_id;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>對預設值的修改不涉及既往</li>
+<li>也可以透過此方式修改約束</li>
+</ul>
+<h3 id="欄位改名">欄位改名</h3>
+<ul>
+<li>使用 <code>CHANGE old_column  new_column  dataType</code>子句重命名列。語法格式如下：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHANGE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">【</span><span style="color:#8b008b;font-weight:bold">column</span><span style="color:#a61717;background-color:#e3d2d2">】</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">新列名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">新資料類型</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>舉例：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb">  </span>dept80<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CHANGE</span><span style="color:#bbb"> </span>department_name<span style="color:#bbb"> </span>dept_name<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">varchar</span>(<span style="color:#b452cd">15</span>);<span style="color:#bbb"> 
+</span></code></pre></div><ul>
+<li>注意修改表名是用<code>rename table ...</code></li>
+<li>而修改欄位名是<code>alter table ... change ...</code>且還要指定欄位的資料型態</li>
+</ul>
+<h3 id="刪除一個列">刪除一個列</h3>
+<ul>
+<li>刪除表中某個欄位的語法格式如下：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">【</span><span style="color:#8b008b;font-weight:bold">COLUMN</span><span style="color:#a61717;background-color:#e3d2d2">】欄位名</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>舉例：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb">  </span>dept80<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COLUMN</span><span style="color:#bbb">  </span>job_id;<span style="color:#bbb"> 
+</span></code></pre></div><h2 id="延伸知識">延伸知識</h2>
+<h3 id="阿裡巴巴java開發手冊之mysql欄位命名">阿裡巴巴《Java開發手冊》之MySQL欄位命名</h3>
+<ul>
+<li>
+<p>【<code>強制</code>】表名、欄位名必須使用小寫字母或數位，禁止出現數位開頭，禁止兩個底線中間只出現數字。資料庫欄位名的修改代價很大，因為無法進行預發佈，所以欄位名稱需要慎重考慮。</p>
+<ul>
+<li>正例：aliyun_admin，rdc_config，level3_name</li>
+<li>反例：AliyunAdmin，rdcConfig，level_3_name</li>
+</ul>
+</li>
+<li>
+<p>【<code>強制</code>】禁用保留字，如 desc、range、match、delayed 等，請參考 MySQL 官方保留字。</p>
+</li>
+<li>
+<p>【<code>強制</code>】表必備三欄位：id, gmt_create, gmt_modified。</p>
+<ul>
+<li>說明：其中 id 必為主鍵，類型為BIGINT UNSIGNED、單表時自增、步長為 1。gmt_create, gmt_modified 的類型均為 DATETIME 類型，前者現在時表示主動式創建，後者過去分詞表示被動式更新</li>
+</ul>
+</li>
+<li>
+<p>【<code>推薦</code>】表的命名最好是遵循 “業務名稱_表的作用”。</p>
+<ul>
+<li>正例：alipay_task 、 force_project、 trade_config</li>
+</ul>
+</li>
+<li>
+<p>【<code>推薦</code>】庫名與應用名稱儘量一致。</p>
+</li>
+<li>
+<p>【參考】合適的字元存儲長度，不但節約資料庫表空間、節約索引存儲，更重要的是提升檢索速度。</p>
+<ul>
+<li>正例：無符號值可以避免誤存負數，且擴大了表示範圍。</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何理解清空表刪除表等操作需謹慎">如何理解清空表、刪除表等操作需謹慎？！</h3>
+<p><code>表刪除</code>操作將把表的定義和表中的資料一起刪除，並且MySQL在執行刪除操作時，不會有任何的確認資訊提示，因此執行刪除操時應當慎重。在刪除表前，最好對表中的資料進行<code>備份</code>，這樣當操作失誤時可以對資料進行恢復，以免造成無法挽回的後果。</p>
+<p>同樣的，在使用 <code>ALTER TABLE</code> 進行表的基本修改操作時，在執行操作過程之前，也應該確保對資料進行完整的<code>備份</code>，因為資料庫的改變是<code>無法撤銷</code>的，如果添加了一個不需要的欄位，可以將其刪除；相同的，如果刪除了一個需要的列，該列下面的所有資料都將會丟失。</p>
+<h3 id="mysql8新特性ddl的原子化">MySQL8新特性—DDL的原子化</h3>
+<p>在MySQL 8.0版本中，InnoDB表的DDL支援事務完整性，即<code>DDL操作要麼成功要麼回滾</code>。DDL操作回滾日誌寫入到data dictionary資料字典表mysql.innodb_ddl_log（該表是隱藏的表，通過show tables無法看到）中，用於回滾操作。通過設置參數，可將DDL操作日誌列印輸出到MySQL錯誤日誌中。</p>
+<h1 id="課後練習">課後練習</h1>
+<blockquote>
+<p>總共有3部分，練習熟悉相關語句的使用</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">#<span style="color:#b452cd">1</span>.<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">創建資料庫</span>test01_office,<span style="color:#a61717;background-color:#e3d2d2">指明字元集為</span>utf8<span style="color:#a61717;background-color:#e3d2d2">。並在此資料庫下執行下述操作</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test01_office<span style="color:#bbb"> </span><span style="color:#658b00">char</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8mb4&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>test01_office;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">2</span>.<span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">創建表</span>dept01<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*
+</span><span style="color:#228b22">欄位      類型
+</span><span style="color:#228b22">id	 INT(7)
+</span><span style="color:#228b22">NAME	 VARCHAR(25)
+</span><span style="color:#228b22">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>dept01(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>id<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">7</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">3</span>.<span style="color:#a61717;background-color:#e3d2d2">將表</span>departments中的資料插入新表dept02中<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>dept02<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>atguigudb.departments;<span style="color:#bbb"> </span><span style="color:#228b22">-- 用庫.表名就不用切換當前使用的庫
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">4</span>.<span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">創建表</span>emp01<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*
+</span><span style="color:#228b22">欄位            類型
+</span><span style="color:#228b22">id		INT(7)
+</span><span style="color:#228b22">first_name	VARCHAR (25)
+</span><span style="color:#228b22">last_name	VARCHAR(25)
+</span><span style="color:#228b22">dept_id		INT(7)
+</span><span style="color:#228b22">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>emp01(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>id<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">7</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>first_name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>last_name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>dept_id<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">7</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">5</span>.<span style="color:#a61717;background-color:#e3d2d2">將列</span>last_name的長度增加到50<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>emp01<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>emp01;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">6</span>.<span style="color:#a61717;background-color:#e3d2d2">根據表</span>employees創建emp02<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>emp02<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>atguigudb.employees;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>tables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>test01_office;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>emp02;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>emp02;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">7</span>.<span style="color:#a61717;background-color:#e3d2d2">刪除表</span>emp01<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">drop</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>emp01;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">8</span>.<span style="color:#a61717;background-color:#e3d2d2">將表</span>emp02重命名為emp01<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>emp02<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">rename</span><span style="color:#bbb"> </span>emp01;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">9</span>.<span style="color:#a61717;background-color:#e3d2d2">在表</span>dept02和emp01中添加新列test_column<span style="color:#a61717;background-color:#e3d2d2">，並檢查所作的操作</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>dept02<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">add</span><span style="color:#bbb"> </span>test_column<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">5</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>dept02;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">10</span>.<span style="color:#a61717;background-color:#e3d2d2">直接刪除表</span>emp01中的列<span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>emp01<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">drop</span><span style="color:#bbb"> </span>department_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#a61717;background-color:#e3d2d2">練習</span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">：</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">、創建資料庫</span><span style="color:#bbb"> </span>test02_market<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test02_market<span style="color:#bbb"> </span><span style="color:#658b00">char</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8mb4&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>test02_market;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">、創建資料表</span><span style="color:#bbb"> </span>customers<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>customers(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>c_num<span style="color:#bbb"> </span><span style="color:#658b00">int</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>c_name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>c_contact<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>c_city<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>c_birthday<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">3</span><span style="color:#a61717;background-color:#e3d2d2">、將</span><span style="color:#bbb"> </span>c_contact<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位移動到</span><span style="color:#bbb"> </span>c_birth<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位後面</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>c_contact<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">after</span><span style="color:#bbb"> </span>c_birthday;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>customers;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">4</span><span style="color:#a61717;background-color:#e3d2d2">、將</span><span style="color:#bbb"> </span>c_name<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位資料類型改為</span><span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">70</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>c_name<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">70</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#a61717;background-color:#e3d2d2">、將</span>c_contact欄位改名為c_phone<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers<span style="color:#bbb"> </span>change<span style="color:#bbb"> </span>c_contact<span style="color:#bbb"> </span>c_phone<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">6</span><span style="color:#a61717;background-color:#e3d2d2">、增加</span>c_gender欄位到c_name後面<span style="color:#a61717;background-color:#e3d2d2">，資料類型為</span><span style="color:#658b00">char</span>(<span style="color:#b452cd">1</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">add</span><span style="color:#bbb"> </span>c_gender<span style="color:#bbb"> </span><span style="color:#658b00">char</span>(<span style="color:#b452cd">1</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">after</span><span style="color:#bbb"> </span>c_name;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">7</span><span style="color:#a61717;background-color:#e3d2d2">、將表名改為</span>customers_info<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">rename</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>customers_info;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>customers_info;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">8</span><span style="color:#a61717;background-color:#e3d2d2">、刪除欄位</span>c_city<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>customers_info<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">drop</span><span style="color:#bbb"> </span>c_city;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#a61717;background-color:#e3d2d2">練習</span><span style="color:#b452cd">3</span><span style="color:#a61717;background-color:#e3d2d2">：</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">、創建資料庫</span>test03_company<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test03_company;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>test03_company;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#658b00">char</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8mb4&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">、創建表</span>offices<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>offices(<span style="color:#bbb">
+</span><span style="color:#bbb"></span>officeCode<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>city<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">30</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>address<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>country<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>postalCode<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">3</span><span style="color:#a61717;background-color:#e3d2d2">、創建表</span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>employees(<span style="color:#bbb">
+</span><span style="color:#bbb"></span>empNum<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>lastName<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>firstName<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>mobile<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">25</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>`code`<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>jobTitle<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>birth<span style="color:#bbb"> </span><span style="color:#658b00">DATE</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>note<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">255</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>sex<span style="color:#bbb"> </span><span style="color:#658b00">VARCHAR</span>(<span style="color:#b452cd">5</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">4</span><span style="color:#a61717;background-color:#e3d2d2">、將表</span>employees的mobile欄位修改到code欄位後面<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>mobile<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">after</span><span style="color:#bbb"> </span>code;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#a61717;background-color:#e3d2d2">、將表</span>employees的birth欄位改名為birthday<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>change<span style="color:#bbb"> </span>birth<span style="color:#bbb"> </span>birthday<span style="color:#bbb"> </span><span style="color:#658b00">date</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">6</span><span style="color:#a61717;background-color:#e3d2d2">、修改</span>sex欄位<span style="color:#a61717;background-color:#e3d2d2">，資料類型為</span><span style="color:#658b00">char</span>(<span style="color:#b452cd">1</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">modify</span><span style="color:#bbb"> </span>sex<span style="color:#bbb"> </span><span style="color:#658b00">char</span>(<span style="color:#b452cd">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">7</span><span style="color:#a61717;background-color:#e3d2d2">、刪除欄位</span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">drop</span><span style="color:#bbb"> </span>note;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">8</span><span style="color:#a61717;background-color:#e3d2d2">、增加欄位名</span>favoriate_activity<span style="color:#a61717;background-color:#e3d2d2">，資料類型為</span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">100</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">add</span><span style="color:#bbb"> </span>favoriate_activity<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">100</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">9</span><span style="color:#a61717;background-color:#e3d2d2">、將表</span>employees的名稱修改為<span style="color:#bbb"> </span>employees_info<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">rename</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>employees_info;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-21</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211222-agg-mysql-07/">
+			下一篇<br>資料的增/刪/改
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211220-agg-mysql-05/">
+			上一篇<br>子查詢Subquery
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

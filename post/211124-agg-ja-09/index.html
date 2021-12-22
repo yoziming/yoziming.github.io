@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>物件導向:方法的重載與參數的值傳遞</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day09筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="物件導向:方法的重載與參數的值傳遞" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day09筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211124-agg-ja-09/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-24T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="物件導向:方法的重載與參數的值傳遞"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day09筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b4%b0%e8%aa%aa%e6%96%b9%e6%b3%95" onclick="onNavClick(`#細說方法-nav`)" id="細說方法-nav">
+									細說方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e7%9a%84%e9%87%8d%e8%bc%89overload" onclick="onNavClick(`#方法的重載overload-nav`)" id="方法的重載overload-nav">
+									方法的重載(overload)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%af%e8%ae%8a%e5%80%8b%e6%95%b8%e5%bd%a2%e5%8f%83" onclick="onNavClick(`#可變個數形參-nav`)" id="可變個數形參-nav">
+									可變個數形參
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e5%8f%83%e6%95%b8%e7%9a%84%e5%80%bc%e5%82%b3%e9%81%9e" onclick="onNavClick(`#方法參數的值傳遞-nav`)" id="方法參數的值傳遞-nav">
+									方法參數的值傳遞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%a4%87%e7%bf%92%e4%b8%80%e4%b8%8b%e8%ae%8a%e9%87%8f%e7%9a%84%e8%b3%a6%e5%80%bc%e8%a6%8f%e5%89%87" onclick="onNavClick(`#先複習一下變量的賦值規則-nav`)" id="先複習一下變量的賦值規則-nav">
+									先複習一下變量的賦值規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%82%b3%e5%8f%83%e8%a6%8f%e5%89%87" onclick="onNavClick(`#傳參規則-nav`)" id="傳參規則-nav">
+									傳參規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%b7%e9%98%b1%e9%a1%8c" onclick="onNavClick(`#陷阱題-nav`)" id="陷阱題-nav">
+									陷阱題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92-%e5%9c%a8%e6%96%b9%e6%b3%95%e4%b8%ad%e5%bc%95%e7%94%a8%e5%85%b6%e4%bb%96%e9%a1%9e%e7%9a%84%e6%96%b9%e6%b3%95%e4%b8%a6%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#練習-在方法中引用其他類的方法並調用-nav`)" id="練習-在方法中引用其他類的方法並調用-nav">
+									練習-在方法中引用其他類的方法並調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%9e%e6%ad%b8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#遞歸方法-nav`)" id="遞歸方法-nav">
+									遞歸方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b1%821%e5%88%b0n%e4%b9%8b%e5%92%8c" onclick="onNavClick(`#求1到n之和-nav`)" id="求1到n之和-nav">
+									求1到n之和
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b1%82%e6%9f%90%e5%b7%b2%e7%9f%a5%e6%95%b8%e5%88%97" onclick="onNavClick(`#求某已知數列-nav`)" id="求某已知數列-nav">
+									求某已知數列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b4%b0%e8%aa%aa%e6%96%b9%e6%b3%95" onclick="onNavClick(`#細說方法-nav`)" id="細說方法-nav">
+									細說方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e7%9a%84%e9%87%8d%e8%bc%89overload" onclick="onNavClick(`#方法的重載overload-nav`)" id="方法的重載overload-nav">
+									方法的重載(overload)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%af%e8%ae%8a%e5%80%8b%e6%95%b8%e5%bd%a2%e5%8f%83" onclick="onNavClick(`#可變個數形參-nav`)" id="可變個數形參-nav">
+									可變個數形參
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e5%8f%83%e6%95%b8%e7%9a%84%e5%80%bc%e5%82%b3%e9%81%9e" onclick="onNavClick(`#方法參數的值傳遞-nav`)" id="方法參數的值傳遞-nav">
+									方法參數的值傳遞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%a4%87%e7%bf%92%e4%b8%80%e4%b8%8b%e8%ae%8a%e9%87%8f%e7%9a%84%e8%b3%a6%e5%80%bc%e8%a6%8f%e5%89%87" onclick="onNavClick(`#先複習一下變量的賦值規則-nav`)" id="先複習一下變量的賦值規則-nav">
+									先複習一下變量的賦值規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%82%b3%e5%8f%83%e8%a6%8f%e5%89%87" onclick="onNavClick(`#傳參規則-nav`)" id="傳參規則-nav">
+									傳參規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%b7%e9%98%b1%e9%a1%8c" onclick="onNavClick(`#陷阱題-nav`)" id="陷阱題-nav">
+									陷阱題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92-%e5%9c%a8%e6%96%b9%e6%b3%95%e4%b8%ad%e5%bc%95%e7%94%a8%e5%85%b6%e4%bb%96%e9%a1%9e%e7%9a%84%e6%96%b9%e6%b3%95%e4%b8%a6%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#練習-在方法中引用其他類的方法並調用-nav`)" id="練習-在方法中引用其他類的方法並調用-nav">
+									練習-在方法中引用其他類的方法並調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%9e%e6%ad%b8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#遞歸方法-nav`)" id="遞歸方法-nav">
+									遞歸方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b1%821%e5%88%b0n%e4%b9%8b%e5%92%8c" onclick="onNavClick(`#求1到n之和-nav`)" id="求1到n之和-nav">
+									求1到n之和
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b1%82%e6%9f%90%e5%b7%b2%e7%9f%a5%e6%95%b8%e5%88%97" onclick="onNavClick(`#求某已知數列-nav`)" id="求某已知數列-nav">
+									求某已知數列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    物件導向:方法的重載與參數的值傳遞
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day09筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-24 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="細說方法">細說方法</h1>
+<h3 id="方法的重載overload">方法的重載(overload)</h3>
+<ul>
+<li>定義:同一各類中，允許存在一個以上的同名方法，只要他們的參數個數或參數類型不同即可</li>
+<li>跟方法的權限修飾符、返回值類型、形參變量名、方法體<strong>無關</strong>，判斷重點在於參數本身</li>
+<li>可能會自動類型提升，舉例:傳入的是<code>int</code>形，方法中沒有<code>int</code>但有<code>double</code>，就會調用double</li>
+<li>典型的例子就是內建的<code>println()</code></li>
+</ul>
+<h3 id="可變個數形參">可變個數形參</h3>
+<ul>
+<li>格式:<code>方法名(形參類型 ... 形參名)</code></li>
+<li>調用時傳入的形參數量可以是0到多個，包含數組</li>
+<li>與本類中方法名相同，形參不同的方法間構成重載(可共存)</li>
+<li>與本類中方法名相同，形參類型也相同的數組之間不構成重載(不可共存)
+<ul>
+<li>PS.這是歷史遺留問題，因為可變個數形參是JDK5加入的，以前都是用數組</li>
+</ul>
+</li>
+<li>方法內把它當作數組使用，遍歷<code>itar (i=0;i&lt;形參名.length;i++){}</code></li>
+<li><strong>必須聲明在末尾</strong>，且最多只能有一個</li>
+</ul>
+<h3 id="方法參數的值傳遞">方法參數的值傳遞</h3>
+<h4 id="先複習一下變量的賦值規則">先複習一下變量的賦值規則</h4>
+<ul>
+<li>變量是基本數據類型(byte、short、int、long、char、float、double、boolean)，賦值的是變量所保存的數據值</li>
+<li>變量是引用類型(引用類型就只有null跟地址值兩種情況)，賦值給的是所保存數據的地址值</li>
+</ul>
+<h4 id="名詞解釋">名詞解釋</h4>
+<ul>
+<li>形參:方法定義時，聲明的小括號中的參數</li>
+<li>實參:方法調用時，實際傳給形參的數據</li>
+</ul>
+<h4 id="傳參規則">傳參規則</h4>
+<blockquote>
+<p>跟變量的賦值規則其實相同</p>
+</blockquote>
+<ul>
+<li>如果參數是基本數據類型，實參賦給形參的是<strong>數據值</strong>(類似給一份副本)</li>
+<li>如果參數是引用類型，實參賦給形參的是<strong>地址值</strong>(包含變量的數據類型)</li>
+</ul>
+<h4 id="陷阱題">陷阱題</h4>
+<blockquote>
+<p><code>println</code>在<code>char[]</code>這有個特例，要避免踩坑就是調用時多看看方法格式</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">int</span>[] arr1 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[]{1, 2, 3};
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(arr1); <span style="color:#228b22">// [I@1b6d3586
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">char</span>[] arr2 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">char</span>[]{<span style="color:#cd5555">&#39;a&#39;</span>, <span style="color:#cd5555">&#39;b&#39;</span>, <span style="color:#cd5555">&#39;c&#39;</span>};
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(arr2); <span style="color:#228b22">// abc
+</span></code></pre></div><h3 id="練習-在方法中引用其他類的方法並調用">練習-在方法中引用其他類的方法並調用</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Main</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        PassObject t1 = <span style="color:#8b008b;font-weight:bold">new</span> PassObject();
+        Circle c = <span style="color:#8b008b;font-weight:bold">new</span> Circle();
+        t1.<span style="color:#658b00">printAreas</span>(c, 5);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(c.<span style="color:#658b00">radius</span>);
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Circle</span> {
+    <span style="color:#00688b;font-weight:bold">double</span> radius;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">double</span> <span style="color:#008b45">findArea</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> Math.<span style="color:#658b00">PI</span> * radius * radius;
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">PassObject</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printAreas</span>(Circle c, <span style="color:#00688b;font-weight:bold">int</span> t) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Radius\t\tArea&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 1; i &lt;= t; i++) {
+            c.<span style="color:#658b00">radius</span> = i;
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(c.<span style="color:#658b00">radius</span> + <span style="color:#cd5555">&#34;\t\t&#34;</span> + c.<span style="color:#658b00">findArea</span>());
+        }
+        c.<span style="color:#658b00">radius</span> = t + 1;
+    }
+}
+</code></pre></div><h3 id="遞歸方法">遞歸方法</h3>
+<blockquote>
+<p>方法中調用自己達成類似<code>for</code>的效果，但注意必須能收斂</p>
+</blockquote>
+<h4 id="求1到n之和">求1到n之和</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getSum</span>(<span style="color:#00688b;font-weight:bold">int</span> n) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (n == 1) {
+        <span style="color:#8b008b;font-weight:bold">return</span> 1;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> n + getSum(n - 1);
+    }
+}
+</code></pre></div><h4 id="求某已知數列">求某已知數列</h4>
+<blockquote>
+<p>已知數列f(0)=1,	f(1)=4,	f(n+2)=2*f(n+1)+f(n)，求f(10)=?</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">f</span>(<span style="color:#00688b;font-weight:bold">int</span> n) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (n == 0) {
+        <span style="color:#8b008b;font-weight:bold">return</span> 1;
+    } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (n == 1) {
+        <span style="color:#8b008b;font-weight:bold">return</span> 4;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> 2 * f(n - 1) + f(n - 2);
+    }
+}
+</code></pre></div><ul>
+<li>重點在不能寫<code>f(n+2)=2*f(n+1)+f(n)</code>，寫+2就死龜了，要左右都-2</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211125-agg-ja-10/">
+			下一篇<br>封裝性、構造器、關鍵字this、Package包
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211123-agg-ja-08/">
+			上一篇<br>物件導向:基本概念與學習路線
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

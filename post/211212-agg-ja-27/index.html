@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>IO流:物件流、序列化、隨機讀寫流與NIO</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day27筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="IO流:物件流、序列化、隨機讀寫流與NIO" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day27筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211212-agg-ja-27/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-12T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-12T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IO流:物件流、序列化、隨機讀寫流與NIO"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day27筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%99%e6%ba%96%e8%bc%b8%e5%87%ba%e5%85%a5%e6%b5%81" onclick="onNavClick(`#標準輸出入流-nav`)" id="標準輸出入流-nav">
+									標準輸出/入流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#print%e6%b5%81" onclick="onNavClick(`#print流-nav`)" id="print流-nav">
+									Print流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e6%b5%81" onclick="onNavClick(`#數據流-nav`)" id="數據流-nav">
+									數據流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%89%a9%e4%bb%b6%e6%b5%81" onclick="onNavClick(`#物件流-nav`)" id="物件流-nav">
+									物件流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ba%8f%e5%88%97%e5%8c%96" onclick="onNavClick(`#序列化-nav`)" id="序列化-nav">
+									序列化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#randomaccessfile%e9%a1%9e" onclick="onNavClick(`#randomaccessfile類-nav`)" id="randomaccessfile類-nav">
+									RandomAccessFile類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%be%8b%e5%8c%96" onclick="onNavClick(`#實例化-nav`)" id="實例化-nav">
+									實例化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-%e6%8f%92%e5%85%a5%e5%ad%97%e4%b8%b2" onclick="onNavClick(`#範例-插入字串-nav`)" id="範例-插入字串-nav">
+									範例-插入字串
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9%e8%89%af-%e9%81%bf%e5%85%8d%e4%ba%82%e7%a2%bc" onclick="onNavClick(`#改良-避免亂碼-nav`)" id="改良-避免亂碼-nav">
+									改良-避免亂碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#nio" onclick="onNavClick(`#nio-nav`)" id="nio-nav">
+									NIO
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#path%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#path接口-nav`)" id="path接口-nav">
+									Path接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%99%e6%ba%96%e8%bc%b8%e5%87%ba%e5%85%a5%e6%b5%81" onclick="onNavClick(`#標準輸出入流-nav`)" id="標準輸出入流-nav">
+									標準輸出/入流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#print%e6%b5%81" onclick="onNavClick(`#print流-nav`)" id="print流-nav">
+									Print流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e6%b5%81" onclick="onNavClick(`#數據流-nav`)" id="數據流-nav">
+									數據流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%89%a9%e4%bb%b6%e6%b5%81" onclick="onNavClick(`#物件流-nav`)" id="物件流-nav">
+									物件流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ba%8f%e5%88%97%e5%8c%96" onclick="onNavClick(`#序列化-nav`)" id="序列化-nav">
+									序列化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#randomaccessfile%e9%a1%9e" onclick="onNavClick(`#randomaccessfile類-nav`)" id="randomaccessfile類-nav">
+									RandomAccessFile類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%be%8b%e5%8c%96" onclick="onNavClick(`#實例化-nav`)" id="實例化-nav">
+									實例化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-%e6%8f%92%e5%85%a5%e5%ad%97%e4%b8%b2" onclick="onNavClick(`#範例-插入字串-nav`)" id="範例-插入字串-nav">
+									範例-插入字串
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9%e8%89%af-%e9%81%bf%e5%85%8d%e4%ba%82%e7%a2%bc" onclick="onNavClick(`#改良-避免亂碼-nav`)" id="改良-避免亂碼-nav">
+									改良-避免亂碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#nio" onclick="onNavClick(`#nio-nav`)" id="nio-nav">
+									NIO
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#path%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#path接口-nav`)" id="path接口-nav">
+									Path接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    IO流:物件流、序列化、隨機讀寫流與NIO
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day27筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-12 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="標準輸出入流">標準輸出/入流</h1>
+<ul>
+<li><code>System.in</code>:標準輸入字節流，預設是從鍵盤輸入，類型是<code>InputStream</code></li>
+<li><code>System.out</code>:標準輸出流，預設輸出到控制台，類型是<code>PrintStream</code>，繼承自<code>FilterOutputStream</code>，繼承自<code>OutputStream</code></li>
+</ul>
+<h5 id="重定向方法">重定向方法</h5>
+<ul>
+<li><code>public static void setIn(InputStream in)</code></li>
+<li><code>public static void setOut(PrintStream out)</code></li>
+</ul>
+<h5 id="範例-讀取輸入">範例-讀取輸入</h5>
+<blockquote>
+<p>不使用<code>scanner</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+    <span style="color:#228b22">// 把標準輸入字節流先轉換成字符流
+</span><span style="color:#228b22"></span>    BufferedReader bufferedReader = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        InputStreamReader isr = <span style="color:#8b008b;font-weight:bold">new</span> InputStreamReader(System.<span style="color:#658b00">in</span>);
+        <span style="color:#228b22">// 把字符流用bufferedReader包起來，為了調用readline方法
+</span><span style="color:#228b22"></span>        bufferedReader = <span style="color:#8b008b;font-weight:bold">new</span> BufferedReader(isr);
+        <span style="color:#8b008b;font-weight:bold">for</span> (; <span style="color:#8b008b;font-weight:bold">true</span>; ) {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;輸入要轉換成大寫的字串...&#34;</span>);
+            String str = bufferedReader.<span style="color:#658b00">readLine</span>();
+            <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;exit&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(str)) { <span style="color:#228b22">// &#34;exit&#34;放前面防空指針
+</span><span style="color:#228b22"></span>                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;離開&#34;</span>);
+                <span style="color:#8b008b;font-weight:bold">break</span>;
+            }
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(str.<span style="color:#658b00">toUpperCase</span>());
+        }
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            bufferedReader.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+
+}
+</code></pre></div><h3 id="print流">Print流</h3>
+<blockquote>
+<p>只有輸出，只會輸出</p>
+</blockquote>
+<p>不是特別重要，認識一下有這2個<code>PrintStream</code>、<code>PrintWriter</code></p>
+<h5 id="範例-寫log">範例-寫log</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> FileNotFoundException {
+    <span style="color:#228b22">// 造一個輸出到檔案的流
+</span><span style="color:#228b22"></span>    FileOutputStream fileOutputStream = <span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#cd5555">&#34;abc.txt&#34;</span>);
+    <span style="color:#228b22">// 造一個Print輸出流
+</span><span style="color:#228b22"></span>    PrintStream printStream = <span style="color:#8b008b;font-weight:bold">new</span> PrintStream(fileOutputStream, <span style="color:#8b008b;font-weight:bold">true</span>);<span style="color:#228b22">// true表示自動flush
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 將系統標準輸出重定向到Print輸出流
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">setOut</span>(printStream);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;原本想印在控制台，現在印到檔案abc.txt裡了!&#34;</span>);
+}
+</code></pre></div><h1 id="數據流">數據流</h1>
+<blockquote>
+<p>用於讀取或寫出<code>String</code>或基本數據類型，只有字節流</p>
+</blockquote>
+<ul>
+<li>
+<p><code>DataOutputStream</code>:將記憶體中的數據寫到文件檔案中，這個文件基本不能給人看，因為可能有奇奇怪怪比如<code>string</code>、<code>int</code>、<code>boolean</code></p>
+</li>
+<li>
+<p><code>DataInputStream</code>:將文件檔案中的數據讀取記憶體中，寫的時候類型怎寫，讀的時候也必須照順序讀，否則報異常</p>
+</li>
+<li>
+<p>套在對應的<code>in/outputStream</code>字節流的子類使用，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+    DataOutputStream dataOutputStream = <span style="color:#8b008b;font-weight:bold">new</span> DataOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#cd5555">&#34;data.txt&#34;</span>));
+    dataOutputStream.<span style="color:#658b00">writeUTF</span>(<span style="color:#cd5555">&#34;張三&#34;</span>);
+    dataOutputStream.<span style="color:#658b00">flush</span>(); <span style="color:#228b22">// 刷新，確實寫到文件中
+</span><span style="color:#228b22"></span>    dataOutputStream.<span style="color:#658b00">writeBoolean</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+    dataOutputStream.<span style="color:#658b00">flush</span>();
+    dataOutputStream.<span style="color:#658b00">writeFloat</span>(654321.<span style="color:#658b00">56465421f</span>);
+    dataOutputStream.<span style="color:#658b00">flush</span>();
+
+    DataInputStream dataInputStream = <span style="color:#8b008b;font-weight:bold">new</span> DataInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#cd5555">&#34;data.txt&#34;</span>));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(dataInputStream.<span style="color:#658b00">readUTF</span>());
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(dataInputStream.<span style="color:#658b00">readBoolean</span>());
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(dataInputStream.<span style="color:#658b00">readFloat</span>());
+}
+</code></pre></div></li>
+</ul>
+<h1 id="物件流">物件流</h1>
+<h3 id="序列化">序列化</h3>
+<ul>
+<li>
+<p>定義:將一個<code>Java物件</code>轉換為二進制檔案，用以通信交換或保存</p>
+</li>
+<li>
+<p>條件:</p>
+<ul>
+<li>物件的類滿足<code>Serializable</code>接口或<code>Externalizable</code>接口</li>
+<li>在類聲明版本標識號:<code>private static final</code> <code>long</code> <code>serialVersionUID</code>，用以作為反序列化時的版本依據，
+<ul>
+<li>比如第一代<code>person</code>類號碼是001，物件&quot;<code>小明</code>&ldquo;存成一個<code>dat</code>檔案</li>
+<li>後來<code>person</code>類更新了，多加了性別屬性，物件&rdquo;<code>阿花-女</code>&ldquo;存成的<code>dat</code>檔案與當初小明的顯然格式不同了，所以必須更改版本標示號</li>
+<li>如果不顯式聲明標示號，每次編譯都會自動給一個，反序列化時可能報錯</li>
+<li>用<code>private</code>是因為<code>serialVersionUID</code>顯然不該也不能被繼承</li>
+</ul>
+</li>
+<li>類中所有的屬性也都必須是可序列化的(基本數據類型天生可以，要注意的是引用其他類的情況)</li>
+</ul>
+</li>
+<li>
+<p>避免序列化:</p>
+<ul>
+<li><code>static</code>:表示該屬性或方法是屬於<code>類本身</code>，<code>物件</code>被序列化當然不關我的事；有時候可能會迷惑某屬性用<code>static</code>修飾了一樣能寫能讀，實際上那是<code>JVM</code>從對應類中拿到的值而非反序列化而來</li>
+<li><code>transient</code>:暫時的，發音&quot;tran-洗-ent&rdquo;，顧名思義只存在記憶體中不實際寫出；注意這邊講的是<code>Serializable</code>接口，此接口特性是會自動序列化
+<ul>
+<li>如果是透過實現<code>Externalizable</code>接口者，需要在<code>writeExternal</code>方法手動指定要序列化的變量，該方法會蓋過<code>transient</code>的修飾</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>序列化是RMI，Remote Method Invocation(遠端方法呼叫)，是允許執行在一個Java虛擬機器的物件呼叫執行在另一個Java虛擬機器上的物件的方法，駭客常用反序列化的過程做壞事，要注意安全漏洞</p>
+</li>
+<li>
+<p>反序列化:相反的過程，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ObjectOutputStream oos = <span style="color:#8b008b;font-weight:bold">new</span> ObjectOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#cd5555">&#34;data.dat&#34;</span>));
+oos.<span style="color:#658b00">writeObject</span>(<span style="color:#8b008b;font-weight:bold">new</span> String(<span style="color:#cd5555">&#34;天線寶寶說你好&#34;</span>));
+oos.<span style="color:#658b00">flush</span>();
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;將物件序列化為檔案成功&#34;</span>);
+ObjectInputStream ois = <span style="color:#8b008b;font-weight:bold">new</span> ObjectInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#cd5555">&#34;data.dat&#34;</span>));
+Object obj = ois.<span style="color:#658b00">readObject</span>();
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;反序列化，還原成物件...&#34;</span>);
+String str = (String) obj;
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(str);
+</code></pre></div></li>
+</ul>
+<h1 id="randomaccessfile類">RandomAccessFile類</h1>
+<blockquote>
+<p>隨機讀寫流，&ldquo;隨機&quot;其實&quot;任意&quot;的意思</p>
+</blockquote>
+<h3 id="特性">特性</h3>
+<ul>
+<li>聲明在<code>java.io</code>包下，直接繼承於<code>java.io.Object</code>類</li>
+<li>實現了<code>DataInput</code>與<code>DataOutput</code>接口，雙頭龍</li>
+<li>支持隨機訪問，想讀寫哪邊就讀寫哪邊</li>
+<li>其物件包含了一個紀錄指針，用以標示當前讀寫位置</li>
+<li>可以自由移動指針位置，透過方法:
+<ul>
+<li><code>long getFilePointer()</code>:獲取當前指針位置</li>
+<li><code>void seek(long pos)</code>:將指針移到pos</li>
+</ul>
+</li>
+</ul>
+<h3 id="實例化">實例化</h3>
+<p>構造器:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">RandomAccessFile</span>(File file, String mode)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">RandomAccessFile</span>(String name, String mode)
+</code></pre></div><p><code>mode</code>:參數，決定訪問模式</p>
+<ul>
+<li><code>r</code>:只讀，如果檔案不存在就報異常</li>
+<li><code>rw</code>:讀寫，如果檔案不存在就創建；用<code>write()</code>方法如果檔案存在會對&quot;內容&quot;進行覆蓋，且預設從頭開始覆蓋</li>
+<li><code>rwd</code>:讀寫並同步更新內容</li>
+<li><code>rws</code>:讀寫並同步更新內容及元數據</li>
+</ul>
+<p>範例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 實例化
+</span><span style="color:#228b22"></span>RandomAccessFile rw = <span style="color:#8b008b;font-weight:bold">new</span> RandomAccessFile(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;hello.txt&#34;</span>), <span style="color:#cd5555">&#34;rw&#34;</span>);
+
+<span style="color:#228b22">// 將string轉為byte編碼寫入
+</span><span style="color:#228b22"></span>rw.<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;12345abcde&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+
+<span style="color:#228b22">// 在末尾追加，相當於append
+</span><span style="color:#228b22"></span>rw.<span style="color:#658b00">seek</span>(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;hello.txt&#34;</span>).<span style="color:#658b00">length</span>());
+rw.<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;zzz&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+</code></pre></div><h3 id="範例-插入字串">範例-插入字串</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+    RandomAccessFile rw = <span style="color:#8b008b;font-weight:bold">new</span> RandomAccessFile(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;hello.txt&#34;</span>), <span style="color:#cd5555">&#34;rw&#34;</span>);
+    rw.<span style="color:#658b00">seek</span>(5); <span style="color:#228b22">// 將指針移到5
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 造一個StringBuilder用以保存5以後的資料
+</span><span style="color:#228b22"></span>    StringBuilder builder = <span style="color:#8b008b;font-weight:bold">new</span> StringBuilder(Math.<span style="color:#658b00">toIntExact</span>(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;hello.txt&#34;</span>).<span style="color:#658b00">length</span>()));
+    <span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[20];
+    <span style="color:#00688b;font-weight:bold">int</span> len;
+    <span style="color:#8b008b;font-weight:bold">while</span> ((len = rw.<span style="color:#658b00">read</span>(buf)) != -1) { <span style="color:#228b22">// 將讀取的&#34;後面的&#34;資料寫進buf
+</span><span style="color:#228b22"></span>        builder.<span style="color:#658b00">append</span>(<span style="color:#8b008b;font-weight:bold">new</span> String(buf, 0, len)); <span style="color:#228b22">// 將buf寫入builder
+</span><span style="color:#228b22"></span>    }
+    rw.<span style="color:#658b00">seek</span>(5); <span style="color:#228b22">// 將指針移再移回5，因為read也會動指針
+</span><span style="color:#228b22"></span>    rw.<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;***INSERT***&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+    <span style="color:#228b22">// 寫回後面的部分
+</span><span style="color:#228b22"></span>    rw.<span style="color:#658b00">write</span>(builder.<span style="color:#658b00">toString</span>().<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+	rw.<span style="color:#658b00">close</span>()
+    <span style="color:#228b22">// 用中文可能會亂碼，因為中文字是3個Byte，read到buf寫入builder的時候被切壞了
+</span></code></pre></div><h3 id="改良-避免亂碼">改良-避免亂碼</h3>
+<blockquote>
+<p>使用ByteArrayOutputStream</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">rw.<span style="color:#658b00">seek</span>(6); <span style="color:#228b22">// 將指針移
+</span><span style="color:#228b22">// 解決亂碼，用ByteArrayOutputStream
+</span><span style="color:#228b22"></span>ByteArrayOutputStream baos = <span style="color:#8b008b;font-weight:bold">new</span> ByteArrayOutputStream();
+<span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[32];
+<span style="color:#00688b;font-weight:bold">int</span> len;
+<span style="color:#8b008b;font-weight:bold">while</span> ((len = rw.<span style="color:#658b00">read</span>(buf)) != -1) { <span style="color:#228b22">// 將讀取的&#34;後面的&#34;資料寫進buf
+</span><span style="color:#228b22"></span>    baos.<span style="color:#658b00">write</span>(buf, 0, len);
+}
+rw.<span style="color:#658b00">seek</span>(6); <span style="color:#228b22">// 將指針移再移回，因為read也會動指針
+</span><span style="color:#228b22"></span>rw.<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;中文中文&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+<span style="color:#228b22">// 寫回後面的部分
+</span><span style="color:#228b22"></span>rw.<span style="color:#658b00">write</span>(baos.<span style="color:#658b00">toString</span>().<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
+<span style="color:#228b22">// 還要注意一開始seek的位置，一開始就切在要害(例如奇數位)也會導致小部分亂碼
+</span></code></pre></div><h1 id="nio">NIO</h1>
+<blockquote>
+<p>JDK4引入了NIO，(Non-blocking I/O)，非阻塞式，加入觀察與通知的機制</p>
+<p>JDK7強力更新成NIO.2版本，之後說的NIO基本都是指這個</p>
+</blockquote>
+<ul>
+<li>IO主要是流本身，NIO是以緩衝區、管道為導向，讀寫效率更高</li>
+<li>位於<code>java.nio.channels.Channel</code>，其下有兩套NIO:
+<ul>
+<li>處理本地文件<code>FileChannel</code></li>
+<li>處理網路:<code>SocketChannel</code>、<code>ServerSocketChannel</code>、<code>DatagramChannel</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="path接口">Path接口</h3>
+<ul>
+<li>用以取代<code>File</code>類</li>
+<li>實例化:
+<ul>
+<li><code>static Path get(String first, String … more)</code>:用於將多個字串串連成路徑</li>
+<li><code>static Path get(URI uri)</code>:返回指定uri對應的Path路徑</li>
+</ul>
+</li>
+</ul>
+<h5 id="paths類">Paths類</h5>
+<blockquote>
+<p><code>Paths</code>是工具類，除了上面兩種<code>get</code>靜態方法，還有許多常用方法:</p>
+</blockquote>
+<ul>
+<li><code>String toString()</code>:返回調用Path 物件的字串表示形式</li>
+<li><code>boolean startsWith(String path)</code>:判斷是否以path路徑開始</li>
+<li><code>boolean endsWith(String path)</code>:判斷是否以path路徑結束</li>
+<li><code>boolean isAbsolute()</code>:判斷是否是絕對路徑</li>
+<li><code>Path getParent()</code>:返回Path物件包含整個路徑，不包含Path 物件指定的檔路徑</li>
+<li><code>Path getRoot()</code>:返回調用Path 物件的根路徑</li>
+<li><code>Path getFileName()</code>:返回與調用Path 物件關聯的檔案名</li>
+<li><code>int getNameCount()</code>:返回Path 根目錄後面元素的數量</li>
+<li><code>Path getName(int idx)</code>:返回指定索引位置idx 的路徑名稱</li>
+<li><code>Path toAbsolutePath()</code>:作為絕對路徑返回調用Path 物件</li>
+<li><code>Path resolve(Path p)</code>:合併兩個路徑，返回合併後的路徑對應的Path物件</li>
+<li><code>File toFile()</code>:將Path轉化為File類的物件</li>
+</ul>
+<h5 id="files類">Files類</h5>
+<blockquote>
+<p>位於<code>java.nio.file.Files</code>，是操作文件或目錄的工具類，常用方法:</p>
+</blockquote>
+<ul>
+<li><code>Path copy(Path src, Path dest, CopyOption … how)</code>:檔的複製</li>
+<li><code>Path createDirectory(Path path, FileAttribute&lt;?&gt; … attr)</code>:創建一個目錄</li>
+<li><code>Path createFile(Path path, FileAttribute&lt;?&gt; … arr)</code>:創建一個檔</li>
+<li><code>void delete(Path path)</code>:刪除一個檔/目錄，如果不存在，執行報錯</li>
+<li><code>void deleteIfExists(Path path)</code>:Path對應的檔/目錄如果存在，執行刪除</li>
+<li><code>Path move(Path src, Path dest, CopyOption…how)</code>:將src移動到dest位置</li>
+<li><code>long size(Path path)</code>:返回<code>path</code>指定文件的大小</li>
+</ul>
+<blockquote>
+<p>用於判斷</p>
+</blockquote>
+<ul>
+<li><code>boolean exists(Path path, LinkOption … opts)</code>:判斷檔是否存在</li>
+<li><code>boolean isDirectory(Path path, LinkOption … opts)</code>:判斷是否是目錄</li>
+<li><code>boolean isRegularFile(Path path, LinkOption … opts)</code>:判斷是否是檔</li>
+<li><code>boolean isHidden(Path path)</code>:判斷是否是隱藏檔</li>
+<li><code>boolean isReadable(Path path)</code>:判斷檔是否可讀</li>
+<li><code>boolean isWritable(Path path)</code>:判斷檔是否可寫</li>
+<li><code>boolean notExists(Path path, LinkOption … opts)</code>:判斷檔是否不存在</li>
+</ul>
+<blockquote>
+<p>用於操作內容</p>
+</blockquote>
+<ul>
+<li><code>SeekableByteChannel newByteChannel(Path path, OpenOption…how)</code>:獲取與指定檔的連接，how 指定打開方式</li>
+<li><code>DirectoryStream&lt;Path&gt; newDirectoryStream(Path path)</code>:打開path 指定的目錄</li>
+<li><code>InputStream newInputStream(Path path, OpenOption…how)</code>:獲取<code>InputStreamj</code>物件</li>
+<li><code>OutputStream newOutputStream(Path path, OpenOption…how)</code>:獲取<code>OutputStreamj</code>物件</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>序列化:實現<code>Serializable</code>接口、定義<code>serialVersionUID</code>、確認類中的屬性也都是可以序列化的</li>
+<li><code>RandomAccessFile</code>:雙向、可於任意位置存取，構造時用<code>mode</code>參數決定類型，使用<code>seek(index)</code>移動指針、<code>getFilePointer()</code>找指針</li>
+<li>NIO:用<code>Path</code>取代<code>File</code>，緩衝區跟管道取代IO</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-12</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211213-agg-ja-28/">
+			下一篇<br>通訊協定:URL、IP與網路編程
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211211-agg-ja-26/">
+			上一篇<br>IO流:基礎、緩衝流、轉換流與Unicode編碼
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

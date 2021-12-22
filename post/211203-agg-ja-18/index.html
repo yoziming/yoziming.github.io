@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>多線程:基礎、Thread類、用法</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day18筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="多線程:基礎、Thread類、用法" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day18筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211203-agg-ja-18/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-03T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多線程:基礎、Thread類、用法"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day18筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%b7%9a%e7%a8%8b" onclick="onNavClick(`#多線程-nav`)" id="多線程-nav">
+									多線程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9c%80%e6%b1%82%e4%be%86%e6%ba%90" onclick="onNavClick(`#需求來源-nav`)" id="需求來源-nav">
+									需求來源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e5%a4%9a%e7%b7%9a%e7%a8%8b-%e6%96%b9%e6%b3%95%e4%b8%80" onclick="onNavClick(`#java多線程-方法一-nav`)" id="java多線程-方法一-nav">
+									Java多線程-方法一
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#thread%e9%a1%9e%e7%9a%84%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#thread類的常用方法-nav`)" id="thread類的常用方法-nav">
+									Thread類的常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e7%9a%84%e5%84%aa%e5%85%88%e7%b4%9a" onclick="onNavClick(`#線程的優先級-nav`)" id="線程的優先級-nav">
+									線程的優先級
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e5%a4%9a%e7%b7%9a%e7%a8%8b-%e6%96%b9%e6%b3%95%e4%ba%8c" onclick="onNavClick(`#java多線程-方法二-nav`)" id="java多線程-方法二-nav">
+									Java多線程-方法二
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%b7%9a%e7%a8%8b" onclick="onNavClick(`#多線程-nav`)" id="多線程-nav">
+									多線程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e8%a7%a3%e9%87%8b" onclick="onNavClick(`#名詞解釋-nav`)" id="名詞解釋-nav">
+									名詞解釋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9c%80%e6%b1%82%e4%be%86%e6%ba%90" onclick="onNavClick(`#需求來源-nav`)" id="需求來源-nav">
+									需求來源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e5%a4%9a%e7%b7%9a%e7%a8%8b-%e6%96%b9%e6%b3%95%e4%b8%80" onclick="onNavClick(`#java多線程-方法一-nav`)" id="java多線程-方法一-nav">
+									Java多線程-方法一
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#thread%e9%a1%9e%e7%9a%84%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#thread類的常用方法-nav`)" id="thread類的常用方法-nav">
+									Thread類的常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e7%9a%84%e5%84%aa%e5%85%88%e7%b4%9a" onclick="onNavClick(`#線程的優先級-nav`)" id="線程的優先級-nav">
+									線程的優先級
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e5%a4%9a%e7%b7%9a%e7%a8%8b-%e6%96%b9%e6%b3%95%e4%ba%8c" onclick="onNavClick(`#java多線程-方法二-nav`)" id="java多線程-方法二-nav">
+									Java多線程-方法二
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    多線程:基礎、Thread類、用法
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day18筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-03 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="多線程">多線程</h1>
+<h3 id="名詞解釋">名詞解釋</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">英文</th>
+<th>台灣</th>
+<th>中國</th>
+<th>意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Program</td>
+<td>程式</td>
+<td>程序</td>
+<td>靜態的程式碼集合</td>
+</tr>
+<tr>
+<td style="text-align:left">Process</td>
+<td>程序(進程)</td>
+<td>進程</td>
+<td>動態、被執行中且載入記憶體的program，也是 OS 分配資源的最小單位。打開工作管理員看到的就是這個</td>
+</tr>
+<tr>
+<td style="text-align:left">Thread</td>
+<td>執行緒</td>
+<td>線程</td>
+<td>一個進程裡至少會有一個線程，表示內部的一條執行路徑。把進程比喻為一個工廠，線程則是工廠裡面的工人，負責任務的實際執行。同一個Process內的Thread使用相同的Memory Space，但這些Thread各自擁有其Stack。換句話說，Thread能透過reference存取到相同的Object，但是local variable卻是各自獨立的。白話:共享方法區跟堆，獨立棧跟計數器</td>
+</tr>
+<tr>
+<td style="text-align:left">Coroutine</td>
+<td>協程</td>
+<td>協程</td>
+<td>輕量級的執行緒，由使用者掌控，例如GO的goroutine</td>
+</tr>
+<tr>
+<td style="text-align:left">Concurrent</td>
+<td>並行</td>
+<td>並發</td>
+<td>一個 CPU 會去做多件事，但是同一個時間點之內只會做一件事，像是早上做 Job1、下午做 Job2、晚上做 Job3不斷的切換，目標是希望能做更多的事</td>
+</tr>
+<tr>
+<td style="text-align:left">Parallel</td>
+<td>平行</td>
+<td>並行</td>
+<td>多個 CPU 在同一個時間點內會去做多件事，例如會有三個人同時分別在做 Job1、Job2、Job3 的事情。目標是希望能把事情更快速的做完。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="需求來源">需求來源</h3>
+<ul>
+<li>希望同時執行複數的任務，例如一邊執行main方法，GC一邊收垃圾</li>
+<li>需要等待的狀況，例如等用戶輸入、等IO、等網路連接</li>
+</ul>
+<h3 id="java多線程-方法一">Java多線程-方法一</h3>
+<ol>
+<li>
+<p>造一個類，繼承<code>Thread</code></p>
+</li>
+<li>
+<p>重寫此類的<code>run</code>方法(將想多線程執行的代碼包進去)</p>
+</li>
+<li>
+<p>實例化此類的一個物件</p>
+</li>
+<li>
+<p>透過此物件調用<code>start();</code>，此時啟動此線程並且調用他的<code>run()</code>方法</p>
+</li>
+<li>
+<p>若想再啟動另一條線程，需要再new一個物件，同一物件start多次會報<code>IllegalThreadStateException</code></p>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyThread</span> <span style="color:#8b008b;font-weight:bold">extends</span> Thread {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 10000; i++) {
+            <span style="color:#8b008b;font-weight:bold">if</span> (i % 2 == 0) {
+                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(i + <span style="color:#cd5555">&#34;新造#####&#34;</span>);
+            }
+        }
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 10000; i++) {
+            <span style="color:#8b008b;font-weight:bold">if</span> (i % 2 == 0) {
+                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(i + <span style="color:#cd5555">&#34;主線程*****&#34;</span>);
+            }
+        }
+        MyThread t1 = <span style="color:#8b008b;font-weight:bold">new</span> MyThread();
+        t1.<span style="color:#658b00">start</span>();
+
+        <span style="color:#8b008b;font-weight:bold">new</span> Thread() {
+            <span style="color:#707a7c">@Override</span>
+            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+                <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 10000; i++) {
+                    <span style="color:#8b008b;font-weight:bold">if</span> (i % 2 != 0) {
+                        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(i + <span style="color:#cd5555">&#34;匿名類?????&#34;</span>);
+                    }
+                }
+            }
+        }.<span style="color:#658b00">start</span>();
+
+    }
+}
+</code></pre></div></li>
+<li>
+<p>也可以透過匿名類的方法<code>new Thread(){//要執行的代碼}.start();</code></p>
+</li>
+</ol>
+<h3 id="thread類的常用方法">Thread類的常用方法</h3>
+<ul>
+<li><code>start()</code>:啟動當前線程、調用其<code>run()</code></li>
+<li><code>currentThread()</code>:靜態方法，返回當前執行代碼的線程</li>
+<li><code>getName()</code>:獲取當前線程的名字，常與&quot;<code>currentThread().getName()</code>&ldquo;這樣連用</li>
+<li><code>setName(String)</code>:設定線程名，在<code>start</code>前後都有用，也可以用<code>Thread.currentThread().setName(&quot;設定主線程名&quot;);</code></li>
+<li><code>yeild()</code>:靜態方法，釋放當前線程的執行權(但也有可能馬上又搶回)，會拋異常</li>
+<li><code>join()</code>:在線程A中調用線程B的<code>join()</code>，此時A就阻塞，等B完全做完才繼續A。白話:在我的地盤說<code>誰.join</code>就是我讓誰插隊</li>
+<li><code>sleep(毫秒)</code>:當前線程休息，休息時是阻塞的，會拋異常</li>
+<li><code>isAlive()</code>:判斷當前線程是否存活</li>
+<li><code>setDaemon(true)</code>:轉為守護線程</li>
+</ul>
+<h3 id="線程的優先級">線程的優先級</h3>
+<ul>
+<li>寫在Thread中的，最小是1，預設是5，最大是10</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> MIN_PRIORITY = 1;
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> NORM_PRIORITY = 5;
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> MAX_PRIORITY = 10;
+</code></pre></div><ul>
+<li><code>getPriority()</code>:獲取優先級</li>
+<li><code>setPriority(int)</code>:設置優先級</li>
+<li>但並不是說高優先就一定先執行完，只是機率上的</li>
+</ul>
+<h3 id="java多線程-方法二">Java多線程-方法二</h3>
+<ol>
+<li>
+<p>造一個實現Runnable接口的類</p>
+</li>
+<li>
+<p>實現其中的抽象方法<code>run()</code></p>
+</li>
+<li>
+<p>創建實現類的實例物件</p>
+</li>
+<li>
+<p>將此物件作為參數，傳到<code>Thread</code>類的構造器中，創建<code>Thread</code>類的物件</p>
+</li>
+<li>
+<p>通過此<code>Thread類的物件</code>調用<code>start()</code></p>
+</li>
+<li>
+<p>自訂的類是作為形參，想再創一個線程只要<code>new Thread</code>即可，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyThread2</span> <span style="color:#8b008b;font-weight:bold">implements</span> Runnable {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 100; i++) {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(Thread.<span style="color:#658b00">currentThread</span>().<span style="color:#658b00">getName</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + i);
+        }
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">test</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        MyThread2 m2 = <span style="color:#8b008b;font-weight:bold">new</span> MyThread2();
+        Thread t1 = <span style="color:#8b008b;font-weight:bold">new</span> Thread(m2);
+        t1.<span style="color:#658b00">start</span>();
+        Thread t2 = <span style="color:#8b008b;font-weight:bold">new</span> Thread(m2);
+        t2.<span style="color:#658b00">start</span>();
+    }
+}
+</code></pre></div></li>
+<li>
+<p>優勢在於<strong>只造了一個類</strong>，假如類中有個屬性需要被共用，不管後面造了多少線程都是共用這個變量(而不需使用<code>static</code>宣告)</p>
+</li>
+<li>
+<p>還一個優勢在於，本身類可能已經有繼承對象了，而我只要實現接口就可以</p>
+</li>
+<li>
+<p>其實方法一點開源碼看也是方法二，實際就優先用方法二吧</p>
+</li>
+</ol>
+<h1 id="小結">小結</h1>
+<ul>
+<li>多線程的核心就是重寫<code>run()</code>、調用<code>start()</code>方法</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-03</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211203-intellij_idea-live_templates/">
+			下一篇<br>IntelliJ IDEA Live Templates
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211202-agg-ja-17/">
+			上一篇<br>項目練習3-開發團隊調度系統
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

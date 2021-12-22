@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>變量、流程控制與游標</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL基礎課-12">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="變量、流程控制與游標" />
+<meta property="og:description" content="尚硅谷MySQL基礎課-12" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211227-agg-mysql-12/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-27T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="變量、流程控制與游標"/>
+<meta name="twitter:description" content="尚硅谷MySQL基礎課-12"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%ae%8a%e9%87%8f%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6%e8%88%87%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#變量流程控制與游標-nav`)" id="變量流程控制與游標-nav">
+									變量、流程控制與游標
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#1-變數-nav`)" id="1-變數-nav">
+									1. 變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#11-%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#11-系統變數-nav`)" id="11-系統變數-nav">
+									1.1 系統變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#111-%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8%e5%88%86%e9%a1%9e" onclick="onNavClick(`#111-系統變數分類-nav`)" id="111-系統變數分類-nav">
+									1.1.1 系統變數分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#112-%e6%9f%a5%e7%9c%8b%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#112-查看系統變數-nav`)" id="112-查看系統變數-nav">
+									1.1.2 查看系統變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#12-%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#12-使用者變數-nav`)" id="12-使用者變數-nav">
+									1.2 使用者變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#121-%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8%e5%88%86%e9%a1%9e" onclick="onNavClick(`#121-使用者變數分類-nav`)" id="121-使用者變數分類-nav">
+									1.2.1 使用者變數分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#122-%e6%9c%83%e8%a9%b1%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#122-會話使用者變數-nav`)" id="122-會話使用者變數-nav">
+									1.2.2 會話使用者變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#123-%e5%8d%80%e5%9f%9f%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#123-區域變數-nav`)" id="123-區域變數-nav">
+									1.2.3 區域變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#124-%e5%b0%8d%e6%af%94%e6%9c%83%e8%a9%b1%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8%e8%88%87%e5%8d%80%e5%9f%9f%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#124-對比會話使用者變數與區域變數-nav`)" id="124-對比會話使用者變數與區域變數-nav">
+									1.2.4 對比會話使用者變數與區域變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#2-%e5%ae%9a%e7%be%a9%e6%a2%9d%e4%bb%b6%e8%88%87%e8%99%95%e7%90%86%e5%b8%b8%e5%bc%8f" onclick="onNavClick(`#2-定義條件與處理常式-nav`)" id="2-定義條件與處理常式-nav">
+									2. 定義條件與處理常式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e6%a1%88%e4%be%8b%e5%88%86%e6%9e%90" onclick="onNavClick(`#21-案例分析-nav`)" id="21-案例分析-nav">
+									2.1 案例分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e5%ae%9a%e7%be%a9%e6%a2%9d%e4%bb%b6" onclick="onNavClick(`#22-定義條件-nav`)" id="22-定義條件-nav">
+									2.2 定義條件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#23-%e5%ae%9a%e7%be%a9%e8%99%95%e7%90%86%e5%b8%b8%e5%bc%8f" onclick="onNavClick(`#23-定義處理常式-nav`)" id="23-定義處理常式-nav">
+									2.3 定義處理常式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#24-%e6%a1%88%e4%be%8b%e8%a7%a3%e6%b1%ba" onclick="onNavClick(`#24-案例解決-nav`)" id="24-案例解決-nav">
+									2.4 案例解決
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6" onclick="onNavClick(`#3-流程控制-nav`)" id="3-流程控制-nav">
+									3. 流程控制
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#31-%e5%88%86%e6%94%af%e7%b5%90%e6%a7%8b%e4%b9%8b-if" onclick="onNavClick(`#31-分支結構之-if-nav`)" id="31-分支結構之-if-nav">
+									3.1 分支結構之 IF
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#32-%e5%88%86%e6%94%af%e7%b5%90%e6%a7%8b%e4%b9%8b-case" onclick="onNavClick(`#32-分支結構之-case-nav`)" id="32-分支結構之-case-nav">
+									3.2 分支結構之 CASE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#33-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8bloop" onclick="onNavClick(`#33-迴圈結構之loop-nav`)" id="33-迴圈結構之loop-nav">
+									3.3 迴圈結構之LOOP
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#34-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8bwhile" onclick="onNavClick(`#34-迴圈結構之while-nav`)" id="34-迴圈結構之while-nav">
+									3.4 迴圈結構之WHILE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#35-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8brepeat" onclick="onNavClick(`#35-迴圈結構之repeat-nav`)" id="35-迴圈結構之repeat-nav">
+									3.5 迴圈結構之REPEAT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#36-%e8%b7%b3%e8%ba%8d%e9%99%b3%e8%bf%b0%e5%bc%8f%e4%b9%8bleave%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#36-跳躍陳述式之leave語句-nav`)" id="36-跳躍陳述式之leave語句-nav">
+									3.6 跳躍陳述式之LEAVE語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#37-%e8%b7%b3%e8%ba%8d%e9%99%b3%e8%bf%b0%e5%bc%8f%e4%b9%8biterate%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#37-跳躍陳述式之iterate語句-nav`)" id="37-跳躍陳述式之iterate語句-nav">
+									3.7 跳躍陳述式之ITERATE語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#4-%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#4-游標-nav`)" id="4-游標-nav">
+									4. 游標
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e4%bb%80%e9%ba%bc%e6%98%af%e6%b8%b8%e6%a8%99%e6%88%96%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#41-什麼是游標或游標-nav`)" id="41-什麼是游標或游標-nav">
+									4.1 什麼是游標（或游標）
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e4%bd%bf%e7%94%a8%e6%b8%b8%e6%a8%99%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#42-使用游標步驟-nav`)" id="42-使用游標步驟-nav">
+									4.2 使用游標步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e8%88%89%e4%be%8b" onclick="onNavClick(`#43-舉例-nav`)" id="43-舉例-nav">
+									4.3 舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#45-%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#45-小結-nav`)" id="45-小結-nav">
+									4.5 小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85mysql-80%e7%9a%84%e6%96%b0%e7%89%b9%e6%80%a7%e5%85%a8%e5%9f%9f%e8%ae%8a%e6%95%b8%e7%9a%84%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#補充mysql-80的新特性全域變數的持久化-nav`)" id="補充mysql-80的新特性全域變數的持久化-nav">
+									補充：MySQL 8.0的新特性—全域變數的持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%ae%8a%e9%87%8f%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6%e8%88%87%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#變量流程控制與游標-nav`)" id="變量流程控制與游標-nav">
+									變量、流程控制與游標
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#1-變數-nav`)" id="1-變數-nav">
+									1. 變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#11-%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#11-系統變數-nav`)" id="11-系統變數-nav">
+									1.1 系統變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#111-%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8%e5%88%86%e9%a1%9e" onclick="onNavClick(`#111-系統變數分類-nav`)" id="111-系統變數分類-nav">
+									1.1.1 系統變數分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#112-%e6%9f%a5%e7%9c%8b%e7%b3%bb%e7%b5%b1%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#112-查看系統變數-nav`)" id="112-查看系統變數-nav">
+									1.1.2 查看系統變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#12-%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#12-使用者變數-nav`)" id="12-使用者變數-nav">
+									1.2 使用者變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#121-%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8%e5%88%86%e9%a1%9e" onclick="onNavClick(`#121-使用者變數分類-nav`)" id="121-使用者變數分類-nav">
+									1.2.1 使用者變數分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#122-%e6%9c%83%e8%a9%b1%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#122-會話使用者變數-nav`)" id="122-會話使用者變數-nav">
+									1.2.2 會話使用者變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#123-%e5%8d%80%e5%9f%9f%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#123-區域變數-nav`)" id="123-區域變數-nav">
+									1.2.3 區域變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#124-%e5%b0%8d%e6%af%94%e6%9c%83%e8%a9%b1%e4%bd%bf%e7%94%a8%e8%80%85%e8%ae%8a%e6%95%b8%e8%88%87%e5%8d%80%e5%9f%9f%e8%ae%8a%e6%95%b8" onclick="onNavClick(`#124-對比會話使用者變數與區域變數-nav`)" id="124-對比會話使用者變數與區域變數-nav">
+									1.2.4 對比會話使用者變數與區域變數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#2-%e5%ae%9a%e7%be%a9%e6%a2%9d%e4%bb%b6%e8%88%87%e8%99%95%e7%90%86%e5%b8%b8%e5%bc%8f" onclick="onNavClick(`#2-定義條件與處理常式-nav`)" id="2-定義條件與處理常式-nav">
+									2. 定義條件與處理常式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e6%a1%88%e4%be%8b%e5%88%86%e6%9e%90" onclick="onNavClick(`#21-案例分析-nav`)" id="21-案例分析-nav">
+									2.1 案例分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e5%ae%9a%e7%be%a9%e6%a2%9d%e4%bb%b6" onclick="onNavClick(`#22-定義條件-nav`)" id="22-定義條件-nav">
+									2.2 定義條件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#23-%e5%ae%9a%e7%be%a9%e8%99%95%e7%90%86%e5%b8%b8%e5%bc%8f" onclick="onNavClick(`#23-定義處理常式-nav`)" id="23-定義處理常式-nav">
+									2.3 定義處理常式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#24-%e6%a1%88%e4%be%8b%e8%a7%a3%e6%b1%ba" onclick="onNavClick(`#24-案例解決-nav`)" id="24-案例解決-nav">
+									2.4 案例解決
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6" onclick="onNavClick(`#3-流程控制-nav`)" id="3-流程控制-nav">
+									3. 流程控制
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#31-%e5%88%86%e6%94%af%e7%b5%90%e6%a7%8b%e4%b9%8b-if" onclick="onNavClick(`#31-分支結構之-if-nav`)" id="31-分支結構之-if-nav">
+									3.1 分支結構之 IF
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#32-%e5%88%86%e6%94%af%e7%b5%90%e6%a7%8b%e4%b9%8b-case" onclick="onNavClick(`#32-分支結構之-case-nav`)" id="32-分支結構之-case-nav">
+									3.2 分支結構之 CASE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#33-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8bloop" onclick="onNavClick(`#33-迴圈結構之loop-nav`)" id="33-迴圈結構之loop-nav">
+									3.3 迴圈結構之LOOP
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#34-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8bwhile" onclick="onNavClick(`#34-迴圈結構之while-nav`)" id="34-迴圈結構之while-nav">
+									3.4 迴圈結構之WHILE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#35-%e8%bf%b4%e5%9c%88%e7%b5%90%e6%a7%8b%e4%b9%8brepeat" onclick="onNavClick(`#35-迴圈結構之repeat-nav`)" id="35-迴圈結構之repeat-nav">
+									3.5 迴圈結構之REPEAT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#36-%e8%b7%b3%e8%ba%8d%e9%99%b3%e8%bf%b0%e5%bc%8f%e4%b9%8bleave%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#36-跳躍陳述式之leave語句-nav`)" id="36-跳躍陳述式之leave語句-nav">
+									3.6 跳躍陳述式之LEAVE語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#37-%e8%b7%b3%e8%ba%8d%e9%99%b3%e8%bf%b0%e5%bc%8f%e4%b9%8biterate%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#37-跳躍陳述式之iterate語句-nav`)" id="37-跳躍陳述式之iterate語句-nav">
+									3.7 跳躍陳述式之ITERATE語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#4-%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#4-游標-nav`)" id="4-游標-nav">
+									4. 游標
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e4%bb%80%e9%ba%bc%e6%98%af%e6%b8%b8%e6%a8%99%e6%88%96%e6%b8%b8%e6%a8%99" onclick="onNavClick(`#41-什麼是游標或游標-nav`)" id="41-什麼是游標或游標-nav">
+									4.1 什麼是游標（或游標）
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e4%bd%bf%e7%94%a8%e6%b8%b8%e6%a8%99%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#42-使用游標步驟-nav`)" id="42-使用游標步驟-nav">
+									4.2 使用游標步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e8%88%89%e4%be%8b" onclick="onNavClick(`#43-舉例-nav`)" id="43-舉例-nav">
+									4.3 舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#45-%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#45-小結-nav`)" id="45-小結-nav">
+									4.5 小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85mysql-80%e7%9a%84%e6%96%b0%e7%89%b9%e6%80%a7%e5%85%a8%e5%9f%9f%e8%ae%8a%e6%95%b8%e7%9a%84%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#補充mysql-80的新特性全域變數的持久化-nav`)" id="補充mysql-80的新特性全域變數的持久化-nav">
+									補充：MySQL 8.0的新特性—全域變數的持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    變量、流程控制與游標
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL基礎課-12
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-27 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7mysql%E7%AD%86%E8%A8%98">尚硅谷MySQL筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="變量流程控制與游標">變量、流程控制與游標</h1>
+<blockquote>
+<p>一樣先跳過了</p>
+</blockquote>
+<h2 id="1-變數">1. 變數</h2>
+<p>在MySQL資料庫的存儲過程和函數中，可以使用變數來存儲查詢或計算的中間結果資料，或者輸出最終的結果資料。</p>
+<p>在 MySQL 資料庫中，變數分為<code>系統變數</code>以及<code>使用者自訂變數</code>。</p>
+<h3 id="11-系統變數">1.1 系統變數</h3>
+<h4 id="111-系統變數分類">1.1.1 系統變數分類</h4>
+<p>變數由系統定義，不是使用者定義，屬於<code>伺服器</code>層面。啟動MySQL服務，生成MySQL服務實例期間，MySQL將為MySQL伺服器記憶體中的系統變數賦值，這些系統變數定義了當前MySQL服務實例的屬性、特徵。這些系統變數的值要麼是<code>編譯MySQL時參數</code>的預設值，要麼是<code>設定檔</code>（例如my.ini等）中的參數值。大家可以通過網址 <code>https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html</code> 查看MySQL文檔的系統變數。</p>
+<p>系統變數分為全域系統變數（需要添加<code>global</code> 關鍵字）以及會話系統變數（需要添加 <code>session</code> 關鍵字），有時也把全域系統變數簡稱為全域變數，有時也把會話系統變數稱為local變數。**如果不寫，默認會話級別。**靜態變數（在 MySQL 服務實例運行期間它們的值不能使用 set 動態修改）屬於特殊的全域系統變數。</p>
+<p>每一個MySQL客戶機成功連接MySQL伺服器後，都會產生與之對應的會話。會話期間，MySQL服務實例會在MySQL伺服器記憶體中生成與該會話對應的會話系統變數，這些會話系統變數的初始值是全域系統變數值的複製。如下圖：</p>
+<p><img src="image-20211108114846634.png" alt="image-20211108114846634"></p>
+<ul>
+<li>全域系統變數針對於所有會話（連接）有效，但<code>不能跨重啟</code></li>
+<li>會話系統變數僅針對於當前會話（連接）有效。會話期間，當前會話對某個會話系統變數值的修改，不會影響其他會話同一個會話系統變數的值。</li>
+<li>會話1對某個全域系統變數值的修改會導致會話2中同一個全域系統變數值的修改。</li>
+</ul>
+<p>在MySQL中有些系統變數只能是全域的，例如 max_connections 用於限制伺服器的最大連接數；有些系統變數作用域既可以是全域又可以是會話，例如 character_set_client 用於設置用戶端的字元集；有些系統變數的作用域只能是當前會話，例如 pseudo_thread_id 用於標記當前會話的 MySQL 連接 ID。</p>
+<h4 id="112-查看系統變數">1.1.2 查看系統變數</h4>
+<ul>
+<li><strong>查看所有或部分系統變數</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#查看所有全域變數
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>VARIABLES;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#查看所有會話變數
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>SESSION<span style="color:#bbb"> </span>VARIABLES;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">或</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>VARIABLES;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#查看滿足條件的部分系統變數。
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>VARIABLES<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%識別字%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#查看滿足條件的部分會話變數
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>SESSION<span style="color:#bbb"> </span>VARIABLES<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%識別字%&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>VARIABLES<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;admin_%&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>查看指定系統變數</strong></li>
+</ul>
+<p>作為 MySQL 編碼規範，MySQL 中的系統變數以<code>兩個“@”</code>開頭，其中“@@global”僅用於標記全域系統變數，“@@session”僅用於標記會話系統變數。“@@”首先標記會話系統變數，如果會話系統變數不存在，則標記全域系統變數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#查看指定的系統變數的值
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@global.<span style="color:#a61717;background-color:#e3d2d2">變數名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#查看指定的會話變數的值
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@session.<span style="color:#a61717;background-color:#e3d2d2">變數名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#或者
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@<span style="color:#a61717;background-color:#e3d2d2">變數名</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>修改系統變數的值</strong></li>
+</ul>
+<p>有些時候，資料庫管理員需要修改系統變數的預設值，以便修改當前會話或者MySQL服務實例的屬性、特徵。具體方法：</p>
+<p>方式1：修改MySQL<code>設定檔</code>，繼而修改MySQL系統變數的值（該方法需要重啟MySQL服務）</p>
+<p>方式2：在MySQL服務運行期間，使用“set”命令重新設置系統變數的值</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#為某個系統變數賦值
+</span><span style="color:#228b22">#方式1：
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@@global.<span style="color:#a61717;background-color:#e3d2d2">變數名</span>=<span style="color:#a61717;background-color:#e3d2d2">變數值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方式2：
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span>=<span style="color:#a61717;background-color:#e3d2d2">變數值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#為某個會話變數賦值
+</span><span style="color:#228b22">#方式1：
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@@session.<span style="color:#a61717;background-color:#e3d2d2">變數名</span>=<span style="color:#a61717;background-color:#e3d2d2">變數值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方式2：
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>SESSION<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span>=<span style="color:#a61717;background-color:#e3d2d2">變數值</span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@global.autocommit;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>autocommit=<span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@session.tx_isolation;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@@session.tx_isolation=<span style="color:#cd5555">&#39;read-uncommitted&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>max_connections<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1000</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@global.max_connections;<span style="color:#bbb">
+</span></code></pre></div><h3 id="12-使用者變數">1.2 使用者變數</h3>
+<h4 id="121-使用者變數分類">1.2.1 使用者變數分類</h4>
+<p>使用者變數是使用者自己定義的，作為 MySQL 編碼規範，MySQL 中的使用者變數以<code>一個“@”</code>開頭。根據作用範圍不同，又分為<code>會話使用者變數</code>和<code>區域變數</code>。</p>
+<ul>
+<li>
+<p>會話使用者變數：作用域和會話變數一樣，只對<code>當前連接</code>會話有效。</p>
+</li>
+<li>
+<p>區域變數：只在 BEGIN 和 END 語句塊中有效。區域變數只能在<code>存儲過程和函數</code>中使用。</p>
+</li>
+</ul>
+<h4 id="122-會話使用者變數">1.2.2 會話使用者變數</h4>
+<ul>
+<li>變數的定義</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#方式1：“=”或“:=”
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@<span style="color:#a61717;background-color:#e3d2d2">使用者變數</span><span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@<span style="color:#a61717;background-color:#e3d2d2">使用者變數</span><span style="color:#bbb"> </span>:=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方式2：“:=” 或 INTO關鍵字
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@<span style="color:#a61717;background-color:#e3d2d2">使用者變數</span><span style="color:#bbb"> </span>:=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">運算式</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等子句</span>];<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">運算式</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>@<span style="color:#a61717;background-color:#e3d2d2">使用者變數</span><span style="color:#bbb">  </span>[<span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等子句</span>];<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>查看使用者變數的值 （查看、比較、運算等）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@<span style="color:#a61717;background-color:#e3d2d2">使用者變數</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>舉例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@a<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@a;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@num<span style="color:#bbb"> </span>:=<span style="color:#bbb"> </span><span style="color:#008b45">COUNT</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@num;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>@avgsalary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@avgsalary;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@big;<span style="color:#bbb">  </span><span style="color:#228b22">#查看某個未聲明的變數時，將得到NULL值
+</span></code></pre></div><h4 id="123-區域變數">1.2.3 區域變數</h4>
+<p>定義：可以使用<code>DECLARE</code>語句定義一個區域變數</p>
+<p>作用域：僅僅在定義它的 BEGIN &hellip; END 中有效</p>
+<p>位置：只能放在 BEGIN &hellip; END 中，而且只能放在第一句</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#聲明區域變數
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數資料類型</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數預設值</span>];<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#b452cd">2</span>,<span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#b452cd">3</span>,...<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數資料類型</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數預設值</span>];<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#為區域變數賦值
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">子句</span>];<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#查看區域變數的值
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數</span><span style="color:#b452cd">1</span>,<span style="color:#a61717;background-color:#e3d2d2">變數</span><span style="color:#b452cd">2</span>,<span style="color:#a61717;background-color:#e3d2d2">變數</span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><p><strong>1.定義變數</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">類型</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">default</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span>];<span style="color:#bbb">  </span><span style="color:#228b22"># 如果沒有DEFAULT子句，初始值為NULL
+</span></code></pre></div><p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb">　</span>myparam<span style="color:#bbb">　</span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb">　</span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>2.變數賦值</strong></p>
+<p>方式1：一般用於賦簡單的值</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span>=<span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span>:=<span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span></code></pre></div><p>方式2：一般用於賦表中的欄位值</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位名或運算式</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">變數名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表</span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>3.使用變數</strong>（查看、比較、運算等）</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">區域變數名</span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例1：聲明區域變數，並分別賦值為employees表中employee_id為102的last_name和salary</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">set_value</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_name<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">25</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>(<span style="color:#b452cd">10</span>,<span style="color:#b452cd">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>last_name,salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_name,sal<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> 
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">102</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>emp_name,sal;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例2：聲明兩個變數，求和並列印 （分別使用會話使用者變數、區域變數的方式實現）</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#方式1：使用使用者變數
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@m=<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@n=<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@sum=@m+@n;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@sum;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#方式2：使用區域變數
+</span><span style="color:#228b22"></span>DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">add_value</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#區域變數
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>m<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>n<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>SUM<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>SUM<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>m+n;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>SUM;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例3：創建存儲過程“different_salary”查詢某員工和他領導的薪資差距，並用IN參數emp_id接收員工id，用OUT參數dif_salary輸出薪資差距結果。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#聲明
+</span><span style="color:#228b22"></span>DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">different_salary</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>,<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>dif_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#聲明區域變數
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_sal,mgr_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>.<span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>mgr_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>mgr_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>mgr_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>mgr_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>dif_salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>mgr_sal<span style="color:#bbb"> </span>-<span style="color:#bbb"> </span>emp_sal;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#調用
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@emp_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">102</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">different_salary</span>(@emp_id,@diff_sal);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#查看
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@diff_sal;<span style="color:#bbb">
+</span></code></pre></div><h4 id="124-對比會話使用者變數與區域變數">1.2.4 對比會話使用者變數與區域變數</h4>
+<pre tabindex="0"><code>			  作用域					定義位置				  語法
+會話使用者變數	  當前會話				   會話的任何地方				加@符號，不用指定類型
+區域變數	   定義它的BEGIN END中 		BEGIN END的第一句話		  一般不用加@,需要指定類型
+</code></pre><h2 id="2-定義條件與處理常式">2. 定義條件與處理常式</h2>
+<p><code>定義條件</code>是事先定義程式執行過程中可能遇到的問題，<code>處理常式</code>定義了在遇到問題時應當採取的處理方式，並且保證存儲過程或函數在遇到警告或錯誤時能繼續執行。這樣可以增強存儲程式處理問題的能力，避免程式異常停止運行。</p>
+<p>說明：定義條件和處理常式在存儲過程、存儲函數中都是支援的。</p>
+<h3 id="21-案例分析">2.1 案例分析</h3>
+<p>**案例分析：**創建一個名稱為“UpdateDataNoCondition”的存儲過程。代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">UpdateDataNoCondition</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Abel&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;aabbel&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Abel&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用存儲過程：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">UpdateDataNoCondition</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>ERROR<span style="color:#bbb"> </span><span style="color:#b452cd">1048</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">23000</span>):<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Column</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;email&#39;</span><span style="color:#bbb"> </span>cannot<span style="color:#bbb"> </span>be<span style="color:#bbb"> </span><span style="color:#00688b">null</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@x;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>@x<span style="color:#bbb">   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">   </span><span style="color:#b452cd">1</span><span style="color:#bbb">  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><p>可以看到，此時@x變數的值為1。結合創建存儲過程的SQL語句代碼可以得出：在存儲過程中未定義條件和處理常式，且當存儲過程中執行的SQL語句報錯時，MySQL資料庫會拋出錯誤，並退出當前SQL邏輯，不再向下繼續執行。</p>
+<h3 id="22-定義條件">2.2 定義條件</h3>
+<p>定義條件就是給MySQL中的錯誤碼命名，這有助於存儲的程式碼更清晰。它將一個<code>錯誤名字</code>和<code>指定的錯誤條件</code>關聯起來。這個名字可以隨後被用在定義處理常式的<code>DECLARE HANDLER</code>語句中。</p>
+<p>定義條件使用DECLARE語句，語法格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">錯誤名稱</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">錯誤碼（或錯誤條件）</span><span style="color:#bbb">
+</span></code></pre></div><p>錯誤碼的說明：</p>
+<ul>
+<li><code>MySQL_error_code</code>和<code>sqlstate_value</code>都可以表示MySQL的錯誤。
+<ul>
+<li>MySQL_error_code是數數值型別錯誤代碼。</li>
+<li>sqlstate_value是長度為5的字串類型錯誤代碼。</li>
+</ul>
+</li>
+<li>例如，在ERROR 1418 (HY000)中，1418是MySQL_error_code，&lsquo;HY000&rsquo;是sqlstate_value。</li>
+<li>例如，在ERROR 1142（42000）中，1142是MySQL_error_code，&lsquo;42000&rsquo;是sqlstate_value。</li>
+</ul>
+<p>**舉例1：**定義“Field_Not_Be_NULL”錯誤名與MySQL中違反非空約束的錯誤類型是“ERROR 1048 (23000)”對應。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#使用MySQL_error_code
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>Field_Not_Be_NULL<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#b452cd">1048</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#使用sqlstate_value
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>Field_Not_Be_NULL<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLSTATE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;23000&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><p>**舉例2：**定義&quot;ERROR 1148(42000)&ldquo;錯誤，名稱為command_not_allowed。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#使用MySQL_error_code
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>command_not_allowed<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#b452cd">1148</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#使用sqlstate_value
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>command_not_allowed<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLSTATE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;42000&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="23-定義處理常式">2.3 定義處理常式</h3>
+<p>可以為SQL執行過程中發生的某種類型的錯誤定義特殊的處理常式。定義處理常式時，使用DECLARE語句的語法如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">處理方式</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">錯誤類型</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">處理語句</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>處理方式</strong>：處理方式有3個取值：CONTINUE、EXIT、UNDO。
+<ul>
+<li><code>CONTINUE</code>：表示遇到錯誤不處理，繼續執行。</li>
+<li><code>EXIT</code>：表示遇到錯誤馬上退出。</li>
+<li><code>UNDO</code>：表示遇到錯誤後撤回之前的操作。MySQL中暫時不支持這樣的操作。</li>
+</ul>
+</li>
+<li><strong>錯誤類型</strong>（即條件）可以有如下取值：
+<ul>
+<li><code>SQLSTATE '字串錯誤碼'</code>：表示長度為5的sqlstate_value類型的錯誤代碼；</li>
+<li><code>MySQL_error_code</code>：匹配數數值型別錯誤代碼；</li>
+<li><code>錯誤名稱</code>：表示DECLARE &hellip; CONDITION定義的錯誤條件名稱。</li>
+<li><code>SQLWARNING</code>：匹配所有以01開頭的SQLSTATE錯誤代碼；</li>
+<li><code>NOT FOUND</code>：匹配所有以02開頭的SQLSTATE錯誤代碼；</li>
+<li><code>SQLEXCEPTION</code>：匹配所有沒有被SQLWARNING或NOT FOUND捕獲的SQLSTATE錯誤代碼；</li>
+</ul>
+</li>
+<li><strong>處理語句</strong>：如果出現上述條件之一，則採用對應的處理方式，並執行指定的處理語句。語句可以是像“<code>SET 變數 = 值</code>”這樣的簡單語句，也可以是使用<code>BEGIN ... END</code>編寫的複合陳述式。</li>
+</ul>
+<p>定義處理常式的幾種方式，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#方法1：捕獲sqlstate_value
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONTINUE</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLSTATE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;42S02&#39;</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;NO_SUCH_TABLE&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方法2：捕獲mysql_error_value
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONTINUE</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#b452cd">1146</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;NO_SUCH_TABLE&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方法3：先定義條件，再調用
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>no_such_table<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#b452cd">1146</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONTINUE</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span>NO_SUCH_TABLE<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;NO_SUCH_TABLE&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方法4：使用SQLWARNING
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXIT</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLWARNING</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;ERROR&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方法5：使用NOT FOUND
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXIT</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span>FOUND<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;NO_SUCH_TABLE&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#方法6：使用SQLEXCEPTION
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXIT</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLEXCEPTION</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@info<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;ERROR&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="24-案例解決">2.4 案例解決</h3>
+<p>在存儲過程中，定義處理常式，捕獲sqlstate_value值，當遇到MySQL_error_code值為1048時，執行CONTINUE操作，並且將@proc_value的值設置為-1。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">UpdateDataNoCondition</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#228b22">#定義處理常式
+</span><span style="color:#228b22"></span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONTINUE</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#b452cd">1048</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@proc_value<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Abel&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;aabbel&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Abel&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用過程：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">UpdateDataWithCondition</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>rows<span style="color:#bbb"> </span><span style="color:#008b45">affected</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@x,@proc_value;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>@x<span style="color:#bbb">   </span>|<span style="color:#bbb"> </span>@proc_value<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">    </span><span style="color:#b452cd">3</span><span style="color:#bbb"> </span>|<span style="color:#bbb">       	 </span>-<span style="color:#b452cd">1</span><span style="color:#bbb">  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><p><strong>舉例：</strong></p>
+<p>創建一個名稱為“InsertDataWithCondition”的存儲過程，代碼如下。</p>
+<p>在存儲過程中，定義處理常式，捕獲sqlstate_value值，當遇到sqlstate_value值為23000時，執行EXIT操作，並且將@proc_value的值設置為-1。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#準備工作
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>atguigudb.`departments`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ADD</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>uk_dept_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span>(department_id);<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">InsertDataWithCondition</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>duplicate_entry<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CONDITION</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQLSTATE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;23000&#39;</span><span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXIT</span><span style="color:#bbb"> </span>HANDLER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span>duplicate_entry<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@proc_value<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#008b45">departments</span>(department_name)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span>(<span style="color:#cd5555">&#39;測試&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#008b45">departments</span>(department_name)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span>(<span style="color:#cd5555">&#39;測試&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@x<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用存儲過程：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">InsertDataWithCondition</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>rows<span style="color:#bbb"> </span><span style="color:#008b45">affected</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@x,@proc_value;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>@x<span style="color:#bbb">   </span>|<span style="color:#bbb"> </span>@proc_value<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">    </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>|<span style="color:#bbb">       	 </span>-<span style="color:#b452cd">1</span><span style="color:#bbb">  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------+-------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><h2 id="3-流程控制">3. 流程控制</h2>
+<p>解決複雜問題不可能通過一個 SQL 語句完成，我們需要執行多個 SQL 操作。流程控制語句的作用就是控制存儲過程中 SQL 語句的執行順序，是我們完成複雜操作必不可少的一部分。只要是執行的程式，流程就分為三大類：</p>
+<ul>
+<li><code>順序結構</code>：程式從上往下依次執行</li>
+<li><code>分支結構</code>：程式按條件進行選擇執行，從兩條或多條路徑中選擇一條執行</li>
+<li><code>迴圈結構</code>：程式滿足一定條件下，重複執行一組語句</li>
+</ul>
+<p>針對於MySQL 的流程控制語句主要有 3 類。注意：只能用於存儲程式。</p>
+<ul>
+<li><code>條件判斷語句</code>：IF 語句和 CASE 語句</li>
+<li><code>迴圈語句</code>：LOOP、WHILE 和 REPEAT 語句</li>
+<li><code>跳躍陳述式</code>：ITERATE 和 LEAVE 語句</li>
+</ul>
+<h3 id="31-分支結構之-if">3.1 分支結構之 IF</h3>
+<ul>
+<li>IF 語句的語法結構是：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">運算式</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">操作</span><span style="color:#b452cd">1</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>[<span style="color:#8b008b;font-weight:bold">ELSEIF</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">運算式</span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">操作</span><span style="color:#b452cd">2</span>]<span style="color:#a61717;background-color:#e3d2d2">……</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>[<span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">操作</span>N]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb">
+</span></code></pre></div><p>根據運算式的結果為TRUE或FALSE執行相應的語句。這裡“[]”中的內容是可選的。</p>
+<ul>
+<li>
+<p>特點：① 不同的運算式對應不同的操作 ② 使用在begin end中</p>
+</li>
+<li>
+<p><strong>舉例1：</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>val<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IS</span><span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is null&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is not null&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span></code></pre></div></li>
+<li>
+<p>**舉例2：**聲明存儲過程“update_salary_by_eid1”，定義IN參數emp_id，輸入員工編號。判斷該員工薪資如果低於8000元並且入職時間超過5年，就漲薪500元；否則就不變。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_by_eid1</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATEDIFF</span>(<span style="color:#008b45">CURDATE</span>(),hire_date)/<span style="color:#b452cd">365</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">8000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">500</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div></li>
+<li>
+<p>**舉例3：**聲明存儲過程“update_salary_by_eid2”，定義IN參數emp_id，輸入員工編號。判斷該員工薪資如果低於9000元並且入職時間超過5年，就漲薪500元；否則就漲薪100元。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_by_eid2</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATEDIFF</span>(<span style="color:#008b45">CURDATE</span>(),hire_date)/<span style="color:#b452cd">365</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">8000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">500</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">100</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div></li>
+<li>
+<p>**舉例4：**聲明存儲過程“update_salary_by_eid3”，定義IN參數emp_id，輸入員工編號。判斷該員工薪資如果低於9000元，就更新薪資為9000元；薪資如果大於等於9000元且低於10000的，但是獎金比例為NULL的，就更新獎金比例為0.01；其他的漲薪100元。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_by_eid3</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DECIMAL</span>(<span style="color:#b452cd">3</span>,<span style="color:#b452cd">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>commission_pct<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">9000</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">9000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">ELSEIF</span><span style="color:#bbb"> </span>emp_salary<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">10000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IS</span><span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>commission_pct<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">100</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div></li>
+</ul>
+<h3 id="32-分支結構之-case">3.2 分支結構之 CASE</h3>
+<p>CASE 語句的語法結構1：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#情況一：類似於switch
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">運算式</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">或語句</span><span style="color:#b452cd">1</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">值</span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">或語句</span><span style="color:#b452cd">2</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>...<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#008b45">n或語句n</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">case</span>]<span style="color:#a61717;background-color:#e3d2d2">（如果是放在</span>begin<span style="color:#bbb"> </span>end中需要加上case<span style="color:#a61717;background-color:#e3d2d2">，如果放在</span>select後面不需要<span style="color:#a61717;background-color:#e3d2d2">）</span><span style="color:#bbb">
+</span></code></pre></div><p>CASE 語句的語法結構2：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#情況二：類似於多重if
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">條件</span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">或語句</span><span style="color:#b452cd">1</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">條件</span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">或語句</span><span style="color:#b452cd">2</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>...<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果</span><span style="color:#008b45">n或語句n</span>(<span style="color:#a61717;background-color:#e3d2d2">如果是語句，需要加分號</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">case</span>]<span style="color:#a61717;background-color:#e3d2d2">（如果是放在</span>begin<span style="color:#bbb"> </span>end中需要加上case<span style="color:#a61717;background-color:#e3d2d2">，如果放在</span>select後面不需要<span style="color:#a61717;background-color:#e3d2d2">）</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>舉例1：</strong></li>
+</ul>
+<p>使用CASE流程控制語句的第1種格式，判斷val值等於1、等於2，或者兩者都不等。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>val<span style="color:#bbb">
+</span><span style="color:#bbb">　　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is 1&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">　　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is 2&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">　　　</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is not 1 or 2&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>舉例2：</strong></li>
+</ul>
+<p>使用CASE流程控制語句的第2種格式，判斷val是否為空、小於0、大於0或者等於0。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>val<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IS</span><span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is null&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>val<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is less than 0&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>val<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is greater than 0&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;val is 0&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>**舉例3：**聲明存儲過程“update_salary_by_eid4”，定義IN參數emp_id，輸入員工編號。判斷該員工薪資如果低於9000元，就更新薪資為9000元；薪資大於等於9000元且低於10000的，但是獎金比例為NULL的，就更新獎金比例為0.01；其他的漲薪100元。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_by_eid4</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DECIMAL</span>(<span style="color:#b452cd">3</span>,<span style="color:#b452cd">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>commission_pct<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>emp_sal&lt;<span style="color:#b452cd">9000</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=<span style="color:#b452cd">9000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>emp_sal&lt;<span style="color:#b452cd">10000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>bonus<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IS</span><span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>commission_pct=<span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">100</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>舉例4：聲明存儲過程update_salary_by_eid5，定義IN參數emp_id，輸入員工編號。判斷該員工的入職年限，如果是0年，薪資漲50；如果是1年，薪資漲100；如果是2年，薪資漲200；如果是3年，薪資漲300；如果是4年，薪資漲400；其他的漲薪500。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_by_eid5</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">ROUND</span>(<span style="color:#008b45">DATEDIFF</span>(<span style="color:#008b45">CURDATE</span>(),hire_date)/<span style="color:#b452cd">365</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>hire_year<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">50</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">100</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">200</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">3</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">300</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">4</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">400</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary=salary+<span style="color:#b452cd">500</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="33-迴圈結構之loop">3.3 迴圈結構之LOOP</h3>
+<p>LOOP迴圈語句用來重複執行某些語句。LOOP內的語句一直重複執行直到迴圈被退出（使用LEAVE子句），跳出迴圈過程。</p>
+<p>LOOP語句的基本格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">[loop_label:]<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">迴圈執行的語句</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb"> </span>[loop_label]<span style="color:#bbb">
+</span></code></pre></div><p>其中，loop_label表示LOOP語句的標注名稱，該參數可以省略。</p>
+<p><strong>舉例1：</strong></p>
+<p>使用LOOP語句進行迴圈操作，id值小於10時將重複執行迴圈過程。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>add_loop:<span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>id<span style="color:#bbb"> </span>+<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>id<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span>add_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb"> </span>add_loop;<span style="color:#bbb">
+</span></code></pre></div><p>**舉例2：**當市場環境變好時，公司為了獎勵大家，決定給大家漲工資。聲明存儲過程“update_salary_loop()”，聲明OUT參數num，輸出迴圈次數。存儲過程中實現迴圈給大家漲薪，薪資漲為原來的1.1倍。直到全公司的平均薪資達到12000結束。並統計迴圈次數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_loop</span>(<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>avg_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>loop_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span>label_loop:<span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>avg_salary<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">12000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span>label_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>loop_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>loop_count<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb"> </span>label_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>loop_count;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="34-迴圈結構之while">3.4 迴圈結構之WHILE</h3>
+<p>WHILE語句創建一個帶條件判斷的迴圈過程。WHILE在執行語句執行時，先對指定的運算式進行判斷，如果為真，就執行迴圈內的語句，否則退出迴圈。WHILE語句的基本格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">[while_label:]<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">迴圈條件</span><span style="color:#bbb">  </span>DO<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">循環體</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span>[while_label];<span style="color:#bbb">
+</span></code></pre></div><p>while_label為WHILE語句的標注名稱；如果迴圈條件結果為真，WHILE語句內的語句或語句群被執行，直至迴圈條件為假，退出迴圈。</p>
+<p><strong>舉例1：</strong></p>
+<p>WHILE語句示例，i值小於10時，將重複執行迴圈過程，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">test_while</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#bbb"> </span>DO<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>i;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#調用
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">test_while</span>();<span style="color:#bbb">
+</span></code></pre></div><p>**舉例2：**市場環境不好時，公司為了渡過難關，決定暫時降低大家的薪資。聲明存儲過程“update_salary_while()”，聲明OUT參數num，輸出迴圈次數。存儲過程中實現迴圈給大家降薪，薪資降為原來的90%。直到全公司的平均薪資達到5000結束。並統計迴圈次數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_while</span>(<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span><span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">5000</span><span style="color:#bbb"> </span>DO<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>.<span style="color:#b452cd">9</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>while_count;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="35-迴圈結構之repeat">3.5 迴圈結構之REPEAT</h3>
+<p>REPEAT語句創建一個帶條件判斷的迴圈過程。與WHILE迴圈不同的是，REPEAT 迴圈首先會執行一次迴圈，然後在 UNTIL 中進行運算式的判斷，如果滿足條件就退出，即 END REPEAT；如果條件不滿足，則會就繼續執行迴圈，直到滿足退出條件為止。</p>
+<p>REPEAT語句的基本格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">[repeat_label:]<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPEAT</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　　　</span><span style="color:#a61717;background-color:#e3d2d2">循環體的語句</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>UNTIL<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結束迴圈的條件運算式</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPEAT</span><span style="color:#bbb"> </span>[repeat_label]<span style="color:#bbb">
+</span></code></pre></div><p>repeat_label為REPEAT語句的標注名稱，該參數可以省略；REPEAT語句內的語句或語句群被重複，直至expr_condition為真。</p>
+<p><strong>舉例1：</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">test_repeat</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">REPEAT</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>UNTIL<span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPEAT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>i;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>**舉例2：**當市場環境變好時，公司為了獎勵大家，決定給大家漲工資。聲明存儲過程“update_salary_repeat()”，聲明OUT參數num，輸出迴圈次數。存儲過程中實現迴圈給大家漲薪，薪資漲為原來的1.15倍。直到全公司的平均薪資達到13000結束。並統計迴圈次數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">update_salary_repeat</span>(<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span><span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>repeat_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">REPEAT</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">15</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>repeat_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>repeat_count<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>UNTIL<span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">13000</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPEAT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>repeat_count;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>對比三種迴圈結構：</strong></p>
+<p>1、這三種迴圈都可以省略名稱，但如果迴圈中添加了迴圈控制語句（LEAVE或ITERATE）則必須添加名稱。
+2、
+LOOP：一般用於實現簡單的&quot;死&quot;迴圈
+WHILE：先判斷後執行
+REPEAT：先執行後判斷，無條件至少執行一次</p>
+<h3 id="36-跳躍陳述式之leave語句">3.6 跳躍陳述式之LEAVE語句</h3>
+<p>LEAVE語句：可以用在迴圈語句內，或者以 BEGIN 和 END 包裹起來的程式體內，表示跳出迴圈或者跳出程式體的操作。如果你有面向過程的程式設計語言的使用經驗，你可以把 LEAVE 理解為 break。</p>
+<p>基本格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">標記名</span><span style="color:#bbb">
+</span></code></pre></div><p>其中，label參數表示迴圈的標誌。LEAVE和BEGIN &hellip; END或迴圈一起被使用。</p>
+<p>**舉例1：**創建存儲過程 “leave_begin()”，聲明INT類型的IN參數num。給BEGIN&hellip;END加標記名，並在BEGIN&hellip;END中使用IF語句判斷num參數的值。</p>
+<ul>
+<li>如果num&lt;=0，則使用LEAVE語句退出BEGIN&hellip;END；</li>
+<li>如果num=1，則查詢“employees”表的平均薪資；</li>
+<li>如果num=2，則查詢“employees”表的最低薪資；</li>
+<li>如果num&gt;2，則查詢“employees”表的最高薪資。</li>
+</ul>
+<p>IF語句結束後查詢“employees”表的總人數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">leave_begin</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>begin_label:<span style="color:#bbb"> </span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>num&lt;=<span style="color:#b452cd">0</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span>begin_label;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">ELSEIF</span><span style="color:#bbb"> </span>num=<span style="color:#b452cd">1</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">ELSEIF</span><span style="color:#bbb"> </span>num=<span style="color:#b452cd">2</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MIN</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MAX</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">COUNT</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>舉例2：</strong></p>
+<p>當市場環境不好時，公司為了渡過難關，決定暫時降低大家的薪資。聲明存儲過程“leave_while()”，聲明OUT參數num，輸出迴圈次數，存儲過程中使用WHILE迴圈給大家降低薪資為原來薪資的90%，直到全公司的平均薪資小於等於10000，並統計迴圈次數。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">leave_while</span>(<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb"> 
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>;<span style="color:#228b22">#記錄平均工資
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb"> </span><span style="color:#228b22">#記錄迴圈次數
+</span><span style="color:#228b22"></span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb"> </span><span style="color:#228b22">#① 初始化條件
+</span><span style="color:#228b22"></span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span>while_label:<span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span><span style="color:#00688b">TRUE</span><span style="color:#bbb"> </span>DO<span style="color:#bbb">  </span><span style="color:#228b22">#② 迴圈條件
+</span><span style="color:#228b22"></span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#228b22">#③ 循環體
+</span><span style="color:#228b22"></span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span><span style="color:#b452cd">10000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb">
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span>while_label;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>salary<span style="color:#bbb">  </span>=<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>.<span style="color:#b452cd">9</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>while_count<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#228b22">#④ 反覆運算條件
+</span><span style="color:#228b22"></span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>avg_sal<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#賦值
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>while_count;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="37-跳躍陳述式之iterate語句">3.7 跳躍陳述式之ITERATE語句</h3>
+<p>ITERATE語句：只能用在迴圈語句（LOOP、REPEAT和WHILE語句）內，表示重新開始迴圈，將執行順序轉到語句段開頭處。如果你有面向過程的程式設計語言的使用經驗，你可以把 ITERATE 理解為 continue，意思為“再次迴圈”。</p>
+<p>語句基本格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ITERATE</span><span style="color:#bbb"> </span>label<span style="color:#bbb">
+</span></code></pre></div><p>label參數表示迴圈的標誌。ITERATE語句必須跟在迴圈標誌前面。</p>
+<p><strong>舉例：</strong>  定義區域變數num，初始值為0。迴圈結構中執行num + 1操作。</p>
+<ul>
+<li>如果num &lt; 10，則繼續執行迴圈；</li>
+<li>如果num &gt; 15，則退出迴圈結構；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">test_iterate</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span>my_loop:<span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ITERATE</span><span style="color:#bbb"> </span>my_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">ELSEIF</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">15</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LEAVE</span><span style="color:#bbb"> </span>my_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;尚矽谷：讓天下沒有難學的技術&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LOOP</span><span style="color:#bbb"> </span>my_loop;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h2 id="4-游標">4. 游標</h2>
+<h3 id="41-什麼是游標或游標">4.1 什麼是游標（或游標）</h3>
+<p>雖然我們也可以通過篩選條件 WHERE 和 HAVING，或者是限定返回記錄的關鍵字 LIMIT 返回一條記錄，但是，卻無法在結果集中像指標一樣，向前定位一條記錄、向後定位一條記錄，或者是<code>隨意定位到某一條記錄</code>，並對記錄的資料進行處理。</p>
+<p>這個時候，就可以用到游標。游標，提供了一種靈活的操作方式，讓我們能夠對結果集中的每一條記錄進行定位，並對指向的記錄中的資料進行操作的資料結構。<strong>游標讓 SQL 這種面向集合的語言有了面向過程開發的能力。</strong></p>
+<p>在 SQL 中，游標是一種臨時的資料庫物件，可以指向存儲在資料庫表中的資料行指標。這裡游標<code>充當了指標的作用</code>，我們可以通過操作游標來對資料行進行操作。</p>
+<p>MySQL中游標可以在存儲過程和函數中使用。</p>
+<p>比如，我們查詢了 employees 資料表中工資高於15000的員工都有哪些：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>employee_id,last_name,salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">15000</span>;<span style="color:#bbb">
+</span></code></pre></div><p><img src="images/image-20211111182656990.png" alt="image-20211111182656990"></p>
+<p>這裡我們就可以通過游標來運算元據行，如圖所示此時游標所在的行是“108”的記錄，我們也可以在結果集上滾動游標，指向結果集中的任意一行。</p>
+<h3 id="42-使用游標步驟">4.2 使用游標步驟</h3>
+<p>游標必須在聲明處理常式之前被聲明，並且變數和條件還必須在聲明游標或處理常式之前被聲明。</p>
+<p>如果我們想要使用游標，一般需要經歷四個步驟。不同的 DBMS 中，使用游標的語法可能略有不同。</p>
+<p><strong>第一步，聲明游標</strong></p>
+<p>在MySQL中，使用DECLARE關鍵字來聲明游標，其語法的基本形式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>cursor_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURSOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span>select_statement;<span style="color:#bbb"> 
+</span></code></pre></div><p>這個語法適用於 MySQL，SQL Server，DB2 和 MariaDB。如果是用 Oracle 或者 PostgreSQL，需要寫成：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>cursor_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURSOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IS</span><span style="color:#bbb"> </span>select_statement;<span style="color:#bbb">
+</span></code></pre></div><p>要使用 SELECT 語句來獲取資料結果集，而此時還沒有開始遍歷資料，這裡 select_statement 代表的是 SELECT 語句，返回一個用於創建游標的結果集。</p>
+<p>比如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>cur_emp<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURSOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>employee_id,salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>cursor_fruit<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURSOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>f_name,<span style="color:#bbb"> </span>f_price<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>fruits<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>第二步，打開游標</strong></p>
+<p>打開游標的語法如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">OPEN<span style="color:#bbb"> </span>cursor_name<span style="color:#bbb">
+</span></code></pre></div><p>當我們定義好游標之後，如果想要使用游標，必須先打開游標。打開游標的時候 SELECT 語句的查詢結果集就會送到游標工作區，為後面游標的<code>逐條讀取</code>結果集中的記錄做準備。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">OPEN<span style="color:#bbb">　</span>cur_emp<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>第三步，使用游標（從游標中取得資料）</strong></p>
+<p>語法如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">FETCH</span><span style="color:#bbb"> </span>cursor_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>var_name<span style="color:#bbb"> </span>[,<span style="color:#bbb"> </span>var_name]<span style="color:#bbb"> </span>...<span style="color:#bbb">
+</span></code></pre></div><p>這句的作用是使用 cursor_name 這個游標來讀取當前行，並且將資料保存到 var_name 這個變數中，游標指標指到下一行。如果游標讀取的資料行有多個列名，則在 INTO 關鍵字後面賦值給多個變數名即可。</p>
+<p>注意：var_name必須在聲明游標之前就定義好。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">FETCH</span><span style="color:#bbb">　</span>cur_emp<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>emp_id,<span style="color:#bbb"> </span>emp_sal<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>注意：<strong>游標的查詢結果集中的欄位數，必須跟 INTO 後面的變數數一致</strong>，否則，在存儲過程執行的時候，MySQL 會提示錯誤。</p>
+<p><strong>第四步，關閉游標</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">CLOSE<span style="color:#bbb"> </span>cursor_name<span style="color:#bbb">
+</span></code></pre></div><p>有 OPEN 就會有 CLOSE，也就是打開和關閉游標。當我們使用完游標後需要關閉掉該游標。因為游標會<code>佔用系統資源</code>，如果不及時關閉，<strong>游標會一直保持到存儲過程結束</strong>，影響系統運行的效率。而關閉游標的操作，會釋放游標佔用的系統資源。</p>
+<p>關閉游標之後，我們就不能再檢索查詢結果中的資料行，如果需要檢索只能再次打開游標。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">CLOSE<span style="color:#bbb">　</span>cur_emp;<span style="color:#bbb">
+</span></code></pre></div><h3 id="43-舉例">4.3 舉例</h3>
+<p>創建存儲過程“get_count_by_limit_total_salary()”，聲明IN參數 limit_total_salary，DOUBLE類型；聲明OUT參數total_count，INT類型。函數的功能可以實現累加薪資最高的幾個員工的薪資值，直到薪資總和達到limit_total_salary參數的值，返回累加的人數給total_count。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">get_count_by_limit_total_salary</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>limit_total_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>,<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>total_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>sum_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">  </span><span style="color:#228b22">#記錄累加的總工資
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>cursor_salary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb"> </span><span style="color:#228b22">#記錄某一個工資值
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_count<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb"> </span><span style="color:#228b22">#記錄迴圈個數
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#228b22">#定義游標
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>emp_cursor<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURSOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DESC</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#打開游標
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span>OPEN<span style="color:#bbb"> </span>emp_cursor;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">REPEAT</span><span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#228b22">#使用游標（從游標中獲取資料）
+</span><span style="color:#228b22"></span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">FETCH</span><span style="color:#bbb"> </span>emp_cursor<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>cursor_salary;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>sum_salary<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>sum_salary<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span>cursor_salary;<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>emp_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_count<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">		
+</span><span style="color:#bbb">		</span>UNTIL<span style="color:#bbb"> </span>sum_salary<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span>limit_total_salary<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPEAT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb">	</span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>total_count<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_count;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#228b22">#關閉游標
+</span><span style="color:#228b22"></span><span style="color:#bbb">	</span>CLOSE<span style="color:#bbb"> </span>emp_cursor;<span style="color:#bbb">
+</span><span style="color:#bbb">	
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="45-小結">4.5 小結</h3>
+<p>游標是 MySQL 的一個重要的功能，為<code>逐條讀取</code>結果集中的資料，提供了完美的解決方案。跟在應用層面實現相同的功能相比，游標可以在存儲程式中使用，效率高，程式也更加簡潔。</p>
+<p>但同時也會帶來一些性能問題，比如在使用游標的過程中，會對資料行進行<code>加鎖</code>，這樣在業務併發量大的時候，不僅會影響業務之間的效率，還會<code>消耗系統資源</code>，造成記憶體不足，這是因為游標是在記憶體中進行的處理。</p>
+<p>建議：養成用完之後就關閉的習慣，這樣才能提高系統的整體效率。</p>
+<h2 id="補充mysql-80的新特性全域變數的持久化">補充：MySQL 8.0的新特性—全域變數的持久化</h2>
+<p>在MySQL資料庫中，全域變數可以通過SET GLOBAL語句來設置。例如，設置伺服器語句超時的限制，可以通過設置系統變數max_execution_time來實現：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>MAX_EXECUTION_TIME=<span style="color:#b452cd">2000</span>;<span style="color:#bbb">
+</span></code></pre></div><p>使用SET GLOBAL語句設置的變數值只會<code>臨時生效</code>。<code>資料庫重啟</code>後，伺服器又會從MySQL設定檔中讀取變數的預設值。
+MySQL 8.0版本新增了<code>SET PERSIST</code>命令。例如，設置伺服器的最大連接數為1000：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>PERSIST<span style="color:#bbb"> </span>global<span style="color:#bbb"> </span>max_connections<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1000</span>;<span style="color:#bbb">
+</span></code></pre></div><p>MySQL會將該命令的配置保存到資料目錄下的<code>mysqld-auto.cnf</code>檔中，下次啟動時會讀取該檔，用其中的配置來覆蓋預設的設定檔。</p>
+<p>舉例：</p>
+<p>查看全域變數max_connections的值，結果如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%max_connections%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>Variable_name<span style="color:#bbb">          </span>|<span style="color:#bbb"> </span>Value<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>max_connections<span style="color:#bbb">        </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">151</span><span style="color:#bbb">   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>mysqlx_max_connections<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">100</span><span style="color:#bbb">   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>rows<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><p>設置全域變數max_connections的值：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>persist<span style="color:#bbb"> </span>max_connections=<span style="color:#b452cd">1000</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>rows<span style="color:#bbb"> </span><span style="color:#008b45">affected</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><p><code>重啟MySQL伺服器</code>，再次查詢max_connections的值：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%max_connections%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>Variable_name<span style="color:#bbb">          </span>|<span style="color:#bbb"> </span>Value<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>max_connections<span style="color:#bbb">        </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">1000</span><span style="color:#bbb">  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>mysqlx_max_connections<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">100</span><span style="color:#bbb">   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------+-------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>rows<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-27</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211228-agg-mysql-13/">
+			下一篇<br>觸發器Trigger
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211226-agg-mysql-11/">
+			上一篇<br>預存程序Procedure與自訂函數Function
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

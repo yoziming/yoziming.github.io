@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>封裝性、構造器、關鍵字this、Package包</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Java基礎課-Day10筆記">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="封裝性、構造器、關鍵字this、Package包" />
+<meta property="og:description" content="尚硅谷Java基礎課-Day10筆記" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211125-agg-ja-10/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-25T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="封裝性、構造器、關鍵字this、Package包"/>
+<meta name="twitter:description" content="尚硅谷Java基礎課-Day10筆記"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%81%e8%a3%9d%e7%9a%84%e8%a8%ad%e8%a8%88%e6%80%9d%e6%83%b3" onclick="onNavClick(`#封裝的設計思想-nav`)" id="封裝的設計思想-nav">
+									封裝的設計思想
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%81%e8%a3%9d%e6%80%a7%e7%9a%84%e9%ab%94%e7%8f%be" onclick="onNavClick(`#封裝性的體現-nav`)" id="封裝性的體現-nav">
+									封裝性的體現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%8a%e9%99%90%e4%bf%ae%e9%a3%be%e7%ac%a6" onclick="onNavClick(`#權限修飾符-nav`)" id="權限修飾符-nav">
+									權限修飾符
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%a7%8b%e9%80%a0%e5%99%a8constructor" onclick="onNavClick(`#構造器constructor-nav`)" id="構造器constructor-nav">
+									構造器(constructor)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e7%9a%84%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#初始化的順序-nav`)" id="初始化的順序-nav">
+									初始化的順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javabean" onclick="onNavClick(`#javabean-nav`)" id="javabean-nav">
+									JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#uml%e9%a1%9e%e5%9c%96" onclick="onNavClick(`#uml類圖-nav`)" id="uml類圖-nav">
+									UML類圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97this%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#關鍵字this的使用-nav`)" id="關鍵字this的使用-nav">
+									關鍵字This的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92%e9%a1%8c-%e9%8a%80%e8%a1%8c%e7%94%a8%e6%88%b6%e6%b8%85%e5%96%ae" onclick="onNavClick(`#練習題-銀行用戶清單-nav`)" id="練習題-銀行用戶清單-nav">
+									練習題-銀行用戶清單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mvc%e8%a8%ad%e8%a8%88%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#mvc設計模式-nav`)" id="mvc設計模式-nav">
+									MVC設計模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#package%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#package的使用-nav`)" id="package的使用-nav">
+									Package的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#import%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#import的使用-nav`)" id="import的使用-nav">
+									Import的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%81%e8%a3%9d%e7%9a%84%e8%a8%ad%e8%a8%88%e6%80%9d%e6%83%b3" onclick="onNavClick(`#封裝的設計思想-nav`)" id="封裝的設計思想-nav">
+									封裝的設計思想
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%81%e8%a3%9d%e6%80%a7%e7%9a%84%e9%ab%94%e7%8f%be" onclick="onNavClick(`#封裝性的體現-nav`)" id="封裝性的體現-nav">
+									封裝性的體現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%8a%e9%99%90%e4%bf%ae%e9%a3%be%e7%ac%a6" onclick="onNavClick(`#權限修飾符-nav`)" id="權限修飾符-nav">
+									權限修飾符
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%a7%8b%e9%80%a0%e5%99%a8constructor" onclick="onNavClick(`#構造器constructor-nav`)" id="構造器constructor-nav">
+									構造器(constructor)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e7%9a%84%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#初始化的順序-nav`)" id="初始化的順序-nav">
+									初始化的順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javabean" onclick="onNavClick(`#javabean-nav`)" id="javabean-nav">
+									JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#uml%e9%a1%9e%e5%9c%96" onclick="onNavClick(`#uml類圖-nav`)" id="uml類圖-nav">
+									UML類圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97this%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#關鍵字this的使用-nav`)" id="關鍵字this的使用-nav">
+									關鍵字This的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%b4%e7%bf%92%e9%a1%8c-%e9%8a%80%e8%a1%8c%e7%94%a8%e6%88%b6%e6%b8%85%e5%96%ae" onclick="onNavClick(`#練習題-銀行用戶清單-nav`)" id="練習題-銀行用戶清單-nav">
+									練習題-銀行用戶清單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mvc%e8%a8%ad%e8%a8%88%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#mvc設計模式-nav`)" id="mvc設計模式-nav">
+									MVC設計模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#package%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#package的使用-nav`)" id="package的使用-nav">
+									Package的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#import%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#import的使用-nav`)" id="import的使用-nav">
+									Import的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    封裝性、構造器、關鍵字this、Package包
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Java基礎課-Day10筆記
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-25 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7java%E7%AD%86%E8%A8%98">尚硅谷Java筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="封裝的設計思想">封裝的設計思想</h1>
+<ul>
+<li>
+<p>高內聚:類的內部數據操作細節自己完成，不允許外部干涉</p>
+</li>
+<li>
+<p>低耦合:對外露出少量的方法(API)供使用</p>
+</li>
+</ul>
+<blockquote>
+<p>舉例:微波爐，我不需要用戶控制燈光、波照、轉盤等等，只要他放入東西按下&quot;解凍&quot;即可。即所謂的&quot;一鍵XX&quot;功能。</p>
+</blockquote>
+<h3 id="封裝性的體現">封裝性的體現</h3>
+<ul>
+<li>將類的屬性私有化(<code>private</code>)，通過公共的(<code>public</code>)的<code>set</code>與<code>get</code>方法讓外部調用，舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Main</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        Animal a1 = <span style="color:#8b008b;font-weight:bold">new</span> Animal();
+        a1.<span style="color:#658b00">setAge</span>(10);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(a1.<span style="color:#658b00">getAge</span>());
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Animal</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> age;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setAge</span>(<span style="color:#00688b;font-weight:bold">int</span> i) {
+        age = i;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getAge</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> age;
+    }
+}
+</code></pre></div><ul>
+<li>不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&quot;小工具&quot;)</li>
+<li>單例模式(將構造器私有化)</li>
+<li>&hellip;等等</li>
+<li>需要權限修飾符來配合</li>
+</ul>
+<h3 id="權限修飾符">權限修飾符</h3>
+<blockquote>
+<p>JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)</p>
+</blockquote>
+<ul>
+<li><code>private</code>:限當前類內部使用</li>
+<li><code>default(缺省，就是不寫)</code>:同一個包名就可以調用</li>
+<li><code>protected</code>:不同包它的子類可以調用</li>
+<li><code>public</code>:相當於開放的</li>
+</ul>
+<h5 id="修飾的對象">修飾的對象</h5>
+<ul>
+<li>以上4種可以用於修飾<strong>類的內部結構</strong>:屬性、方法、構造器、內部類</li>
+<li><strong><code>class</code>本身的修飾只能是缺省或<code>public</code></strong>，一個<code>.java檔</code>只能包含一個<code>public類</code></li>
+</ul>
+<h1 id="構造器constructor">構造器(constructor)</h1>
+<ul>
+<li>作用:創立物件、初始化物件的屬性</li>
+<li>說明:如果沒有顯示定義構造器，則系統默認提供一個空參的構造器</li>
+<li>格式:<code>權限修飾符 類名(形參列表){}</code>，注意<strong>構造器名=類名</strong></li>
+<li>在一個類中可以定義多個構造器，彼此構成重載，舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Main</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        Animal a1 = <span style="color:#8b008b;font-weight:bold">new</span> Animal(5);
+        Animal a2 = <span style="color:#8b008b;font-weight:bold">new</span> Animal(4, <span style="color:#cd5555">&#34;狗&#34;</span>);
+
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Animal</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> age;
+    <span style="color:#8b008b;font-weight:bold">private</span> String kind;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Animal</span>(<span style="color:#00688b;font-weight:bold">int</span> a) {
+        age = a;
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化並定義年齡為&#34;</span> + a);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Animal</span>(<span style="color:#00688b;font-weight:bold">int</span> a, String k) {
+        age = a;
+        kind = k;
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化並定義年齡為&#34;</span> + a + <span style="color:#cd5555">&#34;，種類為&#34;</span> + kind);
+
+    }
+}
+</code></pre></div><h3 id="初始化的順序">初始化的順序</h3>
+<ol>
+<li>默認初始化:0或null那種，例如<code>private int age;</code>，new一個實例出來age默認是0</li>
+<li>顯式初始化:定義屬性時直接寫好的，例如<code>private int age=18;</code></li>
+<li>代碼塊初始化:專門做初始化的一個<code>{}</code>區(若有人手很賤把代碼塊放在顯式初始化之上，則代碼塊會比顯式先執行，但看到這樣做的人先拖出去打)</li>
+<li>構造器初始化，造實例時同時賦值</li>
+<li>造完物件後調用賦值</li>
+</ol>
+<h3 id="javabean">JavaBean</h3>
+<blockquote>
+<p>JavaBean是一個遵循特定寫法的Java類，是一種Java語言編寫的可重用元件</p>
+</blockquote>
+<p>它的方法命名，構造及行為必須符合特定的約定：</p>
+<ol>
+<li>這個類必須具有一個公共的(<code>public</code>)空參構造器</li>
+<li>所有屬性私有化(<code>private</code>)</li>
+<li>私有化的屬性必須通過<code>public</code>型別的方法(<code>getter</code>和<code>setter</code>)暴露給其他程式，並且方法的命名也必須遵循一定的命名規範。</li>
+<li>這個類應是可序列化的(比如可以實現<code>Serializable</code>接口，用於實現<code>bean</code>的永續性)</li>
+</ol>
+<h3 id="uml類圖">UML類圖</h3>
+<blockquote>
+<p>Unified Modeling Language，統一建模語言，用於快速表示類</p>
+</blockquote>
+<p><img src="image-20211123131818447.png" alt="image-20211123131818447"></p>
+<ul>
+<li>三個分區:從上到下為類名、屬性、方法</li>
+<li>權限修飾符:<code>- private</code>、<code>+ public</code>、<code># protected</code></li>
+<li><code>()</code>內表示形參</li>
+<li><code>:</code>後表示返回值類型</li>
+</ul>
+<h1 id="關鍵字this的使用">關鍵字This的使用</h1>
+<ul>
+<li>
+<p>可以用來修飾屬性、方法、構造器</p>
+</li>
+<li>
+<p><code>this.XX</code>，就是表明&quot;<strong>當前物件</strong>&quot;，用在例如:形參與屬性同名時</p>
+</li>
+<li>
+<p>用在本類中構造器調用<strong>其他構造器</strong>，最多一個且必須聲明在首行，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> age;
+<span style="color:#8b008b;font-weight:bold">private</span> String kind;
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Animal</span>(<span style="color:#00688b;font-weight:bold">int</span> age) {
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">age</span> = age;
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化並定義年齡為&#34;</span> + age);
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Animal</span>(<span style="color:#00688b;font-weight:bold">int</span> age, String k) {
+    <span style="color:#8b008b;font-weight:bold">this</span>(age); <span style="color:#228b22">// 調用形參為age的，就是上面那個構造器
+</span><span style="color:#228b22"></span>    kind = k;
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;，種類為&#34;</span> + kind);
+
+}
+</code></pre></div></li>
+</ul>
+<h3 id="練習題-銀行用戶清單">練習題-銀行用戶清單</h3>
+<ol>
+<li>
+<p>造一個Account類，可以顯示餘額、存取錢</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Account</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">double</span> balance;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Account</span>(<span style="color:#00688b;font-weight:bold">double</span> init_balance) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">balance</span> = init_balance;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">double</span> <span style="color:#008b45">getBalance</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> balance;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">deposit</span>(<span style="color:#00688b;font-weight:bold">double</span> amt) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (amt &gt; 0) {
+            balance += amt;
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;存錢成功&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span>;
+        }
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;金額錯誤&#34;</span>);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">withdraw</span>(<span style="color:#00688b;font-weight:bold">double</span> amt) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (balance &gt;= amt) {
+            balance -= amt;
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;取錢成功&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span>;
+        }
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;金額錯誤&#34;</span>);
+    }
+
+}
+
+</code></pre></div></li>
+<li>
+<p>造一個Customer類，可以顯示用戶名跟他名下的Account</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+    <span style="color:#8b008b;font-weight:bold">private</span> Account account;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Customer</span>(String name) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">name</span> = name;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> Account <span style="color:#008b45">getAccount</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> account;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setAccount</span>(Account account) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">account</span> = account;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">getName</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> name;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setName</span>(String name) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">name</span> = name;
+    }
+}
+
+
+</code></pre></div></li>
+<li>
+<p>造一個Bank類，可以存用戶列表為數組，跟用戶數量</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Bank</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> Customer[] customers;
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> numberOfCustomer = 0;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Bank</span>(<span style="color:#00688b;font-weight:bold">int</span> n) {
+        customers = <span style="color:#8b008b;font-weight:bold">new</span> Customer[n];
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化了一個客戶清單，上限個數為&#34;</span> + n);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addCustomer</span>(String name) {
+        Customer cust = <span style="color:#8b008b;font-weight:bold">new</span> Customer(name);
+        customers[numberOfCustomer++] = cust;
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;添加客戶成功&#34;</span>);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> Customer <span style="color:#008b45">getCustomer</span>(<span style="color:#00688b;font-weight:bold">int</span> index) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (index &gt;= 0 &amp;&amp; index &lt; numberOfCustomer) {
+            <span style="color:#8b008b;font-weight:bold">return</span> customers[index];
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getNumberOfCustomer</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> numberOfCustomer;
+    }
+}
+
+</code></pre></div></li>
+<li>
+<p>調用</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Main</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        Bank b1 = <span style="color:#8b008b;font-weight:bold">new</span> Bank(10);
+        b1.<span style="color:#658b00">addCustomer</span>(<span style="color:#cd5555">&#34;Tom&#34;</span>);
+        b1.<span style="color:#658b00">getCustomer</span>(0).<span style="color:#658b00">setAccount</span>(<span style="color:#8b008b;font-weight:bold">new</span> Account(1000));
+        b1.<span style="color:#658b00">getCustomer</span>(0).<span style="color:#658b00">getAccount</span>().<span style="color:#658b00">withdraw</span>(400);
+        <span style="color:#00688b;font-weight:bold">double</span> balance = b1.<span style="color:#658b00">getCustomer</span>(0).<span style="color:#658b00">getAccount</span>().<span style="color:#658b00">getBalance</span>();
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;用戶&#34;</span> + b1.<span style="color:#658b00">getCustomer</span>(0).<span style="color:#658b00">getName</span>() +
+                <span style="color:#cd5555">&#34;的餘額為&#34;</span> + balance);
+
+    }
+}
+</code></pre></div></li>
+</ol>
+<h3 id="mvc設計模式">MVC設計模式</h3>
+<blockquote>
+<p>太基礎不多提了</p>
+</blockquote>
+<ul>
+<li>M:數據庫，資料存這</li>
+<li>C:控制器，一切操作都寫這</li>
+<li>V:視圖，用戶實際交互的UI</li>
+</ul>
+<h1 id="package的使用">Package的使用</h1>
+<blockquote>
+<p>為了方便管理，類似命名空間的概念</p>
+</blockquote>
+<ul>
+<li>使用<code>package</code>聲明類或接口所屬的包，聲明在文件首行</li>
+<li>包名屬於標示符，遵循規範(全小寫aaa.bbb.ccc)，見明知意</li>
+<li>每&quot;<code>.</code>&ldquo;一次，代表一層文件目錄</li>
+<li>同一個包下，不能存在同名的類、接口</li>
+</ul>
+<h3 id="import的使用">Import的使用</h3>
+<ul>
+<li>格式:<code>import 包名</code></li>
+<li>聲明在包名和類的聲明之間(第二區塊的意思)</li>
+<li>可以用<code>XXX.*</code>來導入XXX下所有包(一層而已，之下的子包還是需要顯式導入)</li>
+<li>當前包與系統預設的(如<code>java.lang</code>)包可以不用寫導入</li>
+<li>若想調用<strong>當前包的子包</strong>則還是需要顯式導入</li>
+<li>若想調用<strong>不同包下同名的類</strong>，則需在調用時使用&quot;全類名&rdquo;，舉例:<code>java.lang.String</code></li>
+<li><code>import static</code>可以導入指定類或接口下的靜態屬性或方法 (很少用)</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-25</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211126-agg-ja-11/">
+			下一篇<br>項目練習2-客戶訊息管理系統
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211124-agg-ja-09/">
+			上一篇<br>物件導向:方法的重載與參數的值傳遞
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

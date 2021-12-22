@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Docker啟用Mysql</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="使用容器化的Mysql相關語句">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Docker啟用Mysql" />
+<meta property="og:description" content="使用容器化的Mysql相關語句" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211001-docker-mysql/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-10-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker啟用Mysql"/>
+<meta name="twitter:description" content="使用容器化的Mysql相關語句"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker%e5%95%9f%e7%94%a8mysql" onclick="onNavClick(`#docker啟用mysql-nav`)" id="docker啟用mysql-nav">
+									Docker啟用Mysql
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8a%93%e6%98%a0%e8%b1%a1%e6%aa%94" onclick="onNavClick(`#抓映象檔-nav`)" id="抓映象檔-nav">
+									抓映象檔
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%b7%e8%a1%8c-image" onclick="onNavClick(`#執行-image-nav`)" id="執行-image-nav">
+									執行 Image
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%a2%e8%a6%96%e9%81%8b%e8%a1%8c%e4%b8%ad%e7%9a%84%e5%ae%b9%e5%99%a8" onclick="onNavClick(`#檢視運行中的容器-nav`)" id="檢視運行中的容器-nav">
+									檢視運行中的容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%b2%e5%85%a5-container" onclick="onNavClick(`#進入-container-nav`)" id="進入-container-nav">
+									進入 Container
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%b2%e5%85%a5mysql" onclick="onNavClick(`#進入mysql-nav`)" id="進入mysql-nav">
+									進入Mysql
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e-1-%e5%80%8b%e9%96%8b%e6%94%be%e5%a4%96%e9%83%a8%e9%80%a3%e7%b7%9a%e7%9a%84%e5%b8%b3%e8%99%9f" onclick="onNavClick(`#新增-1-個開放外部連線的帳號-nav`)" id="新增-1-個開放外部連線的帳號-nav">
+									新增 1 個開放外部連線的帳號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%81%e8%a8%b1-mysql-%e8%a2%ab%e9%81%a0%e7%a8%8b%e8%a8%aa%e5%95%8f" onclick="onNavClick(`#允許-mysql-被遠程訪問-nav`)" id="允許-mysql-被遠程訪問-nav">
+									允許 MySQL 被遠程訪問
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker%e5%95%9f%e7%94%a8mysql" onclick="onNavClick(`#docker啟用mysql-nav`)" id="docker啟用mysql-nav">
+									Docker啟用Mysql
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8a%93%e6%98%a0%e8%b1%a1%e6%aa%94" onclick="onNavClick(`#抓映象檔-nav`)" id="抓映象檔-nav">
+									抓映象檔
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%b7%e8%a1%8c-image" onclick="onNavClick(`#執行-image-nav`)" id="執行-image-nav">
+									執行 Image
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%a2%e8%a6%96%e9%81%8b%e8%a1%8c%e4%b8%ad%e7%9a%84%e5%ae%b9%e5%99%a8" onclick="onNavClick(`#檢視運行中的容器-nav`)" id="檢視運行中的容器-nav">
+									檢視運行中的容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%b2%e5%85%a5-container" onclick="onNavClick(`#進入-container-nav`)" id="進入-container-nav">
+									進入 Container
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%b2%e5%85%a5mysql" onclick="onNavClick(`#進入mysql-nav`)" id="進入mysql-nav">
+									進入Mysql
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e-1-%e5%80%8b%e9%96%8b%e6%94%be%e5%a4%96%e9%83%a8%e9%80%a3%e7%b7%9a%e7%9a%84%e5%b8%b3%e8%99%9f" onclick="onNavClick(`#新增-1-個開放外部連線的帳號-nav`)" id="新增-1-個開放外部連線的帳號-nav">
+									新增 1 個開放外部連線的帳號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%81%e8%a8%b1-mysql-%e8%a2%ab%e9%81%a0%e7%a8%8b%e8%a8%aa%e5%95%8f" onclick="onNavClick(`#允許-mysql-被遠程訪問-nav`)" id="允許-mysql-被遠程訪問-nav">
+									允許 MySQL 被遠程訪問
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/docker.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Docker啟用Mysql
+                    
+                    <div class="post-subtitle">
+                        使用容器化的Mysql相關語句
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-10-01 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/docker">docker</a>
+                                &nbsp;
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="docker啟用mysql">Docker啟用Mysql</h1>
+<h2 id="抓映象檔">抓映象檔</h2>
+<pre tabindex="0"><code>docker pull mysql/mysql-server:8.0
+</code></pre><ul>
+<li>拉一個8.0版本的mysql</li>
+</ul>
+<h2 id="執行-image">執行 Image</h2>
+<pre tabindex="0"><code>docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password
+</code></pre><ul>
+<li><code>-d</code>：同<code>--detach</code>，以背景模式執行。</li>
+<li><code>-v ~/mysql-docker-data:/var/lib/mysql</code>：同<code>--volume</code>，掛載host目錄到container目錄，也就是host的<code>~/mysql-docker-data</code>會保存container <code>/var/lib/mysql</code>的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。</li>
+<li><code>-it</code>：同<code>--interactive</code>加<code>--tty</code>，作用為運行container時可登入其bash操作。</li>
+<li><code>--name mysql8</code>，命名container名稱為<code>mysql8</code>。</li>
+<li><code>-p</code>：同<code>--publish</code>。作用為將container的3306 port對映到&quot;主機(host)&ldquo;的3306 port</li>
+<li><code>-e</code>：同<code>--env</code>，設定環境變數。<code>MYSQL_ROOT_PASSWORD</code>設定MySQL root帳號的登入密碼為<code>1234</code>，<code>MYSQL_DATABASE</code>設定資料庫名稱為<code>mydb</code>。</li>
+<li><code>mysql:8</code>：<code>mysql</code>為image名稱，<code>8</code>為image tag。所以運行的是<code>mysql:8</code>的image。</li>
+<li><code>--default-authentication-plugin=mysql_native_password</code>：把儲存密碼的方式改為MySQL 5的<code>mysql_native_password</code>，因為MySQL 8的儲存方式預設為<code>caching_sha2_password</code>，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。</li>
+</ul>
+<h2 id="檢視運行中的容器">檢視運行中的容器</h2>
+<pre tabindex="0"><code>docker ps
+</code></pre><h2 id="進入-container">進入 Container</h2>
+<pre tabindex="0"><code>docker exec mysql8 mysql -u root -p
+</code></pre><ul>
+<li><code>docker exec</code>指令的作用為在運行的container執行指令，所以意思就是在<code>mysql8</code>這個container執行<code>mysql -u root -p</code>的指令。</li>
+</ul>
+<pre tabindex="0"><code>docker container exec -it mysql8 /bin/bash
+</code></pre><ul>
+<li>遇到權限問題用這個</li>
+</ul>
+<h2 id="進入mysql">進入Mysql</h2>
+<pre tabindex="0"><code>mysql -uroot -p
+</code></pre><h2 id="新增-1-個開放外部連線的帳號">新增 1 個開放外部連線的帳號</h2>
+<pre tabindex="0"><code>CREATE USER 'user01'@'%' IDENTIFIED BY '1234';
+GRANT ALL ON your_database.* TO 'user01'@'%';
+</code></pre><ul>
+<li>IDENTIFIED BY &lsquo;1234&rsquo;=密碼</li>
+</ul>
+<h2 id="允許-mysql-被遠程訪問">允許 MySQL 被遠程訪問</h2>
+<pre tabindex="0"><code>grant all privileges on *.* to 'root'@'%';
+</code></pre><ul>
+<li>
+<p>這是一個強力手段(有權限風險)</p>
+<pre tabindex="0"><code>flush privileges;
+</code></pre><ul>
+<li>刷新</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-10-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211002-docker-redis/">
+			下一篇<br>Docker啟用Redis
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210930-docker-common-operations/">
+			上一篇<br>Docker常用語句
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

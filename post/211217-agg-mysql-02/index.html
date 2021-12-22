@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>SQL語言基本關鍵字、排序與分頁</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL基礎課-02">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="SQL語言基本關鍵字、排序與分頁" />
+<meta property="og:description" content="尚硅谷MySQL基礎課-02" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211217-agg-mysql-02/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-17T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SQL語言基本關鍵字、排序與分頁"/>
+<meta name="twitter:description" content="尚硅谷MySQL基礎課-02"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sql" onclick="onNavClick(`#sql-nav`)" id="sql-nav">
+									SQL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%99%e6%ba%96" onclick="onNavClick(`#標準-nav`)" id="標準-nav">
+									標準
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e5%89%87%e8%88%87%e8%a6%8f%e7%af%84" onclick="onNavClick(`#規則與規範-nav`)" id="規則與規範-nav">
+									規則與規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97" onclick="onNavClick(`#關鍵字-nav`)" id="關鍵字-nav">
+									關鍵字
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#select" onclick="onNavClick(`#select-nav`)" id="select-nav">
+									SELECT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#as" onclick="onNavClick(`#as-nav`)" id="as-nav">
+									AS
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#distinct" onclick="onNavClick(`#distinct-nav`)" id="distinct-nav">
+									DISTINCT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#null" onclick="onNavClick(`#null-nav`)" id="null-nav">
+									null
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e5%bc%95%e8%99%9f" onclick="onNavClick(`#單引號-nav`)" id="單引號-nav">
+									‘‘單引號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#describe" onclick="onNavClick(`#describe-nav`)" id="describe-nav">
+									DESCRIBE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#where" onclick="onNavClick(`#where-nav`)" id="where-nav">
+									WHERE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8b%e7%ae%97%e7%ac%a6%e8%99%9f" onclick="onNavClick(`#運算符號-nav`)" id="運算符號-nav">
+									運算符號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8a%a0%e8%99%9f" onclick="onNavClick(`#加號-nav`)" id="加號-nav">
+									加號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%a4%e8%99%9f" onclick="onNavClick(`#除號-nav`)" id="除號-nav">
+									除號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%96%e6%a8%a1" onclick="onNavClick(`#取模-nav`)" id="取模-nav">
+									取模
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%af%94%e8%bc%83%e7%ac%a6%e8%99%9f" onclick="onNavClick(`#比較符號-nav`)" id="比較符號-nav">
+									比較符號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ad%89%e6%96%bc" onclick="onNavClick(`#等於-nav`)" id="等於-nav">
+									等於
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%af%94%e8%bc%83%e7%94%a8%e9%97%9c%e9%8d%b5%e5%ad%97" onclick="onNavClick(`#比較用關鍵字-nav`)" id="比較用關鍵字-nav">
+									比較用關鍵字
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%82%8f%e8%bc%af%e9%81%8b%e7%ae%97" onclick="onNavClick(`#邏輯運算-nav`)" id="邏輯運算-nav">
+									邏輯運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%8d%e9%81%8b%e7%ae%97" onclick="onNavClick(`#位運算-nav`)" id="位運算-nav">
+									位運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#排序-nav`)" id="排序-nav">
+									排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81" onclick="onNavClick(`#分頁-nav`)" id="分頁-nav">
+									分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sql" onclick="onNavClick(`#sql-nav`)" id="sql-nav">
+									SQL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%99%e6%ba%96" onclick="onNavClick(`#標準-nav`)" id="標準-nav">
+									標準
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e5%89%87%e8%88%87%e8%a6%8f%e7%af%84" onclick="onNavClick(`#規則與規範-nav`)" id="規則與規範-nav">
+									規則與規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97" onclick="onNavClick(`#關鍵字-nav`)" id="關鍵字-nav">
+									關鍵字
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#select" onclick="onNavClick(`#select-nav`)" id="select-nav">
+									SELECT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#as" onclick="onNavClick(`#as-nav`)" id="as-nav">
+									AS
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#distinct" onclick="onNavClick(`#distinct-nav`)" id="distinct-nav">
+									DISTINCT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#null" onclick="onNavClick(`#null-nav`)" id="null-nav">
+									null
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e5%bc%95%e8%99%9f" onclick="onNavClick(`#單引號-nav`)" id="單引號-nav">
+									‘‘單引號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#describe" onclick="onNavClick(`#describe-nav`)" id="describe-nav">
+									DESCRIBE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#where" onclick="onNavClick(`#where-nav`)" id="where-nav">
+									WHERE
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8b%e7%ae%97%e7%ac%a6%e8%99%9f" onclick="onNavClick(`#運算符號-nav`)" id="運算符號-nav">
+									運算符號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8a%a0%e8%99%9f" onclick="onNavClick(`#加號-nav`)" id="加號-nav">
+									加號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%99%a4%e8%99%9f" onclick="onNavClick(`#除號-nav`)" id="除號-nav">
+									除號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%96%e6%a8%a1" onclick="onNavClick(`#取模-nav`)" id="取模-nav">
+									取模
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%af%94%e8%bc%83%e7%ac%a6%e8%99%9f" onclick="onNavClick(`#比較符號-nav`)" id="比較符號-nav">
+									比較符號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ad%89%e6%96%bc" onclick="onNavClick(`#等於-nav`)" id="等於-nav">
+									等於
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%af%94%e8%bc%83%e7%94%a8%e9%97%9c%e9%8d%b5%e5%ad%97" onclick="onNavClick(`#比較用關鍵字-nav`)" id="比較用關鍵字-nav">
+									比較用關鍵字
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%82%8f%e8%bc%af%e9%81%8b%e7%ae%97" onclick="onNavClick(`#邏輯運算-nav`)" id="邏輯運算-nav">
+									邏輯運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%8d%e9%81%8b%e7%ae%97" onclick="onNavClick(`#位運算-nav`)" id="位運算-nav">
+									位運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#排序-nav`)" id="排序-nav">
+									排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81" onclick="onNavClick(`#分頁-nav`)" id="分頁-nav">
+									分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    SQL語言基本關鍵字、排序與分頁
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL基礎課-02
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-17 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7mysql%E7%AD%86%E8%A8%98">尚硅谷MySQL筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="sql">SQL</h1>
+<blockquote>
+<p>Structured Query Language，是一種通用的資料庫查詢語言</p>
+</blockquote>
+<h2 id="分類">分類</h2>
+<ul>
+<li>DDL:數據定義語言，定義數據庫或表本身，例如
+<ul>
+<li>CREATE、ALTER、DROP、RENAME、TRUNCATE</li>
+</ul>
+</li>
+<li>DML:數據操作語言，即增刪改查，針對的是具體的某條資料，例如
+<ul>
+<li>INSERT、DELETE、UPDATE、SELECT</li>
+</ul>
+</li>
+<li>DCL:數據控制語言，事務操作或權限控制等等，例如
+<ul>
+<li>COMMIT、ROLLBACK、SAVEPOINT、GRANT、REVOKE</li>
+</ul>
+</li>
+</ul>
+<h2 id="標準">標準</h2>
+<ul>
+<li>最經典的版本是SQL92與SQL99，一般也稱為SQL-2與SQL-3標準
+<ul>
+<li>SQL92形式簡單但語句長，難讀</li>
+<li>SQL99版可讀性好，但語法較複雜</li>
+</ul>
+</li>
+</ul>
+<h3 id="規則與規範">規則與規範</h3>
+<ul>
+<li>
+<p>可以一行或多行，子句分行縮進增加可讀性</p>
+</li>
+<li>
+<p>每條命令用<code>;</code>、<code>\G</code>或<code>\g</code>結束</p>
+</li>
+<li>
+<p>標點符號</p>
+<ul>
+<li>必定成對，例如<code>''</code>、<code>()</code></li>
+<li>必定是半形符號</li>
+<li>字串和時間日期用<code>''</code>單引號表示</li>
+<li>列的別名盡量使用<code>&quot;&quot;</code>雙引號，且不建議省略as</li>
+</ul>
+</li>
+<li>
+<p>大小寫</p>
+<ul>
+<li>Windows不分，Linux區分且規則如下:
+<ul>
+<li>數據庫名、表名、表別名、變數名區分</li>
+<li>關鍵字、函數名、列名是忽略大小寫</li>
+</ul>
+</li>
+<li>建議規範
+<ul>
+<li>數據庫名、表名、表別名、字段名都用小寫</li>
+<li>SQL關鍵字、函數名、綁定變數都大寫</li>
+</ul>
+</li>
+</ul>
+<h5 id="註釋">註釋</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a61717;background-color:#e3d2d2">單行</span>:<span style="color:#bbb"> </span><span style="color:#228b22">-- 註釋體，注意--後面有一個空格
+</span><span style="color:#228b22"></span><span style="color:#a61717;background-color:#e3d2d2">多行</span>:<span style="color:#bbb"> </span>*/<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">註釋體</span><span style="color:#bbb"> </span>*/<span style="color:#bbb">
+</span><span style="color:#bbb"></span>MySQL特有:#<span style="color:#bbb">
+</span></code></pre></div></li>
+</ul>
+<h2 id="關鍵字">關鍵字</h2>
+<h3 id="select">SELECT</h3>
+<ul>
+<li>功能:查、列出</li>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb"> </span><span style="color:#228b22">-- 列出全部
+</span></code></pre></div><ul>
+<li><code>FROM</code>:來源表</li>
+<li><code>FROM DUAL;</code>返回一個偽表(暫時的)</li>
+</ul>
+<h3 id="as">AS</h3>
+<ul>
+<li>功能:暫時將返回的列名顯示成別名</li>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#34;想顯示的別名&#34;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#34;想顯示的別名&#34;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb"> </span><span style="color:#228b22">-- 省略AS
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">想顯示的別名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb"> </span><span style="color:#228b22">-- 省略&#34;&#34;，但注意別名不能有空格
+</span></code></pre></div><ul>
+<li>注意:並不是真的給某資料庫的某表某列賦了別名，只是暫時顯示來看而已</li>
+</ul>
+<h3 id="distinct">DISTINCT</h3>
+<ul>
+<li>功能:去重複</li>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DISTINCT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 聯合去重複，須滿足所有列的元素都不重複
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DISTINCT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#b452cd">1</span>,<span style="color:#a61717;background-color:#e3d2d2">列名</span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="null">null</h3>
+<ul>
+<li><code>null</code>不等於0</li>
+<li>當<code>null</code>參與運算，結果必然也是空</li>
+<li>解決方案:<code>IFNULL(列名,備胎)</code></li>
+</ul>
+<h3 id="單引號">‘‘單引號</h3>
+<ul>
+<li>注重符
+<ul>
+<li>功能:如果表名或字段名跟關鍵字衝突了，用其避開</li>
+<li>格式:<code>SELECT * FROM order;</code></li>
+</ul>
+</li>
+<li>查詢常數
+<ul>
+<li>功能:可以用作分隔之類的，沒多大意義</li>
+<li>格式:</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>emp_no,<span style="color:#cd5555">&#39;分隔&#39;</span>,first_name,<span style="color:#cd5555">&#39;間隔&#39;</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span></code></pre></div><h3 id="describe">DESCRIBE</h3>
+<ul>
+<li>功能:返回表的詳細結構與說明</li>
+<li>格式:<code>DESCRIBE 表名;</code>、<code>DESC 表名;</code></li>
+</ul>
+<h3 id="where">WHERE</h3>
+<ul>
+<li>功能:過濾</li>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">條件</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 範例
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>first_name<span style="color:#bbb"> </span>=<span style="color:#cd5555">&#39;georgi&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>注意WHERE必定聲明在FROM之後</li>
+<li>MySQL中，篩字串不分大小寫</li>
+</ul>
+<h2 id="運算符號">運算符號</h2>
+<blockquote>
+<p>先乘除後加減，沒特別的就不提了，與常規經驗一致</p>
+</blockquote>
+<h3 id="加號">加號</h3>
+<ul>
+<li>在SQL中加號<code>+</code>沒有連接的作用，跟字串用會隱式轉換成數字</li>
+<li>若轉換不成功，就視為0，舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>+<span style="color:#cd5555">&#39;1&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 101
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>+<span style="color:#cd5555">&#39;a&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 100，a被視為0
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>+<span style="color:#8b008b;font-weight:bold">null</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- null
+</span></code></pre></div><h3 id="除號">除號</h3>
+<ul>
+<li>
+<p>用除號<code>/</code>會自動轉為浮點數，即使是整數相除也轉</p>
+<ul>
+<li>預設到小數點後4位，除不盡時四捨五入</li>
+</ul>
+</li>
+<li>
+<p>用<code>DIV</code>則只保留整數位(無條件捨去)</p>
+</li>
+<li>
+<p>除0得<code>null</code></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>/<span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 50.0000
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>/<span style="color:#b452cd">6</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 16.6667
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span><span style="color:#bbb"> </span>DIV<span style="color:#bbb"> </span><span style="color:#b452cd">6</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 16
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>/<span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- null
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#b452cd">100</span>*<span style="color:#b452cd">1</span>.<span style="color:#b452cd">11</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>dual;<span style="color:#bbb"> </span><span style="color:#228b22">-- 111.00
+</span></code></pre></div><h3 id="取模">取模</h3>
+<ul>
+<li>功能:取餘數</li>
+<li>格式:<code>%</code>、<code>MOD</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 查詢編號為偶數的員工 (除2於0為偶數)
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>emp_no%<span style="color:#b452cd">2</span>=<span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span></code></pre></div><h2 id="比較符號">比較符號</h2>
+<h3 id="等於">等於</h3>
+<ul>
+<li>
+<p>返回<code>1</code>=<code>true</code>，<code>0</code>=<code>false</code></p>
+</li>
+<li>
+<p>若兩邊都是字串，比較ANSI碼</p>
+</li>
+<li>
+<p>只要有null參與，結果必是null</p>
+<ul>
+<li>
+<p><code>WHERE xx =null;</code>並不會篩出xx為<code>null</code>的數據，而是啥都沒有，因為結果是<code>null</code></p>
+</li>
+<li>
+<p>安全等於<code>&lt;=&gt;</code>，專門用於<code>null</code></p>
+<ul>
+<li>兩邊都是<code>null</code>，返回1</li>
+<li>一邊是<code>null</code>一邊不是，返回0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="比較用關鍵字">比較用關鍵字</h3>
+<ul>
+<li><code>IS NULL</code>:相當於<code>&lt;=&gt;</code></li>
+<li><code>ISNULL()</code>:不加空格時為函數，<code>()</code>內放入要判斷的</li>
+<li><code>IS NOT NULL</code></li>
+<li><code>LEAST()</code>:取最小</li>
+<li><code>GREATEST()</code>:取最大</li>
+<li><code>BETWEEN ... AND ...</code>:區間，包含上下邊界</li>
+<li><code>NOT BETWEEN ... AND ...</code>:不在區間，包含上下邊界
+<ul>
+<li>比如<code>NOT BETWEEN 10 AND 100</code>，必須<code>&lt;10</code>且<code>&gt;100</code></li>
+</ul>
+</li>
+<li><code>IN (set)</code>:離散包含，例如<code>WHERE score IN (60,99)</code>篩出成績剛好為60分與99分的</li>
+<li><code>NOT IN (set)</code></li>
+<li><code>LIKE '字串'</code>:模糊查詢
+<ul>
+<li><code>WHERE name like '%a%'</code>:查詢名字中任意位置有<code>a</code>的</li>
+<li><code>%</code>表示不確定個數的字符，可以是0、1或多個</li>
+<li><code>_</code>下畫線代表一個不確定的字符</li>
+<li>要查的內容本身是符號則用轉譯字符<code>\</code>修飾</li>
+</ul>
+</li>
+<li><code>REGEXP '正則式'</code>:正則式，也可以用<code>RLIKE</code></li>
+</ul>
+<h3 id="邏輯運算">邏輯運算</h3>
+<ul>
+<li>
+<p><code>NOT</code>、<code>!</code>:非</p>
+</li>
+<li>
+<p><code>AND</code>、<code>&amp;&amp;</code>:且</p>
+</li>
+<li>
+<p><code>OR</code>、<code>||</code>:或</p>
+<ul>
+<li>注意<code>AND</code>優先級大於<code>OR</code></li>
+</ul>
+</li>
+<li>
+<p><code>XOR</code>:異或</p>
+</li>
+</ul>
+<h3 id="位運算">位運算</h3>
+<blockquote>
+<p>很少用且跟一般程式語言規則相同</p>
+</blockquote>
+<ul>
+<li>跳過</li>
+</ul>
+<h2 id="排序">排序</h2>
+<ul>
+<li><code>ORDER BY ...</code> :升序</li>
+<li><code>ORDER BY ... DESC</code>:降序
+<ul>
+<li>也可以<code>ORDER BY -...</code></li>
+</ul>
+</li>
+<li><code>WHERE</code>必須聲明在<code>FROM</code>之後、<code>ORDER BY</code>之前</li>
+<li>別名只能在<code>ORDER BY</code>中使用，不能在<code>WHERE</code>中使用，範例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>emp_no,salary<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;薪水&#34;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>salaries<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>emp_no<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">10001</span>,<span style="color:#b452cd">10002</span>,<span style="color:#b452cd">10003</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">薪水</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>多級排序用&quot;<code>,</code>“逗號分開，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>emp_no,salary<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;薪水&#34;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>salaries<span style="color:#bbb">
+</span><span style="color:#bbb">	 </span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>-<span style="color:#a61717;background-color:#e3d2d2">薪水</span>,emp_no;<span style="color:#bbb">
+</span></code></pre></div><h2 id="分頁">分頁</h2>
+<ul>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">LIMIT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">偏移量</span>,<span style="color:#a61717;background-color:#e3d2d2">條目數</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">LIMIT</span><span style="color:#bbb"> </span>(pageNo-<span style="color:#b452cd">1</span>)<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span>pageSize,pageSize;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>
+<p><code>pageSize</code>:每頁顯示幾筆</p>
+</li>
+<li>
+<p><code> pageNo</code>:當前顯示第幾頁</p>
+<ul>
+<li>例如每頁10筆且想看第一頁就是<code>LIMIT 0,10</code>，偏移量<code>0</code>可以省略</li>
+</ul>
+</li>
+<li>
+<p>聲明順序:<code>FROM ... WHERE ... ORDER BY ... LIMIT</code>，注意<code>LIMIT</code>總是放在最尾</p>
+</li>
+<li>
+<p>表中有100條數據，只想顯示第45、46條:</p>
+<pre tabindex="0"><code>LIMIT 44,2;
+</code></pre><ul>
+<li>8.0新特性，可以顯式寫關鍵字OFFSET ，格式反過來變成<code>LIMIT 條目數 OFFSET 偏移量</code></li>
+<li>改寫成<code>LIMIT 2 OFFSET 44;</code></li>
+</ul>
+</li>
+<li>
+<p>方言，其他數據庫中的LIMIT稱呼</p>
+<ul>
+<li>SQL Server和Access叫<code>TOP</code></li>
+<li>DB2用<code>FETCH FIRST 5 ROWS ONLY</code></li>
+<li>Oracle用<code>ROWNUM</code></li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-17</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211218-agg-mysql-03/">
+			下一篇<br>多表查詢、JOIN ON連接
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211216-agg-mysql-01/">
+			上一篇<br>MySQL簡介、環境配置、編碼與GUI
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>資料的增/刪/改</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL基礎課-07">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="資料的增/刪/改" />
+<meta property="og:description" content="尚硅谷MySQL基礎課-07" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211222-agg-mysql-07/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-22T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="資料的增/刪/改"/>
+<meta name="twitter:description" content="尚硅谷MySQL基礎課-07"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e7%9a%84%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#資料的操作-nav`)" id="資料的操作-nav">
+									資料的操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e8%b3%87%e6%96%99" onclick="onNavClick(`#新增資料-nav`)" id="新增資料-nav">
+									新增資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e4%b8%80%e6%a2%9d%e5%ae%8c%e6%95%b4%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入一條完整的資料-nav`)" id="插入一條完整的資料-nav">
+									插入一條完整的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e6%8c%87%e5%ae%9a%e6%ac%84%e4%bd%8d%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入指定欄位的資料-nav`)" id="插入指定欄位的資料-nav">
+									插入指定欄位的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e5%a4%9a%e6%a2%9d%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入多條資料-nav`)" id="插入多條資料-nav">
+									插入多條資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%87%e6%9f%a5%e8%a9%a2%e7%b5%90%e6%9e%9c%e5%81%9a%e7%82%ba%e8%b3%87%e6%96%99%e6%8f%92%e5%85%a5" onclick="onNavClick(`#將查詢結果做為資料插入-nav`)" id="將查詢結果做為資料插入-nav">
+									將查詢結果做為資料插入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%96%b0%e8%b3%87%e6%96%99" onclick="onNavClick(`#更新資料-nav`)" id="更新資料-nav">
+									更新資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e8%b3%87%e6%96%99" onclick="onNavClick(`#刪除資料-nav`)" id="刪除資料-nav">
+									刪除資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%88%e7%ae%97%e5%88%97" onclick="onNavClick(`#計算列-nav`)" id="計算列-nav">
+									計算列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%9c%e5%90%88%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#綜合練習-nav`)" id="綜合練習-nav">
+									綜合練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e7%9a%84%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#資料的操作-nav`)" id="資料的操作-nav">
+									資料的操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e8%b3%87%e6%96%99" onclick="onNavClick(`#新增資料-nav`)" id="新增資料-nav">
+									新增資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e4%b8%80%e6%a2%9d%e5%ae%8c%e6%95%b4%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入一條完整的資料-nav`)" id="插入一條完整的資料-nav">
+									插入一條完整的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e6%8c%87%e5%ae%9a%e6%ac%84%e4%bd%8d%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入指定欄位的資料-nav`)" id="插入指定欄位的資料-nav">
+									插入指定欄位的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%92%e5%85%a5%e5%a4%9a%e6%a2%9d%e8%b3%87%e6%96%99" onclick="onNavClick(`#插入多條資料-nav`)" id="插入多條資料-nav">
+									插入多條資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%87%e6%9f%a5%e8%a9%a2%e7%b5%90%e6%9e%9c%e5%81%9a%e7%82%ba%e8%b3%87%e6%96%99%e6%8f%92%e5%85%a5" onclick="onNavClick(`#將查詢結果做為資料插入-nav`)" id="將查詢結果做為資料插入-nav">
+									將查詢結果做為資料插入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%96%b0%e8%b3%87%e6%96%99" onclick="onNavClick(`#更新資料-nav`)" id="更新資料-nav">
+									更新資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e8%b3%87%e6%96%99" onclick="onNavClick(`#刪除資料-nav`)" id="刪除資料-nav">
+									刪除資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%88%e7%ae%97%e5%88%97" onclick="onNavClick(`#計算列-nav`)" id="計算列-nav">
+									計算列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%9c%e5%90%88%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#綜合練習-nav`)" id="綜合練習-nav">
+									綜合練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    資料的增/刪/改
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL基礎課-07
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-22 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7mysql%E7%AD%86%E8%A8%98">尚硅谷MySQL筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="資料的操作">資料的操作</h1>
+<h2 id="新增資料">新增資料</h2>
+<ul>
+<li>使用<code>INSERT INTO</code>語句</li>
+</ul>
+<h3 id="插入一條完整的資料">插入一條完整的資料</h3>
+<blockquote>
+<p>完整即是此筆資料包含所有欄位的意思</p>
+</blockquote>
+<ul>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(value1,value2,....);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>values</code>是正規語法，也可以省略<code>s</code></li>
+<li>內容<code>(value1,value2,....)</code>的順序必須嚴格依照表的欄位順序</li>
+<li>字符與日期的資料類型必須包在<code>''</code>單引號中</li>
+</ul>
+<h3 id="插入指定欄位的資料">插入指定欄位的資料</h3>
+<ul>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span>(<span style="color:#a61717;background-color:#e3d2d2">欄位名</span><span style="color:#b452cd">1</span>,<span style="color:#a61717;background-color:#e3d2d2">欄位名</span><span style="color:#b452cd">2</span>,...)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(value1,value2,....);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>內容<code>(value1,value2,....)</code>的順序必須嚴格依照表的欄位順序</li>
+<li>上面有列出的，下面就要填入</li>
+</ul>
+<h3 id="插入多條資料">插入多條資料</h3>
+<blockquote>
+<p>執行效率更高，推薦使用</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table_name</span>(column1<span style="color:#bbb"> </span>[,<span style="color:#bbb"> </span>column2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>columnn])<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb"> 
+</span><span style="color:#bbb"></span>(value1<span style="color:#bbb"> </span>[,value2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>valuen]),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>(value1<span style="color:#bbb"> </span>[,value2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>valuen]),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">……</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>(value1<span style="color:#bbb"> </span>[,value2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>valuen]);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>使用INSERT同時插入多條記錄時，MySQL會返回一些在執行單行插入時沒有的額外資訊，這些資訊的含義如下:
+<ul>
+<li>Records:表明插入的記錄條數</li>
+<li>Duplicates:表明插入時被忽略的記錄，原因可能是這些記錄包含了重複的主鍵值</li>
+<li>Warnings:表明有問題的資料值，例如發生資料類型轉換</li>
+</ul>
+</li>
+</ul>
+<h3 id="將查詢結果做為資料插入">將查詢結果做為資料插入</h3>
+<ul>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">目標表名</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>(tar_column1<span style="color:#bbb"> </span>[,<span style="color:#bbb"> </span>tar_column2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>tar_columnn])<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>(src_column1<span style="color:#bbb"> </span>[,<span style="color:#bbb"> </span>src_column2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span>,<span style="color:#bbb"> </span>src_columnn])<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">源表名</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>[<span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>condition]<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>注意沒有values了</li>
+<li>查詢的欄位與插入的欄位需對應，例如:
+<ul>
+<li>並且要特別注意資料的長度，把長的資料放到短的格子可能出錯</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>sales_reps(id,<span style="color:#bbb"> </span>name,<span style="color:#bbb"> </span>salary,<span style="color:#bbb"> </span>commission_pct)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>employee_id,<span style="color:#bbb"> </span>last_name,<span style="color:#bbb"> </span>salary,<span style="color:#bbb"> </span>commission_pct<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">   </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb">  </span>job_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%REP%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*
+</span><span style="color:#228b22">sales_reps中的id對應查來的employee_id
+</span><span style="color:#228b22">...
+</span><span style="color:#228b22">*/</span><span style="color:#bbb">
+</span></code></pre></div><hr>
+<h2 id="更新資料">更新資料</h2>
+<ul>
+<li>使用<code>UPDATE</code>語句更新資料，格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table_name</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SET</span><span style="color:#bbb"> </span>column1=value1,<span style="color:#bbb"> </span>column2=value2,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">…</span><span style="color:#bbb"> </span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">column</span>=valuen<span style="color:#bbb">
+</span><span style="color:#bbb"></span>[<span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>condition]<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>可以一次更新<strong>多條</strong>資料</li>
+<li>如果需要回滾資料，需要保證在DML前，進行設置<code>SET AUTOCOMMIT = FALSE;</code>，防止自動提交</li>
+<li>使用<code>WHERE</code>子句指定需要更新的資料</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SET</span><span style="color:#bbb">    </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">70</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb">  </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">113</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>如果省略<code>WHERE</code>子句，則表中的所有資料都將被更新，慎用!!!</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> 	</span>copy_emp<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SET</span><span style="color:#bbb">    	</span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">110</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>更新中的資料完整性錯誤</strong>
+<ul>
+<li>有些欄位可能受到約束影響，比如<code>department_id</code>是源自<code>departments</code>表，其中沒有id為110的項目，所以這樣更新就會報錯</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">UPDATE</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SET</span><span style="color:#bbb">    </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">55</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb">  </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">110</span>;<span style="color:#bbb">
+</span></code></pre></div><hr>
+<h2 id="刪除資料">刪除資料</h2>
+<blockquote>
+<p>實際開發中都是用邏輯刪除，就是建一個欄位表示&quot;刪除&quot;，要刪的那筆資料&quot;刪除&quot;=true。基本上不會用到這些指令的</p>
+</blockquote>
+<ul>
+<li>使用<code>DELETE</code>語句從表中刪除資料，格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">表名</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>&lt;<span style="color:#8b008b;font-weight:bold">condition</span>&gt;];<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>
+<p>table_name指定要執行刪除操作的表</p>
+</li>
+<li>
+<p><code>[WHERE &lt;condition&gt;]</code>為可選參數，指定刪除條件</p>
+</li>
+<li>
+<p>如果沒有WHERE子句，DELETE語句將刪除表中的所有記錄。</p>
+</li>
+<li>
+<p>使用 WHERE 子句刪除指定的記錄</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb">  </span>department_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Finance&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>如果省略 WHERE 子句，則表中的全部資料將被刪除</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">  </span>copy_emp;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><strong>刪除中的資料完整性錯誤</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb">       </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">60</span>;<span style="color:#bbb">
+</span></code></pre></div><hr>
+<h1 id="計算列">計算列</h1>
+<blockquote>
+<p>MySQL8新增的特性，感覺用的不多，了解就好</p>
+</blockquote>
+<ul>
+<li>舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>tb1(<span style="color:#bbb">
+</span><span style="color:#bbb"></span>id<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>a<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>b<span style="color:#bbb"> </span><span style="color:#658b00">INT</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">c</span><span style="color:#bbb"> </span><span style="color:#658b00">INT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">GENERATED</span><span style="color:#bbb"> </span>ALWAYS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>(a<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span>b)<span style="color:#bbb"> </span>VIRTUAL<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>這個表中的c欄位是透過(a+b)自動得來，而不需要手動插入或更新</li>
+</ul>
+<hr>
+<h1 id="綜合練習">綜合練習</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>test01_library;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>test01_library;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">table</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>id<span style="color:#bbb">      </span><span style="color:#658b00">int</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>name<span style="color:#bbb">    </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">50</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>authors<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">100</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>price<span style="color:#bbb">   </span><span style="color:#658b00">float</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>pubdate<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">year</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>note<span style="color:#bbb">    </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">100</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>num<span style="color:#bbb">     </span><span style="color:#658b00">int</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Tao of AAA&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Dickes&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">23</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1995&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">11</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>books<span style="color:#bbb"> </span>(id,<span style="color:#bbb"> </span>name,<span style="color:#bbb"> </span>authors,<span style="color:#bbb"> </span>price,<span style="color:#bbb"> </span>pubdate,<span style="color:#bbb"> </span>note,<span style="color:#bbb"> </span>num)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;EmmaT&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Jane&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">25</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1993&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;joke&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">22</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>books<span style="color:#bbb"> </span>(id,<span style="color:#bbb"> </span>name,<span style="color:#bbb"> </span>authors,<span style="color:#bbb"> </span>price,<span style="color:#bbb"> </span>pubdate,<span style="color:#bbb"> </span>note,<span style="color:#bbb"> </span>num)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">3</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Story of Jane&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Jane Tim&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">40</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2001</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>(<span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Lovey Day&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;George Byron&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">20</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2005</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">30</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>(<span style="color:#b452cd">5</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Old land&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Honore Blade&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">30</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2010</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Law&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>(<span style="color:#b452cd">6</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;The Battle&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Upton Sara&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">30</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1999</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;medicine&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">40</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>(<span style="color:#b452cd">7</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Rose Hood&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Richard haggard&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">28</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2008</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;cartoon&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">28</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">4</span><span style="color:#a61717;background-color:#e3d2d2">、將小說類型</span>(novel)<span style="color:#a61717;background-color:#e3d2d2">的書的價格都增加</span><span style="color:#b452cd">5</span><span style="color:#a61717;background-color:#e3d2d2">。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">update</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>price=price<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#b452cd">5</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#a61717;background-color:#e3d2d2">、將名稱為</span>EmmaT的書的價格改為40<span style="color:#a61717;background-color:#e3d2d2">，並將說明改為</span>drama<span style="color:#a61717;background-color:#e3d2d2">。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">update</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>price=<span style="color:#b452cd">40</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>note=<span style="color:#cd5555">&#39;drama&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;EmmaT&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">6</span><span style="color:#a61717;background-color:#e3d2d2">、刪除庫存為</span><span style="color:#b452cd">0</span><span style="color:#a61717;background-color:#e3d2d2">的記錄。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">delete</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">7</span><span style="color:#a61717;background-color:#e3d2d2">、統計書名中包含</span>a字母的書<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%a%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">8</span><span style="color:#a61717;background-color:#e3d2d2">、統計書名中包含</span>a字母的書的數量和庫存總量<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">sum</span>(num)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%a&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">9</span><span style="color:#a61717;background-color:#e3d2d2">、找出“</span>novel<span style="color:#a61717;background-color:#e3d2d2">”類型的書，按照價格降冪排列</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>note<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>price<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#a61717;background-color:#e3d2d2">、查詢圖書資訊，按照庫存量降冪排列，如果庫存量相同的按照</span>note昇冪排列<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span>,<span style="color:#bbb"> </span>note;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">11</span><span style="color:#a61717;background-color:#e3d2d2">、按照</span>note分類統計書的數量<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*),<span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>note;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">12</span><span style="color:#a61717;background-color:#e3d2d2">、按照</span>note分類統計書的庫存量<span style="color:#a61717;background-color:#e3d2d2">，顯示庫存量超過</span><span style="color:#b452cd">30</span><span style="color:#a61717;background-color:#e3d2d2">本的</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*),<span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">sum</span>(num)<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">30</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">13</span><span style="color:#a61717;background-color:#e3d2d2">、查詢所有圖書，每頁顯示</span><span style="color:#b452cd">5</span><span style="color:#a61717;background-color:#e3d2d2">本，顯示第二頁</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">5</span>,<span style="color:#b452cd">5</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">14</span><span style="color:#a61717;background-color:#e3d2d2">、按照</span>note分類統計書的庫存量<span style="color:#a61717;background-color:#e3d2d2">，顯示庫存量最多的</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>note,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">sum</span>(num)<span style="color:#bbb"> </span>sum_num<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>sum_num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">15</span><span style="color:#a61717;background-color:#e3d2d2">、查詢書名達到</span><span style="color:#b452cd">10</span><span style="color:#a61717;background-color:#e3d2d2">個字元的書，不包括裡面的空格</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">length</span>(<span style="color:#8b008b;font-weight:bold">replace</span>(name,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39; &#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;&#39;</span>))<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#b452cd">10</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">16</span><span style="color:#a61717;background-color:#e3d2d2">、查詢書名和類型，其中</span>note值為novel顯示小說<span style="color:#a61717;background-color:#e3d2d2">，</span>law顯示法律<span style="color:#a61717;background-color:#e3d2d2">，</span>medicine顯示醫藥<span style="color:#a61717;background-color:#e3d2d2">，</span>cartoon顯示卡通<span style="color:#a61717;background-color:#e3d2d2">，</span>joke顯示笑話<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>name,<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>note,<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">case</span><span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">when</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">then</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;小說&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">when</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;law&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">then</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;法律&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">end</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;類型&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">17</span><span style="color:#a61717;background-color:#e3d2d2">、查詢書名、庫存，其中</span>num值超過30本的<span style="color:#a61717;background-color:#e3d2d2">，顯示滯銷，大於</span><span style="color:#b452cd">0</span><span style="color:#a61717;background-color:#e3d2d2">並低於</span><span style="color:#b452cd">10</span><span style="color:#a61717;background-color:#e3d2d2">的，顯示暢銷，為</span><span style="color:#b452cd">0</span><span style="color:#a61717;background-color:#e3d2d2">的顯示需要無貨</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>name,<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>num,<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">case</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">when</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">30</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">then</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;滯銷&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">when</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">10</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">then</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;暢銷&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">when</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">then</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;待補&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">           </span><span style="color:#8b008b;font-weight:bold">end</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;庫存&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">18</span><span style="color:#a61717;background-color:#e3d2d2">、統計每一種</span>note的庫存量<span style="color:#a61717;background-color:#e3d2d2">，並合計總量</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>IFNULL(note,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;合计总库存量&#39;</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>note,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SUM</span>(num)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">GROUP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WITH</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ROLLUP</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">19</span><span style="color:#a61717;background-color:#e3d2d2">、統計每一種</span>note的數量<span style="color:#a61717;background-color:#e3d2d2">，並合計總量</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>ifnull(note,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;數量&#39;</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb"> </span>note,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>note<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">with</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">rollup</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">20</span><span style="color:#a61717;background-color:#e3d2d2">、統計庫存量前三名的圖書</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">3</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">21</span><span style="color:#a61717;background-color:#e3d2d2">、找出最早出版的一本書</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>pubdate<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">22</span><span style="color:#a61717;background-color:#e3d2d2">、找出</span>novel中價格最高的一本書<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>note<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;novel&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>price<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#bbb"> </span><span style="color:#b452cd">23</span><span style="color:#a61717;background-color:#e3d2d2">、找出書名中字數最多的一本書，不含空格</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>books<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">length</span>(<span style="color:#8b008b;font-weight:bold">replace</span>(name,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39; &#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;&#39;</span>))<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">desc</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-22</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211223-agg-mysql-08/">
+			下一篇<br>MySQL資料類型詳述
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211221-agg-mysql-06/">
+			上一篇<br>資料庫的具體結構、創建與管理
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

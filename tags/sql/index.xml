@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>sql on 柚子茶室</title>
+    <link>https://yoziming.github.io/tags/sql/</link>
+    <description>Recent content in sql on 柚子茶室</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yoziming</copyright>
+    <lastBuildDate>Wed, 29 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL8新特性</title>
+      <link>https://yoziming.github.io/post/211229-agg-mysql-14/</link>
+      <pubDate>Wed, 29 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211229-agg-mysql-14/</guid>
+      <description>MySQL8新特性概述  一樣跳過
+ MySQL從5.7版本直接跳躍發佈了8.0版本，可見這是一個令人興奮的里程碑版本。MySQL 8版本在功能上做了顯著的改進與增強，開發者對MySQL的原始程式碼進行了重構，最突出的一點是多MySQL Optimizer優化器進行了改進。不僅在速度上得到了改善，還為使用者帶來了更好的性能和更棒的體驗。
+1.1 MySQL8.0 新增特性 1. 更簡便的NoSQL支持 NoSQL泛指非關係型數據庫和資料存儲。隨著互聯網平臺的規模飛速發展，傳統的關係型數據庫已經越來越不能滿足需求。從5.6版本開始，MySQL就開始支援簡單的NoSQL存儲功能。MySQL 8對這一功能做了優化，以更靈活的方式實現NoSQL功能，不再依賴模式（schema）。
+2. 更好的索引 在查詢中，正確地使用索引可以提高查詢的效率。MySQL 8中新增了隱藏索引和降冪索引。隱藏索引可以用來測試去掉索引對查詢性能的影響。在查詢中混合存在多列索引時，使用降冪索引可以提高查詢的性能。
+3.更完善的JSON支援 MySQL從5.7開始支援原生JSON資料的存儲，MySQL 8對這一功能做了優化，增加了彙總函式JSON_ARRAYAGG()和JSON_OBJECTAGG()，將參數聚合為JSON陣列或物件，新增了行內操作符 -&amp;raquo;，是列路徑運算子 -&amp;gt;的增強，對JSON排序做了提升，並優化了JSON的更新操作。
+4.安全和帳戶管理 MySQL 8中新增了caching_sha2_password 授權外掛程式、角色、密碼歷史記錄和FIPS模式支援，這些特性提高了資料庫的安全性和性能，使資料庫管理員能夠更靈活地進行帳戶管理工作。
+5.InnoDB的變化 InnoDB是MySQL預設的存儲引擎，是事務型資料庫的首選引擎，支援事務安全表（ACID），支持行鎖定和外鍵。在MySQL 8 版本中，InnoDB在自增、索引、加密、鎖死、共用鎖等方面做了大量的改進和優化，並且支援原子資料定義語言（DDL），提高了資料安全性，對事務提供更好的支援。
+6.資料字典 在之前的MySQL版本中，字典資料都存儲在中繼資料檔和非事務表中。從MySQL 8開始新增了交易資料字典，在這個字典裡存儲著資料庫物件資訊，這些資料字典存儲在內部事務表中。
+7. 原子資料定義語句 MySQL 8開始支援原子資料定義語句（Automic DDL），即原子DDL。目前，只有InnoDB存儲引擎支援原子DDL。原子資料定義語句（DDL）將與DDL操作相關的資料字典更新、存儲引擎操作、二進位日誌寫入結合到一個單獨的原子事務中，這使得即使伺服器崩潰，事務也會提交或回滾。 使用支援原子操作的存儲引擎所創建的表，在執行DROP TABLE、CREATE TABLE、ALTER TABLE、 RENAME TABLE、TRUNCATE TABLE、CREATE TABLESPACE、DROP TABLESPACE等操作時，都支援原子操作，即事務要麼完全操作成功，要麼失敗後回滾，不再進行部分提交。 對於從MySQL 5.7複製到MySQL 8 版本中的語句，可以添加IF EXISTS或IF NOT EXISTS語句來避免發生錯誤。
+8.資源管理 MySQL 8開始支援創建和管理資源組，允許將伺服器內運行的執行緒分配給特定的分組，以便執行緒根據組內可用資源執行。組屬性能夠控制組內資源，啟用或限制組內資源消耗。資料庫管理員能夠根據不同的工作負載適當地更改這些屬性。 目前，CPU時間是可控資源，由“虛擬CPU”這個概念來表示，此術語包含CPU的核心數，超執行緒，硬體執行緒等等。伺服器在啟動時確定可用的虛擬CPU數量。擁有對應許可權的資料庫管理員可以將這些CPU與資源組關聯，並為資源組分配執行緒。 資源組元件為MySQL中的資源組管理提供了SQL介面。資源組的屬性用於定義資源組。MySQL中存在兩個預設組，系統組和使用者組，默認的組不能被刪除，其屬性也不能被更改。對於用戶自訂的組，資源組創建時可初始化所有的屬性，除去名字和類型，其他屬性都可在創建之後進行更改。 在一些平臺下，或進行了某些MySQL的配置時，資源管理的功能將受到限制，甚至不可用。例如，如果安裝了執行緒池外掛程式，或者使用的是macOS系統，資源管理將處於不可用狀態。在FreeBSD和Solaris系統中，資源執行緒優先順序將失效。在Linux系統中，只有配置了CAP_SYS_NICE屬性，資源管理優先順序才能發揮作用。
+9.字元集支援 MySQL 8中默認的字元集由latin1更改為utf8mb4，並首次增加了日語所特定使用的集合，utf8mb4_ja_0900_as_cs。
+10.優化器增強 MySQL優化器開始支援隱藏索引和降冪索引。隱藏索引不會被優化器使用，驗證索引的必要性時不需要刪除索引，先將索引隱藏，如果優化器性能無影響就可以真正地刪除索引。降冪索引允許優化器對多個列進行排序，並且允許排序順序不一致。
+11.公用表運算式 公用表運算式（Common Table Expressions）簡稱為CTE，MySQL現在支持遞迴和非遞迴兩種形式的CTE。CTE通過在SELECT語句或其他特定語句前使用WITH語句對臨時結果集進行命名。</description>
+    </item>
+    
+    <item>
+      <title>觸發器Trigger</title>
+      <link>https://yoziming.github.io/post/211228-agg-mysql-13/</link>
+      <pubDate>Tue, 28 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211228-agg-mysql-13/</guid>
+      <description>觸發器Trigger  一樣跳過
+ 在實際開發中，我們經常會遇到這樣的情況：有 2 個或者多個相互關聯的表，如商品資訊和庫存資訊分別存放在 2 個不同的資料表中，我們在添加一條新商品記錄的時候，為了保證資料的完整性，必須同時在庫存表中添加一條庫存記錄。
+這樣一來，我們就必須把這兩個關聯的操作步驟寫到程式裡面，而且要用事務包裹起來，確保這兩個操作成為一個原子操作，要麼全部執行，要麼全部不執行。要是遇到特殊情況，可能還需要對資料進行手動維護，這樣就很容易忘記其中的一步，導致資料缺失。
+這個時候，咱們可以使用觸發器。**你可以創建一個觸發器，讓商品資訊資料的插入操作自動觸發庫存資料的插入操作。**這樣一來，就不用擔心因為忘記添加庫存資料而導致的資料缺失了。
+1. 觸發器概述 MySQL從5.0.2版本開始支持觸發器。MySQL的觸發器和存儲過程一樣，都是嵌入到MySQL伺服器的一段程式。
+觸發器是由事件來觸發某個操作，這些事件包括INSERT、UPDATE、DELETE事件。所謂事件就是指用戶的動作或者觸發某項行為。如果定義了觸發程式，當資料庫執行這些語句時候，就相當於事件發生了，就會自動激發觸發器執行相應的操作。
+當對資料表中的資料執行插入、更新和刪除操作，需要自動執行一些資料庫邏輯時，可以使用觸發器來實現。
+2. 觸發器的創建 2.1 創建觸發器語法 創建觸發器的語法結構是：
+CREATETRIGGER觸發器名稱{BEFORE|AFTER}{INSERT|UPDATE|DELETE}ON表名FOREACHROW觸發器執行的語句塊;說明：
+  表名：表示觸發器監控的物件。
+  BEFORE|AFTER：表示觸發的時間。BEFORE 表示在事件之前觸發；AFTER 表示在事件之後觸發。
+  INSERT|UPDATE|DELETE：表示觸發的事件。
+ INSERT 表示插入記錄時觸發； UPDATE 表示更新記錄時觸發； DELETE 表示刪除記錄時觸發。    觸發器執行的語句塊：可以是單條SQL語句，也可以是由BEGIN…END結構組成的複合陳述式塊。
+  2.2 代碼舉例 舉例1：
+1、創建資料表：
+CREATETABLEtest_trigger(idINTPRIMARYKEYAUTO_INCREMENT,t_noteVARCHAR(30));CREATETABLEtest_trigger_log(idINTPRIMARYKEYAUTO_INCREMENT,t_logVARCHAR(30));2、創建觸發器：創建名稱為before_insert的觸發器，向test_trigger資料表插入資料之前，向test_trigger_log資料表中插入before_insert的日誌資訊。
+DELIMITER//CREATETRIGGERbefore_insertBEFOREINSERTONtest_triggerFOREACHROWBEGININSERTINTOtest_trigger_log(t_log)VALUES(&amp;#39;before_insert&amp;#39;);END//DELIMITER;3、向test_trigger資料表中插入資料
+INSERTINTOtest_trigger(t_note)VALUES(&amp;#39;測試 BEFORE INSERT 觸發器&amp;#39;);4、查看test_trigger_log資料表中的資料
+mysql&amp;gt;SELECT*FROMtest_trigger_log;+----+---------------+|id|t_log|+----+---------------+|1|before_insert|+----+---------------+1rowinset(0.00sec)舉例2：
+1、創建名稱為after_insert的觸發器，向test_trigger資料表插入資料之後，向test_trigger_log資料表中插入after_insert的日誌資訊。
+DELIMITER//CREATETRIGGERafter_insertAFTERINSERTONtest_triggerFOREACHROWBEGININSERTINTOtest_trigger_log(t_log)VALUES(&amp;#39;after_insert&amp;#39;);END//DELIMITER;2、向test_trigger資料表中插入資料。
+INSERTINTOtest_trigger(t_note)VALUES(&amp;#39;測試 AFTER INSERT 觸發器&amp;#39;);3、查看test_trigger_log資料表中的資料
+mysql&amp;gt;SELECT*FROMtest_trigger_log;+----+---------------+|id|t_log|+----+---------------+|1|before_insert||2|before_insert||3|after_insert|+----+---------------+3rowsinset(0.00sec)**舉例3：**定義觸發器“salary_check_trigger”，基於員工表“employees”的INSERT事件，在INSERT之前檢查將要添加的新員工薪資是否大於他領導的薪資，如果大於領導薪資，則報sqlstate_value為&amp;rsquo;HY000&amp;rsquo;的錯誤，從而使得添加失敗。
+DELIMITER//CREATETRIGGERsalary_check_triggerBEFOREINSERTONemployeesFOREACHROWBEGINDECLAREmgrsalaryDOUBLE;SELECTsalaryINTOmgrsalaryFROMemployeesWHEREemployee_id=NEW.manager_id;IFNEW.salary&amp;gt;mgrsalaryTHENSIGNALSQLSTATE&amp;#39;HY000&amp;#39;SETMESSAGE_TEXT=&amp;#39;薪資高於領導薪資錯誤&amp;#39;;ENDIF;END//DELIMITER;上面觸發器聲明過程中的NEW關鍵字代表INSERT添加語句的新記錄。
+3. 查看、刪除觸發器 3.1 查看觸發器 查看觸發器是查看資料庫中已經存在的觸發器的定義、狀態和語法資訊等。</description>
+    </item>
+    
+    <item>
+      <title>變量、流程控制與游標</title>
+      <link>https://yoziming.github.io/post/211227-agg-mysql-12/</link>
+      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211227-agg-mysql-12/</guid>
+      <description>變量、流程控制與游標  一樣先跳過了
+ 1. 變數 在MySQL資料庫的存儲過程和函數中，可以使用變數來存儲查詢或計算的中間結果資料，或者輸出最終的結果資料。
+在 MySQL 資料庫中，變數分為系統變數以及使用者自訂變數。
+1.1 系統變數 1.1.1 系統變數分類 變數由系統定義，不是使用者定義，屬於伺服器層面。啟動MySQL服務，生成MySQL服務實例期間，MySQL將為MySQL伺服器記憶體中的系統變數賦值，這些系統變數定義了當前MySQL服務實例的屬性、特徵。這些系統變數的值要麼是編譯MySQL時參數的預設值，要麼是設定檔（例如my.ini等）中的參數值。大家可以通過網址 https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html 查看MySQL文檔的系統變數。
+系統變數分為全域系統變數（需要添加global 關鍵字）以及會話系統變數（需要添加 session 關鍵字），有時也把全域系統變數簡稱為全域變數，有時也把會話系統變數稱為local變數。**如果不寫，默認會話級別。**靜態變數（在 MySQL 服務實例運行期間它們的值不能使用 set 動態修改）屬於特殊的全域系統變數。
+每一個MySQL客戶機成功連接MySQL伺服器後，都會產生與之對應的會話。會話期間，MySQL服務實例會在MySQL伺服器記憶體中生成與該會話對應的會話系統變數，這些會話系統變數的初始值是全域系統變數值的複製。如下圖：
+ 全域系統變數針對於所有會話（連接）有效，但不能跨重啟 會話系統變數僅針對於當前會話（連接）有效。會話期間，當前會話對某個會話系統變數值的修改，不會影響其他會話同一個會話系統變數的值。 會話1對某個全域系統變數值的修改會導致會話2中同一個全域系統變數值的修改。  在MySQL中有些系統變數只能是全域的，例如 max_connections 用於限制伺服器的最大連接數；有些系統變數作用域既可以是全域又可以是會話，例如 character_set_client 用於設置用戶端的字元集；有些系統變數的作用域只能是當前會話，例如 pseudo_thread_id 用於標記當前會話的 MySQL 連接 ID。
+1.1.2 查看系統變數  查看所有或部分系統變數  #查看所有全域變數 SHOWGLOBALVARIABLES;#查看所有會話變數 SHOWSESSIONVARIABLES;或SHOWVARIABLES;#查看滿足條件的部分系統變數。 SHOWGLOBALVARIABLESLIKE&amp;#39;%識別字%&amp;#39;;#查看滿足條件的部分會話變數 SHOWSESSIONVARIABLESLIKE&amp;#39;%識別字%&amp;#39;;舉例：
+SHOWGLOBALVARIABLESLIKE&amp;#39;admin_%&amp;#39;; 查看指定系統變數  作為 MySQL 編碼規範，MySQL 中的系統變數以兩個“@”開頭，其中“@@global”僅用於標記全域系統變數，“@@session”僅用於標記會話系統變數。“@@”首先標記會話系統變數，如果會話系統變數不存在，則標記全域系統變數。
+#查看指定的系統變數的值 SELECT@@global.變數名;#查看指定的會話變數的值 SELECT@@session.變數名;#或者 SELECT@@變數名; 修改系統變數的值  有些時候，資料庫管理員需要修改系統變數的預設值，以便修改當前會話或者MySQL服務實例的屬性、特徵。具體方法：
+方式1：修改MySQL設定檔，繼而修改MySQL系統變數的值（該方法需要重啟MySQL服務）
+方式2：在MySQL服務運行期間，使用“set”命令重新設置系統變數的值
+#為某個系統變數賦值 #方式1： SET@@global.變數名=變數值;#方式2： SETGLOBAL變數名=變數值;#為某個會話變數賦值 #方式1： SET@@session.</description>
+    </item>
+    
+    <item>
+      <title>預存程序Procedure與自訂函數Function</title>
+      <link>https://yoziming.github.io/post/211226-agg-mysql-11/</link>
+      <pubDate>Sun, 26 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211226-agg-mysql-11/</guid>
+      <description>存儲過程與函數  就是巨集Macro啦，這部分我暫時用不到，先直接貼上筆記過眼完事了，以後有用到再回來補
+ MySQL從5.0版本開始支援存儲過程和函數。存儲過程和函數能夠將複雜的SQL邏輯封裝在一起，應用程式無須關注存儲過程和函數內部複雜的SQL邏輯，而只需要簡單地調用存儲過程和函數即可。
+1. 存儲過程概述 1.1 理解 含義：存儲過程的英文是 Stored Procedure。它的思想很簡單，就是一組經過預先編譯的 SQL 語句的封裝。
+執行過程：存儲過程預先存儲在 MySQL 伺服器上，需要執行的時候，用戶端只需要向伺服器端發出調用存儲過程的命令，伺服器端就可以把預先存儲好的這一系列 SQL 語句全部執行。
+好處：
+1、簡化操作，提高了sql語句的重用性，減少了開發程式師的壓力 2、減少操作過程中的失誤，提高效率 3、減少網路傳輸量（用戶端不需要把所有的 SQL 語句通過網路發給伺服器） 4、減少了 SQL 語句暴露在網上的風險，也提高了資料查詢的安全性
+和視圖、函數的對比：
+它和視圖有著同樣的優點，清晰、安全，還可以減少網路傳輸量。不過它和視圖不同，視圖是虛擬表，通常不對底層資料表直接操作，而存儲過程是程式化的 SQL，可以直接操作底層資料表，相比于面向集合的操作方式，能夠實現一些更複雜的資料處理。
+一旦存儲過程被創建出來，使用它就像使用函數一樣簡單，我們直接通過調用存儲過程名即可。相較於函數，存儲過程是沒有返回值的。
+1.2 分類 存儲過程的參數類型可以是IN、OUT和INOUT。根據這點分類如下：
+1、沒有參數（無參數無返回） 2、僅僅帶 IN 類型（有參數無返回） 3、僅僅帶 OUT 類型（無參數有返回） 4、既帶 IN 又帶 OUT（有參數有返回） 5、帶 INOUT（有參數有返回）
+注意：IN、OUT、INOUT 都可以在一個存儲過程中帶多個。
+2. 創建存儲過程 2.1 語法分析 語法：
+CREATEPROCEDURE存儲過程名(IN|OUT|INOUT參數名參數類型,...)[characteristics...]BEGIN存儲過程體END類似於Java中的方法：
+修飾符返回類型方法名(參數類型參數名,...){方法體;}說明：
+1、參數前面的符號的意思
+  IN：當前參數為輸入參數，也就是表示入參；
+存儲過程只是讀取這個參數的值。如果沒有定義參數種類，默認就是 IN，表示輸入參數。
+  OUT：當前參數為輸出參數，也就是表示出參；
+執行完成之後，調用這個存儲過程的用戶端或者應用程式就可以讀取這個參數返回的值了。
+  INOUT：當前參數既可以為輸入參數，也可以為輸出參數。</description>
+    </item>
+    
+    <item>
+      <title>視圖View</title>
+      <link>https://yoziming.github.io/post/211225-agg-mysql-10/</link>
+      <pubDate>Sat, 25 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211225-agg-mysql-10/</guid>
+      <description>視圖View  視圖 = 存儲起來的select語句
+  就是創建一張專門用來看的虛擬表 涉及的表稱為基表，基表也可以是視圖(可以嵌套作圖) 對視圖進行DML操作，會影響基表中的資料，反之亦然  但通常不會在視圖對資料進行操作，並且可以指定關閉這種權限   刪除視圖不影響基表  創建視圖 CREATE[ORREPLACE][ALGORITHM={UNDEFINED|MERGE|TEMPTABLE}]VIEW視圖名稱[(欄位清單)]AS查詢語句[WITH[CASCADED|LOCAL]CHECKOPTION]-- 如果查詢基表時用了別名，那創出來的視圖欄位名稱就會是別名 createviewemployees_viewasselectlast_name&amp;#39;姓名&amp;#39;,employee_id&amp;#39;員工編號&amp;#39;fromatguigudb.employees;-- 年薪 createviewyear_salary(name,year_salary)asselectemployees.last_name,salary*12*(1+ifnull(commission_pct,0))fromatguigudb.employees;-- 多表聯合 CREATEVIEWdept_sum_vu(name,minsal,maxsal,avgsal)ASSELECTd.department_name,MIN(e.salary),MAX(e.salary),AVG(e.salary)FROMemployeese,departmentsdWHEREe.department_id=d.department_idGROUPBYd.department_name;-- 格式化輸出 CREATEVIEWemp_departASSELECTCONCAT(last_name,&amp;#39;任職於&amp;#39;,department_name,&amp;#39;ㄅ&amp;#39;)ASemp_deptFROMemployeeseJOINdepartmentsdWHEREe.department_id=d.department_id查看視圖屬性 DESC/DESCRIBE視圖名稱;-- 查看視圖的屬性資訊 SHOWTABLESTATUSLIKE&amp;#39;視圖名稱&amp;#39;;-- 查看視圖的詳細定義資訊 SHOWCREATEVIEW視圖名稱;修改視圖內的資料  一般來說不會這麼做，了解即可
+  如果是一對一關係的視圖，且有權限的話，可以使用INSERT、UPDATE和DELETE語句去修改其中的資料 有以下情況則不可修改:  在定義視圖的時候指定了“ALGORITHM = TEMPTABLE”，視圖將不支援INSERT和DELETE操作 視圖中不包含基表中所有被定義為非空又未指定預設值的列，視圖將不支援INSERT操作 在定義視圖的SELECT語句中使用了JOIN聯集查詢，視圖將不支援INSERT和DELETE操作 在定義視圖的SELECT語句後的欄位清單中使用了數學運算式或子查詢，視圖將不支援INSERT，也不支援UPDATE使用了數學運算式、子查詢的欄位值 在定義視圖的SELECT語句後的欄位清單中使用DISTINCT、彙總函式、GROUP BY、HAVING、UNION等，視圖將不支持INSERT、UPDATE、DELETE 在定義視圖的SELECT語句中包含了子查詢，而子查詢中引用了FROM後面的表，視圖將不支援INSERT、UPDATE、DELETE 視圖定義基於一個不可更新視圖 常量視圖    刪改視圖 -- 修改方法1 CREATEORREPLACEVIEW視圖名稱AS-- ...查詢語句 -- 修改方法2 ALTERVIEW視圖名稱AS-- ...查詢語句 -- 刪除 DROPVIEWIFEXISTS視圖名稱小結   視圖的優點:
+  簡化操作:能夠分解複雜的查詢操作</description>
+    </item>
+    
+    <item>
+      <title>MySQL資料類型詳述</title>
+      <link>https://yoziming.github.io/post/211223-agg-mysql-08/</link>
+      <pubDate>Thu, 23 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211223-agg-mysql-08/</guid>
+      <description>資料類型詳述  這節為了解型的知識點，有些筆記我直接複製貼上了 康師父這節講得太細，趕時間直接看最底的結論(對應教學影片p65) 用語注意:byte = 8 bit = 字節 = 位元組  MySQL中的資料類型    類型 類型舉例     整數類型 TINYINT、SMALLINT、MEDIUMINT、INT(或INTEGER)、BIGINT   浮點類型 FLOAT、DOUBLE   定點數類型 DECIMAL   位類型 BIT   日期時間類型 YEAR、TIME、DATE、DATETIME、TIMESTAMP   文本字串類型 CHAR、VARCHAR、TINYTEXT、TEXT、MEDIUMTEXT、LONGTEXT   枚舉類型 ENUM   集合類型 SET   二進位字串類型 BINARY、VARBINARY、TINYBLOB、BLOB、MEDIUMBLOB、LONGBLOB   JSON類型 JSON物件、JSON陣列   空間資料類型 單值:GEOMETRY、POINT、LINESTRING、POLYGON；集合:MULTIPOINT、MULTILINESTRING、MULTIPOLYGON、GEOMETRYCOLLECTION     常見資料類型的屬性，如下:     MySQL關鍵字 含義     NULL 數據列可包含NULL值   NOT NULL 資料列不允許包含NULL值   DEFAULT 預設值   PRIMARY KEY 主鍵   AUTO_INCREMENT 自動遞增，適用於整數類型   UNSIGNED 無符號   CHARACTER SET name 指定一個字符集    整數類型   整數類型一共有 5 種，包括 TINYINT、SMALLINT、MEDIUMINT、INT（INTEGER）和 BIGINT。</description>
+    </item>
+    
+    <item>
+      <title>資料的增/刪/改</title>
+      <link>https://yoziming.github.io/post/211222-agg-mysql-07/</link>
+      <pubDate>Wed, 22 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211222-agg-mysql-07/</guid>
+      <description>資料的操作 新增資料  使用INSERT INTO語句  插入一條完整的資料  完整即是此筆資料包含所有欄位的意思
+  格式:  insertinto表名values(value1,value2,....); values是正規語法，也可以省略s 內容(value1,value2,....)的順序必須嚴格依照表的欄位順序 字符與日期的資料類型必須包在&#39;&#39;單引號中  插入指定欄位的資料  格式:  insertinto表名(欄位名1,欄位名2,...)values(value1,value2,....); 內容(value1,value2,....)的順序必須嚴格依照表的欄位順序 上面有列出的，下面就要填入  插入多條資料  執行效率更高，推薦使用
+ INSERTINTOtable_name(column1[,column2,…,columnn])VALUES(value1[,value2,…,valuen]),(value1[,value2,…,valuen]),……(value1[,value2,…,valuen]); 使用INSERT同時插入多條記錄時，MySQL會返回一些在執行單行插入時沒有的額外資訊，這些資訊的含義如下:  Records:表明插入的記錄條數 Duplicates:表明插入時被忽略的記錄，原因可能是這些記錄包含了重複的主鍵值 Warnings:表明有問題的資料值，例如發生資料類型轉換    將查詢結果做為資料插入  格式:  INSERTINTO目標表名(tar_column1[,tar_column2,…,tar_columnn])SELECT(src_column1[,src_column2,…,src_columnn])FROM源表名[WHEREcondition] 注意沒有values了 查詢的欄位與插入的欄位需對應，例如:  並且要特別注意資料的長度，把長的資料放到短的格子可能出錯    INSERTINTOsales_reps(id,name,salary,commission_pct)SELECTemployee_id,last_name,salary,commission_pctFROMemployeesWHEREjob_idLIKE&amp;#39;%REP%&amp;#39;;/* sales_reps中的id對應查來的employee_id ... */ 更新資料  使用UPDATE語句更新資料，格式:  UPDATEtable_nameSETcolumn1=value1,column2=value2,…,column=valuen[WHEREcondition] 可以一次更新多條資料 如果需要回滾資料，需要保證在DML前，進行設置SET AUTOCOMMIT = FALSE;，防止自動提交 使用WHERE子句指定需要更新的資料  UPDATEemployeesSETdepartment_id=70WHEREemployee_id=113; 如果省略WHERE子句，則表中的所有資料都將被更新，慎用!!!  UPDATEcopy_empSETdepartment_id=110; 更新中的資料完整性錯誤  有些欄位可能受到約束影響，比如department_id是源自departments表，其中沒有id為110的項目，所以這樣更新就會報錯    UPDATEemployeesSETdepartment_id=55WHEREdepartment_id=110; 刪除資料  實際開發中都是用邏輯刪除，就是建一個欄位表示&amp;quot;刪除&amp;quot;，要刪的那筆資料&amp;quot;刪除&amp;quot;=true。基本上不會用到這些指令的</description>
+    </item>
+    
+    <item>
+      <title>資料庫的具體結構、創建與管理</title>
+      <link>https://yoziming.github.io/post/211221-agg-mysql-06/</link>
+      <pubDate>Tue, 21 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211221-agg-mysql-06/</guid>
+      <description>資料庫的結構  所謂資料庫的具體結構層級如下:  DBMS資料庫管理系統 &amp;gt; database資料庫 &amp;gt; table表 &amp;gt; column欄位   創建database、table、column都需要自己命名  命名規則  庫名、表名不得超過30字符；變量限制為29字符 只能包含大小寫英數字與_下劃線 不可包含空格 同一DBM中庫不可重名，同一庫中表不可重名，同一表中字段不可重名 不可與關鍵字、保留字等衝突 命名與資料類型須保持一致性  常用的幾類類型:       資料類型 描述     INT 從-2^31到2^31-1的整型數據。存儲大小為 4個位元組   CHAR(size) 定長字元資料。若未指定，預設為1個字元，最大長度255   VARCHAR(size) 可變長字元資料，根據字串實際長度保存，必須指定長度   FLOAT(M,D) 單精確度，佔用4個位元組，M=整數位元+小數位，D=小數位。 D&amp;lt;=M&amp;lt;=255,0&amp;lt;=D&amp;lt;=30，默認M+D&amp;lt;=6   DOUBLE(M,D) 雙精度，佔用8個位元組，D&amp;lt;=M&amp;lt;=255,0&amp;lt;=D&amp;lt;=30，默認M+D&amp;lt;=15   DECIMAL(M,D) 高精度小數，佔用M+2個位元組，D&amp;lt;=M&amp;lt;=65，0&amp;lt;=D&amp;lt;=30，最大取值範圍與DOUBLE相同。   DATE 日期型資料，格式&amp;rsquo;YYYY-MM-DD&#39;   BLOB 二進位形式的長文本資料，最大可達4G   TEXT 長文本資料，最大可達4G     database庫的指令  必須具備相應權限</description>
+    </item>
+    
+    <item>
+      <title>子查詢Subquery</title>
+      <link>https://yoziming.github.io/post/211220-agg-mysql-05/</link>
+      <pubDate>Mon, 20 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211220-agg-mysql-05/</guid>
+      <description>子查詢Subquery  查中有查，以某查完的結果作為比較項目來查
+  用一對()括號包起來 子查詢在主查詢之前先執行了一次 子查詢放在比較條件的右側 多行操作就對應多行子查詢  分類   依照內查詢返回的條目數:
+ 單行:返回一條結果 多行:返回多行結果    依照內查詢是否被執行多次:
+  相關:查詢工資是否大於其部門平均(每個人部門不同，都要查各自的)
+  不相關:查詢工資是否大於2000(每個人固定跟2000比較)
+    單行子查詢  內查詢返回一條結果，外查詢跟這條結果比較 比較符:=等於、大小於等於、不等於 舉例:  -- 查詢薪水比&amp;#34;員工ID143號的薪水&amp;#34;還多的 selectsalary,job_id,employee_idfromemployeeswheresalary&amp;gt;(selectsalaryfromemployeeswhereemployee_id=143);-- 返回&amp;#34;job_id與141號員工相同&amp;#34;且&amp;#34;salary比143號員工多的&amp;#34; selectsalary,job_id,employee_idfromemployeeswheresalary&amp;gt;(selectsalaryfromemployeeswhereemployee_id=143)andjob_id=(selectjob_idfromemployeeswhereemployee_id=141);-- 查詢工資最少的 selectlast_name,job_id,salaryfromemployeeswheresalary=(selectmin(salary)fromemployees);-- 查詢管理人與部門ID跟編號141相同的 selectemployee_id,manager_id,department_idfromemployeeswheremanager_id=(selectmanager_idfromemployeeswhereemployee_id=141)anddepartment_id=(selectdepartment_idfromemployeeswhereemployee_id=141)andemployee_id!=141;-- 注意排除自己本身 -- 返回每個部門的最低工資，條件限制&amp;#34;比部門編號50的最低薪資&amp;#34;還高 selectdepartment_id,min(salary)fromemployeesgroupbydepartment_idhavingmin(salary)&amp;gt;(selectmin(salary)fromemployeeswheredepartment_id=50); HAVING、CASE也都可以使用 如果子查詢結果為null，那不返回任何東西 (與null比較必為null)  多行子查詢  也稱為集合比較子查詢 內查詢返回多行結果 使用多行比較操作符，因為返回很多條所以沒得等於，不然要等於哪個?     操作符 含義     IN 等於列表中的任意一個   ANY 需要和單行比較操作符一起使用，和子查詢返回的某一個值比較   ALL 需要和單行比較操作符一起使用，和子查詢返回的所有值比較   SOME 實際上是ANY的別名，作用相同，一般常使用ANY     舉例:  -- 返回其它job_id中比job_id為IT_PROG任一工資低的員工的員工號、job_id 以及salary** -- 其實相當於&amp;lt; IT_PROG中工資的max selectemployee_id,job_id,salaryfromemployeeswheresalary&amp;lt;any(selectsalaryfromemployeeswherejob_id=&amp;#39;IT_PROG&amp;#39;)andjob_id!</description>
+    </item>
+    
+    <item>
+      <title>常用函數:數值/字串/時間/流程控制...等</title>
+      <link>https://yoziming.github.io/post/211219-agg-mysql-04/</link>
+      <pubDate>Sun, 19 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211219-agg-mysql-04/</guid>
+      <description>函數  日後有需要用到的函數大多可以在這裡查到
+  根據輸入的資訊，返回某種結果 函數在不同的DBMS(資料庫軟體)之間的差距很大，使用時要注意移植性， 以下都是基於MySQL  常見分類  依照資料類型:數值、字符串、時間日期 依照功能:流程控制、加密解密、獲取信息 依照輸入資料的行數:單行、多行(聚合)  單行函數  對一行資料進行變換、每行返回一個結果  例如:想知道每個員工的工作年資，具體作法為現在時間減去員工入職時間，就可以調用時間相關的函數   單行函數可以嵌套使用   範例太多我就複製貼上了，先過眼了解，有用到時不熟悉再來查
+ 1. 數值    函數 用法     ABS(x) 返回x的絕對值   SIGN(X) 返回X的符號。正數返回1，負數返回-1，0返回0   PI() 返回圓周率的值   CEIL(x)，CEILING(x) 返回大於或等於某個值的最小整數   FLOOR(x) 返回小於或等於某個值的最大整數   LEAST(e1,e2,e3…) 返回列表中的最小值   GREATEST(e1,e2,e3…) 返回列表中的最大值   MOD(x,y) 返回X除以Y後的餘數   RAND() 返回0~1的隨機值，每次都不同   RAND(x) 返回0~1的隨機值，其中x的值用作種子值，相同的X值會產生相同的亂數   ROUND(x) 返回一個對x的值進行四捨五入後，最接近於X的整數   ROUND(x,y) 返回一個對x的值進行四捨五入後最接近X的值，並保留到小數點後面Y位   TRUNCATE(x,y) 返回數字x截斷為y位元小數的結果   SQRT(x) 返回x的平方根。當X的值為負數時，返回NULL    2.</description>
+    </item>
+    
+    <item>
+      <title>多表查詢、JOIN ON連接</title>
+      <link>https://yoziming.github.io/post/211218-agg-mysql-03/</link>
+      <pubDate>Sat, 18 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211218-agg-mysql-03/</guid>
+      <description>多表查詢  從多張表格的查詢結果，連結彙整成一個表
+ 前提  需要有連接條件  沒有正確的連接條件，則會變成每個元素都相乘得出超爆量的結果，數學上稱這種集合為笛卡爾積，例如貓、狗X黑、白、黃的排列組合   正確連接舉例:員工表中有部門ID，部門表有部門ID，用其串聯顯示部門名稱  SELECTe.employee_id,d.department_id,d.department_nameFROMemployeese,departmentsdWHEREe.department_id=d.department_idORDERBYemployee_id; 如果查詢的表中，多個表都有同一字段，必須指明所在的表，此例中d.department_id就是必須指明的，否則報錯  為了提高效率與可讀性，使用字段最好都指名來源表   最好使用別名，並且一但起了別名就必須使用別名，否則報錯 當想實現N個表的多表查詢，必須至少有N-1個連接條件，例如:  SELECTe.employee_id,d.department_id,d.department_name,l.cityFROMemployeese,departmentsd,locationslWHEREe.department_id=d.department_id&amp;amp;&amp;amp;d.location_id=l.location_idORDERBYemployee_id;分類 等值 vs 非等值 -- 非等值舉例，比如在某個範圍之內 SELECTe.employee_id,e.last_name,j.grade_levelFROMemployeese,job_gradesjWHEREe.salary&amp;gt;=j.lowest_sal&amp;amp;&amp;amp;e.salary&amp;lt;=j.highest_salORDERBYemployee_id;自連接 vs 非自連接 -- 自連接舉例，將同一張表拆成2個別名 SELECTemp.employee_id,emp.last_name,mgr.employee_id,mgr.last_nameFROMemployeesemp,employeesmgrWHEREemp.`manager_id`=mgr.`employee_id`;內連接 vs 外連接  內連接:就是小時候excel用的VLOOKUP，返回的是兩個表都有匹配到的項目 外連接:返回包含不匹配的部分，又分左、右、全，還是上圖吧  當看到描述為查詢&amp;quot;所有&amp;ldquo;的XXX就要想到應該是外連接      這個用(+)實現左外連是SQL92語法，但MySQL不認，必須使用JOIN ... ON，下面詳述
+  又MySQL不支援FULL OUTER JOIN，還需要關鍵字UNION輔助
+  實現  這張圖基本上已經說明一切
+ JOIN &amp;hellip; ON  用來取代WHERE a=b的用法 舉例:  select*fromemployeesinnerjoindepartmentsdond.department_id=employees.department_id; 通常把列數較多的放在A然後使用left join  UNION  可以合併多個SELECT的結果，前提是他們的列數與對應的數據類型相同 格式:  SELECTcolumn,.</description>
+    </item>
+    
+    <item>
+      <title>SQL語言基本關鍵字、排序與分頁</title>
+      <link>https://yoziming.github.io/post/211217-agg-mysql-02/</link>
+      <pubDate>Fri, 17 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211217-agg-mysql-02/</guid>
+      <description>SQL  Structured Query Language，是一種通用的資料庫查詢語言
+ 分類  DDL:數據定義語言，定義數據庫或表本身，例如  CREATE、ALTER、DROP、RENAME、TRUNCATE   DML:數據操作語言，即增刪改查，針對的是具體的某條資料，例如  INSERT、DELETE、UPDATE、SELECT   DCL:數據控制語言，事務操作或權限控制等等，例如  COMMIT、ROLLBACK、SAVEPOINT、GRANT、REVOKE    標準  最經典的版本是SQL92與SQL99，一般也稱為SQL-2與SQL-3標準  SQL92形式簡單但語句長，難讀 SQL99版可讀性好，但語法較複雜    規則與規範   可以一行或多行，子句分行縮進增加可讀性
+  每條命令用;、\G或\g結束
+  標點符號
+ 必定成對，例如&#39;&#39;、() 必定是半形符號 字串和時間日期用&#39;&#39;單引號表示 列的別名盡量使用&amp;quot;&amp;quot;雙引號，且不建議省略as    大小寫
+ Windows不分，Linux區分且規則如下:  數據庫名、表名、表別名、變數名區分 關鍵字、函數名、列名是忽略大小寫   建議規範  數據庫名、表名、表別名、字段名都用小寫 SQL關鍵字、函數名、綁定變數都大寫    註釋 單行:-- 註釋體，注意--後面有一個空格 多行:*/註釋體*/MySQL特有:#  關鍵字 SELECT  功能:查、列出 格式:  SELECT列名FROM表名;SELECT*FROM表名;-- 列出全部  FROM:來源表 FROM DUAL;返回一個偽表(暫時的)  AS  功能:暫時將返回的列名顯示成別名 格式:  SELECT列名AS&amp;#34;想顯示的別名&amp;#34;from表名;SELECT列名&amp;#34;想顯示的別名&amp;#34;from表名;-- 省略AS SELECT列名想顯示的別名from表名;-- 省略&amp;#34;&amp;#34;，但注意別名不能有空格  注意:並不是真的給某資料庫的某表某列賦了別名，只是暫時顯示來看而已  DISTINCT  功能:去重複 格式:  SELECTDISTINCT列名FROM表名;-- 聯合去重複，須滿足所有列的元素都不重複 SELECTDISTINCT列名1,列名2FROM表名;null  null不等於0 當null參與運算，結果必然也是空 解決方案:IFNULL(列名,備胎)  ‘‘單引號  注重符  功能:如果表名或字段名跟關鍵字衝突了，用其避開 格式:SELECT * FROM order;   查詢常數  功能:可以用作分隔之類的，沒多大意義 格式:    SELECTemp_no,&amp;#39;分隔&amp;#39;,first_name,&amp;#39;間隔&amp;#39;FROMemployees;DESCRIBE  功能:返回表的詳細結構與說明 格式:DESCRIBE 表名;、DESC 表名;  WHERE  功能:過濾 格式:  SELECT*FROM表WHERE條件;-- 範例 SELECT*FROMemployeesWHEREfirst_name=&amp;#39;georgi&amp;#39;; 注意WHERE必定聲明在FROM之後 MySQL中，篩字串不分大小寫  運算符號  先乘除後加減，沒特別的就不提了，與常規經驗一致</description>
+    </item>
+    
+    <item>
+      <title>MySQL簡介、環境配置、編碼與GUI</title>
+      <link>https://yoziming.github.io/post/211216-agg-mysql-01/</link>
+      <pubDate>Thu, 16 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211216-agg-mysql-01/</guid>
+      <description>本筆記基於這份2021年11月的公開教學影片 【宋红康】MySQL数据库（安装/基础/高级/优化） https://www.bilibili.com/video/BV1iq4y1u7vj?p=1
+ MySQL簡介  MySQL是開源且免費的資料庫 常用版本5.7、8.0 NoSQL為關聯式資料庫(Relational Database Management System)  想像成最傳統意義的表格，像Excel那樣 非關聯式資料庫(NoSQL)則例如以key-value形式儲存的redis    表與表的關聯關係  以下討論的都是基於關聯式資料庫
+ 一對一   通常可以直接建成一張表，但也是有應用場景
+  例如以使用頻率拆分兩表(為了降低IO讀取提高效率):
+  學生常用訊息表:學號、姓名、手機、班級
+  學生其他訊息表:學號、住址、身分證號、緊急聯絡人
+ 兩張表的學號是唯一且相同的      建表原則:
+ 外鍵唯一:主表的主鍵和從表的外鍵(唯一)，形成主外鍵關係 外鍵為主鍵:主表的主鍵和從表的主鍵，形成主外鍵關係    一對多  舉例:  員工表:員工編號、員工姓名、所屬部門 部門表:部門編號、部門名   建表原則:從表(多方，這裡就是員工表)創建一個字段，字段作為外鍵指向主表(一方，這裡就是部門表)的主鍵  多對多  必須創建第三張表，通常將該表稱為關聯表，此關聯表以兩個一對多關係，將兩個表的主鍵都插到第三個表中 舉例:  學生訊息表:學號、姓名 課程訊息表:課程編號、課程內容 選課訊息表(關聯表):可以看到學號與對應的課程編號，一個課程編號必定對應多個學號；一個學號也可以選有多門課程   建表原則:關聯表中至少有2個字段，分別作為外鍵個指向一方的的主鍵  自我引用   表中的某個字段指向同張表的另一個字段</description>
+    </item>
+    
+    <item>
+      <title>MySQL常用語句 &amp; Workbench</title>
+      <link>https://yoziming.github.io/post/211005-mysql-cmdworkbench/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211005-mysql-cmdworkbench/</guid>
+      <description>MySQL 常用語句 資料庫database
+create database XXX;show databases;use XXX;drop database XXX;資料表table
+create table mytable(school char(5),name char(10),id int);show tables;describe mytable; // 顯示這表有哪些欄位跟屬性drop table mytable;select * from mytable; // 顯示mytable中所有資料insert into mytable(school, name, id) values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);insert into mytable values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);update mytable set name = &#39;HaHa&#39; where id = &#39;123&#39;;delete from mytable where name = &#39;HaHa&#39;;delete from 表格; // 把表格內資料都刪除(但格式宣告還在)select * from mytable where id = &#39;123&#39; order by name DESC; // 資料表查詢+條件+排序 (DESC 代表由大到小排序)load data local infile &amp;quot;c:\\data.</description>
+    </item>
+    
+    <item>
+      <title>Docker啟用Redis</title>
+      <link>https://yoziming.github.io/post/211002-docker-redis/</link>
+      <pubDate>Sat, 02 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211002-docker-redis/</guid>
+      <description>Docker啟用Redis 抓映象檔 docker pull redis:6.0 拉一個6.0版本的redis  執行 Image docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes –name redis6 ：將 Container 取名為 redis6 -p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器) -d :後台執行 Container ，並返回ID redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置  進入 Container docker exec -it redis6 bash -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  資料庫測試 redis-cliset hello worldget hello</description>
+    </item>
+    
+    <item>
+      <title>Docker啟用Mysql</title>
+      <link>https://yoziming.github.io/post/211001-docker-mysql/</link>
+      <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211001-docker-mysql/</guid>
+      <description>Docker啟用Mysql 抓映象檔 docker pull mysql/mysql-server:8.0 拉一個8.0版本的mysql  執行 Image docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password -d：同--detach，以背景模式執行。 -v ~/mysql-docker-data:/var/lib/mysql：同--volume，掛載host目錄到container目錄，也就是host的~/mysql-docker-data會保存container /var/lib/mysql的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。 -it：同--interactive加--tty，作用為運行container時可登入其bash操作。 --name mysql8，命名container名稱為mysql8。 -p：同--publish。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port -e：同--env，設定環境變數。MYSQL_ROOT_PASSWORD設定MySQL root帳號的登入密碼為1234，MYSQL_DATABASE設定資料庫名稱為mydb。 mysql:8：mysql為image名稱，8為image tag。所以運行的是mysql:8的image。 --default-authentication-plugin=mysql_native_password：把儲存密碼的方式改為MySQL 5的mysql_native_password，因為MySQL 8的儲存方式預設為caching_sha2_password，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。  檢視運行中的容器 docker ps進入 Container docker exec mysql8 mysql -u root -p docker exec指令的作用為在運行的container執行指令，所以意思就是在mysql8這個container執行mysql -u root -p的指令。  docker container exec -it mysql8 /bin/bash 遇到權限問題用這個  進入Mysql mysql -uroot -p新增 1 個開放外部連線的帳號 CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;GRANT ALL ON your_database.</description>
+    </item>
+    
+    <item>
+      <title>Docker啟用MinIO</title>
+      <link>https://yoziming.github.io/post/210929-docker-minio/</link>
+      <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210929-docker-minio/</guid>
+      <description>Docker啟用MinIO儲存 執行 Image docker run -d --name minio -e &amp;quot;MINIO_ROOT_USER=root&amp;quot; -e &amp;quot;MINIO_ROOT_PASSWORD=root1234&amp;quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &amp;quot;:9001&amp;quot;  --name minio，命名container名稱為minio。 -v /data/minio:/data/minio該命令將主機 /data/minio 目錄對映到容器中的 /data/minio 目錄中 MinIO 還提供了圖形管理介面，在瀏覽器輸入 ip:9001即可檢視 不管是圖形介面操作，還是客戶端操作，預設賬號密碼都為 minioadmin -e環境變數，這裡用了自定義賬號密碼，賬號不能小於 3 字元，密碼不能小於 8 字元  Go初始化 導入github.com/minio/minio-go/v7，注意這個後面的v7，在自動引包時可能會漏掉，導致使用到舊版的同名函數而報錯
+func InitMinio() { ctx := context.Background() endpoint := &amp;#34;localhost:9000&amp;#34; accessKeyID := &amp;#34;root&amp;#34; secretAccessKey := &amp;#34;root1234&amp;#34; useSSL := false // Initialize minio client object. 	minioClient, err := minio.</description>
+    </item>
+    
+  </channel>
+</rss>

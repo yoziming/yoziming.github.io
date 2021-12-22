@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>常用函數:數值/字串/時間/流程控制...等</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL基礎課-04">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="常用函數:數值/字串/時間/流程控制...等" />
+<meta property="og:description" content="尚硅谷MySQL基礎課-04" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211219-agg-mysql-04/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-19T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="常用函數:數值/字串/時間/流程控制...等"/>
+<meta name="twitter:description" content="尚硅谷MySQL基礎課-04"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            @yoziming 紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b8" onclick="onNavClick(`#函數-nav`)" id="函數-nav">
+									函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e8%a6%8b%e5%88%86%e9%a1%9e" onclick="onNavClick(`#常見分類-nav`)" id="常見分類-nav">
+									常見分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e8%a1%8c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#單行函數-nav`)" id="單行函數-nav">
+									單行函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e6%95%b8%e5%80%bc" onclick="onNavClick(`#1-數值-nav`)" id="1-數值-nav">
+									1. 數值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e8%a7%92%e5%ba%a6" onclick="onNavClick(`#21-角度-nav`)" id="21-角度-nav">
+									2.1 角度
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e4%b8%89%e8%a7%92%e5%87%bd%e6%95%b8" onclick="onNavClick(`#22-三角函數-nav`)" id="22-三角函數-nav">
+									2.2 三角函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#23-%e6%8c%87%e6%95%b8%e8%88%87%e5%b0%8d%e6%95%b8" onclick="onNavClick(`#23-指數與對數-nav`)" id="23-指數與對數-nav">
+									2.3 指數與對數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#24-%e9%80%b2%e5%88%b6%e9%96%93%e7%9a%84%e8%bd%89%e6%8f%9b" onclick="onNavClick(`#24-進制間的轉換-nav`)" id="24-進制間的轉換-nav">
+									2.4 進制間的轉換
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e5%ad%97%e4%b8%b2%e5%87%bd%e6%95%b8" onclick="onNavClick(`#3-字串函數-nav`)" id="3-字串函數-nav">
+									3. 字串函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#4-%e6%97%a5%e6%9c%9f%e5%92%8c%e6%99%82%e9%96%93%e5%87%bd%e6%95%b8" onclick="onNavClick(`#4-日期和時間函數-nav`)" id="4-日期和時間函數-nav">
+									4. 日期和時間函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e7%8d%b2%e5%8f%96%e6%97%a5%e6%9c%9f%e6%99%82%e9%96%93" onclick="onNavClick(`#41-獲取日期時間-nav`)" id="41-獲取日期時間-nav">
+									4.1 獲取日期、時間
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e6%97%a5%e6%9c%9f%e8%88%87%e6%99%82%e9%96%93%e6%88%b3%e8%a8%98%e7%9a%84%e8%bd%89%e6%8f%9b" onclick="onNavClick(`#42-日期與時間戳記的轉換-nav`)" id="42-日期與時間戳記的轉換-nav">
+									4.2 日期與時間戳記的轉換
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e7%8d%b2%e5%8f%96%e6%9c%88%e4%bb%bd%e6%98%9f%e6%9c%9f%e6%98%9f%e6%9c%9f%e6%95%b8%e5%a4%a9%e6%95%b8%e7%ad%89%e5%87%bd%e6%95%b8" onclick="onNavClick(`#43-獲取月份星期星期數天數等函數-nav`)" id="43-獲取月份星期星期數天數等函數-nav">
+									4.3 獲取月份、星期、星期數、天數等函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#44-%e6%97%a5%e6%9c%9f%e7%9a%84%e6%93%8d%e4%bd%9c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#44-日期的操作函數-nav`)" id="44-日期的操作函數-nav">
+									4.4 日期的操作函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#45-%e6%99%82%e9%96%93%e5%92%8c%e7%a7%92%e9%90%98%e8%bd%89%e6%8f%9b%e7%9a%84%e5%87%bd%e6%95%b8" onclick="onNavClick(`#45-時間和秒鐘轉換的函數-nav`)" id="45-時間和秒鐘轉換的函數-nav">
+									4.5 時間和秒鐘轉換的函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#46-%e8%a8%88%e7%ae%97%e6%97%a5%e6%9c%9f%e5%92%8c%e6%99%82%e9%96%93%e7%9a%84%e5%87%bd%e6%95%b8" onclick="onNavClick(`#46-計算日期和時間的函數-nav`)" id="46-計算日期和時間的函數-nav">
+									4.6 計算日期和時間的函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#47-%e6%97%a5%e6%9c%9f%e7%9a%84%e6%a0%bc%e5%bc%8f%e5%8c%96%e8%88%87%e8%a7%a3%e6%9e%90" onclick="onNavClick(`#47-日期的格式化與解析-nav`)" id="47-日期的格式化與解析-nav">
+									4.7 日期的格式化與解析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#5-%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6%e5%87%bd%e6%95%b8" onclick="onNavClick(`#5-流程控制函數-nav`)" id="5-流程控制函數-nav">
+									5. 流程控制函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#6-%e5%8a%a0%e5%af%86%e8%88%87%e8%a7%a3%e5%af%86%e5%87%bd%e6%95%b8" onclick="onNavClick(`#6-加密與解密函數-nav`)" id="6-加密與解密函數-nav">
+									6. 加密與解密函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#7-mysql%e8%b3%87%e8%a8%8a%e5%87%bd%e6%95%b8" onclick="onNavClick(`#7-mysql資訊函數-nav`)" id="7-mysql資訊函數-nav">
+									7. MySQL資訊函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#8-%e5%85%b6%e4%bb%96%e5%87%bd%e6%95%b8" onclick="onNavClick(`#8-其他函數-nav`)" id="8-其他函數-nav">
+									8. 其他函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%81%9a%e5%90%88%e5%a4%9a%e8%a1%8c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#聚合多行函數-nav`)" id="聚合多行函數-nav">
+									聚合(多行)函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e8%a6%8b%e7%9a%84%e8%81%9a%e5%90%88%e5%87%bd%e6%95%b8" onclick="onNavClick(`#常見的聚合函數-nav`)" id="常見的聚合函數-nav">
+									常見的聚合函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#count" onclick="onNavClick(`#count-nav`)" id="count-nav">
+									COUNT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#group-by" onclick="onNavClick(`#group-by-nav`)" id="group-by-nav">
+									GROUP BY
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#having" onclick="onNavClick(`#having-nav`)" id="having-nav">
+									HAVING
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sql%e8%aa%9e%e5%8f%a5%e7%9a%84%e5%9f%b7%e8%a1%8c%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#sql語句的執行順序-nav`)" id="sql語句的執行順序-nav">
+									SQL語句的執行順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b8" onclick="onNavClick(`#函數-nav`)" id="函數-nav">
+									函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e8%a6%8b%e5%88%86%e9%a1%9e" onclick="onNavClick(`#常見分類-nav`)" id="常見分類-nav">
+									常見分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e8%a1%8c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#單行函數-nav`)" id="單行函數-nav">
+									單行函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e6%95%b8%e5%80%bc" onclick="onNavClick(`#1-數值-nav`)" id="1-數值-nav">
+									1. 數值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e8%a7%92%e5%ba%a6" onclick="onNavClick(`#21-角度-nav`)" id="21-角度-nav">
+									2.1 角度
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e4%b8%89%e8%a7%92%e5%87%bd%e6%95%b8" onclick="onNavClick(`#22-三角函數-nav`)" id="22-三角函數-nav">
+									2.2 三角函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#23-%e6%8c%87%e6%95%b8%e8%88%87%e5%b0%8d%e6%95%b8" onclick="onNavClick(`#23-指數與對數-nav`)" id="23-指數與對數-nav">
+									2.3 指數與對數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#24-%e9%80%b2%e5%88%b6%e9%96%93%e7%9a%84%e8%bd%89%e6%8f%9b" onclick="onNavClick(`#24-進制間的轉換-nav`)" id="24-進制間的轉換-nav">
+									2.4 進制間的轉換
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e5%ad%97%e4%b8%b2%e5%87%bd%e6%95%b8" onclick="onNavClick(`#3-字串函數-nav`)" id="3-字串函數-nav">
+									3. 字串函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#4-%e6%97%a5%e6%9c%9f%e5%92%8c%e6%99%82%e9%96%93%e5%87%bd%e6%95%b8" onclick="onNavClick(`#4-日期和時間函數-nav`)" id="4-日期和時間函數-nav">
+									4. 日期和時間函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e7%8d%b2%e5%8f%96%e6%97%a5%e6%9c%9f%e6%99%82%e9%96%93" onclick="onNavClick(`#41-獲取日期時間-nav`)" id="41-獲取日期時間-nav">
+									4.1 獲取日期、時間
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e6%97%a5%e6%9c%9f%e8%88%87%e6%99%82%e9%96%93%e6%88%b3%e8%a8%98%e7%9a%84%e8%bd%89%e6%8f%9b" onclick="onNavClick(`#42-日期與時間戳記的轉換-nav`)" id="42-日期與時間戳記的轉換-nav">
+									4.2 日期與時間戳記的轉換
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e7%8d%b2%e5%8f%96%e6%9c%88%e4%bb%bd%e6%98%9f%e6%9c%9f%e6%98%9f%e6%9c%9f%e6%95%b8%e5%a4%a9%e6%95%b8%e7%ad%89%e5%87%bd%e6%95%b8" onclick="onNavClick(`#43-獲取月份星期星期數天數等函數-nav`)" id="43-獲取月份星期星期數天數等函數-nav">
+									4.3 獲取月份、星期、星期數、天數等函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#44-%e6%97%a5%e6%9c%9f%e7%9a%84%e6%93%8d%e4%bd%9c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#44-日期的操作函數-nav`)" id="44-日期的操作函數-nav">
+									4.4 日期的操作函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#45-%e6%99%82%e9%96%93%e5%92%8c%e7%a7%92%e9%90%98%e8%bd%89%e6%8f%9b%e7%9a%84%e5%87%bd%e6%95%b8" onclick="onNavClick(`#45-時間和秒鐘轉換的函數-nav`)" id="45-時間和秒鐘轉換的函數-nav">
+									4.5 時間和秒鐘轉換的函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#46-%e8%a8%88%e7%ae%97%e6%97%a5%e6%9c%9f%e5%92%8c%e6%99%82%e9%96%93%e7%9a%84%e5%87%bd%e6%95%b8" onclick="onNavClick(`#46-計算日期和時間的函數-nav`)" id="46-計算日期和時間的函數-nav">
+									4.6 計算日期和時間的函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#47-%e6%97%a5%e6%9c%9f%e7%9a%84%e6%a0%bc%e5%bc%8f%e5%8c%96%e8%88%87%e8%a7%a3%e6%9e%90" onclick="onNavClick(`#47-日期的格式化與解析-nav`)" id="47-日期的格式化與解析-nav">
+									4.7 日期的格式化與解析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#5-%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6%e5%87%bd%e6%95%b8" onclick="onNavClick(`#5-流程控制函數-nav`)" id="5-流程控制函數-nav">
+									5. 流程控制函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#6-%e5%8a%a0%e5%af%86%e8%88%87%e8%a7%a3%e5%af%86%e5%87%bd%e6%95%b8" onclick="onNavClick(`#6-加密與解密函數-nav`)" id="6-加密與解密函數-nav">
+									6. 加密與解密函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#7-mysql%e8%b3%87%e8%a8%8a%e5%87%bd%e6%95%b8" onclick="onNavClick(`#7-mysql資訊函數-nav`)" id="7-mysql資訊函數-nav">
+									7. MySQL資訊函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#8-%e5%85%b6%e4%bb%96%e5%87%bd%e6%95%b8" onclick="onNavClick(`#8-其他函數-nav`)" id="8-其他函數-nav">
+									8. 其他函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%81%9a%e5%90%88%e5%a4%9a%e8%a1%8c%e5%87%bd%e6%95%b8" onclick="onNavClick(`#聚合多行函數-nav`)" id="聚合多行函數-nav">
+									聚合(多行)函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b8%b8%e8%a6%8b%e7%9a%84%e8%81%9a%e5%90%88%e5%87%bd%e6%95%b8" onclick="onNavClick(`#常見的聚合函數-nav`)" id="常見的聚合函數-nav">
+									常見的聚合函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#count" onclick="onNavClick(`#count-nav`)" id="count-nav">
+									COUNT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#group-by" onclick="onNavClick(`#group-by-nav`)" id="group-by-nav">
+									GROUP BY
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#having" onclick="onNavClick(`#having-nav`)" id="having-nav">
+									HAVING
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sql%e8%aa%9e%e5%8f%a5%e7%9a%84%e5%9f%b7%e8%a1%8c%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#sql語句的執行順序-nav`)" id="sql語句的執行順序-nav">
+									SQL語句的執行順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">@yoziming 紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    常用函數:數值/字串/時間/流程控制...等
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL基礎課-04
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-19 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/%E5%B0%9A%E7%A1%85%E8%B0%B7mysql%E7%AD%86%E8%A8%98">尚硅谷MySQL筆記</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="函數">函數</h1>
+<blockquote>
+<p>日後有需要用到的函數大多可以在這裡查到</p>
+</blockquote>
+<ul>
+<li>根據輸入的資訊，返回某種結果</li>
+<li>函數在不同的DBMS(資料庫軟體)之間的差距很大，使用時要注意移植性，
+以下都是基於MySQL</li>
+</ul>
+<h2 id="常見分類">常見分類</h2>
+<ul>
+<li>依照資料類型:數值、字符串、時間日期</li>
+<li>依照功能:流程控制、加密解密、獲取信息</li>
+<li>依照輸入資料的行數:單行、多行(聚合)</li>
+</ul>
+<h2 id="單行函數">單行函數</h2>
+<ul>
+<li>對<strong>一行資料</strong>進行變換、每行返回一個結果
+<ul>
+<li>例如:想知道每個員工的工作年資，具體作法為現在時間減去員工入職時間，就可以調用時間相關的函數</li>
+</ul>
+</li>
+<li>單行函數可以嵌套使用</li>
+</ul>
+<blockquote>
+<p>範例太多我就複製貼上了，先過眼了解，有用到時不熟悉再來查</p>
+</blockquote>
+<h3 id="1-數值">1. 數值</h3>
+<table>
+<thead>
+<tr>
+<th><strong>函數</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ABS(x)</td>
+<td>返回x的絕對值</td>
+</tr>
+<tr>
+<td>SIGN(X)</td>
+<td>返回X的符號。正數返回1，負數返回-1，0返回0</td>
+</tr>
+<tr>
+<td>PI()</td>
+<td>返回圓周率的值</td>
+</tr>
+<tr>
+<td>CEIL(x)，CEILING(x)</td>
+<td>返回大於或等於某個值的最小整數</td>
+</tr>
+<tr>
+<td>FLOOR(x)</td>
+<td>返回小於或等於某個值的最大整數</td>
+</tr>
+<tr>
+<td>LEAST(e1,e2,e3…)</td>
+<td>返回列表中的最小值</td>
+</tr>
+<tr>
+<td>GREATEST(e1,e2,e3…)</td>
+<td>返回列表中的最大值</td>
+</tr>
+<tr>
+<td>MOD(x,y)</td>
+<td>返回X除以Y後的餘數</td>
+</tr>
+<tr>
+<td>RAND()</td>
+<td>返回0~1的隨機值，每次都不同</td>
+</tr>
+<tr>
+<td>RAND(x)</td>
+<td>返回0~1的隨機值，其中x的值用作種子值，相同的X值會產生相同的亂數</td>
+</tr>
+<tr>
+<td>ROUND(x)</td>
+<td>返回一個對x的值進行四捨五入後，最接近於X的整數</td>
+</tr>
+<tr>
+<td>ROUND(x,y)</td>
+<td>返回一個對x的值進行四捨五入後最接近X的值，並保留到小數點後面Y位</td>
+</tr>
+<tr>
+<td>TRUNCATE(x,y)</td>
+<td>返回數字x截斷為y位元小數的結果</td>
+</tr>
+<tr>
+<td>SQRT(x)</td>
+<td>返回x的平方根。當X的值為負數時，返回NULL</td>
+</tr>
+</tbody>
+</table>
+<h4 id="21-角度">2.1 角度</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">RADIANS(x)</td>
+<td>將角度轉化為弧度，其中，參數x為角度值</td>
+</tr>
+<tr>
+<td style="text-align:left">DEGREES(x)</td>
+<td>將弧度轉化為角度，其中，參數x為弧度值</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">RADIANS</span>(<span style="color:#b452cd">30</span>),<span style="color:#008b45">RADIANS</span>(<span style="color:#b452cd">60</span>),<span style="color:#008b45">RADIANS</span>(<span style="color:#b452cd">90</span>),<span style="color:#008b45">DEGREES</span>(<span style="color:#b452cd">2</span>*<span style="color:#008b45">PI</span>()),<span style="color:#008b45">DEGREES</span>(<span style="color:#008b45">RADIANS</span>(<span style="color:#b452cd">90</span>))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><h4 id="22-三角函數">2.2 三角函數</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SIN(x)</td>
+<td>返回x的正弦值，其中，參數x為弧度值</td>
+</tr>
+<tr>
+<td>ASIN(x)</td>
+<td>返回x的反正弦值，即獲取正弦為x的值。如果x的值不在-1到1之間，則返回NULL</td>
+</tr>
+<tr>
+<td>COS(x)</td>
+<td>返回x的余弦值，其中，參數x為弧度值</td>
+</tr>
+<tr>
+<td>ACOS(x)</td>
+<td>返回x的反余弦值，即獲取余弦為x的值。如果x的值不在-1到1之間，則返回NULL</td>
+</tr>
+<tr>
+<td>TAN(x)</td>
+<td>返回x的正切值，其中，參數x為弧度值</td>
+</tr>
+<tr>
+<td>ATAN(x)</td>
+<td>返回x的反正切值，即返回正切值為x的值</td>
+</tr>
+<tr>
+<td>ATAN2(m,n)</td>
+<td>返回兩個參數的反正切值</td>
+</tr>
+<tr>
+<td>COT(x)</td>
+<td>返回x的餘切值，其中，X為弧度值</td>
+</tr>
+</tbody>
+</table>
+<h4 id="23-指數與對數">2.3 指數與對數</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POW(x,y)，POWER(X,Y)</td>
+<td>返回x的y次方</td>
+</tr>
+<tr>
+<td>EXP(X)</td>
+<td>返回e的X次方，其中e是一個常數，2.718281828459045</td>
+</tr>
+<tr>
+<td>LN(X)，LOG(X)</td>
+<td>返回以e為底的X的對數，當X &lt;= 0 時，返回的結果為NULL</td>
+</tr>
+<tr>
+<td>LOG10(X)</td>
+<td>返回以10為底的X的對數，當X &lt;= 0 時，返回的結果為NULL</td>
+</tr>
+<tr>
+<td>LOG2(X)</td>
+<td>返回以2為底的X的對數，當X &lt;= 0 時，返回NULL</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">POW</span>(<span style="color:#b452cd">2</span>,<span style="color:#b452cd">5</span>),<span style="color:#008b45">POWER</span>(<span style="color:#b452cd">2</span>,<span style="color:#b452cd">4</span>),<span style="color:#008b45">EXP</span>(<span style="color:#b452cd">2</span>),<span style="color:#008b45">LN</span>(<span style="color:#b452cd">10</span>),<span style="color:#008b45">LOG10</span>(<span style="color:#b452cd">10</span>),<span style="color:#008b45">LOG2</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>-&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------+------------+------------------+-------------------+-----------+---------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">POW</span>(<span style="color:#b452cd">2</span>,<span style="color:#b452cd">5</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">POWER</span>(<span style="color:#b452cd">2</span>,<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">EXP</span>(<span style="color:#b452cd">2</span>)<span style="color:#bbb">           </span>|<span style="color:#bbb"> </span><span style="color:#008b45">LN</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb">            </span>|<span style="color:#bbb"> </span><span style="color:#008b45">LOG10</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">LOG2</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------+------------+------------------+-------------------+-----------+---------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">       </span><span style="color:#b452cd">32</span><span style="color:#bbb"> </span>|<span style="color:#bbb">         </span><span style="color:#b452cd">16</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">7</span>.<span style="color:#b452cd">38905609893065</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>.<span style="color:#b452cd">302585092994046</span><span style="color:#bbb"> </span>|<span style="color:#bbb">         </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>|<span style="color:#bbb">       </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------+------------+------------------+-------------------+-----------+---------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h4 id="24-進制間的轉換">2.4 進制間的轉換</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BIN(x)</td>
+<td>返回x的二進位編碼</td>
+</tr>
+<tr>
+<td>HEX(x)</td>
+<td>返回x的十六進位編碼</td>
+</tr>
+<tr>
+<td>OCT(x)</td>
+<td>返回x的八進制編碼</td>
+</tr>
+<tr>
+<td>CONV(x,f1,f2)</td>
+<td>返回f1進制數變成f2進制數</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">BIN</span>(<span style="color:#b452cd">10</span>),<span style="color:#008b45">HEX</span>(<span style="color:#b452cd">10</span>),<span style="color:#008b45">OCT</span>(<span style="color:#b452cd">10</span>),<span style="color:#008b45">CONV</span>(<span style="color:#b452cd">10</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">8</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>-&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------+---------+---------+--------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">BIN</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">HEX</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">OCT</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#b452cd">10</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">8</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------+---------+---------+--------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">1010</span><span style="color:#bbb">    </span>|<span style="color:#bbb"> </span>A<span style="color:#bbb">       </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">12</span><span style="color:#bbb">      </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb">            </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------+---------+---------+--------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h3 id="3-字串函數">3. 字串函數</h3>
+<blockquote>
+<p>注意：MySQL中，字串的索引位置是從1開始的。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ASCII(S)</td>
+<td>返回字串S中的第一個字元的ASCII碼值</td>
+</tr>
+<tr>
+<td>CHAR_LENGTH(s)</td>
+<td>返回字串s的字元數。作用與CHARACTER_LENGTH(s)相同</td>
+</tr>
+<tr>
+<td>LENGTH(s)</td>
+<td>返回字串s的位元組數，和字元集有關</td>
+</tr>
+<tr>
+<td>CONCAT(s1,s2,&hellip;&hellip;,sn)</td>
+<td>連接s1,s2,&hellip;&hellip;,sn為一個字串</td>
+</tr>
+<tr>
+<td>CONCAT_WS(x, s1,s2,&hellip;&hellip;,sn)</td>
+<td>同CONCAT(s1,s2,&hellip;)函數，但是每個字串之間要加上x</td>
+</tr>
+<tr>
+<td>INSERT(str, idx, len, replacestr)</td>
+<td>將字串str從第idx位置開始，len個字元長的子串替換為字串replacestr</td>
+</tr>
+<tr>
+<td>REPLACE(str, a, b)</td>
+<td>用字串b替換字串str中所有出現的字串a</td>
+</tr>
+<tr>
+<td>UPPER(s) 或 UCASE(s)</td>
+<td>將字串s的所有字母轉成大寫字母</td>
+</tr>
+<tr>
+<td>LOWER(s)  或LCASE(s)</td>
+<td>將字串s的所有字母轉成小寫字母</td>
+</tr>
+<tr>
+<td>LEFT(str,n)</td>
+<td>返回字串str最左邊的n個字元</td>
+</tr>
+<tr>
+<td>RIGHT(str,n)</td>
+<td>返回字串str最右邊的n個字元</td>
+</tr>
+<tr>
+<td>LPAD(str, len, pad)</td>
+<td>用字串pad對str最左邊進行填充，直到str的長度為len個字元</td>
+</tr>
+<tr>
+<td>RPAD(str ,len, pad)</td>
+<td>用字串pad對str最右邊進行填充，直到str的長度為len個字元</td>
+</tr>
+<tr>
+<td>LTRIM(s)</td>
+<td>去掉字串s左側的空格</td>
+</tr>
+<tr>
+<td>RTRIM(s)</td>
+<td>去掉字串s右側的空格</td>
+</tr>
+<tr>
+<td>TRIM(s)</td>
+<td>去掉字串s開始與結尾的空格</td>
+</tr>
+<tr>
+<td>TRIM(s1 FROM s)</td>
+<td>去掉字串s開始與結尾的s1</td>
+</tr>
+<tr>
+<td>TRIM(LEADING s1 FROM s)</td>
+<td>去掉字串s開始處的s1</td>
+</tr>
+<tr>
+<td>TRIM(TRAILING s1 FROM s)</td>
+<td>去掉字串s結尾處的s1</td>
+</tr>
+<tr>
+<td>REPEAT(str, n)</td>
+<td>返回str重複n次的結果</td>
+</tr>
+<tr>
+<td>SPACE(n)</td>
+<td>返回n個空格</td>
+</tr>
+<tr>
+<td>STRCMP(s1,s2)</td>
+<td>比較字串s1,s2的ASCII碼值的大小</td>
+</tr>
+<tr>
+<td>SUBSTR(s,index,len)</td>
+<td>返回從字串s的index位置其len個字元，作用與SUBSTRING(s,n,len)、MID(s,n,len)相同</td>
+</tr>
+<tr>
+<td>LOCATE(substr,str)</td>
+<td>返回字串substr在字串str中首次出現的位置，作用於POSITION(substr IN str)、INSTR(str,substr)相同。未找到，返回0</td>
+</tr>
+<tr>
+<td>ELT(m,s1,s2,…,sn)</td>
+<td>返回指定位置的字串，如果m=1，則返回s1，如果m=2，則返回s2，如果m=n，則返回sn</td>
+</tr>
+<tr>
+<td>FIELD(s,s1,s2,…,sn)</td>
+<td>返回字串s在字串清單中第一次出現的位置</td>
+</tr>
+<tr>
+<td>FIND_IN_SET(s1,s2)</td>
+<td>返回字串s1在字串s2中出現的位置。其中，字串s2是一個以逗號分隔的字串</td>
+</tr>
+<tr>
+<td>REVERSE(s)</td>
+<td>返回s反轉後的字串</td>
+</tr>
+<tr>
+<td>NULLIF(value1,value2)</td>
+<td>比較兩個字串，如果value1與value2相等，則返回NULL，否則返回value1</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">FIELD</span>(<span style="color:#cd5555">&#39;mm&#39;</span>,<span style="color:#cd5555">&#39;hello&#39;</span>,<span style="color:#cd5555">&#39;msm&#39;</span>,<span style="color:#cd5555">&#39;amma&#39;</span>),<span style="color:#008b45">FIND_IN_SET</span>(<span style="color:#cd5555">&#39;mm&#39;</span>,<span style="color:#cd5555">&#39;hello,mm,amma&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>-&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------------+-----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">FIELD</span>(<span style="color:#cd5555">&#39;mm&#39;</span>,<span style="color:#cd5555">&#39;hello&#39;</span>,<span style="color:#cd5555">&#39;msm&#39;</span>,<span style="color:#cd5555">&#39;amma&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">FIND_IN_SET</span>(<span style="color:#cd5555">&#39;mm&#39;</span>,<span style="color:#cd5555">&#39;hello,mm,amma&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------------+-----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                                </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>|<span style="color:#bbb">                                 </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------------+-----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#008b45">IF</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#cd5555">&#39;mysql&#39;</span>),<span style="color:#00688b">NULL</span><span style="color:#008b45">IF</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#008b45">IF</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#cd5555">&#39;mysql&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#008b45">IF</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb">                    </span>|<span style="color:#bbb"> </span>mysql<span style="color:#bbb">               </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h3 id="4-日期和時間函數">4. 日期和時間函數</h3>
+<h4 id="41-獲取日期時間">4.1 獲取日期、時間</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CURDATE()</strong> ，CURRENT_DATE()</td>
+<td>返回當前日期，只包含年、月、日</td>
+</tr>
+<tr>
+<td><strong>CURTIME()</strong> ， CURRENT_TIME()</td>
+<td>返回當前時間，只包含時、分、秒</td>
+</tr>
+<tr>
+<td><strong>NOW()</strong> / SYSDATE() / CURRENT_TIMESTAMP() / LOCALTIME() / LOCALTIMESTAMP()</td>
+<td>返回當前系統日期和時間</td>
+</tr>
+<tr>
+<td>UTC_DATE()</td>
+<td>返回UTC（世界標準時間）日期</td>
+</tr>
+<tr>
+<td>UTC_TIME()</td>
+<td>返回UTC（世界標準時間）時間</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">CURDATE</span>(),<span style="color:#008b45">CURTIME</span>(),<span style="color:#008b45">NOW</span>(),<span style="color:#008b45">SYSDATE</span>()+<span style="color:#b452cd">0</span>,<span style="color:#8b008b;font-weight:bold">UTC_DATE</span>(),<span style="color:#8b008b;font-weight:bold">UTC_DATE</span>()+<span style="color:#b452cd">0</span>,<span style="color:#8b008b;font-weight:bold">UTC_TIME</span>(),<span style="color:#8b008b;font-weight:bold">UTC_TIME</span>()+<span style="color:#b452cd">0</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><h4 id="42-日期與時間戳記的轉換">4.2 日期與時間戳記的轉換</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UNIX_TIMESTAMP()</td>
+<td>以UNIX時間戳記的形式返回當前時間。SELECT UNIX_TIMESTAMP() -&gt;1634348884</td>
+</tr>
+<tr>
+<td>UNIX_TIMESTAMP(date)</td>
+<td>將時間date以UNIX時間戳記的形式返回。</td>
+</tr>
+<tr>
+<td>FROM_UNIXTIME(timestamp)</td>
+<td>將UNIX時間戳記的時間轉換為普通格式的時間</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">now</span>());<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">now</span>())<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">            </span><span style="color:#b452cd">1576380910</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">CURDATE</span>());<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">CURDATE</span>())<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                </span><span style="color:#b452cd">1576339200</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">CURTIME</span>());<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#008b45">CURTIME</span>())<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                </span><span style="color:#b452cd">1576380969</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#cd5555">&#39;2011-11-11 11:11:11&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">UNIX_TIMESTAMP</span>(<span style="color:#cd5555">&#39;2011-11-11 11:11:11&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                            </span><span style="color:#b452cd">1320981071</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">FROM_UNIXTIME</span>(<span style="color:#b452cd">1576380910</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">FROM_UNIXTIME</span>(<span style="color:#b452cd">1576380910</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2019</span>-<span style="color:#b452cd">12</span>-<span style="color:#b452cd">15</span><span style="color:#bbb"> </span><span style="color:#b452cd">11</span>:<span style="color:#b452cd">35</span>:<span style="color:#b452cd">10</span><span style="color:#bbb">       </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h4 id="43-獲取月份星期星期數天數等函數">4.3 獲取月份、星期、星期數、天數等函數</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YEAR(date) / MONTH(date) / DAY(date)</td>
+<td>返回具體的日期值</td>
+</tr>
+<tr>
+<td>HOUR(time) / MINUTE(time) / SECOND(time)</td>
+<td>返回具體的時間值</td>
+</tr>
+<tr>
+<td>MONTHNAME(date)</td>
+<td>返回月份：January，&hellip;</td>
+</tr>
+<tr>
+<td>DAYNAME(date)</td>
+<td>返回星期幾：MONDAY，TUESDAY&hellip;..SUNDAY</td>
+</tr>
+<tr>
+<td>WEEKDAY(date)</td>
+<td>返回周幾，注意，周1是0，周2是1，。。。周日是6</td>
+</tr>
+<tr>
+<td>QUARTER(date)</td>
+<td>返回日期對應的季度，範圍為1～4</td>
+</tr>
+<tr>
+<td>WEEK(date) ， WEEKOFYEAR(date)</td>
+<td>返回一年中的第幾周</td>
+</tr>
+<tr>
+<td>DAYOFYEAR(date)</td>
+<td>返回日期是一年中的第幾天</td>
+</tr>
+<tr>
+<td>DAYOFMONTH(date)</td>
+<td>返回日期位於所在月份的第幾天</td>
+</tr>
+<tr>
+<td>DAYOFWEEK(date)</td>
+<td>返回周幾，注意：周日是1，週一是2，。。。週六是7</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">YEAR</span>(<span style="color:#008b45">CURDATE</span>()),<span style="color:#008b45">MONTH</span>(<span style="color:#008b45">CURDATE</span>()),<span style="color:#008b45">DAY</span>(<span style="color:#008b45">CURDATE</span>()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">HOUR</span>(<span style="color:#008b45">CURTIME</span>()),<span style="color:#008b45">MINUTE</span>(<span style="color:#008b45">NOW</span>()),<span style="color:#008b45">SECOND</span>(<span style="color:#008b45">SYSDATE</span>())<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MONTHNAME</span>(<span style="color:#cd5555">&#39;2021-10-26&#39;</span>),<span style="color:#008b45">DAYNAME</span>(<span style="color:#cd5555">&#39;2021-10-26&#39;</span>),<span style="color:#008b45">WEEKDAY</span>(<span style="color:#cd5555">&#39;2021-10-26&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">QUARTER</span>(<span style="color:#008b45">CURDATE</span>()),<span style="color:#008b45">WEEK</span>(<span style="color:#008b45">CURDATE</span>()),<span style="color:#008b45">DAYOFYEAR</span>(<span style="color:#008b45">NOW</span>()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">DAYOFMONTH</span>(<span style="color:#008b45">NOW</span>()),<span style="color:#008b45">DAYOFWEEK</span>(<span style="color:#008b45">NOW</span>())<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><h4 id="44-日期的操作函數">4.4 日期的操作函數</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EXTRACT(type FROM date)</td>
+<td>返回指定日期中特定的部分，type指定返回的值</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">EXTRACT</span>(MINUTE<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#008b45">NOW</span>()),<span style="color:#008b45">EXTRACT</span>(<span style="color:#bbb"> </span>WEEK<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#008b45">NOW</span>()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">EXTRACT</span>(<span style="color:#bbb"> </span>QUARTER<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#008b45">NOW</span>()),<span style="color:#008b45">EXTRACT</span>(<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MINUTE_SECOND</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#008b45">NOW</span>())<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><h4 id="45-時間和秒鐘轉換的函數">4.5 時間和秒鐘轉換的函數</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIME_TO_SEC(time)</td>
+<td>將 time 轉化為秒並返回結果值。轉化的公式為：<code>小時*3600+分鐘*60+秒</code></td>
+</tr>
+<tr>
+<td>SEC_TO_TIME(seconds)</td>
+<td>將 seconds 描述轉化為包含小時、分鐘和秒的時間</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">TIME_TO_SEC</span>(<span style="color:#008b45">NOW</span>());<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">TIME_TO_SEC</span>(<span style="color:#008b45">NOW</span>())<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">               </span><span style="color:#b452cd">78774</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">SEC_TO_TIME</span>(<span style="color:#b452cd">78774</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">SEC_TO_TIME</span>(<span style="color:#b452cd">78774</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">21</span>:<span style="color:#b452cd">52</span>:<span style="color:#b452cd">54</span><span style="color:#bbb">            </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">12</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h4 id="46-計算日期和時間的函數">4.6 計算日期和時間的函數</h4>
+<p><strong>第1組：</strong></p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DATE_ADD(datetime, INTERVAL  expr type)，ADDDATE(date,INTERVAL expr type)</td>
+<td>返回與給定日期時間相差INTERVAL時間段的日期時間</td>
+</tr>
+<tr>
+<td>DATE_SUB(date,INTERVAL expr type)，SUBDATE(date,INTERVAL expr type)</td>
+<td>返回與date相差INTERVAL時間間隔的日期</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATE_ADD</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>DAY)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col1,<span style="color:#008b45">DATE_ADD</span>(<span style="color:#cd5555">&#39;2021-10-21 23:32:12&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>SECOND)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col2,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">ADDDATE</span>(<span style="color:#cd5555">&#39;2021-10-21 23:32:12&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>SECOND)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col3,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">DATE_ADD</span>(<span style="color:#cd5555">&#39;2021-10-21 23:32:12&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1_1&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MINUTE_SECOND</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col4,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">DATE_ADD</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">YEAR</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col5,<span style="color:#bbb"> </span><span style="color:#228b22">#可以是負數
+</span><span style="color:#228b22"></span><span style="color:#008b45">DATE_ADD</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1_1&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">YEAR_MONTH</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col6<span style="color:#bbb"> </span><span style="color:#228b22">#需要單引號
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATE_SUB</span>(<span style="color:#cd5555">&#39;2021-01-21&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#b452cd">31</span><span style="color:#bbb"> </span>DAY)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col1,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">SUBDATE</span>(<span style="color:#cd5555">&#39;2021-01-21&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#b452cd">31</span><span style="color:#bbb"> </span>DAY)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col2,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">DATE_SUB</span>(<span style="color:#cd5555">&#39;2021-01-21 02:01:01&#39;</span>,<span style="color:#8b008b;font-weight:bold">INTERVAL</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1 1&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DAY_HOUR</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>col3<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><p><strong>第2組：</strong></p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADDTIME(time1,time2)</td>
+<td>返回time1加上time2的時間。當time2為一個數字時，代表的是<code>秒</code>，可以為負數</td>
+</tr>
+<tr>
+<td>SUBTIME(time1,time2)</td>
+<td>返回time1減去time2後的時間。當time2為一個數字時，代表的是<code>秒</code>，可以為負數</td>
+</tr>
+<tr>
+<td>DATEDIFF(date1,date2)</td>
+<td>返回date1 - date2的日期間隔天數</td>
+</tr>
+<tr>
+<td>TIMEDIFF(time1, time2)</td>
+<td>返回time1 - time2的時間間隔</td>
+</tr>
+<tr>
+<td>FROM_DAYS(N)</td>
+<td>返回從0000年1月1日起，N天以後的日期</td>
+</tr>
+<tr>
+<td>TO_DAYS(date)</td>
+<td>返回日期date距離0000年1月1日的天數</td>
+</tr>
+<tr>
+<td>LAST_DAY(date)</td>
+<td>返回date所在月份的最後一天的日期</td>
+</tr>
+<tr>
+<td>MAKEDATE(year,n)</td>
+<td>針對給定年份與所在年份中的天數返回一個日期</td>
+</tr>
+<tr>
+<td>MAKETIME(hour,minute,second)</td>
+<td>將給定的小時、分鐘和秒組合成時間並返回</td>
+</tr>
+<tr>
+<td>PERIOD_ADD(time,n)</td>
+<td>返回time加上n後的時間</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">ADDTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#b452cd">20</span>),<span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#b452cd">30</span>),<span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#cd5555">&#39;1:1:3&#39;</span>),<span style="color:#008b45">DATEDIFF</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#cd5555">&#39;2021-10-01&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">TIMEDIFF</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#cd5555">&#39;2021-10-25 22:10:10&#39;</span>),<span style="color:#008b45">FROM_DAYS</span>(<span style="color:#b452cd">366</span>),<span style="color:#008b45">TO_DAYS</span>(<span style="color:#cd5555">&#39;0000-12-25&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008b45">LAST_DAY</span>(<span style="color:#008b45">NOW</span>()),<span style="color:#008b45">MAKEDATE</span>(<span style="color:#00688b;font-weight:bold">YEAR</span>(<span style="color:#008b45">NOW</span>()),<span style="color:#b452cd">12</span>),<span style="color:#008b45">MAKETIME</span>(<span style="color:#b452cd">10</span>,<span style="color:#b452cd">21</span>,<span style="color:#b452cd">23</span>),<span style="color:#008b45">PERIOD_ADD</span>(<span style="color:#b452cd">20200101010101</span>,<span style="color:#b452cd">10</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">ADDTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#b452cd">50</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">ADDTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#b452cd">50</span>)<span style="color:#bbb">  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2019</span>-<span style="color:#b452cd">12</span>-<span style="color:#b452cd">15</span><span style="color:#bbb"> </span><span style="color:#b452cd">22</span>:<span style="color:#b452cd">17</span>:<span style="color:#b452cd">47</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">ADDTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1:1:1&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">ADDTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1:1:1&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2019</span>-<span style="color:#b452cd">12</span>-<span style="color:#b452cd">15</span><span style="color:#bbb"> </span><span style="color:#b452cd">23</span>:<span style="color:#b452cd">18</span>:<span style="color:#b452cd">46</span><span style="color:#bbb">     </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1:1:1&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1:1:1&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2019</span>-<span style="color:#b452cd">12</span>-<span style="color:#b452cd">15</span><span style="color:#bbb"> </span><span style="color:#b452cd">21</span>:<span style="color:#b452cd">23</span>:<span style="color:#b452cd">50</span><span style="color:#bbb">     </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;-1:-1:-1&#39;</span>);<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">SUBTIME</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;-1:-1:-1&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2019</span>-<span style="color:#b452cd">12</span>-<span style="color:#b452cd">15</span><span style="color:#bbb"> </span><span style="color:#b452cd">22</span>:<span style="color:#b452cd">25</span>:<span style="color:#b452cd">11</span><span style="color:#bbb">        </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">FROM_DAYS</span>(<span style="color:#b452cd">366</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">FROM_DAYS</span>(<span style="color:#b452cd">366</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">0001</span>-<span style="color:#b452cd">01</span>-<span style="color:#b452cd">01</span><span style="color:#bbb">     </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MAKEDATE</span>(<span style="color:#b452cd">2020</span>,<span style="color:#b452cd">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">MAKEDATE</span>(<span style="color:#b452cd">2020</span>,<span style="color:#b452cd">1</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2020</span>-<span style="color:#b452cd">01</span>-<span style="color:#b452cd">01</span><span style="color:#bbb">       </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MAKEDATE</span>(<span style="color:#b452cd">2020</span>,<span style="color:#b452cd">32</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">MAKEDATE</span>(<span style="color:#b452cd">2020</span>,<span style="color:#b452cd">32</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2020</span>-<span style="color:#b452cd">02</span>-<span style="color:#b452cd">01</span><span style="color:#bbb">        </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MAKETIME</span>(<span style="color:#b452cd">1</span>,<span style="color:#b452cd">1</span>,<span style="color:#b452cd">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">MAKETIME</span>(<span style="color:#b452cd">1</span>,<span style="color:#b452cd">1</span>,<span style="color:#b452cd">1</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">01</span>:<span style="color:#b452cd">01</span>:<span style="color:#b452cd">01</span><span style="color:#bbb">        </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">PERIOD_ADD</span>(<span style="color:#b452cd">20200101010101</span>,<span style="color:#b452cd">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">PERIOD_ADD</span>(<span style="color:#b452cd">20200101010101</span>,<span style="color:#b452cd">1</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">               </span><span style="color:#b452cd">20200101010102</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">TO_DAYS</span>(<span style="color:#008b45">NOW</span>());<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">TO_DAYS</span>(<span style="color:#008b45">NOW</span>())<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">          </span><span style="color:#b452cd">737773</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><p>舉例：查詢 7 天內的新增用戶數有多少？</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">COUNT</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>new_user<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span><span style="color:#008b45">TO_DAYS</span>(<span style="color:#008b45">NOW</span>())-<span style="color:#008b45">TO_DAYS</span>(regist_time)&lt;=<span style="color:#b452cd">7</span><span style="color:#bbb">
+</span></code></pre></div><h4 id="47-日期的格式化與解析">4.7 日期的格式化與解析</h4>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DATE_FORMAT(date,fmt)</td>
+<td>按照字串fmt格式化日期date值</td>
+</tr>
+<tr>
+<td>TIME_FORMAT(time,fmt)</td>
+<td>按照字串fmt格式化時間time值</td>
+</tr>
+<tr>
+<td>GET_FORMAT(date_type,format_type)</td>
+<td>返回日期字串的顯示格式</td>
+</tr>
+<tr>
+<td>STR_TO_DATE(str, fmt)</td>
+<td>按照字串fmt對str進行解析，解析為一個日期</td>
+</tr>
+</tbody>
+</table>
+<p>上述<code>非GET_FORMAT</code>函數中fmt參數常用的格式符：</p>
+<table>
+<thead>
+<tr>
+<th>格式符</th>
+<th>說明</th>
+<th>格式符</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%Y</td>
+<td>4位元數字表示年份</td>
+<td>%y</td>
+<td>表示兩位元數字表示年份</td>
+</tr>
+<tr>
+<td>%M</td>
+<td>月名表示月份（January,&hellip;.）</td>
+<td>%m</td>
+<td>兩位元數字表示月份（01,02,03。。。）</td>
+</tr>
+<tr>
+<td>%b</td>
+<td>縮寫的月名（Jan.，Feb.，&hellip;.）</td>
+<td>%c</td>
+<td>數字表示月份（1,2,3,&hellip;）</td>
+</tr>
+<tr>
+<td>%D</td>
+<td>英文尾碼表示月中的天數（1st,2nd,3rd,&hellip;）</td>
+<td>%d</td>
+<td>兩位元數字表示月中的天數(01,02&hellip;)</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>數位形式表示月中的天數（1,2,3,4,5&hellip;..）</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>%H</td>
+<td>兩位元數字表示小數，24小時制（01,02..）</td>
+<td>%h和%I</td>
+<td>兩位元數字表示小時，12小時制（01,02..）</td>
+</tr>
+<tr>
+<td>%k</td>
+<td>數位形式的小時，24小時制(1,2,3)</td>
+<td>%l</td>
+<td>數位形式表示小時，12小時制（1,2,3,4&hellip;.）</td>
+</tr>
+<tr>
+<td>%i</td>
+<td>兩位元數字表示分鐘（00,01,02）</td>
+<td>%S和%s</td>
+<td>兩位元數字表示秒(00,01,02&hellip;)</td>
+</tr>
+<tr>
+<td>%W</td>
+<td>一周中的星期名稱（Sunday&hellip;）</td>
+<td>%a</td>
+<td>一周中的星期縮寫（Sun.，Mon.,Tues.，..）</td>
+</tr>
+<tr>
+<td>%w</td>
+<td>以數字表示周中的天數(0=Sunday,1=Monday&hellip;.)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>%j</td>
+<td>以3位元數字表示年中的天數(001,002&hellip;)</td>
+<td>%U</td>
+<td>以數字表示年中的第幾周，（1,2,3。。）其中Sunday為周中第一天</td>
+</tr>
+<tr>
+<td>%u</td>
+<td>以數字表示年中的第幾周，（1,2,3。。）其中Monday為周中第一天</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>%T</td>
+<td>24小時制</td>
+<td>%r</td>
+<td>12小時制</td>
+</tr>
+<tr>
+<td>%p</td>
+<td>AM或PM</td>
+<td>%%</td>
+<td>表示%</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATE_FORMAT</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%H:%i:%s&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">DATE_FORMAT</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%H:%i:%s&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">22</span>:<span style="color:#b452cd">57</span>:<span style="color:#b452cd">34</span><span style="color:#bbb">                        </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">STR_TO_DATE</span>(<span style="color:#cd5555">&#39;09/01/2009&#39;</span>,<span style="color:#cd5555">&#39;%m/%d/%Y&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">STR_TO_DATE</span>(<span style="color:#cd5555">&#39;20140422154706&#39;</span>,<span style="color:#cd5555">&#39;%Y%m%d%H%i%s&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">STR_TO_DATE</span>(<span style="color:#cd5555">&#39;2014-04-22 15:47:06&#39;</span>,<span style="color:#cd5555">&#39;%Y-%m-%d %H:%i:%s&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">GET_FORMAT</span>(<span style="color:#00688b;font-weight:bold">DATE</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;USA&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">GET_FORMAT</span>(<span style="color:#00688b;font-weight:bold">DATE</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;USA&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>%m.%d.%Y<span style="color:#bbb">                </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DATE_FORMAT</span>(<span style="color:#008b45">NOW</span>(),<span style="color:#008b45">GET_FORMAT</span>(<span style="color:#00688b;font-weight:bold">DATE</span>,<span style="color:#cd5555">&#39;USA&#39;</span>)),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DUAL</span>;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">STR_TO_DATE</span>(<span style="color:#cd5555">&#39;2020-01-01 00:00:00&#39;</span>,<span style="color:#cd5555">&#39;%Y-%m-%d&#39;</span>);<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span>+-----------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">STR_TO_DATE</span>(<span style="color:#cd5555">&#39;2020-01-01 00:00:00&#39;</span>,<span style="color:#cd5555">&#39;%Y-%m-%d&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">2020</span>-<span style="color:#b452cd">01</span>-<span style="color:#b452cd">01</span><span style="color:#bbb">                                    </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h3 id="5-流程控制函數">5. 流程控制函數</h3>
+<p>流程處理函數可以根據不同的條件，執行不同的處理流程，可以在SQL語句中實現不同的條件選擇。MySQL中的流程處理函數主要包括IF()、IFNULL()和CASE()函數。</p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IF(value,value1,value2)</td>
+<td>如果value的值為TRUE，返回value1，否則返回value2</td>
+</tr>
+<tr>
+<td>IFNULL(value1, value2)</td>
+<td>如果value1不為NULL，返回value1，否則返回value2</td>
+</tr>
+<tr>
+<td>CASE WHEN 條件1 THEN 結果1 WHEN 條件2 THEN 結果2 &hellip;. [ELSE resultn] END</td>
+<td>相當於Java的if&hellip;else if&hellip;else&hellip;</td>
+</tr>
+<tr>
+<td>CASE  expr WHEN 常量值1 THEN 值1 WHEN 常量值1 THEN 值1 &hellip;. [ELSE 值n] END</td>
+<td>相當於Java的switch&hellip;case&hellip;</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span>(<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>,<span style="color:#cd5555">&#39;正確&#39;</span>,<span style="color:#cd5555">&#39;錯誤&#39;</span>)<span style="color:#bbb">    
+</span><span style="color:#bbb"></span>-&gt;<span style="color:#a61717;background-color:#e3d2d2">正確</span><span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">IFNULL</span>(<span style="color:#00688b">null</span>,<span style="color:#cd5555">&#39;Hello Word&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>-&gt;Hello<span style="color:#bbb"> </span>Word<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1 &gt; 0&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2 &gt; 0&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;3 &gt; 0&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span>END<span style="color:#bbb">
+</span><span style="color:#bbb"></span>-&gt;<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;我是1&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">　　</span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;我是2&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;你是誰&#39;</span><span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>employee_id,salary,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>salary&gt;=<span style="color:#b452cd">15000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;高薪&#39;</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">				  </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>salary&gt;=<span style="color:#b452cd">10000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;潛力股&#39;</span><span style="color:#bbb">  
+</span><span style="color:#bbb">				  </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span>salary&gt;=<span style="color:#b452cd">8000</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;屌絲&#39;</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">				  </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;草根&#39;</span><span style="color:#bbb"> </span>END<span style="color:#bbb">  </span><span style="color:#cd5555">&#34;描述&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb"> 
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>oid,`status`,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>`status`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;未付款&#39;</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">								   </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;已付款&#39;</span><span style="color:#bbb"> 
+</span><span style="color:#bbb">								   </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">3</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;已發貨&#39;</span><span style="color:#bbb">  
+</span><span style="color:#bbb">								   </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">4</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;確認收貨&#39;</span><span style="color:#bbb">  
+</span><span style="color:#bbb">								   </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;無效訂單&#39;</span><span style="color:#bbb"> </span>END<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>t_order;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;yes&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;no&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;unknown&#39;</span><span style="color:#bbb"> </span>END;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;yes&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;no&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;unknown&#39;</span><span style="color:#bbb"> </span>END<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>yes<span style="color:#bbb">                                                                  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+---------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;yes&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;no&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;unknown&#39;</span><span style="color:#bbb"> </span>END;<span style="color:#bbb">  
+</span><span style="color:#bbb"></span>+--------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;yes&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;no&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;unknown&#39;</span><span style="color:#bbb"> </span>END<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>unknown<span style="color:#bbb">                                                             </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>END;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>END<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                                               </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>END;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb"> </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>END<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                                               </span>-<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>employee_id,<span style="color:#b452cd">12</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>*<span style="color:#bbb"> </span>(<span style="color:#b452cd">1</span><span style="color:#bbb"> </span>+<span style="color:#bbb"> </span><span style="color:#008b45">IFNULL</span>(commission_pct,<span style="color:#b452cd">0</span>))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>last_name,<span style="color:#bbb"> </span>job_id,<span style="color:#bbb"> </span>salary,<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">CASE</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;IT_PROG&#39;</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb">  </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">10</span>*salary<span style="color:#bbb">
+</span><span style="color:#bbb">                   </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;ST_CLERK&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb">  </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">15</span>*salary<span style="color:#bbb">
+</span><span style="color:#bbb">                   </span><span style="color:#8b008b;font-weight:bold">WHEN</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;SA_REP&#39;</span><span style="color:#bbb">   </span><span style="color:#8b008b;font-weight:bold">THEN</span><span style="color:#bbb">  </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">20</span>*salary<span style="color:#bbb">
+</span><span style="color:#bbb">       			   </span><span style="color:#8b008b;font-weight:bold">ELSE</span><span style="color:#bbb">      </span>salary<span style="color:#bbb"> </span>END<span style="color:#bbb">     </span><span style="color:#cd5555">&#34;REVISED_SALARY&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">   </span>employees;<span style="color:#bbb">
+</span></code></pre></div><h3 id="6-加密與解密函數">6. 加密與解密函數</h3>
+<p>加密與解密函數主要用於對資料庫中的資料進行加密和解密處理，以防止資料被他人竊取。這些函數在保證資料庫安全時非常有用。</p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PASSWORD(str)</td>
+<td>返回字串str的加密版本，41位元長的字串。加密結果<code>不可逆</code>，常用於使用者的密碼加密</td>
+</tr>
+<tr>
+<td>MD5(str)</td>
+<td>返回字串str的md5加密後的值，也是一種加密方式。若參數為NULL，則會返回NULL</td>
+</tr>
+<tr>
+<td>SHA(str)</td>
+<td>從原純文字密碼str計算並返回加密後的密碼字串，當參數為NULL時，返回NULL。<code>SHA加密演算法比MD5更加安全</code>。</td>
+</tr>
+<tr>
+<td>ENCODE(value,password_seed)</td>
+<td>返回使用password_seed作為加密密碼加密value</td>
+</tr>
+<tr>
+<td>DECODE(value,password_seed)</td>
+<td>返回使用password_seed作為加密密碼解密value</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，ENCODE(value,password_seed)函數與DECODE(value,password_seed)函數互為反函數。</p>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">PASSWORD</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>),<span style="color:#bbb"> </span><span style="color:#008b45">PASSWORD</span>(<span style="color:#00688b">NULL</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">PASSWORD</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>)<span style="color:#bbb">                         </span>|<span style="color:#bbb"> </span><span style="color:#008b45">PASSWORD</span>(<span style="color:#00688b">NULL</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>*E74858DB86EBA20BC33D0AECAE8A8108C56B17FA<span style="color:#bbb"> </span>|<span style="color:#bbb">                </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-------------------------------------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">md5</span>(<span style="color:#cd5555">&#39;123&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>-&gt;<span style="color:#b452cd">202</span>cb962ac59075b964b07152d234b70<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">SHA</span>(<span style="color:#cd5555">&#39;Tom123&#39;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>-&gt;c7c506980abc31cc390a2438c90861d0f1216d50<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">ENCODE</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;mysql&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">ENCODE</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;mysql&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">í</span>g<span style="color:#bbb">　</span><span style="color:#a61717;background-color:#e3d2d2">¼</span><span style="color:#bbb">　</span><span style="color:#a61717;background-color:#e3d2d2">ìÉ</span><span style="color:#bbb">                  </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">01</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">DECODE</span>(<span style="color:#008b45">ENCODE</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#cd5555">&#39;mysql&#39;</span>),<span style="color:#cd5555">&#39;mysql&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">DECODE</span>(<span style="color:#008b45">ENCODE</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>,<span style="color:#cd5555">&#39;mysql&#39;</span>),<span style="color:#cd5555">&#39;mysql&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>mysql<span style="color:#bbb">                                   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#008b45">warnings</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h3 id="7-mysql資訊函數">7. MySQL資訊函數</h3>
+<p>MySQL中內置了一些可以查詢MySQL資訊的函數，這些函數主要用於説明資料庫開發或運維人員更好地對資料庫進行維護工作。</p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VERSION()</td>
+<td>返回當前MySQL的版本號</td>
+</tr>
+<tr>
+<td>CONNECTION_ID()</td>
+<td>返回當前MySQL伺服器的連接數</td>
+</tr>
+<tr>
+<td>DATABASE()，SCHEMA()</td>
+<td>返回MySQL命令行當前所在的資料庫</td>
+</tr>
+<tr>
+<td>USER()，CURRENT_USER()、SYSTEM_USER()，SESSION_USER()</td>
+<td>返回當前連接MySQL的用戶名，返回結果格式為“主機名稱@用戶名”</td>
+</tr>
+<tr>
+<td>CHARSET(value)</td>
+<td>返回字串value引數的字元集</td>
+</tr>
+<tr>
+<td>COLLATION(value)</td>
+<td>返回字串value的比較規則</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span>()<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>test<span style="color:#bbb">       </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span>()<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>test<span style="color:#bbb">       </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">USER</span>(),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURRENT_USER</span>(),<span style="color:#bbb"> </span><span style="color:#008b45">SYSTEM_USER</span>(),<span style="color:#008b45">SESSION_USER</span>();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+----------------+----------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">USER</span>()<span style="color:#bbb">         </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CURRENT_USER</span>()<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">SYSTEM_USER</span>()<span style="color:#bbb">  </span>|<span style="color:#bbb"> </span><span style="color:#008b45">SESSION_USER</span>()<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+----------------+----------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>root@localhost<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>root@localhost<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>root@localhost<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>root@localhost<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+----------------+----------------+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#cd5555">&#39;ABC&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#cd5555">&#39;ABC&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>utf8mb4<span style="color:#bbb">        </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">COLLATION</span>(<span style="color:#cd5555">&#39;ABC&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">COLLATION</span>(<span style="color:#cd5555">&#39;ABC&#39;</span>)<span style="color:#bbb">   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>utf8mb4_general_ci<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h3 id="8-其他函數">8. 其他函數</h3>
+<p>MySQL中有些函數無法對其進行具體的分類，但是這些函數在MySQL的開發和運維過程中也是不容忽視的。</p>
+<table>
+<thead>
+<tr>
+<th>函數</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FORMAT(value,n)</td>
+<td>返回對數位value進行格式化後的結果資料。n表示<code>四捨五入</code>後保留到小數點後n位</td>
+</tr>
+<tr>
+<td>CONV(value,from,to)</td>
+<td>將value的值進行不同進制之間的轉換</td>
+</tr>
+<tr>
+<td>INET_ATON(ipvalue)</td>
+<td>將以點分隔的IP位址轉化為一個數字</td>
+</tr>
+<tr>
+<td>INET_NTOA(value)</td>
+<td>將數位形式的IP地址轉化為以點分隔的IP地址</td>
+</tr>
+<tr>
+<td>BENCHMARK(n,expr)</td>
+<td>將運算式expr重複執行n次。用於測試MySQL處理expr運算式所耗費的時間</td>
+</tr>
+<tr>
+<td>CONVERT(value USING char_code)</td>
+<td>將value所使用的字元編碼修改為char_code</td>
+</tr>
+</tbody>
+</table>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22"># 如果n的值小於或者等於0，則只保留整數部分
+</span><span style="color:#228b22"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">123</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>),<span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">523</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>),<span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">123</span>,<span style="color:#bbb"> </span>-<span style="color:#b452cd">2</span>);<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span>+--------------------+--------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">123</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">523</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">FORMAT</span>(<span style="color:#b452cd">123</span>.<span style="color:#b452cd">123</span>,<span style="color:#bbb"> </span>-<span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+--------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">123</span>.<span style="color:#b452cd">12</span><span style="color:#bbb">             </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">124</span><span style="color:#bbb">                </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">123</span><span style="color:#bbb">                 </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+--------------------+--------------------+---------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#b452cd">16</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">10</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>),<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#b452cd">8888</span>,<span style="color:#b452cd">10</span>,<span style="color:#b452cd">16</span>),<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#00688b">NULL</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">10</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+------------------+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#b452cd">16</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">10</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#b452cd">8888</span>,<span style="color:#b452cd">10</span>,<span style="color:#b452cd">16</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#008b45">CONV</span>(<span style="color:#00688b">NULL</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">10</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+------------------+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">10000</span><span style="color:#bbb">           </span>|<span style="color:#bbb"> </span><span style="color:#b452cd">22</span>B8<span style="color:#bbb">             </span>|<span style="color:#bbb"> </span><span style="color:#00688b">NULL</span><span style="color:#bbb">              </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------+------------------+-------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">INET_ATON</span>(<span style="color:#cd5555">&#39;192.168.1.100&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">INET_ATON</span>(<span style="color:#cd5555">&#39;192.168.1.100&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                 </span><span style="color:#b452cd">3232235876</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22"># 以“192.168.1.100”為例，計算方式為192乘以256的3次方，加上168乘以256的2次方，加上1乘以256，再加上100。
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">INET_NTOA</span>(<span style="color:#b452cd">3232235876</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">INET_NTOA</span>(<span style="color:#b452cd">3232235876</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#b452cd">192</span>.<span style="color:#b452cd">168</span>.<span style="color:#b452cd">1</span>.<span style="color:#b452cd">100</span><span style="color:#bbb">         </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+-----------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">BENCHMARK</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#008b45">MD5</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>));<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">BENCHMARK</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#008b45">MD5</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>))<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                          </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">BENCHMARK</span>(<span style="color:#b452cd">1000000</span>,<span style="color:#bbb"> </span><span style="color:#008b45">MD5</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>));<span style="color:#bbb"> 
+</span><span style="color:#bbb"></span>+----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#008b45">BENCHMARK</span>(<span style="color:#b452cd">1000000</span>,<span style="color:#bbb"> </span><span style="color:#008b45">MD5</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>))<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb">                                </span><span style="color:#b452cd">0</span><span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+----------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#8b008b;font-weight:bold">CONVERT</span>(<span style="color:#cd5555">&#39;mysql&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">USING</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8&#39;</span>));<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#cd5555">&#39;mysql&#39;</span>)<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHARSET</span>(<span style="color:#8b008b;font-weight:bold">CONVERT</span>(<span style="color:#cd5555">&#39;mysql&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">USING</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;utf8&#39;</span>))<span style="color:#bbb"> </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>utf8mb4<span style="color:#bbb">          </span>|<span style="color:#bbb"> </span>utf8<span style="color:#bbb">                                   </span>|<span style="color:#bbb">
+</span><span style="color:#bbb"></span>+------------------+----------------------------------------+<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span><span style="color:#008b45">warning</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><h2 id="聚合多行函數">聚合(多行)函數</h2>
+<ul>
+<li>對<strong>一列資料</strong>(例如字段進行變換，返回一個結果
+<ul>
+<li>例如:想知道全部員工平均的薪水是多少</li>
+</ul>
+</li>
+<li>MySQL中聚合函數無法嵌套使用</li>
+</ul>
+<h3 id="常見的聚合函數">常見的聚合函數</h3>
+<ul>
+<li>AVG:求平均，只能針對數值，會自動過濾null</li>
+<li>SUM:求總和，只能針對數值，會自動過濾null</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AVG</span>(salary),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MAX</span>(salary),<span style="color:#8b008b;font-weight:bold">MIN</span>(salary),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SUM</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">   </span>employees;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>MAX:求最大，可用於數值、字串、時間類型或變量</li>
+<li>MIN:求最小，可用於數值、字串、時間類型或變量</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MIN</span>(hire_date),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MAX</span>(hire_date)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">	  </span>employees;<span style="color:#bbb">
+</span></code></pre></div><h3 id="count">COUNT</h3>
+<ul>
+<li>返回表中或列中的資料<strong>個數</strong>，可用於任意數據類型</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COUNT</span>(*)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb">	</span>employees;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>SELECT COUNT(*)</code>:包含null行
+<ul>
+<li><code>SELECT COUNT(*)</code>跟<code>SELECT COUNT(1)</code>、<code>SELECT COUNT(23456)</code>都是一樣的意思</li>
+</ul>
+</li>
+<li><code>SELECT COUNT(列名)</code>:會自動過濾null</li>
+<li>結合上面知識點，求平均的時候要注意，如果資料有null的，用AVG會排除掉這些，可能導致錯誤的結果(例如求全國平均工資，結果有人工資是null，導致虛高)
+<ul>
+<li>正確寫法:<code>sum(salary) / count(ifnull(salary,1))</code> &ndash; 1可以是任意</li>
+<li>或:<code>avg(ifnull(salary,0))</code></li>
+</ul>
+</li>
+<li>COUNT(參數)效率問題
+<ul>
+<li>如果是MyISAM引擎:<code>*=1=字段</code>，複雜度都是O(1)</li>
+<li>如果是InnoDB引擎<code>*=1&gt;字段</code>，不指定字段的情況下會調用二級索引優化效率，總之最好使用<code>*</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="group-by">GROUP BY</h3>
+<blockquote>
+<p>跟ORDER BY用法類似</p>
+</blockquote>
+<ul>
+<li>依照字段進行分組</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>job_id,<span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>job_id;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>也可以多個條件，前後順序對於實質分組內容沒差，只是顯示順位會變
+<ul>
+<li>例如你分男/女與帥/醜，怎麼分就是那4種</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>job_id,department_id<span style="color:#bbb"> </span>,<span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>job_id,department_id;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>
+<p>但是注意<code>select</code>聲明的<code>非聚合函數</code>字段，必定要在<code>group by</code>中使用</p>
+<ul>
+<li>不可能想看2種分類情形，卻只依靠1個分組條件
+<ul>
+<li>例如我想<code>select</code>性別、長相，卻只<code>group by</code>性別，那分出來的數據無法確定長相，必定是錯的(但MySQL預設不報錯，可以自己調)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>group by</code>使用的字段，則不一定要<code>select</code>顯示出來</p>
+<ul>
+<li>我可以分了但是不告訴你是怎分的</li>
+</ul>
+</li>
+<li>
+<p>聲明位置:<code>from ... where ... GROUP BY ... order by ... limit</code></p>
+</li>
+<li>
+<p><code>group by ... WITH ROLLUP</code>:在末尾增加一行，顯示總和</p>
+<ul>
+<li>切記不要跟<code>ORDER BY</code>排序一起用</li>
+</ul>
+</li>
+</ul>
+<h3 id="having">HAVING</h3>
+<blockquote>
+<p>用來過濾</p>
+</blockquote>
+<ul>
+<li>聚合函數中不能使用<code>WHERE</code>，因為剛剛也提了<code>WHERE</code>順位在<code>GROUP BY</code>之前，車已經開走了</li>
+<li>所以用<code>HAVING</code>取代<code>WHERE</code>來篩選</li>
+<li>聲明位置:<code>HAVING</code>必須聲明在<code>GROUP BY</code>之後</li>
+<li>開發中使用<code>HAVING</code>的前提就是在用了<code>GROUP BY</code>之後
+<ul>
+<li>如果沒有使用聚合函數，那用<code>WHERE</code>就好，效率更高，這個就涉及SQL語句的執行順序</li>
+</ul>
+</li>
+</ul>
+<h1 id="sql語句的執行順序">SQL語句的執行順序</h1>
+<p>需要記住 SELECT 查詢時的兩個順序：</p>
+<p><strong>1. 關鍵字的順序是不能顛倒的：</strong></p>
+<pre tabindex="0"><code>SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ... ORDER BY ... LIMIT...
+</code></pre><p><strong>2.SELECT 語句的執行順序</strong>（在 MySQL 和 Oracle 中，SELECT 執行順序基本相同）：</p>
+<pre tabindex="0"><code>FROM -&gt; WHERE -&gt; GROUP BY -&gt; HAVING -&gt; SELECT 的欄位 -&gt; DISTINCT -&gt; ORDER BY -&gt; LIMIT
+</code></pre><p>比如你寫了一個 SQL 語句，那麼它的關鍵字順序和執行順序是下面這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DISTINCT</span><span style="color:#bbb"> </span>player_id,<span style="color:#bbb"> </span>player_name,<span style="color:#bbb"> </span><span style="color:#008b45">count</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#228b22"># 順序 5
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>player<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">JOIN</span><span style="color:#bbb"> </span>team<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">ON</span><span style="color:#bbb"> </span>player.team_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>team.team_id<span style="color:#bbb"> </span><span style="color:#228b22"># 順序 1
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>height<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>.<span style="color:#b452cd">80</span><span style="color:#bbb"> </span><span style="color:#228b22"># 順序 2
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">GROUP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>player.team_id<span style="color:#bbb"> </span><span style="color:#228b22"># 順序 3
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">HAVING</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#228b22"># 順序 4
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DESC</span><span style="color:#bbb"> </span><span style="color:#228b22"># 順序 6
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">LIMIT</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#228b22"># 順序 7
+</span></code></pre></div><p>在 SELECT 語句執行這些步驟的時候，每個步驟都會產生一個<code>虛擬表</code>，然後將這個虛擬表傳入下一個步驟中作為輸入。需要注意的是，這些步驟隱含在 SQL 的執行過程中，對於我們來說是不可見的。</p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-19</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211220-agg-mysql-05/">
+			下一篇<br>子查詢Subquery
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211218-agg-mysql-03/">
+			上一篇<br>多表查詢、JOIN ON連接
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
