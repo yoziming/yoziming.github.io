@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>確認訂單、feign請求頭問題</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-19">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="確認訂單、feign請求頭問題" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-19" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220205-gulimall-19/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-05T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="確認訂單、feign請求頭問題"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-19"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e8%a8%82%e5%96%ae%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#商城訂單模組-nav`)" id="商城訂單模組-nav">
+									商城訂單模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#訂單流程-nav`)" id="訂單流程-nav">
+									訂單流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ad%a3%e5%90%91%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#正向流程-nav`)" id="正向流程-nav">
+									正向流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%86%e5%90%91%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#逆向流程-nav`)" id="逆向流程-nav">
+									逆向流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e7%8b%80%e6%85%8b" onclick="onNavClick(`#訂單狀態-nav`)" id="訂單狀態-nav">
+									訂單狀態
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#前端頁面-nav`)" id="前端頁面-nav">
+									前端頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b4%e7%90%86%e5%90%84%e7%a8%aepojo%e8%88%87%e8%a6%8f%e7%af%84" onclick="onNavClick(`#整理各種pojo與規範-nav`)" id="整理各種pojo與規範-nav">
+									整理各種POJO與規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5%e6%94%94%e6%88%aa" onclick="onNavClick(`#登入攔截-nav`)" id="登入攔截-nav">
+									登入攔截
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e7%a2%ba%e8%aa%8d%e9%a0%81" onclick="onNavClick(`#訂單確認頁-nav`)" id="訂單確認頁-nav">
+									訂單確認頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#service%e5%b1%a4" onclick="onNavClick(`#service層-nav`)" id="service層-nav">
+									Service層
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#feign%e4%b8%9f%e5%a4%b1%e8%ab%8b%e6%b1%82%e9%a0%ad" onclick="onNavClick(`#feign丟失請求頭-nav`)" id="feign丟失請求頭-nav">
+									feign丟失請求頭
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%b2%e9%87%8d%e4%bb%a4%e7%89%8c" onclick="onNavClick(`#防重令牌-nav`)" id="防重令牌-nav">
+									防重令牌
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%85%e7%9b%ae%e6%a8%a1%e7%b5%84%e7%9a%84%e7%ae%a1%e7%90%86" onclick="onNavClick(`#項目模組的管理-nav`)" id="項目模組的管理-nav">
+									項目模組的管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e4%b8%80%e5%80%8b%e5%95%9f%e5%8b%95%e6%9c%8d%e5%8b%99%e7%9a%84bug" onclick="onNavClick(`#記一個啟動服務的bug-nav`)" id="記一個啟動服務的bug-nav">
+									記一個啟動服務的BUG
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e8%a8%82%e5%96%ae%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#商城訂單模組-nav`)" id="商城訂單模組-nav">
+									商城訂單模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#訂單流程-nav`)" id="訂單流程-nav">
+									訂單流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ad%a3%e5%90%91%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#正向流程-nav`)" id="正向流程-nav">
+									正向流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%86%e5%90%91%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#逆向流程-nav`)" id="逆向流程-nav">
+									逆向流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e7%8b%80%e6%85%8b" onclick="onNavClick(`#訂單狀態-nav`)" id="訂單狀態-nav">
+									訂單狀態
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#前端頁面-nav`)" id="前端頁面-nav">
+									前端頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b4%e7%90%86%e5%90%84%e7%a8%aepojo%e8%88%87%e8%a6%8f%e7%af%84" onclick="onNavClick(`#整理各種pojo與規範-nav`)" id="整理各種pojo與規範-nav">
+									整理各種POJO與規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5%e6%94%94%e6%88%aa" onclick="onNavClick(`#登入攔截-nav`)" id="登入攔截-nav">
+									登入攔截
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e7%a2%ba%e8%aa%8d%e9%a0%81" onclick="onNavClick(`#訂單確認頁-nav`)" id="訂單確認頁-nav">
+									訂單確認頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#service%e5%b1%a4" onclick="onNavClick(`#service層-nav`)" id="service層-nav">
+									Service層
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#feign%e4%b8%9f%e5%a4%b1%e8%ab%8b%e6%b1%82%e9%a0%ad" onclick="onNavClick(`#feign丟失請求頭-nav`)" id="feign丟失請求頭-nav">
+									feign丟失請求頭
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%b2%e9%87%8d%e4%bb%a4%e7%89%8c" onclick="onNavClick(`#防重令牌-nav`)" id="防重令牌-nav">
+									防重令牌
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%85%e7%9b%ae%e6%a8%a1%e7%b5%84%e7%9a%84%e7%ae%a1%e7%90%86" onclick="onNavClick(`#項目模組的管理-nav`)" id="項目模組的管理-nav">
+									項目模組的管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e4%b8%80%e5%80%8b%e5%95%9f%e5%8b%95%e6%9c%8d%e5%8b%99%e7%9a%84bug" onclick="onNavClick(`#記一個啟動服務的bug-nav`)" id="記一個啟動服務的bug-nav">
+									記一個啟動服務的BUG
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    確認訂單、feign請求頭問題
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-19
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-05 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="商城訂單模組">商城訂單模組</h1>
+<blockquote>
+<p>訂單通常是最複雜的模組之一</p>
+</blockquote>
+<ul>
+<li>涉及三流:
+<ul>
+<li>信息流：商品信息、優惠信息</li>
+<li>資金流：退款、付款</li>
+<li>物流：發送、退貨</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220128153241754.png" alt="image-20220128153241754"></p>
+<h2 id="訂單流程">訂單流程</h2>
+<blockquote>
+<p>訂單流程是指從訂單產生到完成的過程</p>
+</blockquote>
+<ul>
+<li>
+<p>不同的產品類型或業務類型在系統中的流程會千差萬別，比如線上實物訂單和虛擬訂單與o20訂單等，所以需要根據不同的類型進行構建訂單流程</p>
+</li>
+<li>
+<p>不管類型如何訂單都包括正向流程和逆向流程，對應的場景就是購買商品和退換貨流程，正向流程就是一個正常的網購步驟</p>
+<ul>
+<li>訂單生成-&gt; 支付訂單-&gt; 賣家發貨-&gt; 確認收貨-&gt; 交易成功</li>
+</ul>
+</li>
+<li>
+<p>而每個步驟的背後，訂單是如何在多系統之間交互流轉的，可概括如下圖</p>
+</li>
+</ul>
+<p><img src="1598670706087.png" alt="1598670706087"></p>
+<h3 id="正向流程">正向流程</h3>
+<ol>
+<li>訂單創建前需要預覽訂單，選擇收貨信息等</li>
+<li>訂單創建需要鎖定庫存，庫存有才可創建，否則不能創建</li>
+<li>訂單創建後超時未支付需要解鎖庫存</li>
+<li>支付成功後，需要進行拆單，根據商品打包方式，所在倉庫，物流等進行拆單</li>
+<li>支付的每筆流水都需要記錄，以待查賬</li>
+<li>訂單創建，支付成功等狀態都需要給MQ發送消息，方便其他系統感知訂閲</li>
+</ol>
+<h3 id="逆向流程">逆向流程</h3>
+<ol>
+<li>修改訂單，用户沒有提交訂單，可以對訂單一些信息進行修改，比如配送信息，</li>
+<li>優惠信息，及其他一些訂單可修改範圍的內容，此時只需對數據進行變更即可。</li>
+<li>訂單取消，用户主動取消訂單和用户超時未支付，兩種情況下訂單都會取消訂單，而超時情況是系統自動關閉訂單，所以在訂單支付的響應機制上面要做支付的</li>
+</ol>
+<h2 id="訂單狀態">訂單狀態</h2>
+<ol>
+<li>待付款: 用户提交訂單後，訂單進行預下單，目前主流電商網站都會便於用户快速完成支付，需要注意的是待付款狀態下可以對庫存進行鎖定，鎖定庫存需要配置支付超時時間，超時後將自動取消訂單，訂單變更為關閉狀態</li>
+<li>已付款/待發貨: 用户完成訂單支付，訂單系統需要記錄支付時間，支付流水單號便於對賬，訂單下放到WMS系統，倉庫進行調撥，配貨，分揀，出庫等操作</li>
+<li>待收貨/已發貨: 倉儲將商品出庫後，訂單進入物流環節，訂單系統需要同步物流信息，便於用户實時知悉物品物流狀態</li>
+<li>已完成: 用户確認收貨後，訂單交易完成。後續支付側進行結算，如果訂單存在問題進入售後狀態</li>
+<li>已取消: 付款之前取消訂單。包括超時未付款或用户商户取消訂單都會產生這種訂單狀態</li>
+<li>售後中: 用户在付款後申請退款，或商家發貨後用户申請退換貨。售後也同樣存在各種狀態，當發起售後申請後生成售後訂單，售後訂單狀態為待審核，等待商家審核，商家審核通過後訂單狀態變更為待退貨，等待用户將商品寄回，商家收貨後訂單狀態更新為待退款狀態，退款到用户原賬户後訂單狀態更新為售後成功</li>
+</ol>
+<h2 id="前端頁面">前端頁面</h2>
+<p>等待付款，詳情頁：</p>
+<p><img src="1598667020590.png" alt="1598667020590"></p>
+<p><img src="1598667039261.png" alt="1598667039261"></p>
+<p>訂單頁：</p>
+<p><img src="1598667069559.png" alt="1598667069559"></p>
+<p>收銀頁：</p>
+<p><img src="1598667165660.png" alt="1598667165660"></p>
+<h2 id="整理各種pojo與規範">整理各種POJO與規範</h2>
+<ul>
+<li>feign包放在common模組下，用TO(Transfer Object)來跨模組接收、傳遞物件</li>
+<li>VO(View Object) 是專門返回給前端、給人看的東西</li>
+<li>Entity實體，也稱為PO(Persistant Object)，屬性基本和資料表欄位一一對應。一個實體即是真實存在的一筆資料，必須要有唯一標識(例如id)以區分其它實體</li>
+<li>DAO(Data Access Object)封裝了PO在資料庫的CRUD等操作</li>
+</ul>
+<h1 id="實作">實作</h1>
+<p><img src="image-20220129163611607.png" alt="image-20220129163611607"></p>
+<h2 id="登入攔截">登入攔截</h2>
+<blockquote>
+<p>點結算時，沒登入就讓用戶先去登入</p>
+</blockquote>
+<ul>
+<li>LoginUserInterceptor.java
+<ul>
+<li>記得造一個config實現WebMvcConfigurer註冊攔截器</li>
+<li>攔截器記得用<code>@Component</code>讓spring載入</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 登入攔截器
+</span><span style="color:#228b22"> * 從session中獲取了登入信息（redis中），封裝到了ThreadLocal中
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LoginUserInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;MemberResponseTo&gt; loginUser = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+
+        <span style="color:#228b22">// 獲取登入的用戶信息
+</span><span style="color:#228b22"></span>        MemberResponseTo attribute = (MemberResponseTo) request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(LOGIN_USER);
+
+        <span style="color:#8b008b;font-weight:bold">if</span> (attribute != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 把登入後用戶的信息放在ThreadLocal裡面進行保存
+</span><span style="color:#228b22"></span>            loginUser.<span style="color:#658b00">set</span>(attribute);
+
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#228b22">// 未登入，返回登入頁面
+</span><span style="color:#228b22"></span>            response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;text/html;charset=UTF-8&#34;</span>);
+            PrintWriter out = response.<span style="color:#658b00">getWriter</span>();
+            out.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;&lt;script&gt;alert(&#39;請先進行登入，再進行後續操作！&#39;);location.href=&#39;http://auth.mall.com/login.html&#39;&lt;/script&gt;&#34;</span>);
+            <span style="color:#228b22">// session.setAttribute(&#34;msg&#34;, &#34;請先進行登入&#34;);
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// response.sendRedirect(&#34;http://auth.mall.com/login.html&#34;);
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+        }
+    }
+}
+</code></pre></div><h2 id="訂單確認頁">訂單確認頁</h2>
+<ul>
+<li>從購物車點了去結算，就來到這</li>
+</ul>
+<p><img src="1598667130041.png" alt="1598667130041"></p>
+<ul>
+<li>OrderConfirmVo.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 訂單確認頁需要用的數據
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderConfirmVo</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 會員收貨地址列表
+</span><span style="color:#228b22">     **/</span>
+    <span style="color:#707a7c">@Getter</span>
+    <span style="color:#707a7c">@Setter</span>
+    List&lt;MemberAddressTo&gt; memberAddressTos;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 所有選中的購物項【購物車中的所有項】
+</span><span style="color:#228b22">     **/</span>
+    <span style="color:#707a7c">@Getter</span>
+    <span style="color:#707a7c">@Setter</span>
+    List&lt;OrderItemTo&gt; items;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 優惠券（會員積分）
+</span><span style="color:#228b22">     **/</span>
+    <span style="color:#707a7c">@Getter</span>
+    <span style="color:#707a7c">@Setter</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer integration;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 防止重複提交的令牌 冪等性
+</span><span style="color:#228b22">     **/</span>
+    <span style="color:#707a7c">@Getter</span>
+    <span style="color:#707a7c">@Setter</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String orderToken;
+
+    <span style="color:#707a7c">@Getter</span>
+    <span style="color:#707a7c">@Setter</span>
+    Map&lt;Long, Boolean&gt; stocks;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> Integer <span style="color:#008b45">getCount</span>() {
+        Integer count = 0;
+        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
+                count += item.<span style="color:#658b00">getCount</span>();
+            }
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> count;
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 總商品金額
+</span><span style="color:#228b22">     **/</span>
+    <span style="color:#228b22">//BigDecimal total;
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//計算訂單總額
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> BigDecimal <span style="color:#008b45">getTotal</span>() {
+        BigDecimal totalNum = BigDecimal.<span style="color:#658b00">ZERO</span>;
+        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
+                <span style="color:#228b22">//計算當前商品的總價格
+</span><span style="color:#228b22"></span>                BigDecimal itemPrice = item.<span style="color:#658b00">getPrice</span>().<span style="color:#658b00">multiply</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(item.<span style="color:#658b00">getCount</span>().<span style="color:#658b00">toString</span>()));
+                <span style="color:#228b22">//再計算全部商品的總價格
+</span><span style="color:#228b22"></span>                totalNum = totalNum.<span style="color:#658b00">add</span>(itemPrice);
+            }
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> totalNum;
+    }
+}
+</code></pre></div><ul>
+<li>OrderWebController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 去結算確認頁
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/toTrade&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">toTrade</span>(Model model, HttpServletRequest request) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    OrderConfirmVo confirmVo = orderService.<span style="color:#658b00">confirmOrder</span>();
+    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;confirmOrderData&#34;</span>, confirmVo);
+    <span style="color:#228b22">// 展示訂單確認的數據
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;confirm&#34;</span>;
+}
+</code></pre></div><h3 id="service層">Service層</h3>
+<ul>
+<li>這邊有2個知識點: feign丟失請求頭、防重令牌，在下面分別展開</li>
+<li>OrderServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 訂單確認頁返回需要用的數據
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> OrderConfirmVo <span style="color:#008b45">confirmOrder</span>() <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    <span style="color:#228b22">// 構建OrderConfirmVo
+</span><span style="color:#228b22"></span>    OrderConfirmVo confirmVo = <span style="color:#8b008b;font-weight:bold">new</span> OrderConfirmVo();
+    <span style="color:#228b22">// 獲取當前用戶登入的信息
+</span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
+    <span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
+</span><span style="color:#228b22"></span>    RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+    <span style="color:#228b22">// 開啟第一個異步任務
+</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
+</span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+        <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
+</span><span style="color:#228b22"></span>        List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
+        confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
+    }, threadPoolExecutor);
+
+    <span style="color:#228b22">// 開啟第二個異步任務
+</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; cartInfoFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據【解決異步ThreadLocal 無法共享數據】
+</span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+        <span style="color:#228b22">// 遠程查詢購物車所有選中的購物項
+</span><span style="color:#228b22"></span>        List&lt;OrderItemTo&gt; currentCartItems = cartFeignService.<span style="color:#658b00">getCurrentCartItems</span>();
+        confirmVo.<span style="color:#658b00">setItems</span>(currentCartItems);
+        <span style="color:#228b22">// feign在遠程調用之前要構造請求，會調用很多的攔截器
+</span><span style="color:#228b22"></span>    }, threadPoolExecutor).<span style="color:#658b00">thenRunAsync</span>(() -&gt; {
+        List&lt;OrderItemTo&gt; items = confirmVo.<span style="color:#658b00">getItems</span>();
+        <span style="color:#228b22">// 獲取全部商品的id
+</span><span style="color:#228b22"></span>        List&lt;Long&gt; skuIds = items.<span style="color:#658b00">stream</span>()
+                .<span style="color:#658b00">map</span>((itemVo -&gt; itemVo.<span style="color:#658b00">getSkuId</span>()))
+                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+        <span style="color:#228b22">// 遠程查詢商品庫存信息
+</span><span style="color:#228b22"></span>        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIds);
+        List&lt;SkuStockVo&gt; skuStockVos = skuHasStock.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuStockVo&gt;&gt;() {
+        });
+
+        <span style="color:#8b008b;font-weight:bold">if</span> (skuStockVos != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; skuStockVos.<span style="color:#658b00">size</span>() &gt; 0) {
+            <span style="color:#228b22">// 將skuStockVos集合轉換為map
+</span><span style="color:#228b22"></span>            Map&lt;Long, Boolean&gt; skuHasStockMap =
+                    skuStockVos.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
+            confirmVo.<span style="color:#658b00">setStocks</span>(skuHasStockMap);
+        }
+    }, threadPoolExecutor);
+
+    <span style="color:#228b22">// 查詢用戶積分
+</span><span style="color:#228b22"></span>    Integer integration = memberResponseTo.<span style="color:#658b00">getIntegration</span>();
+    confirmVo.<span style="color:#658b00">setIntegration</span>(integration);
+
+    <span style="color:#228b22">// 價格數據計算寫在VO了
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 防重令牌(防止表單重複提交)
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 為用戶設置一個token，三十分鐘過期時間（存在redis）
+</span><span style="color:#228b22"></span>    String token = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;-&#34;</span>, <span style="color:#cd5555">&#34;&#34;</span>);
+    redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">set</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>(), token, 30,
+            TimeUnit.<span style="color:#658b00">MINUTES</span>);
+    confirmVo.<span style="color:#658b00">setOrderToken</span>(token);
+
+    CompletableFuture.<span style="color:#658b00">allOf</span>(addressFuture, cartInfoFuture).<span style="color:#658b00">get</span>();
+
+    <span style="color:#8b008b;font-weight:bold">return</span> confirmVo;
+}
+</code></pre></div><h4 id="feign丟失請求頭">feign丟失請求頭</h4>
+<p><img src="image-20220128164501873.png" alt="image-20220128164501873"></p>
+<ul>
+<li>
+<p>feign的本質也是http request，它的底層代碼會造一個RequestTemplate模板，在這時候會丟失原有的請求頭訊息(cookie沒了)</p>
+<ul>
+<li>跟nginx轉發丟失host有點像</li>
+</ul>
+</li>
+<li>
+<p>可以在feign調用的時候就不要依賴cookie等請求頭訊息，額外傳送例如userId等訊息作為參數</p>
+</li>
+</ul>
+<h5 id="保留頭解法">保留頭解法</h5>
+<p><img src="image-20220128165903146.png" alt="image-20220128165903146"></p>
+<ul>
+<li>
+<p>那個RequestTemplate構造的時候工廠會調用它自己的RequestInterceptor(預設是空)，我們手動重寫其中的apply方法，在這邊把頭加回去</p>
+<ul>
+<li>透過Spring給的RequestContextHolder來暫存頭資訊，這玩意就是封裝過的ThreadLocal</li>
+</ul>
+</li>
+<li>
+<p>FeignConfig.java</p>
+<ul>
+<li>
+<p>註解 <code>@Configuration</code></p>
+</li>
+<li>
+<p>在feign接口指定使用設定，例如:</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@FeignClient</span>(name = <span style="color:#cd5555">&#34;cart&#34;</span>, configuration = FeignConfig.<span style="color:#658b00">class</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">CartFeignService</span> {
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * feign攔截器功能
+</span><span style="color:#228b22"> * 解決feign 遠程請求頭丟失問題
+</span><span style="color:#228b22"> **/</span>
+<span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">FeignConfig</span> {
+
+    <span style="color:#707a7c">@Bean</span>(<span style="color:#cd5555">&#34;requestInterceptor&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> RequestInterceptor <span style="color:#008b45">requestInterceptor</span>() {
+
+        RequestInterceptor requestInterceptor = <span style="color:#8b008b;font-weight:bold">new</span> RequestInterceptor() {
+            <span style="color:#707a7c">@Override</span>
+            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">apply</span>(RequestTemplate template) {
+                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;feign遠程調用，攔截包裝請求頭&#34;</span>);
+
+                <span style="color:#228b22">// 使用RequestContextHolder拿到剛進來的請求數據
+</span><span style="color:#228b22"></span>                ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+                <span style="color:#8b008b;font-weight:bold">if</span> (requestAttributes != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                    HttpServletRequest request = requestAttributes.<span style="color:#658b00">getRequest</span>();<span style="color:#228b22">//老請求
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (request != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                        <span style="color:#228b22">// 同步請求頭的數據（主要是cookie）
+</span><span style="color:#228b22"></span>                        <span style="color:#228b22">// 把老請求的cookie值放到新請求上來，進行一個同步
+</span><span style="color:#228b22"></span>                        String cookie = request.<span style="color:#658b00">getHeader</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>);
+                        template.<span style="color:#658b00">header</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>, cookie);
+                    }
+                }
+            }
+        };
+        <span style="color:#8b008b;font-weight:bold">return</span> requestInterceptor;
+    }
+}
+</code></pre></div><ul>
+<li>我還是有點沒弄清它這個設定載入的細節，因為我feign包是放在common之下，當我把FeignConfig也放在common，就需要在註解指定configuration = FeignConfig.class才能生效</li>
+<li>關於Feign設定的細節參考 : <a href="https://www.twblogs.net/a/5da0a13ebd9eee541c34e853">https://www.twblogs.net/a/5da0a13ebd9eee541c34e853</a></li>
+<li>我當初是看了這篇 <a href="https://www.cnblogs.com/mindzone/p/15315273.html">https://www.cnblogs.com/mindzone/p/15315273.html</a> 決定把feing放在common的，我感覺這樣確實比較整齊</li>
+</ul>
+<p><img src="image-20220129150346004.png" alt="image-20220129150346004"></p>
+<h5 id="異步問題">異步問題</h5>
+<ul>
+<li>然而又有問題，因為一個老請求進來，我們是開線程池去異步調用各個feign，相當於換線程了，所以調用之前要手動共享請求的資料</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
+</span><span style="color:#228b22"></span>RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+<span style="color:#228b22">// 開啟第一個異步任務
+</span><span style="color:#228b22"></span>CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+    <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
+</span><span style="color:#228b22"></span>    RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+    <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
+</span><span style="color:#228b22"></span>    List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
+    confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
+}, threadPoolExecutor);
+</code></pre></div><h5 id="返回問題">返回問題</h5>
+<ul>
+<li>被遠程調用的controller，想要它返回To類，在方法上要記得註解<code>@ResponseBody</code>，或是直接整個用<code>@RestController</code></li>
+</ul>
+<h4 id="防重令牌">防重令牌</h4>
+<ul>
+<li>每次來到確認頁，生成一個隨機UUID的令牌，開頭以用戶ID命名，並且設有過期時間</li>
+<li>把這個令牌也返回給前端，當用戶提交訂單時，會帶上這個令牌</li>
+</ul>
+<p><img src="image-20220129172028442.png" alt="image-20220129172028442"></p>
+<ul>
+<li>如果用戶在確認頁F5，會刷新令牌。後續驗證涉及覓等性問題，下章繼續</li>
+</ul>
+<h1 id="小結">小結</h1>
+<h2 id="項目模組的管理">項目模組的管理</h2>
+<ul>
+<li>本來學了一招是建一個空的父模組用<code>&lt;dependencyManagement&gt;</code>統一管理版本，然而在分布式微服務項目我感覺這又不太好
+<ul>
+<li>第一個缺點是每次新建子模組都要調整<code>&lt;parent&gt;</code></li>
+<li>第二是多了一層依賴到了分布式反而變得不直觀</li>
+<li>專案內必定有common模組，既然大家都要引用它，靠它就能實現版本管理，父模組功能重復了</li>
+</ul>
+</li>
+<li>我想的是既然大家都會引用common，那共通性的依賴就在common統一管理版本。而模組自己額外引用的依賴，就靠自己管理版本，這樣就比較直觀、獨立，不會想看個版本還要翻好幾層</li>
+<li>另外就是feign位置，我感覺還是統一抽出放在common更好，有跨模組間溝通的bean也都放在這邊的TO包下</li>
+<li>其他子模組的VO就專注於自己返回給前端的用途，這樣就不會搞得每個模組都有一堆VO跟TO很亂，也可以杜絕有時候想偷懶把VO與TO混用的可能</li>
+</ul>
+<h2 id="記一個啟動服務的bug">記一個啟動服務的BUG</h2>
+<ul>
+<li>我也不確定到底動到哪邊，大概是批次取代錯字的時候改到</li>
+<li>呈現的BUG狀態就是啟動A服務的時候，A服務載入的竟然是B服務的application.properties，呈現一種混血狀態，然而怎麼復原明明就都跟以前一樣了，卻還是不行，匪夷所思</li>
+<li>解法: 把所有target資料夾全砍了，各個服務重新build一次就好了</li>
+<li>教訓: 多多傳git方便出事好還原、有時候BUG可能發生在建構出來的檔案，可以整個資料夾砍掉重新git clone一份乾淨的下來</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-05</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220205-git-common-use/">
+			下一篇<br>整理常用的git操作
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/">
+			上一篇<br>RabbitMQ與訊息確認
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

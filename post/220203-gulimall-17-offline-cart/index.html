@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>cookie&amp;redis實現訪客購物車</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-17">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="cookie&amp;redis實現訪客購物車" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-17" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220203-gulimall-17-offline-cart/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-03T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="cookie&amp;redis實現訪客購物車"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-17"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%bc%e7%89%a9%e8%bb%8a%e9%9c%80%e6%b1%82%e5%88%86%e6%9e%90" onclick="onNavClick(`#購物車需求分析-nav`)" id="購物車需求分析-nav">
+									購物車需求分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%aa%e5%ae%a2%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#訪客購物車-nav`)" id="訪客購物車-nav">
+									訪客購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8%e6%88%b7%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#用户購物車-nav`)" id="用户購物車-nav">
+									用户購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e5%88%86%e6%9e%90" onclick="onNavClick(`#操作分析-nav`)" id="操作分析-nav">
+									操作分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#資料庫設計-nav`)" id="資料庫設計-nav">
+									資料庫設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#vo%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#vo設計-nav`)" id="vo設計-nav">
+									Vo設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8" onclick="onNavClick(`#攔截器-nav`)" id="攔截器-nav">
+									攔截器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8%e8%88%87%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#攔截器與過濾器-nav`)" id="攔截器與過濾器-nav">
+									攔截器與過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e6%95%b4%e8%bb%8a" onclick="onNavClick(`#查看整車-nav`)" id="查看整車-nav">
+									查看整車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b7%bb%e5%8a%a0%e8%87%b3%e8%bb%8a" onclick="onNavClick(`#添加至車-nav`)" id="添加至車-nav">
+									添加至車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sql-concat%e7%9a%84%e7%94%a8%e6%b3%95" onclick="onNavClick(`#sql-concat的用法-nav`)" id="sql-concat的用法-nav">
+									SQL CONCAT的用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bc%95%e5%b0%8e%e8%87%b3%e6%b7%bb%e5%8a%a0%e6%88%90%e5%8a%9f%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#引導至添加成功頁面-nav`)" id="引導至添加成功頁面-nav">
+									引導至添加成功頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9" onclick="onNavClick(`#刪改-nav`)" id="刪改-nav">
+									刪、改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e5%96%ae%e5%89%8d%e8%a8%88%e7%ae%97%e5%83%b9%e6%a0%bc" onclick="onNavClick(`#下單前計算價格-nav`)" id="下單前計算價格-nav">
+									下單前計算價格
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8-1" onclick="onNavClick(`#攔截器-1-nav`)" id="攔截器-1-nav">
+									攔截器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8redis%e6%b7%bb%e5%8a%a0hash" onclick="onNavClick(`#在redis添加hash-nav`)" id="在redis添加hash-nav">
+									在redis添加hash
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e6%ad%a5%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#異步任務-nav`)" id="異步任務-nav">
+									異步任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%87%aa%e8%a8%82%e7%b7%9a%e7%a8%8b%e6%b1%a0" onclick="onNavClick(`#先自訂線程池-nav`)" id="先自訂線程池-nav">
+									先自訂線程池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%bc%e7%89%a9%e8%bb%8a%e9%9c%80%e6%b1%82%e5%88%86%e6%9e%90" onclick="onNavClick(`#購物車需求分析-nav`)" id="購物車需求分析-nav">
+									購物車需求分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%aa%e5%ae%a2%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#訪客購物車-nav`)" id="訪客購物車-nav">
+									訪客購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8%e6%88%b7%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#用户購物車-nav`)" id="用户購物車-nav">
+									用户購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e5%88%86%e6%9e%90" onclick="onNavClick(`#操作分析-nav`)" id="操作分析-nav">
+									操作分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#資料庫設計-nav`)" id="資料庫設計-nav">
+									資料庫設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#vo%e8%a8%ad%e8%a8%88" onclick="onNavClick(`#vo設計-nav`)" id="vo設計-nav">
+									Vo設計
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8" onclick="onNavClick(`#攔截器-nav`)" id="攔截器-nav">
+									攔截器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8%e8%88%87%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#攔截器與過濾器-nav`)" id="攔截器與過濾器-nav">
+									攔截器與過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e6%95%b4%e8%bb%8a" onclick="onNavClick(`#查看整車-nav`)" id="查看整車-nav">
+									查看整車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b7%bb%e5%8a%a0%e8%87%b3%e8%bb%8a" onclick="onNavClick(`#添加至車-nav`)" id="添加至車-nav">
+									添加至車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sql-concat%e7%9a%84%e7%94%a8%e6%b3%95" onclick="onNavClick(`#sql-concat的用法-nav`)" id="sql-concat的用法-nav">
+									SQL CONCAT的用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bc%95%e5%b0%8e%e8%87%b3%e6%b7%bb%e5%8a%a0%e6%88%90%e5%8a%9f%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#引導至添加成功頁面-nav`)" id="引導至添加成功頁面-nav">
+									引導至添加成功頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9" onclick="onNavClick(`#刪改-nav`)" id="刪改-nav">
+									刪、改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e5%96%ae%e5%89%8d%e8%a8%88%e7%ae%97%e5%83%b9%e6%a0%bc" onclick="onNavClick(`#下單前計算價格-nav`)" id="下單前計算價格-nav">
+									下單前計算價格
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%94%e6%88%aa%e5%99%a8-1" onclick="onNavClick(`#攔截器-1-nav`)" id="攔截器-1-nav">
+									攔截器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8redis%e6%b7%bb%e5%8a%a0hash" onclick="onNavClick(`#在redis添加hash-nav`)" id="在redis添加hash-nav">
+									在redis添加hash
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e6%ad%a5%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#異步任務-nav`)" id="異步任務-nav">
+									異步任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%87%aa%e8%a8%82%e7%b7%9a%e7%a8%8b%e6%b1%a0" onclick="onNavClick(`#先自訂線程池-nav`)" id="先自訂線程池-nav">
+									先自訂線程池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    cookie&amp;redis實現訪客購物車
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-17
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-03 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="購物車需求分析">購物車需求分析</h1>
+<h2 id="訪客購物車">訪客購物車</h2>
+<blockquote>
+<p>沒登入也能放地購物車，是我才不搞那麼多，沒登入就讓用戶登一下不就好了，唉當練習吧</p>
+<p>意外的是這個項目是仿京東，結果京東現在也不提供這種功能了，一律先登入再說</p>
+</blockquote>
+<ul>
+<li>
+<p>可以把資料暫存在客戶端，例如:</p>
+<ul>
+<li>localstorage</li>
+<li>cookie</li>
+<li>WebSQL</li>
+</ul>
+</li>
+<li>
+<p>但何種商品被放到購物車本身是一個有價值的資訊，所以選擇放到伺服端的redis</p>
+</li>
+</ul>
+<h2 id="用户購物車">用户購物車</h2>
+<ul>
+<li>一樣採用redis，優勢在於
+<ul>
+<li>極高的讀寫併發性能</li>
+<li>好組織數據結構</li>
+<li>redis也有持久化策略，AOF</li>
+</ul>
+</li>
+<li>登入後會將離線購物車合併</li>
+</ul>
+<h2 id="操作分析">操作分析</h2>
+<ul>
+<li>增（添加商品到購物車）</li>
+<li>刪（刪除某個商品）</li>
+<li>改（修改商品數量）</li>
+<li>查（查詢購物車中的商品）
+<ul>
+<li>商品是否被選中，下次進來還是選中狀態</li>
+<li>用户可以使用購物車多件商品一起結算下單</li>
+<li>在購物車中展示商品優惠信息</li>
+<li>提示購物車商品價格變化</li>
+</ul>
+</li>
+</ul>
+<h2 id="資料庫設計">資料庫設計</h2>
+<ul>
+<li>Redis數據結構用Hash，造一個雙層Map來存</li>
+</ul>
+<pre tabindex="0"><code>Map&lt;String, Map&lt;String, String&gt;&gt; 
+</code></pre><ul>
+<li>第一個key是用户id，value是購物車信息</li>
+<li>第二個key是skuId，value是購物項數據</li>
+</ul>
+<h2 id="vo設計">Vo設計</h2>
+<blockquote>
+<p>類似之前做的書城項目</p>
+</blockquote>
+<ul>
+<li>CartVo是完整的一台車，這邊有CartItemVo構成的List、總件數、總價</li>
+<li>CartItemVo略等同於Sku，就是車中的某項商品，加上件數與價格</li>
+</ul>
+<p><img src="image-20220126011315913.png" alt="image-20220126011315913"></p>
+<ul>
+<li>在CartVo.java 將計算總價等等方法封裝起來</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> BigDecimal <span style="color:#008b45">getTotalAmount</span>() {
+    BigDecimal amount = <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(<span style="color:#cd5555">&#34;0&#34;</span>);
+    <span style="color:#228b22">// 計算購物項總價
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!CollectionUtils.<span style="color:#658b00">isEmpty</span>(items)) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (CartItemVo cartItem : items) {
+            <span style="color:#8b008b;font-weight:bold">if</span> (cartItem.<span style="color:#658b00">getCheck</span>()) {
+                amount = amount.<span style="color:#658b00">add</span>(cartItem.<span style="color:#658b00">getTotalPrice</span>());
+            }
+        }
+    }
+    <span style="color:#228b22">// 計算優惠的價格
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> amount.<span style="color:#658b00">subtract</span>(getReduce());
+}
+</code></pre></div><h1 id="實作">實作</h1>
+<h2 id="攔截器">攔截器</h2>
+<ul>
+<li>
+<p>當用戶想用購物車，必須判斷是否已登入，若無登入，創造一個臨時用戶cookie:user-key</p>
+</li>
+<li>
+<p>造一個WebMvcConfigurer配置類註冊攔截器，MallWebConfig.java</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MallWebConfig</span> <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptors</span>(InterceptorRegistry registry) {
+        registry.<span style="color:#658b00">addInterceptor</span>(<span style="color:#8b008b;font-weight:bold">new</span> CartInterceptor())<span style="color:#228b22">// 註冊攔截器
+</span><span style="color:#228b22"></span>                .<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
+    }
+}
+</code></pre></div><ul>
+<li>用ThreadLocal來儲存用戶的登入狀態UserInfoTo</li>
+</ul>
+<p><img src="image-20220126143902191.png" alt="image-20220126143902191"></p>
+<ul>
+<li>ThreadLocal在同一個線程內都能存取，之前學過</li>
+</ul>
+<blockquote>
+<p><a href="https://yoziming.github.io/post/220110-agg-javaweb-10/#threadlocal">https://yoziming.github.io/post/220110-agg-javaweb-10/#threadlocal</a></p>
+</blockquote>
+<ul>
+<li>CartInterceptor.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 在執行目標方法之前，判斷用戶的登入狀態.並封裝傳遞給controller目標請求
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CartInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;UserInfoTo&gt; toThreadLocal = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+
+    <span style="color:#228b22">/***
+</span><span style="color:#228b22">     * 攔截所有請求給ThreadLocal封裝UserInfoTo物件
+</span><span style="color:#228b22">     * 1、從session中獲取MemberResponseVo != null，登入狀態，為UserInfoTo設置Id
+</span><span style="color:#228b22">     * 2、從request中獲取cookie，找到user-key的value，
+</span><span style="color:#228b22">     * 目標方法執行之前：在ThreadLocal中存入用戶信息【同一個線程共享數據】
+</span><span style="color:#228b22">     * 從session中獲取數據【使用session需要cookie中的GULISESSION 值】
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        UserInfoTo userInfoTo = <span style="color:#8b008b;font-weight:bold">new</span> UserInfoTo();
+        HttpSession session = request.<span style="color:#658b00">getSession</span>();
+        <span style="color:#228b22">// 獲得當前登入用戶的信息
+</span><span style="color:#228b22"></span>        MemberResponseVo memberResponseVo = (MemberResponseVo) session.<span style="color:#658b00">getAttribute</span>(AuthServerConstant.<span style="color:#658b00">LOGIN_USER</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (memberResponseVo != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 用戶登入了
+</span><span style="color:#228b22"></span>            userInfoTo.<span style="color:#658b00">setUserId</span>(memberResponseVo.<span style="color:#658b00">getId</span>());
+        }
+        Cookie[] cookies = request.<span style="color:#658b00">getCookies</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (cookies != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; cookies.<span style="color:#658b00">length</span> &gt; 0) {
+            <span style="color:#8b008b;font-weight:bold">for</span> (Cookie cookie : cookies) {
+                <span style="color:#228b22">// user-key
+</span><span style="color:#228b22"></span>                String name = cookie.<span style="color:#658b00">getName</span>();
+                <span style="color:#8b008b;font-weight:bold">if</span> (name.<span style="color:#658b00">equals</span>(CartConstant.<span style="color:#658b00">TEMP_USER_COOKIE_NAME</span>)) {
+                    userInfoTo.<span style="color:#658b00">setUserKey</span>(cookie.<span style="color:#658b00">getValue</span>());
+                    <span style="color:#228b22">// 標識客戶端已經存儲了 user-key
+</span><span style="color:#228b22"></span>                    userInfoTo.<span style="color:#658b00">setTempUser</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+                }
+            }
+        }
+        <span style="color:#228b22">// 如果沒有臨時用戶一定分配一個臨時用戶UUID
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isEmpty</span>(userInfoTo.<span style="color:#658b00">getUserKey</span>())) {
+            String uuid = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>();
+            userInfoTo.<span style="color:#658b00">setUserKey</span>(uuid);
+        }
+        <span style="color:#228b22">// 目標方法執行之前
+</span><span style="color:#228b22"></span>        toThreadLocal.<span style="color:#658b00">set</span>(userInfoTo);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 業務執行之後，讓瀏覽器保存臨時用戶user-key的Cookie
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">postHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler,
+                           ModelAndView modelAndView) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        <span style="color:#228b22">// 獲取當前用戶的值
+</span><span style="color:#228b22"></span>        UserInfoTo userInfoTo = toThreadLocal.<span style="color:#658b00">get</span>();
+        <span style="color:#228b22">// 1、判斷是否登入；2、判斷是否創建user-token的cookie
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (userInfoTo != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; !userInfoTo.<span style="color:#658b00">isTempUser</span>()) {
+            <span style="color:#228b22">// 創建一個cookie
+</span><span style="color:#228b22"></span>            Cookie cookie = <span style="color:#8b008b;font-weight:bold">new</span> Cookie(CartConstant.<span style="color:#658b00">TEMP_USER_COOKIE_NAME</span>, userInfoTo.<span style="color:#658b00">getUserKey</span>());
+            cookie.<span style="color:#658b00">setDomain</span>(<span style="color:#cd5555">&#34;mall.com&#34;</span>);
+            cookie.<span style="color:#658b00">setMaxAge</span>(CartConstant.<span style="color:#658b00">TEMP_USER_COOKIE_TIMEOUT</span>);
+            response.<span style="color:#658b00">addCookie</span>(cookie);
+        }
+    }
+}
+</code></pre></div><h3 id="攔截器與過濾器">攔截器與過濾器</h3>
+<blockquote>
+<p>參考 <a href="https://iter01.com/527287.html">https://iter01.com/527287.html</a></p>
+</blockquote>
+<ul>
+<li>執行順序: 過濾前-攔截前-action執行-攔截後-過濾後</li>
+</ul>
+<p><img src="image-20220126144548868.png" alt="image-20220126144548868"></p>
+<ul>
+<li>總的來說攔截器更好用一點</li>
+</ul>
+<h2 id="查看整車">查看整車</h2>
+<ul>
+<li>CartController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 去購物車頁面的請求【未登入狀態也可以查看】
+</span><span style="color:#228b22"> * 瀏覽器有一個cookie:user-key 標識用戶的身份，一個月過期
+</span><span style="color:#228b22"> * 如果第一次使用jd的購物車功能，都會給一個臨時的用戶身份:
+</span><span style="color:#228b22"> * 瀏覽器以後保存，每次訪問都會帶上這個cookie；
+</span><span style="color:#228b22"> * 登入：session有用戶的身份
+</span><span style="color:#228b22"> * 沒登入：按照cookie裏面帶來user-key來做
+</span><span style="color:#228b22"> * 第一次，如果沒有臨時用戶，自動創建一個臨時用戶
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/cart.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">cartListPage</span>(Model model) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    CartVo cartVo = cartService.<span style="color:#658b00">getCart</span>();
+    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;cart&#34;</span>, cartVo);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;cartList&#34;</span>;
+}
+</code></pre></div><ul>
+<li>CartServiceImpl.java
+<ul>
+<li>如果登入了，要把臨時車上的合併過來並清空臨時車</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 跳轉cartList頁面
+</span><span style="color:#228b22"> * 封裝購物車類【所有商品，所有商品的價格】
+</span><span style="color:#228b22"> * 【整合登入狀態與未登入狀態】
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> CartVo <span style="color:#008b45">getCart</span>() <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    CartVo cartVo = <span style="color:#8b008b;font-weight:bold">new</span> CartVo();
+    UserInfoTo userInfoTo = CartInterceptor.<span style="color:#658b00">toThreadLocal</span>.<span style="color:#658b00">get</span>();
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userInfoTo);
+    <span style="color:#8b008b;font-weight:bold">if</span> (userInfoTo.<span style="color:#658b00">getUserId</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">//  1）、登入後購物車的key
+</span><span style="color:#228b22"></span>        String cartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserId</span>();
+        <span style="color:#228b22">//  2）、臨時購物車的key
+</span><span style="color:#228b22"></span>        String temptCartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserKey</span>();
+        <span style="color:#228b22">// 如果臨時購物車的數據還未進行合併
+</span><span style="color:#228b22"></span>        List&lt;CartItemVo&gt; tempCartItems = getCartItems(temptCartKey);
+        <span style="color:#8b008b;font-weight:bold">if</span> (tempCartItems != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 臨時購物車有數據需要進行合併操作
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">for</span> (CartItemVo item : tempCartItems) {
+                addToCart(item.<span style="color:#658b00">getSkuId</span>(), item.<span style="color:#658b00">getCount</span>());
+            }
+            <span style="color:#228b22">// 清除臨時購物車的數據
+</span><span style="color:#228b22"></span>            clearCartInfo(temptCartKey);
+        }
+        <span style="color:#228b22">// 獲取登入後的購物車數據【包含合併過來的臨時購物車的數據和登入後購物車的數據】
+</span><span style="color:#228b22"></span>        List&lt;CartItemVo&gt; cartItems = getCartItems(cartKey);
+        cartVo.<span style="color:#658b00">setItems</span>(cartItems);
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 沒登入
+</span><span style="color:#228b22"></span>        String cartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserKey</span>();
+        <span style="color:#228b22">// 獲取臨時購物車裡面的所有購物項
+</span><span style="color:#228b22"></span>        List&lt;CartItemVo&gt; cartItems = getCartItems(cartKey);
+        cartVo.<span style="color:#658b00">setItems</span>(cartItems);
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> cartVo;
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 獲取購物車裡面的數據【根據key，包裝成List&lt;CartItemVo&gt;】，合併臨時車用
+</span><span style="color:#228b22"> * key=【mall:cart:2 或 mall:cart:lkajkashjghj2989dsj】
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param cartKey
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">private</span> List&lt;CartItemVo&gt; <span style="color:#008b45">getCartItems</span>(String cartKey) {
+    <span style="color:#228b22">// 獲取購物車裡面的所有商品
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, Object, Object&gt; operations = redisTemplate.<span style="color:#658b00">boundHashOps</span>(cartKey);
+    List&lt;Object&gt; values = operations.<span style="color:#658b00">values</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (values != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; values.<span style="color:#658b00">size</span>() &gt; 0) {
+        List&lt;CartItemVo&gt; cartItemVoStream = values.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((obj) -&gt; {
+            String str = (String) obj;
+            CartItemVo cartItem = JSON.<span style="color:#658b00">parseObject</span>(str, CartItemVo.<span style="color:#658b00">class</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span> cartItem;
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+        <span style="color:#8b008b;font-weight:bold">return</span> cartItemVoStream;
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+}
+</code></pre></div><h2 id="添加至車">添加至車</h2>
+<ul>
+<li>CartController.java
+<ul>
+<li>添加完用redirect跳轉，防止重複提交</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 添加商品到購物車
+</span><span style="color:#228b22"> * attributes.addFlashAttribute():將數據放在session中，可以在頁面中取出，但是只能取一次
+</span><span style="color:#228b22"> * attributes.addAttribute():將數據放在url後面
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/addCartItem&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">addCartItem</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId,
+                          <span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;num&#34;</span>) Integer num,
+                          RedirectAttributes attributes) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    cartService.<span style="color:#658b00">addToCart</span>(skuId, num);
+    attributes.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>, skuId);<span style="color:#228b22">// 給重定向請求用的【參數會拼接在下面請求之後】【轉發會在請求域中】
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://cart.mall.com/addToCartSuccessPage.html&#34;</span>;
+}
+
+<span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 跳轉到添加購物車成功頁面【防止重複提交】
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/addToCartSuccessPage.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">addToCartSuccessPage</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId,
+                                   Model model) {
+    <span style="color:#228b22">//重定向到成功頁面。再次查詢購物車數據即可
+</span><span style="color:#228b22"></span>    CartItemVo cartItemVo = cartService.<span style="color:#658b00">getCartItem</span>(skuId);
+    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;cartItem&#34;</span>, cartItemVo);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;success&#34;</span>;
+}
+
+</code></pre></div><ul>
+<li>CartServiceImpl.java
+<ul>
+<li>首先要在redis中開闢屬於某用戶的購物車物件，用<code>redisTemplate.boundHashOps()</code>方法，Key就是UserID，為了在redis中整理方便加上前綴<code>mall:cart:</code></li>
+<li>前面在攔截器中把userInfo存到toThreadLocal了，如果未登入則會創造臨時的，所以從裡面必定能取出一個userId</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 獲取到我們要操作的購物車
+</span><span style="color:#228b22"> * 簡化代碼：
+</span><span style="color:#228b22"> * 1、判斷是否登入，拼接key
+</span><span style="color:#228b22"> * 2、數據是hash類型，所以每次要調用兩次key【直接綁定外層key】
+</span><span style="color:#228b22"> * 第一層key：mall:cart:2
+</span><span style="color:#228b22"> * 第二層key：skuId
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">private</span> BoundHashOperations&lt;String, Object, Object&gt; <span style="color:#008b45">getCartOps</span>() {
+    <span style="color:#228b22">// 先得到當前用戶信息
+</span><span style="color:#228b22"></span>    UserInfoTo userInfoTo = CartInterceptor.<span style="color:#658b00">toThreadLocal</span>.<span style="color:#658b00">get</span>();
+    String cartKey = <span style="color:#cd5555">&#34;&#34;</span>;
+    <span style="color:#8b008b;font-weight:bold">if</span> (userInfoTo.<span style="color:#658b00">getUserId</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// mall:cart:UserID
+</span><span style="color:#228b22"></span>        cartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserId</span>();
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        cartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserKey</span>();
+    }
+    <span style="color:#228b22">// 綁定指定的key操作Redis
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, Object, Object&gt; operations = redisTemplate.<span style="color:#658b00">boundHashOps</span>(cartKey);
+    <span style="color:#8b008b;font-weight:bold">return</span> operations;
+}
+</code></pre></div><ul>
+<li>接著實作添加，先判斷商品項是否已經在車中
+<ul>
+<li>若無，就新增，需要遠程調用獲取skuInfo與skuAttrValues，這邊複製一份使用之前設定好的線程池config來用，異步獲取資訊後一樣用allOf與get等待全部任務完成，轉JSON後存到redis</li>
+<li>若已經存在，只需要修改數量</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 添加商品到購物車
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param skuId
+</span><span style="color:#228b22"> * @param num
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> CartItemVo <span style="color:#008b45">addToCart</span>(Long skuId, Integer num) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    <span style="color:#228b22">// 拿到要操作的購物車信息【cartOps就相當於綁定了當前用戶購物車數據的hash】
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, Object, Object&gt; cartOps = getCartOps();
+    <span style="color:#228b22">// 判斷Redis是否有該商品的信息
+</span><span style="color:#228b22"></span>    String productRedisValue = (String) cartOps.<span style="color:#658b00">get</span>(skuId.<span style="color:#658b00">toString</span>());
+    <span style="color:#228b22">// 如果沒有就添加數據【遠程查詢skuId】
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isEmpty</span>(productRedisValue)) {
+        <span style="color:#228b22">// 添加新的商品到購物車(redis)
+</span><span style="color:#228b22"></span>        CartItemVo cartItem = <span style="color:#8b008b;font-weight:bold">new</span> CartItemVo();
+        <span style="color:#228b22">// 開啟第一個異步任務
+</span><span style="color:#228b22"></span>        CompletableFuture&lt;Void&gt; getSkuInfoFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+            <span style="color:#228b22">// 遠程查詢當前要添加商品的信息
+</span><span style="color:#228b22"></span>            R productSkuInfo = productFeignService.<span style="color:#658b00">getInfo</span>(skuId);
+            SkuInfoVo skuInfo = productSkuInfo.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;skuInfo&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SkuInfoVo&gt;() {
+            });
+            <span style="color:#228b22">// 數據賦值操作
+</span><span style="color:#228b22"></span>            cartItem.<span style="color:#658b00">setSkuId</span>(skuInfo.<span style="color:#658b00">getSkuId</span>());
+            cartItem.<span style="color:#658b00">setTitle</span>(skuInfo.<span style="color:#658b00">getSkuTitle</span>());
+            cartItem.<span style="color:#658b00">setImage</span>(skuInfo.<span style="color:#658b00">getSkuDefaultImg</span>());
+            cartItem.<span style="color:#658b00">setPrice</span>(skuInfo.<span style="color:#658b00">getPrice</span>());
+            cartItem.<span style="color:#658b00">setCount</span>(num);
+            cartItem.<span style="color:#658b00">setCheck</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        }, executor);
+
+        <span style="color:#228b22">// 開啟第二個異步任務
+</span><span style="color:#228b22"></span>        CompletableFuture&lt;Void&gt; getSkuAttrValuesFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+            <span style="color:#228b22">// 遠程查詢skuAttrValues組合信息
+</span><span style="color:#228b22"></span>            List&lt;String&gt; skuSaleAttrValues = productFeignService.<span style="color:#658b00">getSkuSaleAttrValues</span>(skuId);
+            cartItem.<span style="color:#658b00">setSkuAttrValues</span>(skuSaleAttrValues);
+        }, executor);
+        <span style="color:#228b22">// 等待所有的異步任務全部完成
+</span><span style="color:#228b22"></span>        CompletableFuture.<span style="color:#658b00">allOf</span>(getSkuInfoFuture, getSkuAttrValuesFuture).<span style="color:#658b00">get</span>();
+        <span style="color:#228b22">// 序列化並存到redis
+</span><span style="color:#228b22"></span>        String cartItemJson = JSON.<span style="color:#658b00">toJSONString</span>(cartItem);
+        cartOps.<span style="color:#658b00">put</span>(skuId.<span style="color:#658b00">toString</span>(), cartItemJson);
+        <span style="color:#8b008b;font-weight:bold">return</span> cartItem;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 購物車中已有此商品，修改數量即可
+</span><span style="color:#228b22"></span>        CartItemVo cartItemVo = JSON.<span style="color:#658b00">parseObject</span>(productRedisValue, CartItemVo.<span style="color:#658b00">class</span>);
+        cartItemVo.<span style="color:#658b00">setCount</span>(cartItemVo.<span style="color:#658b00">getCount</span>() + num);
+        <span style="color:#228b22">// 修改redis的數據
+</span><span style="color:#228b22"></span>        String cartItemJson = JSON.<span style="color:#658b00">toJSONString</span>(cartItemVo);
+        cartOps.<span style="color:#658b00">put</span>(skuId.<span style="color:#658b00">toString</span>(), cartItemJson);
+        <span style="color:#8b008b;font-weight:bold">return</span> cartItemVo;
+    }
+}
+</code></pre></div><h3 id="sql-concat的用法">SQL CONCAT的用法</h3>
+<ul>
+<li>在第二個遠程調用skuSaleAttrValues，想要返回 <code>機身：黑色</code>這樣的資料格式，用<code>CONCAT(A, &quot;：&quot;, B)</code></li>
+</ul>
+<pre tabindex="0"><code>&lt;select id=&quot;getSkuSaleAttrValuesAsStringList&quot; resultType=&quot;java.lang.String&quot;&gt;
+    SELECT CONCAT(attr_name, &quot;：&quot;, attr_value)
+    FROM pms_sku_sale_attr_value
+    WHERE sku_id = #{skuId}
+&lt;/select&gt;
+</code></pre><h3 id="引導至添加成功頁面">引導至添加成功頁面</h3>
+<ul>
+<li>雖然我覺得這個功能怪怪的，誰添加成功還專門跑去看那一個品項，不應該是加了就顯示一個收過去車子的小動畫，讓用戶繼續逛同類項目嗎?</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 重定向頁面獲取當前購物車中sku商品信息
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param skuId
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> CartItemVo <span style="color:#008b45">getCartItem</span>(Long skuId) {
+    <span style="color:#228b22">//拿到要操作的購物車信息
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, Object, Object&gt; cartOps = getCartOps();
+    String redisValue = (String) cartOps.<span style="color:#658b00">get</span>(skuId.<span style="color:#658b00">toString</span>());
+    CartItemVo cartItemVo = JSON.<span style="color:#658b00">parseObject</span>(redisValue, CartItemVo.<span style="color:#658b00">class</span>);
+    <span style="color:#8b008b;font-weight:bold">return</span> cartItemVo;
+}
+</code></pre></div><h2 id="刪改">刪、改</h2>
+<ul>
+<li>沒什麼特殊的，就不多貼</li>
+<li>比較特別的是&quot;選中&quot;這個功能，也做成了一個欄位跟修改的方法去保存到redis，即使關掉重開上次選中那些都會保留</li>
+<li>可是他每次更改選/不選中都發一次請求給後端然後redirect，感覺好囧，應該用ajax，這個真的太扯了</li>
+<li>立意良好，但感覺有點多餘了，應該給前端做就好，也沒人care關掉下次再進到購物車選中的狀態是否跟上次一樣吧</li>
+<li>下單的時候也是要根據選中那些去計算價格與生成訂單</li>
+</ul>
+<h2 id="下單前計算價格">下單前計算價格</h2>
+<ul>
+<li>這個倒是能理解，下訂單之前，以前添加到車裡的項目，價格說不定有變動，不過只查價格是不是又不夠周全，如果商品下架了呢?
+<ul>
+<li>還是說他在訂單模組才會確認這點，不管了就先這樣吧</li>
+</ul>
+</li>
+<li>CartServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 遠程調用：訂單服務調用【更新最新價格】
+</span><span style="color:#228b22"> * 獲取當前用戶購物車所有選中的商品項check=true【從redis中取】
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> List&lt;CartItemVo&gt; <span style="color:#008b45">getUserCartItems</span>() {
+    List&lt;CartItemVo&gt; cartItemVoList = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#228b22">//獲取當前用戶登入的信息
+</span><span style="color:#228b22"></span>    UserInfoTo userInfoTo = CartInterceptor.<span style="color:#658b00">toThreadLocal</span>.<span style="color:#658b00">get</span>();
+    <span style="color:#228b22">//如果用戶未登入直接返回null
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (userInfoTo.<span style="color:#658b00">getUserId</span>() == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">//獲取購物車項
+</span><span style="color:#228b22"></span>        String cartKey = CartConstant.<span style="color:#658b00">CART_PREFIX</span> + userInfoTo.<span style="color:#658b00">getUserId</span>();
+        <span style="color:#228b22">//獲取所有的
+</span><span style="color:#228b22"></span>        List&lt;CartItemVo&gt; cartItems = getCartItems(cartKey);
+        <span style="color:#8b008b;font-weight:bold">if</span> (cartItems == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> CartExceptionHandler();
+        }
+        <span style="color:#228b22">//篩選出選中的
+</span><span style="color:#228b22"></span>        cartItemVoList = cartItems.<span style="color:#658b00">stream</span>()
+                .<span style="color:#658b00">filter</span>(items -&gt; items.<span style="color:#658b00">getCheck</span>())
+                .<span style="color:#658b00">map</span>(item -&gt; {
+                    <span style="color:#228b22">//更新為最新的價格（查詢數據庫）
+</span><span style="color:#228b22"></span>                    <span style="color:#228b22">// redis中的價格不是最新的
+</span><span style="color:#228b22"></span>                    BigDecimal price = productFeignService.<span style="color:#658b00">getPrice</span>(item.<span style="color:#658b00">getSkuId</span>());
+                    item.<span style="color:#658b00">setPrice</span>(price);
+                    <span style="color:#8b008b;font-weight:bold">return</span> item;
+                })
+                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> cartItemVoList;
+}
+</code></pre></div><h1 id="小結">小結</h1>
+<h3 id="攔截器-1">攔截器</h3>
+<ul>
+<li>可以用來修飾request</li>
+<li>到WebMvcConfigurer註冊，重寫preHandle或postHandle方法</li>
+<li>用ThreadLocal作為同一線程的置物櫃
+<ul>
+<li>這玩意我記得用完要清，但是找不到好地方清，只能期待他的弱引用過自己清理吧</li>
+</ul>
+</li>
+</ul>
+<h2 id="在redis添加hash">在redis添加hash</h2>
+<pre tabindex="0"><code>redisTemplate.boundHashOps(key)
+</code></pre><h2 id="異步任務">異步任務</h2>
+<h3 id="先自訂線程池">先自訂線程池</h3>
+<ul>
+<li>application.properties</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 線程池相關
+mall.thread.core-size=20
+mall.thread.max-size=200
+mall.thread.keep-alive-time=10
+</code></pre><ul>
+<li>ThreadPoolConfigProperties.java
+<ul>
+<li>這是造了一個類，應該也可以用<code>@values</code></li>
+<li>後來才懂原來那些框架底層就是這樣寫的封裝好了，所以在properties寫參數就能完成配置</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@ConfigurationProperties</span>(prefix = <span style="color:#cd5555">&#34;mall.thread&#34;</span>)
+<span style="color:#707a7c">@Component</span>
+<span style="color:#707a7c">@Data</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThreadPoolConfigProperties</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer coreSize;
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer maxSize;
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer keepAliveTime;
+}
+</code></pre></div><ul>
+<li>CustomThreadConfig.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CustomThreadConfig</span> {
+
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> ThreadPoolExecutor <span style="color:#008b45">threadPoolExecutor</span>(ThreadPoolConfigProperties properties) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor(
+                properties.<span style="color:#658b00">getCoreSize</span>(),
+                properties.<span style="color:#658b00">getMaxSize</span>(),
+                properties.<span style="color:#658b00">getKeepAliveTime</span>(),
+                TimeUnit.<span style="color:#658b00">SECONDS</span>,
+                <span style="color:#8b008b;font-weight:bold">new</span> LinkedBlockingDeque&lt;&gt;(10000),
+                Executors.<span style="color:#658b00">defaultThreadFactory</span>(),
+                <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor.<span style="color:#658b00">AbortPolicy</span>()
+        );
+    }
+}
+</code></pre></div><h3 id="使用">使用</h3>
+<ul>
+<li>注入 ThreadPoolExecutor</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
+<span style="color:#8b008b;font-weight:bold">private</span> ThreadPoolExecutor executor;
+</code></pre></div><ul>
+<li>編排CompletableFuture
+<ul>
+<li>記得傳入自定義的executor，否則會造預設的線程池
+<ul>
+<li>用同一個鍋煮菜，而非一直用新鍋</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">CompletableFuture&lt;Void&gt; xxxFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+<span style="color:#228b22">// 任務
+</span><span style="color:#228b22"></span>}, executor);
+</code></pre></div><ul>
+<li>阻塞等待收集結果</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">CompletableFuture.<span style="color:#658b00">allOf</span>(xxxFuture, oooFuture...).<span style="color:#658b00">get</span>();
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-03</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/">
+			下一篇<br>RabbitMQ與訊息確認
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220203-leetcode-easy-26-28/">
+			上一篇<br>LeetCode Easy: 26-28
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

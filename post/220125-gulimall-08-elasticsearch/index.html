@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>ElasticSearch與Spring整合</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-08">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="ElasticSearch與Spring整合" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-08" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-25T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ElasticSearch與Spring整合"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-08"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#elasticsearch" onclick="onNavClick(`#elasticsearch-nav`)" id="elasticsearch-nav">
+									ElasticSearch
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9d" onclick="onNavClick(`#安裝-nav`)" id="安裝-nav">
+									安裝
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bb%ba%e7%ab%8b%e4%b8%80%e5%80%8bdocument" onclick="onNavClick(`#建立一個document-nav`)" id="建立一個document-nav">
+									建立一個Document
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#put%e8%88%87post%e6%9b%b4%e6%96%b0" onclick="onNavClick(`#put與post更新-nav`)" id="put與post更新-nav">
+									PUT與POST更新
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa" onclick="onNavClick(`#刪-nav`)" id="刪-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bulk%e6%89%b9%e6%ac%a1%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#bulk批次操作-nav`)" id="bulk批次操作-nav">
+									bulk批次操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#kibana" onclick="onNavClick(`#kibana-nav`)" id="kibana-nav">
+									kibana
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#search-api" onclick="onNavClick(`#search-api-nav`)" id="search-api-nav">
+									Search Api
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85-sql%e6%96%b9%e5%bc%8f%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#補充-sql方式查詢-nav`)" id="補充-sql方式查詢-nav">
+									補充: SQL方式查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#query-dsl" onclick="onNavClick(`#query-dsl-nav`)" id="query-dsl-nav">
+									Query DSL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#匹配查詢-nav`)" id="匹配查詢-nav">
+									匹配查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#match-%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#match-匹配-nav`)" id="match-匹配-nav">
+									match 匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#match_phrase-%e7%9f%ad%e5%8f%a5%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#match_phrase-短句匹配-nav`)" id="match_phrase-短句匹配-nav">
+									match_phrase 短句匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#multi_match-%e5%a4%9a%e5%ad%97%e6%ae%b5%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#multi_match-多字段匹配-nav`)" id="multi_match-多字段匹配-nav">
+									multi_match 多字段匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#term-%e7%b2%be%e7%a2%ba%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#term-精確匹配-nav`)" id="term-精確匹配-nav">
+									term 精確匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e5%90%88%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#複合查詢-nav`)" id="複合查詢-nav">
+									複合查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#bool-%e6%a2%9d%e4%bb%b6%e5%88%a4%e6%96%b7" onclick="onNavClick(`#bool-條件判斷-nav`)" id="bool-條件判斷-nav">
+									bool 條件判斷
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter-%e7%b5%90%e6%9e%9c%e9%81%8e%e6%bf%be" onclick="onNavClick(`#filter-結果過濾-nav`)" id="filter-結果過濾-nav">
+									filter 結果過濾
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#aggregation-%e5%9f%b7%e8%a1%8c%e8%81%9a%e5%90%88" onclick="onNavClick(`#aggregation-執行聚合-nav`)" id="aggregation-執行聚合-nav">
+									aggregation 執行聚合
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e8%81%9a%e5%90%88" onclick="onNavClick(`#子聚合-nav`)" id="子聚合-nav">
+									子聚合
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mapping" onclick="onNavClick(`#mapping-nav`)" id="mapping-nav">
+									Mapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e5%ae%9amapping" onclick="onNavClick(`#指定mapping-nav`)" id="指定mapping-nav">
+									指定mapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e8%a9%9e" onclick="onNavClick(`#分詞-nav`)" id="分詞-nav">
+									分詞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9dik%e5%88%86%e8%a9%9e%e5%99%a8" onclick="onNavClick(`#安裝ik分詞器-nav`)" id="安裝ik分詞器-nav">
+									安裝ik分詞器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e8%a9%9e%e5%ba%ab" onclick="onNavClick(`#自定義詞庫-nav`)" id="自定義詞庫-nav">
+									自定義詞庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b4%e5%90%88spring" onclick="onNavClick(`#整合spring-nav`)" id="整合spring-nav">
+									整合Spring
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6%e9%80%a3%e7%b7%9a" onclick="onNavClick(`#測試連線-nav`)" id="測試連線-nav">
+									測試連線
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%a2%e7%b4%a2%e7%af%84%e4%be%8b" onclick="onNavClick(`#檢索範例-nav`)" id="檢索範例-nav">
+									檢索範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#elasticsearch" onclick="onNavClick(`#elasticsearch-nav`)" id="elasticsearch-nav">
+									ElasticSearch
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9d" onclick="onNavClick(`#安裝-nav`)" id="安裝-nav">
+									安裝
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bb%ba%e7%ab%8b%e4%b8%80%e5%80%8bdocument" onclick="onNavClick(`#建立一個document-nav`)" id="建立一個document-nav">
+									建立一個Document
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#put%e8%88%87post%e6%9b%b4%e6%96%b0" onclick="onNavClick(`#put與post更新-nav`)" id="put與post更新-nav">
+									PUT與POST更新
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa" onclick="onNavClick(`#刪-nav`)" id="刪-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bulk%e6%89%b9%e6%ac%a1%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#bulk批次操作-nav`)" id="bulk批次操作-nav">
+									bulk批次操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#kibana" onclick="onNavClick(`#kibana-nav`)" id="kibana-nav">
+									kibana
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#search-api" onclick="onNavClick(`#search-api-nav`)" id="search-api-nav">
+									Search Api
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85-sql%e6%96%b9%e5%bc%8f%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#補充-sql方式查詢-nav`)" id="補充-sql方式查詢-nav">
+									補充: SQL方式查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#query-dsl" onclick="onNavClick(`#query-dsl-nav`)" id="query-dsl-nav">
+									Query DSL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#匹配查詢-nav`)" id="匹配查詢-nav">
+									匹配查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#match-%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#match-匹配-nav`)" id="match-匹配-nav">
+									match 匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#match_phrase-%e7%9f%ad%e5%8f%a5%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#match_phrase-短句匹配-nav`)" id="match_phrase-短句匹配-nav">
+									match_phrase 短句匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#multi_match-%e5%a4%9a%e5%ad%97%e6%ae%b5%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#multi_match-多字段匹配-nav`)" id="multi_match-多字段匹配-nav">
+									multi_match 多字段匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#term-%e7%b2%be%e7%a2%ba%e5%8c%b9%e9%85%8d" onclick="onNavClick(`#term-精確匹配-nav`)" id="term-精確匹配-nav">
+									term 精確匹配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e5%90%88%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#複合查詢-nav`)" id="複合查詢-nav">
+									複合查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#bool-%e6%a2%9d%e4%bb%b6%e5%88%a4%e6%96%b7" onclick="onNavClick(`#bool-條件判斷-nav`)" id="bool-條件判斷-nav">
+									bool 條件判斷
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter-%e7%b5%90%e6%9e%9c%e9%81%8e%e6%bf%be" onclick="onNavClick(`#filter-結果過濾-nav`)" id="filter-結果過濾-nav">
+									filter 結果過濾
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#aggregation-%e5%9f%b7%e8%a1%8c%e8%81%9a%e5%90%88" onclick="onNavClick(`#aggregation-執行聚合-nav`)" id="aggregation-執行聚合-nav">
+									aggregation 執行聚合
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e8%81%9a%e5%90%88" onclick="onNavClick(`#子聚合-nav`)" id="子聚合-nav">
+									子聚合
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mapping" onclick="onNavClick(`#mapping-nav`)" id="mapping-nav">
+									Mapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e5%ae%9amapping" onclick="onNavClick(`#指定mapping-nav`)" id="指定mapping-nav">
+									指定mapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e8%a9%9e" onclick="onNavClick(`#分詞-nav`)" id="分詞-nav">
+									分詞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9dik%e5%88%86%e8%a9%9e%e5%99%a8" onclick="onNavClick(`#安裝ik分詞器-nav`)" id="安裝ik分詞器-nav">
+									安裝ik分詞器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e8%a9%9e%e5%ba%ab" onclick="onNavClick(`#自定義詞庫-nav`)" id="自定義詞庫-nav">
+									自定義詞庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b4%e5%90%88spring" onclick="onNavClick(`#整合spring-nav`)" id="整合spring-nav">
+									整合Spring
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6%e9%80%a3%e7%b7%9a" onclick="onNavClick(`#測試連線-nav`)" id="測試連線-nav">
+									測試連線
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%a2%e7%b4%a2%e7%af%84%e4%be%8b" onclick="onNavClick(`#檢索範例-nav`)" id="檢索範例-nav">
+									檢索範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/elasticsearch.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    ElasticSearch與Spring整合
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-08
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-25 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/elasticsearch">elasticsearch</a>
+                                &nbsp;
+                            
+                                <a href="/tags/docker">docker</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="elasticsearch">ElasticSearch</h1>
+<blockquote>
+<p>用來執行站內搜索(如商品查詢)的引擎</p>
+</blockquote>
+<ul>
+<li>開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作</li>
+<li>核心觀念: Inverted Index (反向索引)</li>
+<li>是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取</li>
+<li>名詞對應:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>RDBMS</strong></th>
+<th>概念</th>
+<th><strong>Elasticsearch</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>表</td>
+<td>Index</td>
+</tr>
+<tr>
+<td>Row</td>
+<td>一筆資料(例如:張三)</td>
+<td>Document</td>
+</tr>
+<tr>
+<td>Column</td>
+<td>屬性(例如:姓名)</td>
+<td>Field</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>架構(例如:資料類型、允許為空等等)</td>
+<td>Mapping</td>
+</tr>
+<tr>
+<td>SQL</td>
+<td>操作語句</td>
+<td>DSL</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用</li>
+<li>個人直接把它看作表了，畢竟是概念，不用分太細</li>
+</ul>
+<h2 id="安裝">安裝</h2>
+<blockquote>
+<p>使用docker</p>
+</blockquote>
+<ul>
+<li>教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作</li>
+</ul>
+<pre tabindex="0"><code>mkdir -p /mydata/elasticsearch/config
+mkdir -p /mydata/elasticsearch/data
+echo &quot;http.host: 0.0.0.0&quot; &gt;/mydata/elasticsearch/config/elasticsearch.yml
+chmod -R 777 /mydata/elasticsearch/
+</code></pre><ul>
+<li>二合一鏡像: <a href="https://hub.docker.com/r/nshou/elasticsearch-kibana">https://hub.docker.com/r/nshou/elasticsearch-kibana</a>
+<ul>
+<li>目前2022年1月是7.16.2板</li>
+<li>我直接用docker desktop，就沒掛載那麼多</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>docker pull nshou/elasticsearch-kibana
+
+docker run --name elasticsearch -p 5601:5601 -p 9200:9200 -e  &quot;discovery.type=single-node&quot; -e ES_JAVA_OPTS=&quot;-Xms64m -Xmx512m&quot; -d nshou/elasticsearch-kibana
+</code></pre><ul>
+<li><code>--name</code> 取名</li>
+<li><code>-e &quot;discovery.type=single-node&quot;</code>  單節點模式</li>
+<li><code>-e ES_JAVA_OPTS=&quot;-Xms64m -Xmx512m&quot;</code> 限制記憶體，不限會占用超多</li>
+<li><code>-p</code> 連接阜
+<ul>
+<li>Elasticsearch @ localhost:9200</li>
+<li>Kibana @ localhost:5601</li>
+</ul>
+</li>
+<li><code>-d</code> 後台運行並返回id</li>
+</ul>
+<h3 id="測試">測試</h3>
+<ul>
+<li>嘗試看看Kibana介面，訪問: localhost:5601</li>
+<li>查看主服務健康: http://localhost:9200/_cat/health</li>
+</ul>
+<h2 id="使用">使用</h2>
+<ul>
+<li>查看索引: http://localhost:9200/_cat/indices
+<ul>
+<li>相當於show databases或tables</li>
+</ul>
+</li>
+</ul>
+<h3 id="建立一個document">建立一個Document</h3>
+<ul>
+<li>使用PUT請求 http://localhost:9200/customer/external/1
+<ul>
+<li>並且帶有body資訊</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220118235447277.png" alt="image-20220118235447277"></p>
+<ul>
+<li>
+<p>返回的是metadata，後設資料，這些<code>_</code>開頭的就是資料的資料</p>
+<ul>
+<li><code>_index</code>：document 所屬的 index 名稱，相當於&quot;表&quot;</li>
+<li><code>_type</code>：document 類型 ，通常為<code>_doc</code></li>
+<li><code>_id</code>：document ID，主鍵</li>
+<li><code>_source</code>：document 的原始 JSON 資料樣貌</li>
+<li><code>_version</code>：版本訊息 (有這欄位就表示 ES 具有版本控管的能力)</li>
+<li><code>_score</code>：查詢時的算分結果 (每次的搜尋都會根據 document 對於搜尋內容的相關度進行算分)</li>
+</ul>
+</li>
+<li>
+<p><code>index</code> 在 ES 中是個邏輯空間的概念，用來儲存 document 的容器，而這些 document 內容都是相似的 (跟其他領域的 index 用法不太一樣)</p>
+</li>
+<li>
+<p><code>shard</code> 在 ES 中則是個物理空間的的概念，index 中的資料會分散放在不同的 shard 中</p>
+</li>
+</ul>
+<h3 id="put與post更新">PUT與POST更新</h3>
+<ul>
+<li>PUT必須指定ID，如果存在則更新(覆蓋更新)
+<ul>
+<li>與REST規則相符，PUT是冪等，即多次操作結果返回相同(每次都會整個刷新的意思)</li>
+</ul>
+</li>
+<li>POST不必指定ID，如果不存在就建立，已存在就更新
+<ul>
+<li>但是如果資料都沒變動，就不更新，且會返回&quot;noop&quot;</li>
+</ul>
+</li>
+</ul>
+<h3 id="查詢">查詢</h3>
+<ul>
+<li>
+<p>使用GET請求 http://localhost:9200/customer/external/1</p>
+<ul>
+<li>並且不能有body</li>
+</ul>
+</li>
+<li>
+<p>返回</p>
+</li>
+</ul>
+<pre tabindex="0"><code>    &quot;_version&quot;: 1,
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1,
+</code></pre><p><code>_seq_no</code> 每次更新都會+1，用來做樂觀鎖</p>
+<p><code>_primary_term</code> 當主分片重新分配，如重啟就會變化</p>
+<h3 id="刪">刪</h3>
+<ul>
+<li>就DELETE，可以指定ID，或整個index全刪</li>
+<li>沒辦法刪除type</li>
+</ul>
+<h3 id="bulk批次操作">bulk批次操作</h3>
+<ul>
+<li>每條語法獨立，其中有誰失敗不影響其他人</li>
+<li>範例:</li>
+</ul>
+<pre tabindex="0"><code>POST customer/external/_bulk
+{&quot;index&quot;:{&quot;_id&quot;:&quot;1&quot;}}
+{&quot;name&quot;:&quot;John Doe&quot;}
+{&quot;index&quot;:{&quot;_id&quot;:&quot;2&quot;}}
+{&quot;name&quot;:&quot;John Doe&quot;}
+</code></pre><h2 id="kibana">kibana</h2>
+<blockquote>
+<p>舒服的可視化操作介面</p>
+</blockquote>
+<ul>
+<li>
+<p>連線到: localhost:5601</p>
+</li>
+<li>
+<p>導入測試數據:</p>
+</li>
+<li>
+<p><a href="https://github.com/elastic/elasticsearch/blob/v7.4.2/docs/src/test/resources/accounts.json">https://github.com/elastic/elasticsearch/blob/v7.4.2/docs/src/test/resources/accounts.json</a></p>
+</li>
+</ul>
+<pre tabindex="0"><code>POST bank/account/_bulk
+(去github複製貼到這)
+</code></pre><p><img src="image-20220119003426307.png" alt="image-20220119003426307"></p>
+<h2 id="search-api">Search Api</h2>
+<blockquote>
+<p>兩種基本檢索方式</p>
+</blockquote>
+<ul>
+<li>通過REST request uri 發送搜索參數 （uri +檢索參數）</li>
+</ul>
+<pre tabindex="0"><code>GET bank/_search?q=*&amp;sort=account_number:asc
+</code></pre><ul>
+<li>通過REST request body 來發送它們（uri+請求體）
+<ul>
+<li>只能用在dev tool，一般HTTP不給你發GET帶body的</li>
+<li>在kibana dev_tools用ctrl + enter做為執行的快捷鍵</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">/bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: { <span style="color:#8b008b;font-weight:bold">&#34;match_all&#34;</span>: {} },
+  <span style="color:#8b008b;font-weight:bold">&#34;sort&#34;</span>: [
+    { <span style="color:#8b008b;font-weight:bold">&#34;account_number&#34;</span>: <span style="color:#cd5555">&#34;asc&#34;</span> },
+    {<span style="color:#8b008b;font-weight:bold">&#34;balance&#34;</span>:<span style="color:#cd5555">&#34;desc&#34;</span>}
+  ]
+}
+</code></pre></div><ul>
+<li>
+<p>返回的值</p>
+<ul>
+<li><code>hits</code> 結果數量</li>
+<li><code>_score</code> 得分(字串比對的得分)</li>
+</ul>
+</li>
+</ul>
+<h3 id="補充-sql方式查詢">補充: SQL方式查詢</h3>
+<ul>
+<li>我後來才知道ES 6.3以後原生支持用SQL方式來查，例如:</li>
+</ul>
+<pre tabindex="0"><code>POST /_sql?format=txt
+{
+  &quot;query&quot;: &quot;SELECT account_number,address,age,balance FROM account LIMIT 10&quot;
+}
+
+</code></pre><ul>
+<li>對於一般使用來說完全足夠了，有需要深度使用再學DSL吧</li>
+<li>參考 : <a href="http://www.macrozheng.com/#/reference/elasticsearch_sql_start">http://www.macrozheng.com/#/reference/elasticsearch_sql_start</a></li>
+</ul>
+<h2 id="query-dsl">Query DSL</h2>
+<ul>
+<li>Elasticsearch提供了一個可以執行查詢的Json風格的DSL。這個被稱為Query DSL，該查詢語言非常全面。例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">QUERY_NAME:</span>{
+   <span style="color:#a61717;background-color:#e3d2d2">ARGUMENT:VALUE,</span>
+   <span style="color:#a61717;background-color:#e3d2d2">ARGUMENT:VALUE,...</span>
+}
+
+{
+  <span style="color:#a61717;background-color:#e3d2d2">QUERY_NAME:{</span>
+     <span style="color:#a61717;background-color:#e3d2d2">FIELD_NAME:{</span>
+       <span style="color:#a61717;background-color:#e3d2d2">ARGUMENT:VALUE,</span>
+       <span style="color:#a61717;background-color:#e3d2d2">ARGUMENT:VALUE,...</span>
+      }
+   <span style="color:#a61717;background-color:#e3d2d2">}</span>
+<span style="color:#a61717;background-color:#e3d2d2">}</span>
+
+<span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match_all&#34;</span>: {}
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;from&#34;</span>: <span style="color:#b452cd">0</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">5</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;sort&#34;</span>: [
+    {
+      <span style="color:#8b008b;font-weight:bold">&#34;account_number&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;order&#34;</span>: <span style="color:#cd5555">&#34;desc&#34;</span>
+      }
+    }
+  ]
+}
+
+
+<span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match_all&#34;</span>: {}
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;from&#34;</span>: <span style="color:#b452cd">0</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">5</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;sort&#34;</span>: [
+    {
+      <span style="color:#8b008b;font-weight:bold">&#34;account_number&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;order&#34;</span>: <span style="color:#cd5555">&#34;desc&#34;</span>
+      }
+    }
+  ],
+  <span style="color:#8b008b;font-weight:bold">&#34;_source&#34;</span>: [<span style="color:#cd5555">&#34;balance&#34;</span>,<span style="color:#cd5555">&#34;firstname&#34;</span>]
+
+}
+</code></pre></div><ul>
+<li><code>match_all</code> 代表查詢所有，es中可以在<code>query</code>中組合非常多的查詢類型完成複雜查詢</li>
+<li><code>from</code> + <code>size</code> 限定返回數量，完成分頁功能</li>
+<li><code>sort</code> 排序，可以多重排序(前一個順位相等時)</li>
+<li><code>_source</code> 只想返回某些屬性</li>
+</ul>
+<h3 id="匹配查詢">匹配查詢</h3>
+<h4 id="match-匹配">match 匹配</h4>
+<ul>
+<li>例如匹配某值等於多少</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;account_number&#34;</span>: <span style="color:#cd5555">&#34;20&#34;</span>
+    }
+  }
+}
+</code></pre></div><ul>
+<li>也可以模糊匹配，會進行分詞匹配並依照得分排序返回
+<ul>
+<li>會用Aviation查、用Road查，然後最接近Aviation Road的會排在前面</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;address&#34;</span>: <span style="color:#cd5555">&#34;Aviation Road&#34;</span>
+    }
+  }
+}
+</code></pre></div><h4 id="match_phrase-短句匹配">match_phrase 短句匹配</h4>
+<ul>
+<li>不能拆分，一定要包含完整的<code>Aviation Road</code>
+<ul>
+<li>但是可以更長，例如返回的結果是 <code>2123 Aviation Road xxx</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match_phrase&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;address&#34;</span>: <span style="color:#cd5555">&#34;Aviation Road&#34;</span>
+    }
+  }
+}
+</code></pre></div><h4 id="multi_match-多字段匹配">multi_match 多字段匹配</h4>
+<ul>
+<li>address或city中包含&quot;mill&quot;的
+<ul>
+<li>也能多查詢字，例如&quot;mill road&quot;就會跟前面模糊匹配一樣分詞</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;multi_match&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: <span style="color:#cd5555">&#34;mill &#34;</span>,
+      <span style="color:#8b008b;font-weight:bold">&#34;fields&#34;</span>: [<span style="color:#cd5555">&#34;address&#34;</span>,<span style="color:#cd5555">&#34;city&#34;</span>]
+    }
+  }
+}
+
+</code></pre></div><h4 id="term-精確匹配">term 精確匹配</h4>
+<ul>
+<li>
+<p>類似match匹配某個屬性，但是term<strong>不分詞</strong>且須完全符合</p>
+<ul>
+<li>例如用term找&quot;Aviation Road&quot;，就只會找address完全一致的那個&quot;Aviation Road&quot;，太長太短有沒有空格通通out</li>
+</ul>
+</li>
+<li>
+<p>總之文字檢索用match，其他非文字匹配用term</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;term&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;address&#34;</span>: <span style="color:#cd5555">&#34;Aviation Road&#34;</span>
+    }
+  }
+}
+</code></pre></div><h3 id="複合查詢">複合查詢</h3>
+<blockquote>
+<p>可以組合嵌套使用，讓查詢條件千變萬化</p>
+</blockquote>
+<h4 id="bool-條件判斷">bool 條件判斷</h4>
+<ul>
+<li>
+<p><code>must</code> 必須達到must所列舉的所有條件</p>
+<ul>
+<li>就是and</li>
+</ul>
+</li>
+<li>
+<p><code>must_not</code> 必須不匹配<code>must_not</code>所列舉的所有條件</p>
+<ul>
+<li>就是not</li>
+</ul>
+</li>
+<li>
+<p><code>should</code> 應該滿足should所列舉的條件</p>
+<ul>
+<li>就是加分項，有更好，沒有也行</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+   <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>:{
+        <span style="color:#8b008b;font-weight:bold">&#34;bool&#34;</span>:{
+             <span style="color:#8b008b;font-weight:bold">&#34;must&#34;</span>:[
+              {<span style="color:#8b008b;font-weight:bold">&#34;match&#34;</span>:{<span style="color:#8b008b;font-weight:bold">&#34;address&#34;</span>:<span style="color:#cd5555">&#34;mill&#34;</span>}},
+              {<span style="color:#8b008b;font-weight:bold">&#34;match&#34;</span>:{<span style="color:#8b008b;font-weight:bold">&#34;gender&#34;</span>:<span style="color:#cd5555">&#34;M&#34;</span>}}
+             ]
+         }
+    }
+}
+</code></pre></div><ul>
+<li>在boolean查詢中，<code>must</code>, <code>should</code> 和<code>must_not</code> 元素都被稱為查詢子句</li>
+<li>文檔是否符合每個子句中的標準，決定了文檔的&quot;<strong>相關性得分</strong>&quot;</li>
+</ul>
+<h4 id="filter-結果過濾">filter 結果過濾</h4>
+<ul>
+<li>不會計算相關性得分，純過濾
+<ul>
+<li>用在不想對評分排序有影響的場合，類似between之類</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;bool&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;must&#34;</span>: [
+        {
+          <span style="color:#8b008b;font-weight:bold">&#34;match&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;address&#34;</span>: <span style="color:#cd5555">&#34;mill&#34;</span>
+          }
+        }
+      ],
+      <span style="color:#8b008b;font-weight:bold">&#34;filter&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;range&#34;</span>: {
+          <span style="color:#8b008b;font-weight:bold">&#34;balance&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;gte&#34;</span>: <span style="color:#cd5555">&#34;10000&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;lte&#34;</span>: <span style="color:#cd5555">&#34;20000&#34;</span>
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre></div><h3 id="aggregation-執行聚合">aggregation 執行聚合</h3>
+<ul>
+<li>類似GROUP BY的概念，可以將查詢的結果依照條件分組打包成<code>buckets</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+<span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+  <span style="color:#8b008b;font-weight:bold">&#34;NAME&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;AGG_TYPE&#34;</span>: {}
+  }
+}
+}
+</code></pre></div><ul>
+<li><code>NAME</code> 這次聚合的名字，就像MySQL取別名</li>
+<li><code>AGG_TYPE</code> 聚合的類型
+<ul>
+<li><code>avg</code> 平均</li>
+<li><code>term</code> 精確匹配</li>
+<li><code>terms</code> 多個精確匹配</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220119152725760.png" alt="image-20220119152725760"></p>
+<h4 id="子聚合">子聚合</h4>
+<ul>
+<li>基於某個聚合結果來聚合，寫在父聚合之內
+<ul>
+<li><code>&quot;size&quot;: 0</code> 不想關注每個人的詳情，只想要統計結果</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match_all&#34;</span>: {}
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;年齡分組&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;terms&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;age&#34;</span>,
+        <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">10</span>
+      },
+      <span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;平均薪資&#34;</span>: {
+          <span style="color:#8b008b;font-weight:bold">&#34;avg&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;balance&#34;</span>
+          }
+        }
+      }
+    }
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">0</span>
+}
+</code></pre></div><p><img src="image-20220119154011303.png" alt="image-20220119154011303"></p>
+<ul>
+<li>範例2: 查出所有年齡分佈，並且這些年齡段中M的平均薪資和F的平均薪資以及這個年齡段的總體平均薪資
+<ul>
+<li><code>.keyword</code> 精確匹配</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">GET</span> <span style="color:#a61717;background-color:#e3d2d2">bank/_search</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;query&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;match_all&#34;</span>: {}
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+    <span style="color:#8b008b;font-weight:bold">&#34;ageAgg&#34;</span>: {
+      <span style="color:#8b008b;font-weight:bold">&#34;terms&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;age&#34;</span>,
+        <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">100</span>
+      },
+      <span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+        <span style="color:#8b008b;font-weight:bold">&#34;genderAgg&#34;</span>: {
+          <span style="color:#8b008b;font-weight:bold">&#34;terms&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;gender.keyword&#34;</span>
+          },
+          <span style="color:#8b008b;font-weight:bold">&#34;aggs&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;balanceAvg&#34;</span>: {
+              <span style="color:#8b008b;font-weight:bold">&#34;avg&#34;</span>: {
+                <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;balance&#34;</span>
+              }
+            }
+          }
+        },
+        <span style="color:#8b008b;font-weight:bold">&#34;ageBalanceAvg&#34;</span>: {
+          <span style="color:#8b008b;font-weight:bold">&#34;avg&#34;</span>: {
+            <span style="color:#8b008b;font-weight:bold">&#34;field&#34;</span>: <span style="color:#cd5555">&#34;balance&#34;</span>
+          }
+        }
+      }
+    }
+  },
+  <span style="color:#8b008b;font-weight:bold">&#34;size&#34;</span>: <span style="color:#b452cd">0</span>
+}
+</code></pre></div><p><img src="image-20220119154724229.png" alt="image-20220119154724229"></p>
+<hr>
+<h2 id="mapping">Mapping</h2>
+<blockquote>
+<p>就是建表時指定存在裡面的玩意的規則</p>
+</blockquote>
+<ul>
+<li>
+<p>Maping是用來定義一個文檔（document），以及它所包含的屬性（field）是如何存儲和索引的。比如:</p>
+<ul>
+<li>
+<p>數值格式: 都是json但也能分text、long</p>
+</li>
+<li>
+<p>哪些字符串屬性應該被看做全文本屬性（full text fields）</p>
+</li>
+<li>
+<p>哪些屬性包含數字，日期或地理位置</p>
+</li>
+<li>
+<p>文檔中的所有屬性是否都被索引(就是決定是否會被搜，預設都是true)</p>
+</li>
+<li>
+<p>日期的格式</p>
+</li>
+<li>
+<p>自定義映射規則來執行動態添加屬性</p>
+</li>
+</ul>
+</li>
+<li>
+<p>查看mapping信息 <code>GET bank/_mapping</code></p>
+</li>
+</ul>
+<h3 id="指定mapping">指定mapping</h3>
+<ul>
+<li>要在建立index的時候就指定，不然就是預設的
+<ul>
+<li>類似SQL建表的時候指定表的構成</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;age&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;email&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;name&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      }
+    }
+  }
+}
+</code></pre><ul>
+<li>Mapping建完就不能改，要改只能像給database改名，複製建新的那樣</li>
+</ul>
+<h2 id="分詞">分詞</h2>
+<ul>
+<li>顧名思義將詞拆開成有意義的片段，預設就是用standard標準分詞器，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">POST</span> <span style="color:#a61717;background-color:#e3d2d2">_analyze</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;analyzer&#34;</span>: <span style="color:#cd5555">&#34;standard&#34;</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;text&#34;</span>: <span style="color:#cd5555">&#34;The 2 QUICK Brown-Foxes jumped over the lazy dog&#39;s bone.&#34;</span>
+}
+</code></pre></div><ul>
+<li>tokenizer分詞器，將詞拆成一個一個的<code>token</code></li>
+<li>預設的中文分不好(應該說只會全部拆成一個字)，需要火力支援</li>
+</ul>
+<h3 id="安裝ik分詞器">安裝ik分詞器</h3>
+<ul>
+<li>
+<p><a href="https://github.com/medcl/elasticsearch-analysis-ik">https://github.com/medcl/elasticsearch-analysis-ik</a></p>
+<ul>
+<li>需要對應版本</li>
+</ul>
+</li>
+<li>
+<p>使用插件安裝，超簡單，進到容器內使用命令</p>
+</li>
+</ul>
+<pre tabindex="0"><code>./bin/elasticsearch-plugin install xxx插件版本資源網址
+</code></pre><ul>
+<li>直接從docker desktop打開該容器的CLI</li>
+<li>因為是2合一鏡像，進了容器還要<code>cd elasticsearch-7.16.2</code>再進到elasticsearch資料夾下，執行:</li>
+</ul>
+<pre tabindex="0"><code>./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.16.2/elasticsearch-analysis-ik-7.16.2.zip
+</code></pre><p><img src="image-20220119161207797.png" alt="image-20220119161207797"></p>
+<ul>
+<li>另外附上教學的手動方法，在前面我們已經將elasticsearch容器的“/usr/share/elasticsearch/plugins”目錄，映射到宿主機的“ /mydata/elasticsearch/plugins”目錄下，所以比較方便的做法就是下載“/elasticsearch-analysis-ik-xxx.zip”文件，然後解壓到該文件夾下即可</li>
+</ul>
+<pre tabindex="0"><code>// 進入es容器內部plugin目錄
+docker exec -it elasticsearch /bin/bash
+
+// 下載
+# wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.6.2/elasticsearch-analysis-ik-7.6.2.zip
+
+// 解壓縮
+unzip elasticsearch-analysis-ik-7.6.2.zip -d ink
+
+// 搬到插件資料夾
+mv ik plugins/
+
+// 刪除殘餘
+rm -rf elasticsearch-analysis-ik-7.6.2.zip
+</code></pre><ul>
+<li>改完都要重啟容器才能生效!</li>
+<li>測試:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">POST</span> <span style="color:#a61717;background-color:#e3d2d2">_analyze</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;analyzer&#34;</span>: <span style="color:#cd5555">&#34;ik_max_word&#34;</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;text&#34;</span>: <span style="color:#cd5555">&#34;《白雪公主》是廣泛流行於歐洲的一篇德國童話，亦是該童話中的主角。其最著名的版本見於德國《格林童話》，講述了白雪公主受到繼母的虐待，逃到森林裡，遇到七個小矮人的故事&#34;</span>
+}
+</code></pre></div><p><img src="image-20220119161834409.png" alt="image-20220119161834409"></p>
+<h3 id="自定義詞庫">自定義詞庫</h3>
+<ul>
+<li>修改<code>/usr/share/elasticsearch/plugins/ik/config</code>中的<code>IKAnalyzer.cfg.xml</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#1e889b">&lt;!DOCTYPE properties SYSTEM &#34;http://java.sun.com/dtd/properties.dtd&#34;&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;properties&gt;</span>
+	<span style="color:#8b008b;font-weight:bold">&lt;comment&gt;</span>IK Analyzer 擴展配置<span style="color:#8b008b;font-weight:bold">&lt;/comment&gt;</span>
+	<span style="color:#228b22">&lt;!--用户可以在這裏配置自己的擴展字典 --&gt;</span>
+	<span style="color:#8b008b;font-weight:bold">&lt;entry</span> <span style="color:#658b00">key=</span><span style="color:#cd5555">&#34;ext_dict&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/entry&gt;</span>
+	 <span style="color:#228b22">&lt;!--用户可以在這裏配置自己的擴展停止詞字典--&gt;</span>
+	<span style="color:#8b008b;font-weight:bold">&lt;entry</span> <span style="color:#658b00">key=</span><span style="color:#cd5555">&#34;ext_stopwords&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/entry&gt;</span>
+	<span style="color:#228b22">&lt;!--用户可以在這裏配置遠程擴展字典 --&gt;</span>
+	<span style="color:#228b22">&lt;!-- &lt;entry key=&#34;remote_ext_dict&#34;&gt;words_location&lt;/entry&gt; --&gt;</span>
+	<span style="color:#228b22">&lt;!--用户可以在這裏配置遠程擴展停止詞字典--&gt;</span>
+	<span style="color:#228b22">&lt;!-- &lt;entry key=&#34;remote_ext_stopwords&#34;&gt;words_location&lt;/entry&gt; --&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/properties&gt;</span>
+</code></pre></div><ul>
+<li>更新完成後，es只會對於新增的數據用更新分詞。歷史數據是不會重新分詞的。如果想要歷史數據重新分詞，需要執行:</li>
+</ul>
+<pre tabindex="0"><code>POST my_index/_update_by_query?conflicts=proceed
+</code></pre><ul>
+<li>我用的二合一鏡像是在</li>
+</ul>
+<pre tabindex="0"><code>/home/elasticsearch/elasticsearch-7.16.2/config/analysis-ik/IKAnalyzer.cfg.xml
+</code></pre><ul>
+<li>將檔案抓出來放到linux宿主<code>/mydata/elasticsearch</code>路徑下</li>
+</ul>
+<pre tabindex="0"><code>docker cp elasticsearch:/home/elasticsearch/elasticsearch-7.16.2/config/analysis-ik/IKAnalyzer.cfg.xml /mydata/elasticsearch
+</code></pre><ul>
+<li>改一改，塞回去</li>
+</ul>
+<hr>
+<h1 id="整合spring">整合Spring</h1>
+<ul>
+<li>導依賴，注意版本要等同ELK的版本</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.elasticsearch.client<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>elasticsearch-rest-high-level-client<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>7.16.2<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>並且要在項目中指定properties</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;properties&gt;</span>
+        ...
+        <span style="color:#8b008b;font-weight:bold">&lt;elasticsearch.version&gt;</span>7.16.2<span style="color:#8b008b;font-weight:bold">&lt;/elasticsearch.version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/properties&gt;</span>
+</code></pre></div><h2 id="測試連線">測試連線</h2>
+<ul>
+<li>先造一個設定類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ElasticConfig</span> {
+
+    <span style="color:#228b22">// 設定
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> RequestOptions COMMON_OPTIONS;
+
+    <span style="color:#8b008b;font-weight:bold">static</span> {
+        RequestOptions.<span style="color:#658b00">Builder</span> builder = RequestOptions.<span style="color:#658b00">DEFAULT</span>.<span style="color:#658b00">toBuilder</span>();
+        <span style="color:#228b22">// builder.addHeader(&#34;Authorization&#34;, &#34;Bearer &#34; + TOKEN);
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// builder.setHttpAsyncResponseConsumerFactory(
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">//         new HttpAsyncResponseConsumerFactory
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">//                 .HeapBufferedResponseConsumerFactory(30 * 1024 * 1024 * 1024));
+</span><span style="color:#228b22"></span>        COMMON_OPTIONS = builder.<span style="color:#658b00">build</span>();
+    }
+
+    <span style="color:#228b22">// 已經被棄用的創造Client方法
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> RestHighLevelClient <span style="color:#008b45">restHighLevelClient</span>() {
+        <span style="color:#228b22">// Create the low-level client
+</span><span style="color:#228b22"></span>        RestClientBuilder httpClientBuilder = RestClient.<span style="color:#658b00">builder</span>(
+                <span style="color:#8b008b;font-weight:bold">new</span> HttpHost(<span style="color:#cd5555">&#34;localhost&#34;</span>, 9200)
+        );
+        <span style="color:#228b22">// Create the HLRC
+</span><span style="color:#228b22"></span>        RestHighLevelClient hlrc = <span style="color:#8b008b;font-weight:bold">new</span> RestHighLevelClient(httpClientBuilder);
+        <span style="color:#8b008b;font-weight:bold">return</span> hlrc;
+    }
+}
+</code></pre></div><ul>
+<li>簡單測試，嘗試造一個index與物件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@SpringBootTest</span>
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">EsTest</span> {
+
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> RestHighLevelClient client;
+
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> {
+        <span style="color:#8b008b;font-weight:bold">private</span> String name;
+        <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> age;
+
+    }
+    <span style="color:#707a7c">@Test</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test</span>() <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        <span style="color:#228b22">// 建立一個測試的物件
+</span><span style="color:#228b22"></span>        User user = <span style="color:#8b008b;font-weight:bold">new</span> User();
+        user.<span style="color:#658b00">setName</span>(<span style="color:#cd5555">&#34;Tom&#34;</span>);
+        user.<span style="color:#658b00">setAge</span>(30);
+        String s = JSONUtil.<span style="color:#658b00">toJsonStr</span>(user);
+
+        <span style="color:#228b22">// 創立index
+</span><span style="color:#228b22"></span>        IndexRequest indexRequest = <span style="color:#8b008b;font-weight:bold">new</span> IndexRequest(<span style="color:#cd5555">&#34;users&#34;</span>);
+        <span style="color:#228b22">// 指定id
+</span><span style="color:#228b22"></span>        indexRequest.<span style="color:#658b00">id</span>(<span style="color:#cd5555">&#34;1&#34;</span>);
+        <span style="color:#228b22">// 放進去的東西，如果是字串必須聲明是XContentType.JSON，否則要放map
+</span><span style="color:#228b22"></span>        indexRequest.<span style="color:#658b00">source</span>(s, XContentType.<span style="color:#658b00">JSON</span>);
+        <span style="color:#228b22">// 執行，第2個參數是使用一般設定
+</span><span style="color:#228b22"></span>        IndexResponse response = client.<span style="color:#658b00">index</span>(indexRequest, ElasticConfig.<span style="color:#658b00">COMMON_OPTIONS</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;response = &#34;</span> + response);
+    }
+}
+</code></pre></div><ul>
+<li>測試2</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#707a7c">@Test</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">searchData</span>() <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        GetRequest getRequest = <span style="color:#8b008b;font-weight:bold">new</span> GetRequest(
+                <span style="color:#cd5555">&#34;users&#34;</span>,
+                <span style="color:#cd5555">&#34;_-2vAHIB0nzmLJLkxKWk&#34;</span>);
+
+        GetResponse getResponse = client.<span style="color:#658b00">get</span>(getRequest, RequestOptions.<span style="color:#658b00">DEFAULT</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(getResponse);
+        String index = getResponse.<span style="color:#658b00">getIndex</span>();
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(index);
+        String id = getResponse.<span style="color:#658b00">getId</span>();
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(id);
+        <span style="color:#8b008b;font-weight:bold">if</span> (getResponse.<span style="color:#658b00">isExists</span>()) {
+            <span style="color:#00688b;font-weight:bold">long</span> version = getResponse.<span style="color:#658b00">getVersion</span>();
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(version);
+            String sourceAsString = getResponse.<span style="color:#658b00">getSourceAsString</span>();
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(sourceAsString);
+            Map&lt;String, Object&gt; sourceAsMap = getResponse.<span style="color:#658b00">getSourceAsMap</span>();
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(sourceAsMap);
+            <span style="color:#00688b;font-weight:bold">byte</span>[] sourceAsBytes = getResponse.<span style="color:#658b00">getSourceAsBytes</span>();
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+
+        }
+    }
+</code></pre></div><h2 id="檢索範例">檢索範例</h2>
+<blockquote>
+<p>DSL有的這邊都有，翻著官方文檔寫吧</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 複雜檢索:在bank中搜索address中包含mill的所有人的年齡分佈以及平均年齡，平均薪資
+</span><span style="color:#228b22">     * @throws IOException
+</span><span style="color:#228b22">     */</span>
+<span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">searchData</span>() <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+    <span style="color:#228b22">//1. 創建檢索請求
+</span><span style="color:#228b22"></span>    SearchRequest searchRequest = <span style="color:#8b008b;font-weight:bold">new</span> SearchRequest();
+
+    <span style="color:#228b22">//1.1）指定索引
+</span><span style="color:#228b22"></span>    searchRequest.<span style="color:#658b00">indices</span>(<span style="color:#cd5555">&#34;bank&#34;</span>);
+    <span style="color:#228b22">//1.2）構造檢索條件
+</span><span style="color:#228b22"></span>    SearchSourceBuilder sourceBuilder = <span style="color:#8b008b;font-weight:bold">new</span> SearchSourceBuilder();
+    sourceBuilder.<span style="color:#658b00">query</span>(QueryBuilders.<span style="color:#658b00">matchQuery</span>(<span style="color:#cd5555">&#34;address&#34;</span>,<span style="color:#cd5555">&#34;Mill&#34;</span>));
+
+    <span style="color:#228b22">//1.2.1)按照年齡分佈進行聚合
+</span><span style="color:#228b22"></span>    TermsAggregationBuilder ageAgg=AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;ageAgg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;age&#34;</span>).<span style="color:#658b00">size</span>(10);
+    sourceBuilder.<span style="color:#658b00">aggregation</span>(ageAgg);
+
+    <span style="color:#228b22">//1.2.2)計算平均年齡
+</span><span style="color:#228b22"></span>    AvgAggregationBuilder ageAvg = AggregationBuilders.<span style="color:#658b00">avg</span>(<span style="color:#cd5555">&#34;ageAvg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;age&#34;</span>);
+    sourceBuilder.<span style="color:#658b00">aggregation</span>(ageAvg);
+    <span style="color:#228b22">//1.2.3)計算平均薪資
+</span><span style="color:#228b22"></span>    AvgAggregationBuilder balanceAvg = AggregationBuilders.<span style="color:#658b00">avg</span>(<span style="color:#cd5555">&#34;balanceAvg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;balance&#34;</span>);
+    sourceBuilder.<span style="color:#658b00">aggregation</span>(balanceAvg);
+
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;檢索條件：&#34;</span>+sourceBuilder);
+    searchRequest.<span style="color:#658b00">source</span>(sourceBuilder);
+    <span style="color:#228b22">//2. 執行檢索
+</span><span style="color:#228b22"></span>    SearchResponse searchResponse = client.<span style="color:#658b00">search</span>(searchRequest, RequestOptions.<span style="color:#658b00">DEFAULT</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;檢索結果：&#34;</span>+searchResponse);
+
+    <span style="color:#228b22">//3. 將檢索結果封裝為Bean
+</span><span style="color:#228b22"></span>    SearchHits hits = searchResponse.<span style="color:#658b00">getHits</span>();
+    SearchHit[] searchHits = hits.<span style="color:#658b00">getHits</span>();
+    <span style="color:#8b008b;font-weight:bold">for</span> (SearchHit searchHit : searchHits) {
+        String sourceAsString = searchHit.<span style="color:#658b00">getSourceAsString</span>();
+        Account account = JSON.<span style="color:#658b00">parseObject</span>(sourceAsString, Account.<span style="color:#658b00">class</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(account);
+    }
+
+    <span style="color:#228b22">//4. 獲取聚合信息
+</span><span style="color:#228b22"></span>    Aggregations aggregations = searchResponse.<span style="color:#658b00">getAggregations</span>();
+
+    Terms ageAgg1 = aggregations.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;ageAgg&#34;</span>);
+
+    <span style="color:#8b008b;font-weight:bold">for</span> (Terms.<span style="color:#658b00">Bucket</span> bucket : ageAgg1.<span style="color:#658b00">getBuckets</span>()) {
+        String keyAsString = bucket.<span style="color:#658b00">getKeyAsString</span>();
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;年齡：&#34;</span>+keyAsString+<span style="color:#cd5555">&#34; ==&gt; &#34;</span>+bucket.<span style="color:#658b00">getDocCount</span>());
+    }
+    Avg ageAvg1 = aggregations.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;ageAvg&#34;</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;平均年齡：&#34;</span>+ageAvg1.<span style="color:#658b00">getValue</span>());
+
+    Avg balanceAvg1 = aggregations.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;balanceAvg&#34;</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;平均薪資：&#34;</span>+balanceAvg1.<span style="color:#658b00">getValue</span>());
+}
+</code></pre></div><ul>
+<li>步驟整理:
+<ul>
+<li>指定index</li>
+<li>創建sourceBuilder，設定查詢條件</li>
+<li>將source封裝到SearchRequest</li>
+<li>用client對ES伺服端發起SearchRequest</li>
+<li>接收Hits並解析</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-25</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220125-wsl2-docker/">
+			下一篇<br>DockerDekstop掛載相關設定
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220124-gulimall-07/">
+			上一篇<br>商品屬性維護、庫存模組、基礎篇總結
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

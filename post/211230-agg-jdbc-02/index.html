@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>事務、DAO、連接池、Dbutils工具包</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JDBC筆記-02">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="事務、DAO、連接池、Dbutils工具包" />
+<meta property="og:description" content="尚硅谷JDBC筆記-02" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211230-agg-jdbc-02/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-30T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="事務、DAO、連接池、Dbutils工具包"/>
+<meta name="twitter:description" content="尚硅谷JDBC筆記-02"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99transaction" onclick="onNavClick(`#事務transaction-nav`)" id="事務transaction-nav">
+									事務Transaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e7%9a%84%e7%9b%b8%e9%97%9c%e6%96%b9%e6%b3%95" onclick="onNavClick(`#事務的相關方法-nav`)" id="事務的相關方法-nav">
+									事務的相關方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e5%af%a6%e4%bd%9c%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#事務實作流程-nav`)" id="事務實作流程-nav">
+									事務實作流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e7%9a%84acid" onclick="onNavClick(`#事務的acid-nav`)" id="事務的acid-nav">
+									事務的ACID
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9a%94%e9%9b%a2%e6%80%a7" onclick="onNavClick(`#隔離性-nav`)" id="隔離性-nav">
+									隔離性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84%e4%bd%b5%e7%99%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#資料庫的併發問題-nav`)" id="資料庫的併發問題-nav">
+									資料庫的併發問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#dao" onclick="onNavClick(`#dao-nav`)" id="dao-nav">
+									DAO
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8c%e5%a0%b4%e5%8a%a0%e6%98%a0javabean" onclick="onNavClick(`#同場加映javabean-nav`)" id="同場加映javabean-nav">
+									同場加映JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5%e6%b1%a0" onclick="onNavClick(`#連接池-nav`)" id="連接池-nav">
+									連接池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%84%aa%e5%8b%a2" onclick="onNavClick(`#優勢-nav`)" id="優勢-nav">
+									優勢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#dbutils%e5%b7%a5%e5%85%b7%e5%8c%85" onclick="onNavClick(`#dbutils工具包-nav`)" id="dbutils工具包-nav">
+									Dbutils工具包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#queryrunner" onclick="onNavClick(`#queryrunner-nav`)" id="queryrunner-nav">
+									QueryRunner
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#resultsethandler" onclick="onNavClick(`#resultsethandler-nav`)" id="resultsethandler-nav">
+									ResultSetHandler
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#dbutils" onclick="onNavClick(`#dbutils-nav`)" id="dbutils-nav">
+									DbUtils
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99transaction" onclick="onNavClick(`#事務transaction-nav`)" id="事務transaction-nav">
+									事務Transaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e7%9a%84%e7%9b%b8%e9%97%9c%e6%96%b9%e6%b3%95" onclick="onNavClick(`#事務的相關方法-nav`)" id="事務的相關方法-nav">
+									事務的相關方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e5%af%a6%e4%bd%9c%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#事務實作流程-nav`)" id="事務實作流程-nav">
+									事務實作流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e7%9a%84acid" onclick="onNavClick(`#事務的acid-nav`)" id="事務的acid-nav">
+									事務的ACID
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9a%94%e9%9b%a2%e6%80%a7" onclick="onNavClick(`#隔離性-nav`)" id="隔離性-nav">
+									隔離性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84%e4%bd%b5%e7%99%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#資料庫的併發問題-nav`)" id="資料庫的併發問題-nav">
+									資料庫的併發問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#dao" onclick="onNavClick(`#dao-nav`)" id="dao-nav">
+									DAO
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%90%8c%e5%a0%b4%e5%8a%a0%e6%98%a0javabean" onclick="onNavClick(`#同場加映javabean-nav`)" id="同場加映javabean-nav">
+									同場加映JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5%e6%b1%a0" onclick="onNavClick(`#連接池-nav`)" id="連接池-nav">
+									連接池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%84%aa%e5%8b%a2" onclick="onNavClick(`#優勢-nav`)" id="優勢-nav">
+									優勢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#dbutils%e5%b7%a5%e5%85%b7%e5%8c%85" onclick="onNavClick(`#dbutils工具包-nav`)" id="dbutils工具包-nav">
+									Dbutils工具包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#queryrunner" onclick="onNavClick(`#queryrunner-nav`)" id="queryrunner-nav">
+									QueryRunner
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#resultsethandler" onclick="onNavClick(`#resultsethandler-nav`)" id="resultsethandler-nav">
+									ResultSetHandler
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#dbutils" onclick="onNavClick(`#dbutils-nav`)" id="dbutils-nav">
+									DbUtils
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/jdbc.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    事務、DAO、連接池、Dbutils工具包
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JDBC筆記-02
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-30 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/jdbc">jdbc</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="事務transaction">事務Transaction</h1>
+<blockquote>
+<p>Transaction，台灣:交易，中國:事務</p>
+</blockquote>
+<ul>
+<li>
+<p>在MySQL中只有使用了Innodb資料庫引擎的資料庫或表才支援事務</p>
+</li>
+<li>
+<p>事務 = 一組操作資料庫的動作集合，使資料從一種狀態變換為另一種狀態</p>
+</li>
+<li>
+<p>一個事務保證一組SQL語句要嘛全部執行，要嘛全部不執行</p>
+<ul>
+<li>要嘛提交Commit，要嘛回滾Rollback</li>
+</ul>
+</li>
+<li>
+<p>數據一旦提交，就不可回滾</p>
+</li>
+<li>
+<p>那些操作會自動提交?</p>
+<ul>
+<li>DDL(刪庫建表之類的操作):必定自動提交</li>
+<li>DML(操作某筆資料):預設會自動提交，但可以<code>set autocommit = false</code></li>
+<li>關閉連接時，預設也會自動提交</li>
+</ul>
+</li>
+</ul>
+<h2 id="事務的相關方法">事務的相關方法</h2>
+<blockquote>
+<p>由<code>java.sql.Connection</code>包提供，顯然這些方法都是由Connection物件調用</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setAutoCommit</span>(<span style="color:#00688b;font-weight:bold">boolean</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">getAutoCommit</span>()
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">commit</span>()
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollback</span>()
+</code></pre></div><h2 id="事務實作流程">事務實作流程</h2>
+<ol>
+<li>關閉自動提交</li>
+<li>執行事務語句，可能有多行</li>
+<li><code>commit()</code>手動提交，並還原自動提交設定</li>
+<li>於<code>catch (Exception e)</code> 區塊使用<code>rollback()</code>回滾</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">delete</span>(String id) {
+    String ID = id;
+    db = <span style="color:#8b008b;font-weight:bold">new</span> getConnection();
+　  Connection con = db.<span style="color:#658b00">getConnection</span>();
+　  <span style="color:#8b008b;font-weight:bold">try</span> {
+        con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">false</span>);
+        db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作1
+</span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld _book where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作2
+</span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld_user where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作3
+</span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">commit</span>();<span style="color:#228b22">//提交JDBC事務
+</span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        db.<span style="color:#658b00">close</span>();
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;success&#34;</span>;
+    }
+    <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+    　　con.<span style="color:#658b00">rollBack</span>();<span style="color:#228b22">//回滾JDBC事務
+</span><span style="color:#228b22"></span>    　　e.<span style="color:#658b00">printStackTrace</span>();
+       db.<span style="color:#658b00">close</span>();
+       <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;fail&#34;</span>;
+　  }
+}
+</code></pre></div><h2 id="事務的acid">事務的ACID</h2>
+<ul>
+<li>原子性(Atomicity):一個事務(transaction)中的所有操作不可分割，要麼全部完成，要麼全部不完成，不會結束在中間某個環節。事務在執行過程中發生錯誤，會被回滾(Rollback)到事務開始前的狀態，就像這個事務從來沒有執行過一樣</li>
+<li>一致性(Consistency):在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。</li>
+<li>隔離性(Isolation):資料庫允許多個併發事務同時對其資料進行讀寫和修改的能力，隔離性可以防止多個事務併發執行時由於交叉執行而導致資料干擾。事務隔離分為不同級別，下述</li>
+<li>持久性性(Durability):交易處理結束後，對資料的修改就是永久的，即便系統故障也不會丟失。</li>
+</ul>
+<h3 id="隔離性">隔離性</h3>
+<h4 id="資料庫的併發問題">資料庫的併發問題</h4>
+<ul>
+<li>髒讀(dirty read):A讀取了已經被B更新但未提交的資料，之後B回滾，導致A讀取了無效的&quot;髒&quot;資料</li>
+<li>不可重複讀(non-repeatable read):A與B讀取了資料，之後B更新了資料，導致A再讀取時前後資料不同</li>
+<li>幻讀(phantom read):A從一張表讀取了某些資料，B在該表插入了一些新的行，導致A再讀取表時前後資料量不同</li>
+</ul>
+<h5 id="隔離等級">隔離等級</h5>
+<blockquote>
+<p>隔離等級由低至高，越下面越安全，效率也越低</p>
+</blockquote>
+<ul>
+<li>讀未提交(Read uncommitted):允許讀取其他事務未提交的變更，3種問題都會有</li>
+<li>讀已提交(Read committed):只允許讀取其他事務已提交的變更，可避免髒讀</li>
+<li>可重複讀(Repeatable read):確保一個事務多次讀取一個字段都是相同的值，在此事務持續時間內，禁止其他事務對這個字段進行更新，可避免髒讀與不可重複讀</li>
+<li>序列化(Serializable):確保一個事務從一個表中讀取到相同的行，在此事務持續時間內，禁止其他事務對整張表進行插入、更新與刪除，可避免所有問題，但效率很低</li>
+</ul>
+<h5 id="資料庫差異">資料庫差異</h5>
+<ul>
+<li>Oracle支援2種事務隔離級別:Read committed與Serializable
+<ul>
+<li>Oracle預設的事務隔離級別為:Read committed</li>
+</ul>
+</li>
+<li>MySQL支援 4 種事務隔離級別
+<ul>
+<li>MySQL預設的事務隔離級別為:Repeatable read</li>
+</ul>
+</li>
+</ul>
+<h5 id="mysql設定隔離">MySQL設定隔離</h5>
+<ul>
+<li>
+<p>每啟動一個mysql程序，就會獲得一個單獨的資料庫連接，每個資料庫連接都有一個全域變數 <code>@@tx_isolation</code>表示當前的事務隔離級別</p>
+<ul>
+<li>mysql8為<code>@@transaction_isolation</code></li>
+</ul>
+</li>
+<li>
+<p>查看當前的隔離級別:</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@tx_isolation;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>設置當前MySQL連接的隔離級別:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb">  </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>設置資料庫系統的全域的隔離級別:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>global<span style="color:#bbb"> </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>補充操作，創建MySQL資料庫使用者</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span>tom<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>授予許可權</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-MySQL" data-lang="MySQL"><span style="color:#228b22">#授予通過網路方式登錄的tom使用者，對所有庫所有表的全部許可權，密碼設為abc123.
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">privileges</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>*.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@<span style="color:#cd5555">&#39;%&#39;</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">#給tom使用者使用本地命令列方式，授予atguigudb這個庫下的所有表的插刪改查的許可權。
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">select</span>,<span style="color:#8b008b;font-weight:bold">insert</span>,<span style="color:#8b008b;font-weight:bold">delete</span>,<span style="color:#8b008b;font-weight:bold">update</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>atguigudb.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@localhost<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><hr>
+<h1 id="dao">DAO</h1>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1eJ411c7rf?p=45">https://www.bilibili.com/video/BV1eJ411c7rf?p=45</a></p>
+<p>他這邊講這個相當於自己造輪子，以後框架用到的時候矇了可以再回來看</p>
+</blockquote>
+<p><code>DataAccessObjects</code>資料存取物件，專門用來跟資料庫打交道，位於業務邏輯與資料之間的橋樑，確切來說就是把獲取/關閉連接與增刪改查封裝起來</p>
+<ul>
+<li>DAO介面:把對資料庫的所有操作定義成抽象方法，可以提供多種實現</li>
+<li>DAO 實現類:針對不同資料庫給出DAO介面定義方法的具體實現</li>
+<li>實體類:用於存放與傳輸物件資料，比如表示查詢到的所有欄位存放的的物件</li>
+<li>資料庫連接和關閉工具類:避免了資料庫連接和關閉代碼的重複使用，方便修改</li>
+</ul>
+<h2 id="同場加映javabean">同場加映JavaBean</h2>
+<p>JavaBean是一種<code>public class</code>，目的是為了方便在程式中被重複使用，類似容器的概念，我不在乎你裡面封裝了啥，只要滿足特定條件大家都可以很方便地拿來用。JavaBean需滿足這4點約定:</p>
+<ul>
+<li>所有屬性為private</li>
+<li>提供預設空參的構造方法</li>
+<li>提供public的getter和setter</li>
+<li>實現serializable介面，可序列化保證可以跨平台溝通</li>
+</ul>
+<hr>
+<h1 id="連接池">連接池</h1>
+<blockquote>
+<p>即為資料庫連接建立緩衝池</p>
+</blockquote>
+<ul>
+<li>想像有一口井，以前誰要用水就自己去打一桶水，多少人取水就要多少條連接</li>
+<li>連接池就像在井口邊放一個<strong>大水缸</strong>，雇一位專業打水人負責井中取水事務，當其他人要用水只需要從水缸取即可，方便又快速</li>
+</ul>
+<h2 id="優勢">優勢</h2>
+<ul>
+<li>資源復用:不需要頻繁創立新的連接</li>
+<li>提高速度:由連接池完成連接資料庫的初始化，誰要用只要來連池子，省時</li>
+<li>資源分配:由連接池管理，可以限制最大連接數量等等</li>
+<li>防止洩漏:其實也是管理，比如有人用到超時就把它收回</li>
+</ul>
+<h2 id="實現">實現</h2>
+<ul>
+<li>
+<p>JDBC的資料庫連接池使用<code>javax.sql.DataSource</code>接口來表示，此接口通常由WebServer實現，也有許多開源的例如:</p>
+<ul>
+<li><code>proxool</code>:更新時間截止2008年。速度可以，穩定性稍差，高併發的情況下會出錯</li>
+<li><code>c3p0</code>:太古老，代碼及其複雜，不利於維護</li>
+<li><code>dbcp</code>:是 apache上的一個 java 連接池項目，也是 tomcat 使用的連接池元件</li>
+<li><code>BoneCP</code>:13年前最快的連接池項目。2013年後不再更新，心灰意冷</li>
+<li><code>druid</code>:是alibba出品的一個功能比較全面，且擴展性較好的資料庫連接池，比較方便對jdbc介面進行監控跟蹤等</li>
+<li><code>HikariCP</code>:光連接池，目前被SpringBoot2官方推薦使用的資料庫連接池。</li>
+</ul>
+</li>
+<li>
+<p>目前2021年的時間點偏向用HikariCP或druid</p>
+</li>
+<li>
+<p>DataSource通常被稱為資料來源，它包含連接池和連接池管理兩個部分，習慣上也經常把DataSource稱為連接池</p>
+</li>
+<li>
+<p>DataSource用來取代DriverManager來獲取Connection，獲取速度快，同時可以大幅度提高資料庫存取速度</p>
+</li>
+<li>
+<p>特別注意：</p>
+<ul>
+<li>資料來源和資料庫連接不同，資料來源無需創建多個，它是產生資料庫連接的工廠，因此整個應用只需要一個資料來源即可</li>
+<li>當資料庫訪問結束後，程式還是像以前一樣關閉資料庫連接<code>conn.close()</code> 它並沒有關閉資料庫的物理連接，它僅僅把資料庫連接釋放，歸還給了資料庫連接池</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用">使用</h2>
+<blockquote>
+<p>即使不同家提供的連接池，流程也都大同小異</p>
+</blockquote>
+<ol>
+<li>
+<p>下載驅動，導入jar包</p>
+<ul>
+<li><a href="https://github.com/alibaba/druid">https://github.com/alibaba/druid</a>，這裡用德魯伊示範</li>
+<li>阿帕契也有一個項目叫<code>Apache Druid</code>，那是一個資料儲存分析系統，兩者差很遠別搞混了</li>
+</ul>
+</li>
+<li>
+<p>編輯設定檔<code>xxx.properties</code>，設定資料庫網址、帳號密碼，連接數&hellip;等等</p>
+</li>
+<li>
+<p>造流，導入<code>properties</code></p>
+</li>
+<li>
+<p>用提供的靜態方法建立<code>DataSource</code>物件</p>
+</li>
+<li>
+<p>從<code>DataSource</code>物件<code>getConnection()</code></p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例，使用druid連接池
+</span><span style="color:#228b22"></span>Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
+<span style="color:#228b22">// 或是直接類名.class.getClassLoader()...
+</span><span style="color:#228b22"></span>DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
+Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(conn);
+</code></pre></div><ul>
+<li>路徑src下的設定檔<code>druid.properties</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">url=jdbc:mysql:<span style="color:#228b22">//localhost:3306/jdbc_learn?rewriteBatchedStatements=true
+</span><span style="color:#228b22"></span>username=root
+password=1234
+driverClassName=com.<span style="color:#658b00">mysql</span>.<span style="color:#658b00">cj</span>.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">Driver</span>
+initialSize=10
+maxActive=20
+maxWait=1000
+filters=wall
+</code></pre></div><h1 id="dbutils工具包">Dbutils工具包</h1>
+<blockquote>
+<p>了解底層原理後，實際開發當然是拿別人造好的輪子來用</p>
+</blockquote>
+<ul>
+<li><a href="https://commons.apache.org/proper/commons-dbutils/">https://commons.apache.org/proper/commons-dbutils/</a></li>
+<li>Apache提供的開源 JDBC工具類庫，它是對JDBC的簡單封裝，學習成本極低，能極大簡化jdbc編碼的工作量，同時也不會影響程式的性能，包含3個主要API:
+<ul>
+<li>org.apache.commons.dbutils.QueryRunner</li>
+<li>org.apache.commons.dbutils.ResultSetHandler</li>
+<li>org.apache.commons.dbutils.DbUtils</li>
+</ul>
+</li>
+</ul>
+<h2 id="queryrunner">QueryRunner</h2>
+<blockquote>
+<p>用於增刪改查</p>
+</blockquote>
+<ul>
+<li><code>update</code>:可以是增刪改</li>
+<li><code>insert</code>:只能用於插入</li>
+<li><code>batch</code>:批次處理</li>
+<li><code>query</code>:查詢，返回<code>ResultSet</code>，並且會自行管理用到的<code>PreparedStatement</code>與<code>ResultSet</code>資源</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">t03</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+    <span style="color:#228b22">// 連接池
+</span><span style="color:#228b22"></span>    Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+    properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
+    DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
+    Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
+
+    <span style="color:#228b22">// 使用空參構造器
+</span><span style="color:#228b22"></span>    String sql = <span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>;
+    QueryRunner qr = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner();
+    qr.<span style="color:#658b00">update</span>(conn, sql, <span style="color:#cd5555">&#34;BBB&#34;</span>, 2);
+
+    <span style="color:#228b22">// 使用dataSource構造
+</span><span style="color:#228b22"></span>    QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
+    qr2.<span style="color:#658b00">update</span>(<span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>, <span style="color:#cd5555">&#34;CCC&#34;</span>, 3);
+
+}
+</code></pre></div><ul>
+<li>創建QueryRunner物件時，構造器有沒有帶連接會決定執行操作(例如update)時第一個參數要不要傳入連接，這個差異不光在於省一個要寫的參數</li>
+<li>假如我要提交一個事務，想當然我需要在同一條連接完成，如果發生錯誤就可以整串回滾</li>
+</ul>
+<h2 id="resultsethandler">ResultSetHandler</h2>
+<blockquote>
+<p>更好處理ResultSet的中轉類</p>
+</blockquote>
+<p>查詢時會得到<code>java.sql.ResultSet</code>類物件，我們需要提早造一個<code>Handler</code>類去處理，可選擇的如下:</p>
+<ul>
+<li><code>ArrayHandler</code>:把結果集中的第一行資料轉成物件陣列。
+<ul>
+<li><code>ArrayListHandler</code>:把結果集中的每一行資料都轉成一個陣列，再存放到List中。</li>
+</ul>
+</li>
+<li><code>BeanHandler</code>:將結果集中的第一行資料封裝到一個對應的JavaBean實例中。
+<ul>
+<li><code>BeanListHandler</code>:將結果集中的每一行資料都封裝到一個對應的JavaBean實例中，存放到List裡。</li>
+</ul>
+</li>
+<li><code>MapHandler</code>:將結果集中的第一行資料封裝到一個Map裡，key是列名，value就是對應的值。
+<ul>
+<li><code>MapListHandler</code>:將結果集中的每一行資料都封裝到一個Map裡，然後再存放到List</li>
+</ul>
+</li>
+<li><code>ColumnListHandler</code>:將結果集中某一列的資料存放到List中。</li>
+<li><code>KeyedHandler(name)</code>:將結果集中的每一行資料都封裝到一個Map裡，再把這些map再存到一個map裡，其key為指定的key。</li>
+<li><code>ScalarHandler</code>:查詢單個值對象</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 一樣先造一個QueryRunner
+</span><span style="color:#228b22"></span>QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
+
+<span style="color:#228b22">// 造一個用來接收的Handler，類來自Customers的javabean
+</span><span style="color:#228b22">// 注意new的右邊()需要填入XXX.class
+</span><span style="color:#228b22"></span>BeanHandler&lt;Customers&gt; cbh = <span style="color:#8b008b;font-weight:bold">new</span> BeanHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
+Customers queryCus = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, cbh, 2);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(queryCus);
+
+<span style="color:#228b22">// 接收N筆資料
+</span><span style="color:#228b22"></span>BeanListHandler&lt;Customers&gt; cusListHandler = <span style="color:#8b008b;font-weight:bold">new</span> BeanListHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
+List&lt;Customers&gt; cusList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers&#34;</span>, cusListHandler);
+cusList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+
+<span style="color:#228b22">// 將查來的一個結果直接裝成一個map
+</span><span style="color:#228b22"></span>MapHandler mapHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapHandler();
+Map&lt;String, Object&gt; objectMap = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, mapHandler, 6);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(objectMap);
+
+<span style="color:#228b22">// 將查來的多告結果裝成一個mapList ***重點用法***
+</span><span style="color:#228b22"></span>MapListHandler mapListHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapListHandler();
+List&lt;Map&lt;String, Object&gt;&gt; queryList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id &lt;= ?&#34;</span>, mapListHandler, 10);
+queryList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+
+<span style="color:#228b22">// scalarHandler查詢一個值
+</span><span style="color:#228b22"></span>ScalarHandler scalarHandler = <span style="color:#8b008b;font-weight:bold">new</span> ScalarHandler();
+<span style="color:#00688b;font-weight:bold">long</span> count = (<span style="color:#00688b;font-weight:bold">long</span>) qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select count(*) from customers&#34;</span>, scalarHandler);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(count);
+</code></pre></div><h2 id="dbutils">DbUtils</h2>
+<blockquote>
+<p>用於管理連接本身，所有方法都是靜態，最常就是用來關閉連接</p>
+</blockquote>
+<ul>
+<li><code>public static void close(…) throws java.sql.SQLException</code>:省去檢查null，如果不是的話，它們就關閉Connection、Statement和ResultSet</li>
+<li><code>public static void closeQuietly(…)</code>:省掉檢查null跟拋異常</li>
+<li><code>public static void commitAndClose(Connection conn)throws SQLException</code>: 用來提交連接的事務，然後關閉連接</li>
+<li><code>public static void commitAndCloseQuietly(Connection conn)</code></li>
+<li><code>public static void rollback(Connection conn)throws SQLException</code>:允許conn為null，因為方法內部做了判斷</li>
+<li><code>public static void rollbackAndClose(Connection conn)throws SQLException</code></li>
+<li><code>rollbackAndCloseQuietly(Connection)</code></li>
+<li><code>public static boolean loadDriver(java.lang.String driverClassName)</code>:裝載並註冊JDBC驅動程式，如果成功就返回true。使用該方法，你不需要捕捉這個異常ClassNotFoundException</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>事務:關閉自動提交、catch區塊宣告回滾、都正常執行後再手動提交</li>
+<li>連接池:導入驅動、造properties設定檔填入連接要素、造DataSource、獲取連接</li>
+<li>DbUtils:造QueryRunner用於CRUD，造ResultSetHandler處理查來的結果，用closeQuietly()關閉連接</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-30</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220101-agg-javaweb-01/">
+			下一篇<br>Web前端:HTML、CSS與JavaScript基礎知識
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211229-agg-jdbc-01/">
+			上一篇<br>JDBC基礎、PreparedStatement增刪改查
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

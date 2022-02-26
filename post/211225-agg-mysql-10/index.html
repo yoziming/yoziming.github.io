@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>視圖View</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL筆記-10">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="視圖View" />
+<meta property="og:description" content="尚硅谷MySQL筆記-10" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211225-agg-mysql-10/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-25T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="視圖View"/>
+<meta name="twitter:description" content="尚硅谷MySQL筆記-10"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a6%96%e5%9c%96view" onclick="onNavClick(`#視圖view-nav`)" id="視圖view-nav">
+									視圖View
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%a6%96%e5%9c%96" onclick="onNavClick(`#創建視圖-nav`)" id="創建視圖-nav">
+									創建視圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e8%a6%96%e5%9c%96%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#查看視圖屬性-nav`)" id="查看視圖屬性-nav">
+									查看視圖屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%a6%96%e5%9c%96%e5%85%a7%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#修改視圖內的資料-nav`)" id="修改視圖內的資料-nav">
+									修改視圖內的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9%e8%a6%96%e5%9c%96" onclick="onNavClick(`#刪改視圖-nav`)" id="刪改視圖-nav">
+									刪改視圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a6%96%e5%9c%96view" onclick="onNavClick(`#視圖view-nav`)" id="視圖view-nav">
+									視圖View
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e8%a6%96%e5%9c%96" onclick="onNavClick(`#創建視圖-nav`)" id="創建視圖-nav">
+									創建視圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e7%9c%8b%e8%a6%96%e5%9c%96%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#查看視圖屬性-nav`)" id="查看視圖屬性-nav">
+									查看視圖屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%a6%96%e5%9c%96%e5%85%a7%e7%9a%84%e8%b3%87%e6%96%99" onclick="onNavClick(`#修改視圖內的資料-nav`)" id="修改視圖內的資料-nav">
+									修改視圖內的資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e6%94%b9%e8%a6%96%e5%9c%96" onclick="onNavClick(`#刪改視圖-nav`)" id="刪改視圖-nav">
+									刪改視圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    視圖View
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL筆記-10
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-25 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/mysql%E7%B7%9A%E4%B8%8A%E8%AA%B2">MySQL線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="視圖view">視圖View</h1>
+<blockquote>
+<p>視圖 = 存儲起來的<code>select</code>語句</p>
+</blockquote>
+<ul>
+<li>就是創建一張專門用來看的虛擬表</li>
+<li>涉及的表稱為基表，基表也可以是視圖(可以嵌套作圖)</li>
+<li>對視圖進行DML操作，會影響基表中的資料，反之亦然
+<ul>
+<li>但通常不會在視圖對資料進行操作，並且可以指定關閉這種權限</li>
+</ul>
+</li>
+<li>刪除視圖不影響基表</li>
+</ul>
+<h2 id="創建視圖">創建視圖</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">OR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPLACE</span>]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>[ALGORITHM<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span>UNDEFINED<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>MERGE<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>TEMPTABLE<span style="color:#a61717;background-color:#e3d2d2">}</span>]<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span><span style="color:#bbb"> </span>[(<span style="color:#a61717;background-color:#e3d2d2">欄位清單</span>)]<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查詢語句</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>[<span style="color:#8b008b;font-weight:bold">WITH</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">CASCADED</span>|<span style="color:#8b008b;font-weight:bold">LOCAL</span>]<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CHECK</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">OPTION</span>]<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 如果查詢基表時用了別名，那創出來的視圖欄位名稱就會是別名
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">view</span><span style="color:#bbb"> </span>employees_view<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;姓名&#39;</span>,employee_id<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;員工編號&#39;</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>atguigudb.employees;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 年薪
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">view</span><span style="color:#bbb"> </span>year_salary<span style="color:#bbb"> </span>(name,year_salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">as</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employees.last_name,salary*<span style="color:#b452cd">12</span>*(<span style="color:#b452cd">1</span>+ifnull(commission_pct,<span style="color:#b452cd">0</span>))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>atguigudb.employees;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 多表聯合
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb">	</span>dept_sum_vu<span style="color:#bbb">
+</span><span style="color:#bbb"></span>(name,<span style="color:#bbb"> </span>minsal,<span style="color:#bbb"> </span>maxsal,<span style="color:#bbb"> </span>avgsal)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>d.department_name,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MIN</span>(e.salary),<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MAX</span>(e.salary),<span style="color:#8b008b;font-weight:bold">AVG</span>(e.salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e,<span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>e.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>d.department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">GROUP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb">  </span>d.department_name;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 格式化輸出
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span>emp_depart<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>CONCAT(last_name,<span style="color:#cd5555">&#39;任職於&#39;</span>,department_name,<span style="color:#cd5555">&#39;ㄅ&#39;</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>emp_dept<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">JOIN</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>e.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>d.department_id<span style="color:#bbb">
+</span></code></pre></div><h2 id="查看視圖屬性">查看視圖屬性</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">DESC</span><span style="color:#bbb"> </span>/<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DESCRIBE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查看視圖的屬性資訊
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>STATUS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;視圖名稱&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查看視圖的詳細定義資訊
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span>;<span style="color:#bbb">
+</span></code></pre></div><h2 id="修改視圖內的資料">修改視圖內的資料</h2>
+<blockquote>
+<p>一般來說不會這麼做，了解即可</p>
+</blockquote>
+<ul>
+<li>如果是一對一關係的視圖，且有權限的話，可以使用INSERT、UPDATE和DELETE語句去修改其中的資料</li>
+<li>有以下情況則不可修改:
+<ul>
+<li>在定義視圖的時候指定了&quot;<code>ALGORITHM = TEMPTABLE</code>&quot;，視圖將不支援INSERT和DELETE操作</li>
+<li>視圖中不包含基表中所有被定義為非空又未指定預設值的列，視圖將不支援INSERT操作</li>
+<li>在定義視圖的SELECT語句中使用了JOIN聯集查詢，視圖將不支援INSERT和DELETE操作</li>
+<li>在定義視圖的SELECT語句後的欄位清單中使用了數學運算式或子查詢，視圖將不支援INSERT，也不支援UPDATE使用了數學運算式、子查詢的欄位值</li>
+<li>在定義視圖的SELECT語句後的欄位清單中使用DISTINCT、彙總函式、GROUP BY、HAVING、UNION等，視圖將不支持INSERT、UPDATE、DELETE</li>
+<li>在定義視圖的SELECT語句中包含了子查詢，而子查詢中引用了FROM後面的表，視圖將不支援INSERT、UPDATE、DELETE</li>
+<li>視圖定義基於一個不可更新視圖</li>
+<li>常量視圖</li>
+</ul>
+</li>
+</ul>
+<h2 id="刪改視圖">刪改視圖</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 修改方法1
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">OR</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REPLACE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- ...查詢語句
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 修改方法2
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- ...查詢語句
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 刪除
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VIEW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">視圖名稱</span><span style="color:#bbb">
+</span></code></pre></div><h2 id="小結">小結</h2>
+<ul>
+<li>
+<p>視圖的優點:</p>
+<ul>
+<li>
+<p>簡化操作:能夠分解複雜的查詢操作</p>
+</li>
+<li>
+<p>減少冗餘:本身不儲存資料</p>
+</li>
+<li>
+<p>安全性:可以達成某種隔離</p>
+</li>
+</ul>
+</li>
+<li>
+<p>如果基表的資料結構改變，還需要手動維護視圖；如果有嵌套使用視圖那就更慘，要慎用</p>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-25</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211226-agg-mysql-11/">
+			下一篇<br>預存程序Procedure與自訂函數Function
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211224-agg-mysql-09/">
+			上一篇<br>限制約束Constraint
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

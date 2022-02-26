@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>JavaWeb架構、Servlet頁面轉發</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-04">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="JavaWeb架構、Servlet頁面轉發" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-04" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220104-agg-javaweb-04/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-04T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-04T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JavaWeb架構、Servlet頁面轉發"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-04"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javaweb%e7%9a%84%e5%af%a6%e7%8f%be" onclick="onNavClick(`#javaweb的實現-nav`)" id="javaweb的實現-nav">
+									JavaWeb的實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mvc%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#mvc架構-nav`)" id="mvc架構-nav">
+									MVC架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a5%97%e7%94%a8%e5%88%b0java%e4%b8%ad" onclick="onNavClick(`#套用到java中-nav`)" id="套用到java中-nav">
+									套用到Java中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%89%e5%b1%a4%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#三層架構-nav`)" id="三層架構-nav">
+									三層架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e7%8f%be%e5%b1%a4presentation-layer" onclick="onNavClick(`#表現層presentation-layer-nav`)" id="表現層presentation-layer-nav">
+									表現層(Presentation Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a5%ad%e5%8b%99%e9%82%8f%e8%bc%af%e5%b1%a4business-logic-layer" onclick="onNavClick(`#業務邏輯層business-logic-layer-nav`)" id="業務邏輯層business-logic-layer-nav">
+									業務邏輯層(Business Logic Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e8%a8%aa%e5%95%8f%e5%b1%a4data-access-layer" onclick="onNavClick(`#資料訪問層data-access-layer-nav`)" id="資料訪問層data-access-layer-nav">
+									資料訪問層(Data Access Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e7%90%86%e8%a7%a3mvc%e8%88%87%e4%b8%89%e5%b1%a4%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#如何理解mvc與三層架構-nav`)" id="如何理解mvc與三層架構-nav">
+									如何理解MVC與三層架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#web%e8%b3%87%e6%ba%90%e7%9a%84%e9%83%a8%e5%88%86" onclick="onNavClick(`#web資源的部分-nav`)" id="web資源的部分-nav">
+									web資源的部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8c%85artifacts" onclick="onNavClick(`#打包artifacts-nav`)" id="打包artifacts-nav">
+									打包Artifacts
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2deploy" onclick="onNavClick(`#部署deploy-nav`)" id="部署deploy-nav">
+									部署Deploy
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae%e5%89%8d%e6%9c%9f%e9%9a%8e%e6%ae%b5" onclick="onNavClick(`#書城項目前期階段-nav`)" id="書城項目前期階段-nav">
+									書城項目前期階段
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#idea2021%e5%bb%ba%e7%ab%8bweb%e5%b0%88%e6%a1%88" onclick="onNavClick(`#idea2021建立web專案-nav`)" id="idea2021建立web專案-nav">
+									IDEA2021建立web專案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%ae%80%e4%b8%8d%e5%88%b0properties" onclick="onNavClick(`#讀不到properties-nav`)" id="讀不到properties-nav">
+									讀不到.properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#http-status-500" onclick="onNavClick(`#http-status-500-nav`)" id="http-status-500-nav">
+									HTTP Status 500
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9a%ab%e6%99%82%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#暫時解法-nav`)" id="暫時解法-nav">
+									暫時解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servlet%e9%a0%81%e9%9d%a2%e8%bd%89%e7%99%bc" onclick="onNavClick(`#servlet頁面轉發-nav`)" id="servlet頁面轉發-nav">
+									Servlet頁面轉發
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#forwardrequest-response" onclick="onNavClick(`#forwardrequest-response-nav`)" id="forwardrequest-response-nav">
+									forward(request, response)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sendredirect" onclick="onNavClick(`#sendredirect-nav`)" id="sendredirect-nav">
+									sendRedirect()
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javaweb%e7%9a%84%e5%af%a6%e7%8f%be" onclick="onNavClick(`#javaweb的實現-nav`)" id="javaweb的實現-nav">
+									JavaWeb的實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mvc%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#mvc架構-nav`)" id="mvc架構-nav">
+									MVC架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a5%97%e7%94%a8%e5%88%b0java%e4%b8%ad" onclick="onNavClick(`#套用到java中-nav`)" id="套用到java中-nav">
+									套用到Java中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%89%e5%b1%a4%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#三層架構-nav`)" id="三層架構-nav">
+									三層架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e7%8f%be%e5%b1%a4presentation-layer" onclick="onNavClick(`#表現層presentation-layer-nav`)" id="表現層presentation-layer-nav">
+									表現層(Presentation Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a5%ad%e5%8b%99%e9%82%8f%e8%bc%af%e5%b1%a4business-logic-layer" onclick="onNavClick(`#業務邏輯層business-logic-layer-nav`)" id="業務邏輯層business-logic-layer-nav">
+									業務邏輯層(Business Logic Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e8%a8%aa%e5%95%8f%e5%b1%a4data-access-layer" onclick="onNavClick(`#資料訪問層data-access-layer-nav`)" id="資料訪問層data-access-layer-nav">
+									資料訪問層(Data Access Layer)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e7%90%86%e8%a7%a3mvc%e8%88%87%e4%b8%89%e5%b1%a4%e6%9e%b6%e6%a7%8b" onclick="onNavClick(`#如何理解mvc與三層架構-nav`)" id="如何理解mvc與三層架構-nav">
+									如何理解MVC與三層架構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#web%e8%b3%87%e6%ba%90%e7%9a%84%e9%83%a8%e5%88%86" onclick="onNavClick(`#web資源的部分-nav`)" id="web資源的部分-nav">
+									web資源的部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8c%85artifacts" onclick="onNavClick(`#打包artifacts-nav`)" id="打包artifacts-nav">
+									打包Artifacts
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2deploy" onclick="onNavClick(`#部署deploy-nav`)" id="部署deploy-nav">
+									部署Deploy
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae%e5%89%8d%e6%9c%9f%e9%9a%8e%e6%ae%b5" onclick="onNavClick(`#書城項目前期階段-nav`)" id="書城項目前期階段-nav">
+									書城項目前期階段
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#idea2021%e5%bb%ba%e7%ab%8bweb%e5%b0%88%e6%a1%88" onclick="onNavClick(`#idea2021建立web專案-nav`)" id="idea2021建立web專案-nav">
+									IDEA2021建立web專案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%ae%80%e4%b8%8d%e5%88%b0properties" onclick="onNavClick(`#讀不到properties-nav`)" id="讀不到properties-nav">
+									讀不到.properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#http-status-500" onclick="onNavClick(`#http-status-500-nav`)" id="http-status-500-nav">
+									HTTP Status 500
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9a%ab%e6%99%82%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#暫時解法-nav`)" id="暫時解法-nav">
+									暫時解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servlet%e9%a0%81%e9%9d%a2%e8%bd%89%e7%99%bc" onclick="onNavClick(`#servlet頁面轉發-nav`)" id="servlet頁面轉發-nav">
+									Servlet頁面轉發
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#forwardrequest-response" onclick="onNavClick(`#forwardrequest-response-nav`)" id="forwardrequest-response-nav">
+									forward(request, response)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sendredirect" onclick="onNavClick(`#sendredirect-nav`)" id="sendredirect-nav">
+									sendRedirect()
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    JavaWeb架構、Servlet頁面轉發
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-04
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-04 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="javaweb的實現">JavaWeb的實現</h1>
+<p>一個web程式分成用戶端(瀏覽器)B與服務端S，搭建代碼實現彼此的請求溝通，要上線一個網站簡單可分成3大步驟</p>
+<ul>
+<li>架構:就是寫程式碼，決定用戶端發送怎樣的請求，服務端如何處理、業務邏輯，回應</li>
+<li>打包:包成war</li>
+<li>部屬:使用web容器(例如tomcat)執行war包，在瀏覽器中訪問指定的網址</li>
+</ul>
+<h1 id="mvc架構">MVC架構</h1>
+<blockquote>
+<p>MVC是一種設計模式，目的是讓HTML代碼和業務邏輯代碼分開</p>
+</blockquote>
+<ul>
+<li>Model模型，處理應用程式中資料與業務邏輯部分，就是跟資料庫打交道</li>
+<li>View檢視，資料顯示部分，給人看的</li>
+<li>Controller控制，負責從檢視中讀取資料並向模型傳送資料等。看前台(View)點了啥菜，叫廚房(Model)料理然後擺盤送餐</li>
+</ul>
+<p><img src="image-20211228175625635.png" alt="image-20211228175625635"></p>
+<h2 id="套用到java中">套用到Java中</h2>
+<ol>
+<li>用戶端發送請求</li>
+<li>服務端的servlet或controller接收請求（路由規則由後端制定，整個專案開發的權重大部分在後端）</li>
+<li>調用service、dao代碼完成業務邏輯</li>
+<li>返回jsp</li>
+<li>jsp展現一些動態的代碼</li>
+</ol>
+<p><img src="image-20211228175819530.png" alt="image-20211228175819530"></p>
+<ul>
+<li>java中的MVC = <code>JavaBean + JSP + Servlet </code></li>
+<li>MVC是一個分類的方法，一種設計模式；而實作WEB專案中我們的路徑劃分、包的管理通常是使用三層架構</li>
+</ul>
+<h1 id="三層架構">三層架構</h1>
+<blockquote>
+<p>基於業務邏輯來分層</p>
+</blockquote>
+<h2 id="表現層presentation-layer">表現層(Presentation Layer)</h2>
+<blockquote>
+<p>User Show Layer，USL、Client Application，用戶層、UI層</p>
+</blockquote>
+<ul>
+<li>表現層前台:
+<ul>
+<li>介面顯示、與用戶互動</li>
+<li>JSP、JS、HTML…Web前端技術(通常位於WebContent資料夾)</li>
+</ul>
+</li>
+<li>表現層後台(也有人稱為控制層，但嚴格意義上不能這樣說):
+<ul>
+<li>用於控制頁面跳轉、調用業務邏輯層</li>
+<li>Servlet、SpringMVC的Controller、Struts2…(xxx.servlet包中)</li>
+</ul>
+</li>
+</ul>
+<h2 id="業務邏輯層business-logic-layer">業務邏輯層(Business Logic Layer)</h2>
+<blockquote>
+<p>簡稱BLL或Application Server，AP層、應用層、manage</p>
+</blockquote>
+<ul>
+<li>承上啟下，完成業務邏輯、事務的操作也是在這</li>
+<li>工程路徑、包名例如:
+<ul>
+<li>com.xxx.yyy.service:service層接口</li>
+<li>com.xxx.yyy.service.impl:service層實現</li>
+</ul>
+</li>
+</ul>
+<h2 id="資料訪問層data-access-layer">資料訪問層(Data Access Layer)</h2>
+<blockquote>
+<p>簡稱DAL、Persistence持久層</p>
+</blockquote>
+<ul>
+<li>
+<p>負責跟資料庫打交道，增刪改查</p>
+</li>
+<li>
+<p>可能加入ORM(Object Relational Mapping，物件關聯對映)方便操作</p>
+</li>
+<li>
+<p>工程路徑、包名例如:</p>
+<ul>
+<li>com.xxx.yyy.dao:dao接口</li>
+<li>com.xxx.yyy.dao.impl:dao實現類</li>
+</ul>
+<p><img src="image-20211228174934243.png" alt="image-20211228174934243"></p>
+</li>
+</ul>
+<h1 id="如何理解mvc與三層架構">如何理解MVC與三層架構</h1>
+<ul>
+<li>兩者都是為了高內聚、低耦合</li>
+<li>MVC是基於頁面(專門把給人看的東西切成View)將代碼拆解，三層架構是基於業務邏輯分層</li>
+<li>這裡學習了Servlet和Jsp，就是為了解決靜態頁面的問題，能夠實現動態的頁面，使維護開發更加的方便，但是也有缺點，在Servlet嵌入HTML代碼實在是太麻煩了，每次都要out.println();輸出。所以就有了Jsp，JSP中的內容就是html，為的就是方便寫html寫動態頁面</li>
+<li>本質上JSP也是一個servlet，所以也會不可避免的要寫一些java代碼，也就是腳本，為了不讓其那麼混亂，就增加了標籤，EL運算式來儘量代替腳本。但是在寫一些項目時，還是會很麻煩，原因是業務邏輯代碼，與資料庫交互的代碼，HTML代碼這些類別，風格，作用完全不同的都混雜在了一起，造成的結果是代碼的維護性，可讀性以及擴張性都非常差，比如要改一個需求，那麼必須要把全部代碼都看完，不然你可能會因為修改了一處代碼，導致別的地方多處錯誤</li>
+<li>到了Spring的年代時，把表現層的幕後處理請求和頁面獨立出來，形成了Controller和View，把業務邏輯層以及持久層、實體類(JavaBean)整合成一個Model。Controller就只處理請求資料，View就只處理頁面</li>
+<li>常見框架比如Struts、Hibernate、Spring、會發現Struts是處理表現層的一個框架，而Hibernate是在dao層的一個框架，spring就是service層了</li>
+<li>再後來就有了結合兩種開發模式，Controller只處理簡單請求，Service只處理業務邏輯，Dao只處理資料庫訪問資料，View只處理頁面，Model只處理實體類</li>
+<li>小結:硬要連連看的話
+<ul>
+<li>Model=業務邏輯層+資料訪問層，JavaBean與service</li>
+<li>View=表現層的前台部分，html、Jsp等給人看的東西</li>
+<li>Controller=表現層的後台部分，Servlet</li>
+</ul>
+</li>
+<li>但與其這樣硬分，不如說三層架構是為了JavaEE專案中路徑與各種包的分類，MVC是為了前後端的分離，他們負責的方向是不同的，實際開發中我們2種分類都會用到</li>
+</ul>
+<h2 id="web資源的部分">web資源的部分</h2>
+<ul>
+<li>在專案中指定<code>web.xml</code>與根目錄位置:</li>
+</ul>
+<p><img src="image-20211228180720730.png" alt="image-20211228180720730"></p>
+<ul>
+<li><code>web.xml</code>:部屬描述檔(Deployment Descriptor，簡稱DD)，負責綁定url網址與Servlet</li>
+<li>Container由此得知如何去執行servlet及JSP</li>
+</ul>
+<p><img src="image-20211228181253656.png" alt="image-20211228181253656"></p>
+<ul>
+<li>如果同時在DD裡面有設定，又在servlet宣告，則container會根據DD &gt; WebServlet 的順序去執行</li>
+<li>如果不要讓container去抓WebServlet的值，可以在<code>web.xml</code>設定增加以下設定，<code>metadata-complete=&quot;true&quot;</code></li>
+<li>DD除了將URL導到實際的servlet，還有其他的功用:
+<ul>
+<li>權限管理</li>
+<li>錯誤頁面設定(erroe page)</li>
+<li>標籤程式庫(JSTL)</li>
+<li>初始組態設定，主要即供一種用宣告的方式，去客製web程式</li>
+</ul>
+</li>
+<li>其他網頁資源的部分參考:</li>
+</ul>
+<p><img src="image-20211228180548273.png" alt="image-20211228180548273"></p>
+<h1 id="打包artifacts">打包Artifacts</h1>
+<ul>
+<li>用工具(例如maven)將以上這些前後端、第三方引用等等&hellip;包成一個war包，準備部屬</li>
+<li>war exploded是工程模式，將當於把當前資料夾的位置關係直接做一份副本移到容器中，支援熱部屬，開發中通常用這種</li>
+</ul>
+<p><img src="image-20211228181719690.png" alt="image-20211228181719690"></p>
+<h1 id="部署deploy">部署Deploy</h1>
+<ul>
+<li>將war包放到web容器，例如:tomcat/jboss/weblogic/websphere/jetty/resin中執行</li>
+<li>IDEA預設會把war exploded也寫進去，記得改好對應的網址，Deployment分頁中下方也要設定</li>
+</ul>
+<p><img src="image-20211228182539709.png" alt="image-20211228182539709"></p>
+<p><img src="image-20211228182603549.png" alt="image-20211228182603549"></p>
+<hr>
+<h1 id="書城項目前期階段">書城項目前期階段</h1>
+<blockquote>
+<p>紀錄一些踩的坑，有些地方很粗陋且是暫時的不用太認真，後面會再改進</p>
+</blockquote>
+<h2 id="idea2021建立web專案">IDEA2021建立web專案</h2>
+<ul>
+<li>選JavaEE，模板那邊可以點開下拉選單</li>
+</ul>
+<p><img src="image-20211228170709470.png" alt="image-20211228170709470"></p>
+<ul>
+<li>或對現有的模組按滑鼠右鍵、加入框架</li>
+</ul>
+<p><img src="image-20211228170902101.png" alt="image-20211228170902101"></p>
+<p><img src="image-20211228170845876.png" alt="image-20211228170845876"></p>
+<h2 id="讀不到properties">讀不到.properties</h2>
+<ul>
+<li>讀取用類加載器<code>xxx.class.getClassLoader()</code></li>
+</ul>
+<pre tabindex="0"><code> properties.load(JdbcUtils.class.getClassLoader().getResourceAsStream(&quot;jdbc.properties&quot;));
+</code></pre><ul>
+<li>.properties檔放到專案路徑resources之下</li>
+</ul>
+<p><img src="image-20211228170345288.png" alt="image-20211228170345288"></p>
+<h2 id="http-status-500">HTTP Status 500</h2>
+<ul>
+<li>servlet無法初始化，先檢查是否存在拼寫錯誤</li>
+<li>還有一個原因是外部導入的包dbutils跟德魯伊部屬前打包的時候沒包進去，錯誤提示如下:</li>
+</ul>
+<pre tabindex="0"><code>Error instantiating servlet class com.yoziming.book.web.RegistServlet
+
+java.lang.NoClassDefFoundError: org/apache/commons/dbutils/ResultSetHandler
+
+</code></pre><h3 id="暫時解法">暫時解法</h3>
+<ol>
+<li>進到專案結構(F4)</li>
+<li>進Artifacts頁面，檢查展開的部屬結構，右邊可能有元素沒包進去，滑鼠點兩下他就會移過去了</li>
+<li>這只是暫時的，每次重開專案都會跑掉，正確應該適用maven管理依賴，但是沒學過到搞清楚maven怎運作又要很花多時間，先頂著用吧</li>
+</ol>
+<p><img src="image-20211228170001757.png" alt="image-20211228170001757"></p>
+<h1 id="servlet頁面轉發">Servlet頁面轉發</h1>
+<h2 id="forwardrequest-response">forward(request, response)</h2>
+<blockquote>
+<p>就像客戶找你，你交給你同事處理(對客戶來說只有打一通電話)</p>
+</blockquote>
+<ul>
+<li>屬於server side呼叫</li>
+<li>定義在RequestDispatcher的介面，由request.getRequestDispatcher呼叫</li>
+<li>內部轉址，URL不會顯示程式名稱(可設定成參數)</li>
+<li>因為是同一個request內部轉址，可透過<code>request.setAttribute(&quot;參數名&quot;,值)</code>傳遞參數
+<ul>
+<li>轉走後再用<code>request.getAttribute(&quot;參數名&quot;)</code>取出值</li>
+</ul>
+</li>
+<li>效率較高</li>
+<li>適用於權限管理轉頁時使用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException, IOException {
+	request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;myname&#34;</span>,name); <span style="color:#228b22">// 傳遞參數
+</span><span style="color:#228b22"></span>    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;Index.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+    <span style="color:#8b008b;font-weight:bold">return</span>;
+	}
+</code></pre></div><h2 id="sendredirect">sendRedirect()</h2>
+<blockquote>
+<p>就像客戶打給你，你叫客戶去找其他的廠商(所以客戶還要再打一通電話)</p>
+</blockquote>
+<ul>
+<li>屬於server side呼叫</li>
+<li>定義在HttpServletResponse</li>
+<li>直接外部呼叫另一支程式，會顯程式名稱</li>
+<li>定義在HttpServletResponse</li>
+<li>效率較低(因為cilent會在request一次)</li>
+<li>適用於跳至外部網站或回主畫面使用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException, IOException {
+		response.<span style="color:#658b00">sendRedirect</span>(<span style="color:#cd5555">&#34;Index.jsp&#34;</span>);
+	}
+<span style="color:#228b22">// 這邊若相對路徑加了斜線Container會自動抓到root目錄
+</span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-04</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220105-agg-javaweb-05/">
+			下一篇<br>JSP
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220103-agg-javaweb-03/">
+			上一篇<br>XML、Servlet
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

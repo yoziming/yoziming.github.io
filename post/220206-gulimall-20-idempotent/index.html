@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>提交訂單: 冪等性、分散式交易的一致性</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-20">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="提交訂單: 冪等性、分散式交易的一致性" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-20" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220206-gulimall-20-idempotent/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-06T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="提交訂單: 冪等性、分散式交易的一致性"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-20"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%86%aa%e7%ad%89%e6%80%a7" onclick="onNavClick(`#冪等性-nav`)" id="冪等性-nav">
+									冪等性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#token" onclick="onNavClick(`#token-nav`)" id="token-nav">
+									Token
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%8e%96" onclick="onNavClick(`#鎖-nav`)" id="鎖-nav">
+									鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e5%ba%ab%e6%82%b2%e8%a7%80%e9%8e%96" onclick="onNavClick(`#數據庫悲觀鎖-nav`)" id="數據庫悲觀鎖-nav">
+									數據庫悲觀鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e5%ba%ab%e6%a8%82%e8%a7%80%e9%8e%96" onclick="onNavClick(`#數據庫樂觀鎖-nav`)" id="數據庫樂觀鎖-nav">
+									數據庫樂觀鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e9%8e%96" onclick="onNavClick(`#分佈式鎖-nav`)" id="分佈式鎖-nav">
+									分佈式鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%94%af%e4%b8%80%e7%b4%84%e6%9d%9f" onclick="onNavClick(`#唯一約束-nav`)" id="唯一約束-nav">
+									唯一約束
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%90%e4%ba%a4%e8%a8%82%e5%96%ae" onclick="onNavClick(`#提交訂單-nav`)" id="提交訂單-nav">
+									提交訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#流程-nav`)" id="流程-nav">
+									流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a8%8b%e5%bc%8f%e7%a2%bc" onclick="onNavClick(`#程式碼-nav`)" id="程式碼-nav">
+									程式碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e7%bf%92%e6%9c%ac%e5%9c%b0%e4%ba%8b%e5%8b%99" onclick="onNavClick(`#複習本地事務-nav`)" id="複習本地事務-nav">
+									複習本地事務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring%e4%ba%8b%e5%8b%99%e5%8f%83%e6%95%b8" onclick="onNavClick(`#spring事務參數-nav`)" id="spring事務參數-nav">
+									spring事務參數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e5%82%b3%e6%92%ad" onclick="onNavClick(`#事務傳播-nav`)" id="事務傳播-nav">
+									事務傳播
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e6%95%a3%e5%bc%8f%e4%ba%a4%e6%98%93" onclick="onNavClick(`#分散式交易-nav`)" id="分散式交易-nav">
+									分散式交易
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cap%e5%ae%9a%e7%90%86" onclick="onNavClick(`#cap定理-nav`)" id="cap定理-nav">
+									CAP定理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#raft%e7%ae%97%e6%b3%95" onclick="onNavClick(`#raft算法-nav`)" id="raft算法-nav">
+									raft算法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%98%e5%b0%8e%e9%81%b8%e8%88%89" onclick="onNavClick(`#領導選舉-nav`)" id="領導選舉-nav">
+									領導選舉
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%97%a5%e8%aa%8c%e8%a4%87%e8%a3%bd" onclick="onNavClick(`#日誌複製-nav`)" id="日誌複製-nav">
+									日誌複製
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#base%e7%90%86%e8%ab%96" onclick="onNavClick(`#base理論-nav`)" id="base理論-nav">
+									BASE理論
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e4%ba%8b%e5%8b%99%e5%b9%be%e7%a8%ae%e6%96%b9%e6%a1%88" onclick="onNavClick(`#分佈式事務幾種方案-nav`)" id="分佈式事務幾種方案-nav">
+									分佈式事務幾種方案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#2pc" onclick="onNavClick(`#2pc-nav`)" id="2pc-nav">
+									2PC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#xa-transaction" onclick="onNavClick(`#xa-transaction-nav`)" id="xa-transaction-nav">
+									XA Transaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#at%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#at模式-nav`)" id="at模式-nav">
+									AT模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#tcc%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#tcc模式-nav`)" id="tcc模式-nav">
+									TCC模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%80%e5%a4%a7%e5%8a%aa%e5%8a%9b%e9%80%9a%e7%9f%a5" onclick="onNavClick(`#最大努力通知-nav`)" id="最大努力通知-nav">
+									最大努力通知
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%af%e9%9d%a0%e6%b6%88%e6%81%af%e6%9c%80%e7%b5%82%e4%b8%80%e8%87%b4%e6%80%a7" onclick="onNavClick(`#可靠消息最終一致性-nav`)" id="可靠消息最終一致性-nav">
+									可靠消息最終一致性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%86%aa%e7%ad%89%e6%80%a7" onclick="onNavClick(`#冪等性-nav`)" id="冪等性-nav">
+									冪等性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#token" onclick="onNavClick(`#token-nav`)" id="token-nav">
+									Token
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%8e%96" onclick="onNavClick(`#鎖-nav`)" id="鎖-nav">
+									鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e5%ba%ab%e6%82%b2%e8%a7%80%e9%8e%96" onclick="onNavClick(`#數據庫悲觀鎖-nav`)" id="數據庫悲觀鎖-nav">
+									數據庫悲觀鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e6%93%9a%e5%ba%ab%e6%a8%82%e8%a7%80%e9%8e%96" onclick="onNavClick(`#數據庫樂觀鎖-nav`)" id="數據庫樂觀鎖-nav">
+									數據庫樂觀鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e9%8e%96" onclick="onNavClick(`#分佈式鎖-nav`)" id="分佈式鎖-nav">
+									分佈式鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%94%af%e4%b8%80%e7%b4%84%e6%9d%9f" onclick="onNavClick(`#唯一約束-nav`)" id="唯一約束-nav">
+									唯一約束
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%90%e4%ba%a4%e8%a8%82%e5%96%ae" onclick="onNavClick(`#提交訂單-nav`)" id="提交訂單-nav">
+									提交訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#流程-nav`)" id="流程-nav">
+									流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a8%8b%e5%bc%8f%e7%a2%bc" onclick="onNavClick(`#程式碼-nav`)" id="程式碼-nav">
+									程式碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e7%bf%92%e6%9c%ac%e5%9c%b0%e4%ba%8b%e5%8b%99" onclick="onNavClick(`#複習本地事務-nav`)" id="複習本地事務-nav">
+									複習本地事務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring%e4%ba%8b%e5%8b%99%e5%8f%83%e6%95%b8" onclick="onNavClick(`#spring事務參數-nav`)" id="spring事務參數-nav">
+									spring事務參數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%ba%8b%e5%8b%99%e5%82%b3%e6%92%ad" onclick="onNavClick(`#事務傳播-nav`)" id="事務傳播-nav">
+									事務傳播
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e6%95%a3%e5%bc%8f%e4%ba%a4%e6%98%93" onclick="onNavClick(`#分散式交易-nav`)" id="分散式交易-nav">
+									分散式交易
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cap%e5%ae%9a%e7%90%86" onclick="onNavClick(`#cap定理-nav`)" id="cap定理-nav">
+									CAP定理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#raft%e7%ae%97%e6%b3%95" onclick="onNavClick(`#raft算法-nav`)" id="raft算法-nav">
+									raft算法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%98%e5%b0%8e%e9%81%b8%e8%88%89" onclick="onNavClick(`#領導選舉-nav`)" id="領導選舉-nav">
+									領導選舉
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%97%a5%e8%aa%8c%e8%a4%87%e8%a3%bd" onclick="onNavClick(`#日誌複製-nav`)" id="日誌複製-nav">
+									日誌複製
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#base%e7%90%86%e8%ab%96" onclick="onNavClick(`#base理論-nav`)" id="base理論-nav">
+									BASE理論
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e4%ba%8b%e5%8b%99%e5%b9%be%e7%a8%ae%e6%96%b9%e6%a1%88" onclick="onNavClick(`#分佈式事務幾種方案-nav`)" id="分佈式事務幾種方案-nav">
+									分佈式事務幾種方案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#2pc" onclick="onNavClick(`#2pc-nav`)" id="2pc-nav">
+									2PC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#xa-transaction" onclick="onNavClick(`#xa-transaction-nav`)" id="xa-transaction-nav">
+									XA Transaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#at%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#at模式-nav`)" id="at模式-nav">
+									AT模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#tcc%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#tcc模式-nav`)" id="tcc模式-nav">
+									TCC模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%80%e5%a4%a7%e5%8a%aa%e5%8a%9b%e9%80%9a%e7%9f%a5" onclick="onNavClick(`#最大努力通知-nav`)" id="最大努力通知-nav">
+									最大努力通知
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%af%e9%9d%a0%e6%b6%88%e6%81%af%e6%9c%80%e7%b5%82%e4%b8%80%e8%87%b4%e6%80%a7" onclick="onNavClick(`#可靠消息最終一致性-nav`)" id="可靠消息最終一致性-nav">
+									可靠消息最終一致性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    提交訂單: 冪等性、分散式交易的一致性
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-20
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-06 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="冪等性">冪等性</h1>
+<blockquote>
+<p>idempotent</p>
+</blockquote>
+<ul>
+<li>多次提交，結果不變，常見有這些辦法:</li>
+</ul>
+<h3 id="token">Token</h3>
+<ul>
+<li>令牌或驗證碼</li>
+<li>伺服器存儲了一個令牌，然後頁面要帶上這個令牌比較，一樣才可以提交
+<ul>
+<li>提交後刪除掉token，再次點擊提交就會失敗</li>
+<li>但是F5刷新的話就不一樣了，會有新的token產生</li>
+</ul>
+</li>
+<li>注意: 獲取redis令牌 + 令牌匹配 + redis刪除，全程要保證原子性，使用lua腳本</li>
+</ul>
+<h3 id="鎖">鎖</h3>
+<h4 id="數據庫悲觀鎖">數據庫悲觀鎖</h4>
+<blockquote>
+<p>Pessimistic Lock</p>
+</blockquote>
+<ul>
+<li>就是排他鎖，所謂悲觀在於覺得總有刁民想亂搞我的data，所以自己拿到鎖就把data藏到大衣裡，完全不給其他人用，連看都不給看</li>
+<li>當一個SQL command獲得悲觀鎖後，其他的SQL command 無法讀取無法修改，直到悲觀鎖被釋放後才能執行，例如:</li>
+</ul>
+<pre tabindex="0"><code>select* from xxx where id = 1 for update;
+</code></pre><ul>
+<li>悲觀鎖使用時一般伴隨事務一起使用，數據鎖定時間可能會很長，需要根據實際情況選用</li>
+<li>另外要注意的是，id字段一定是主鍵或者唯一索引，不然可能造成鎖表的結果，處理起來會非常麻煩</li>
+<li>資料庫中的行鎖，表鎖，讀鎖，寫鎖，以及syncronized實現的鎖均為悲觀鎖</li>
+</ul>
+<h4 id="數據庫樂觀鎖">數據庫樂觀鎖</h4>
+<blockquote>
+<p>Optimistic Lock</p>
+</blockquote>
+<ul>
+<li>允許多個 SQL command 來操作 table，但是要帶上版本號</li>
+<li>當 SQL command 想要變更欄位 data 時會先把之前取出 version 跟 table 現在的 version 做對比，如果相同就代表這段期間沒人修改可以執行；如果不同就會禁止這次的操作</li>
+<li>這種方法適合在更新的場景中，例如:</li>
+</ul>
+<pre tabindex="0"><code>update t_goods set count = count-1,version =version + 1 where good_id=2 and version = 1
+</code></pre><ul>
+<li>樂觀鎖主要使用於處理讀多寫少的場景</li>
+</ul>
+<h4 id="分佈式鎖">分佈式鎖</h4>
+<ul>
+<li>不管多少服務，限制同時都只有一人能操作</li>
+<li>參考之前的筆記: <a href="https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/">https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/</a></li>
+</ul>
+<h3 id="唯一約束">唯一約束</h3>
+<ul>
+<li>利用資料庫<code>UNIQUE</code>唯一約束訂單號，就無法生成同樣訂單</li>
+<li>或是建立一個防重表，要操作時就在防重表插入例如訂單號，插入成功才可以操作，插入失敗表示有別人正在操作這筆訂單
+<ul>
+<li>不採用，DB慢</li>
+</ul>
+</li>
+<li>redis set防重: 全局請求唯一id	調用接口時生成一個唯一ID，redis將數據保存到set集合中(特性是不可重複)，存在即處理過</li>
+<li>可以使用nginx設置每一個請求的唯一id</li>
+</ul>
+<pre tabindex="0"><code>proxy_set_header X-Request-ld $request_id;
+</code></pre><h1 id="提交訂單">提交訂單</h1>
+<p><img src="1598753060984.png" alt="1598753060984"></p>
+<p><img src="1598753078504.png" alt="1598753078504"></p>
+<p><img src="1598753128441.png" alt="1598753128441"></p>
+<p><img src="1598757953664.png" alt="1598757953664"></p>
+<h2 id="流程">流程</h2>
+<ul>
+<li>前端POST提交: OrderSubmitVo</li>
+<li>API: /submitOrder</li>
+<li>下單成功轉發支付頁 pay.html</li>
+<li>下單失敗重定向跳轉 confirm.html 重新查一遍</li>
+<li>service下單流程：
+<ul>
+<li>驗令牌原子操作：查詢，比較，刪除（lua操作）</li>
+<li>創建訂單封裝Entity，然後入庫</li>
+<li>獲取金額，運費遠程調用ware服務&hellip;</li>
+<li>驗價格，計算的應付價格-提交的應付價格&lt;0.01通過，否則 return</li>
+<li>鎖庫存WareSkuLockVo，遠程調用ware</li>
+</ul>
+</li>
+</ul>
+<h2 id="程式碼">程式碼</h2>
+<blockquote>
+<p>超級繁瑣就列個大概，重點在於分佈式事務</p>
+</blockquote>
+<ul>
+<li>OrderWebController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 下單
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/submitOrder&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo, Model model, RedirectAttributes attributes) {
+
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        SubmitOrderResponseVo responseVo = orderService.<span style="color:#658b00">submitOrder</span>(vo);
+        <span style="color:#228b22">//下單成功來到支付選擇頁
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">//下單失敗回到訂單確認頁重新確定訂單信息
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (responseVo.<span style="color:#658b00">getCode</span>() == 0) {
+            <span style="color:#228b22">//成功
+</span><span style="color:#228b22"></span>            model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;submitOrderResp&#34;</span>, responseVo);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;pay&#34;</span>;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            String msg = <span style="color:#cd5555">&#34;下單失敗&#34;</span>;
+            <span style="color:#8b008b;font-weight:bold">switch</span> (responseVo.<span style="color:#658b00">getCode</span>()) {
+                <span style="color:#8b008b;font-weight:bold">case</span> 1:
+                    msg += <span style="color:#cd5555">&#34;令牌訂單信息過期，請刷新再次提交&#34;</span>;
+                    <span style="color:#8b008b;font-weight:bold">break</span>;
+                <span style="color:#8b008b;font-weight:bold">case</span> 2:
+                    msg += <span style="color:#cd5555">&#34;訂單商品價格發生變化，請確認后再次提交&#34;</span>;
+                    <span style="color:#8b008b;font-weight:bold">break</span>;
+                <span style="color:#8b008b;font-weight:bold">case</span> 3:
+                    msg += <span style="color:#cd5555">&#34;庫存鎖定失敗，商品庫存不足&#34;</span>;
+                    <span style="color:#8b008b;font-weight:bold">break</span>;
+            }
+            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, msg);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
+        }
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (e <span style="color:#8b008b;font-weight:bold">instanceof</span> NoStockException) {
+            String message = ((NoStockException) e).<span style="color:#658b00">getMessage</span>();
+            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, message);
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
+    }
+}
+</code></pre></div><ul>
+<li>OrderServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 提交訂單
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param vo
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> SubmitOrderResponseVo <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo) {
+
+    confirmVoThreadLocal.<span style="color:#658b00">set</span>(vo);
+
+    <span style="color:#228b22">// 下單後準備返回的結果
+</span><span style="color:#228b22"></span>    SubmitOrderResponseVo responseVo = <span style="color:#8b008b;font-weight:bold">new</span> SubmitOrderResponseVo();
+    responseVo.<span style="color:#658b00">setCode</span>(0); <span style="color:#228b22">// 預設返回0是成功
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 獲取當前用戶登入的信息
+</span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
+    <span style="color:#228b22">// 驗證令牌是否合法，令牌的對比和刪除必須保證原子性，LUA腳本
+</span><span style="color:#228b22"></span>    String script = <span style="color:#cd5555">&#34;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return &#34;</span> +
+            <span style="color:#cd5555">&#34;0 end&#34;</span>;
+    <span style="color:#228b22">// 拿前端傳來的token
+</span><span style="color:#228b22"></span>    String orderToken = vo.<span style="color:#658b00">getOrderToken</span>();
+    <span style="color:#228b22">// 通過腳本原子驗證令牌和刪除令牌
+</span><span style="color:#228b22"></span>    Long result = redisTemplate.<span style="color:#658b00">execute</span>(<span style="color:#8b008b;font-weight:bold">new</span> DefaultRedisScript&lt;Long&gt;(script, Long.<span style="color:#658b00">class</span>),
+            Arrays.<span style="color:#658b00">asList</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>()),
+            orderToken);
+    <span style="color:#228b22">// 若令牌驗證失敗，注意腳本0是失敗，跟前面SubmitOrderResponseVo 0=成功相反
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (result == 0L) {
+        responseVo.<span style="color:#658b00">setCode</span>(1);
+        <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 令牌驗證成功，創建、下訂單、驗令牌、驗價格、鎖定庫存
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 1、創建訂單、訂單項等信息
+</span><span style="color:#228b22"></span>        OrderCreateTo order = createOrder();
+        <span style="color:#228b22">// 2、驗證價格
+</span><span style="color:#228b22"></span>        BigDecimal payAmount = order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getPayAmount</span>();
+        BigDecimal payPrice = vo.<span style="color:#658b00">getPayPrice</span>();
+
+        <span style="color:#8b008b;font-weight:bold">if</span> (Math.<span style="color:#658b00">abs</span>(payAmount.<span style="color:#658b00">subtract</span>(payPrice).<span style="color:#658b00">doubleValue</span>()) &lt; 0.<span style="color:#658b00">01</span>) {
+            <span style="color:#228b22">// 金額對比，保存
+</span><span style="color:#228b22"></span>            saveOrder(order);
+
+            <span style="color:#228b22">// 4、庫存鎖定,只要有異常，回滾訂單數據
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 訂單號、所有訂單項信息(skuId,skuNum,skuName)
+</span><span style="color:#228b22"></span>            WareSkuLockTo lockVo = <span style="color:#8b008b;font-weight:bold">new</span> WareSkuLockTo();
+            lockVo.<span style="color:#658b00">setOrderSn</span>(order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getOrderSn</span>());
+
+            <span style="color:#228b22">// 獲取出要鎖定的商品數據信息【order裡面存儲的是Entity】
+</span><span style="color:#228b22"></span>            List&lt;OrderItemTo&gt; orderItemTos = order.<span style="color:#658b00">getOrderItems</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((item) -&gt; {
+                OrderItemTo orderItemTo = <span style="color:#8b008b;font-weight:bold">new</span> OrderItemTo();
+                orderItemTo.<span style="color:#658b00">setSkuId</span>(item.<span style="color:#658b00">getSkuId</span>());
+                orderItemTo.<span style="color:#658b00">setCount</span>(item.<span style="color:#658b00">getSkuQuantity</span>());
+                orderItemTo.<span style="color:#658b00">setTitle</span>(item.<span style="color:#658b00">getSkuName</span>());
+                <span style="color:#8b008b;font-weight:bold">return</span> orderItemTo;
+            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+            lockVo.<span style="color:#658b00">setLocks</span>(orderItemTos);
+
+            <span style="color:#228b22">// 出現的問題：扣減庫存成功了，但是由於網絡原因超時，出現異常，導致訂單事務回滾，庫存事務不回滾(解決方案：seata)
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 為了保證高併發，不推薦使用seata，因為是加鎖，并行化，提升不了效率,可以發消息給庫存服務
+</span><span style="color:#228b22"></span>            R r = wareFeignService.<span style="color:#658b00">orderLockStock</span>(lockVo);
+            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+                <span style="color:#228b22">// 鎖定成功
+</span><span style="color:#228b22"></span>                responseVo.<span style="color:#658b00">setOrder</span>(order.<span style="color:#658b00">getOrder</span>());
+                <span style="color:#228b22">//int i = 10/0;
+</span><span style="color:#228b22"></span>                <span style="color:#228b22">// 訂單創建成功，發送消息給MQ
+</span><span style="color:#228b22"></span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.create.order&#34;</span>, order.<span style="color:#658b00">getOrder</span>());
+                <span style="color:#228b22">// 刪除購物車裡的數據
+</span><span style="color:#228b22"></span>                redisTemplate.<span style="color:#658b00">delete</span>(CART_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>());
+                <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+            } <span style="color:#8b008b;font-weight:bold">else</span> {
+                <span style="color:#228b22">//鎖定失敗
+</span><span style="color:#228b22"></span>                String msg = (String) r.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;msg&#34;</span>);
+                <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(msg);
+                <span style="color:#228b22">// responseVo.setCode(3);
+</span><span style="color:#228b22"></span>                <span style="color:#228b22">// return responseVo;
+</span><span style="color:#228b22"></span>            }
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            responseVo.<span style="color:#658b00">setCode</span>(2);
+            <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+        }
+    }
+}
+</code></pre></div><h1 id="複習本地事務">複習本地事務</h1>
+<blockquote>
+<p>參考: <a href="https://yoziming.github.io/post/211230-agg-jdbc-02/">https://yoziming.github.io/post/211230-agg-jdbc-02/</a></p>
+</blockquote>
+<ul>
+<li>原理: 連到SQL的是同一條連結，多個操作完成後用<code>commit()</code>手動提交，否則抓到異常就<code>rollback()</code>
+<ul>
+<li>要嘛全部成功、要嘛全部失敗</li>
+</ul>
+</li>
+<li>隔離級別: 讀未提交、讀已提交、可重複讀、序列化，越嚴格越安全但效率也就越低
+<ul>
+<li>MySQL預設的事務隔離級別為: Repeatable read</li>
+</ul>
+</li>
+<li>Spring封裝成<code>@Transactional</code></li>
+</ul>
+<h3 id="spring事務參數">spring事務參數</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 修改事務隔離級別
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(isolation = Isolation.<span style="color:#658b00">REPEATABLE</span> READ)
+
+<span style="color:#228b22">// 修改傳播級別
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>)
+
+<span style="color:#228b22">// 設定超時
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(timeout = 30)
+</code></pre></div><h4 id="事務傳播">事務傳播</h4>
+<blockquote>
+<p>當事務的方法被嵌套時，例如一個事務方法被另一個事務方法調用時，這個事務方法應該如何進行</p>
+</blockquote>
+<ul>
+<li><code>PROPAGATION_REQUIRED</code>: 如果當前沒有事務，就創建一個新事務，如果當前存在事務，就加入該事務。是最常用的設置</li>
+<li><code>PROPAGATION_SUPPORTS</code>: 支持當前事務，如果當前存在事務，就加入該事務，如果當前不存在事務，就以非事務執行</li>
+<li><code>PROPAGATION_MANDATORY</code>: 支持當前事務，如果當前存在事務，就加入該事務，如果當前不存在事務，就拋出異常</li>
+<li><code>PROPAGATION_REQUIRES_NEW</code>: 創建新事務，無論當前存不存在事務，都創建新事務</li>
+<li><code>PROPAGATION_NOT_SUPPORTED</code>: 以非事務方式執行操作，如果當前存在事務，就把當前事務掛起</li>
+<li><code>PROPAGATION_NEVER</code>: 以非事務方式執行，如果當前存在事務，則拋出異常</li>
+<li><code>PROPAGATION_NESTED</code>: 如果當前存在事務，則在嵌套事務內執行。如果當前沒有事務，則執行與 PROPAGATON_REQUIRED類似的操作</li>
+<li>重點: REQUIRED、REQUIRES_NEW</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">案例<span style="color:#a61717;background-color:#e3d2d2">：</span>b<span style="color:#a61717;background-color:#e3d2d2">、</span>c與a方法是否共用一個事務
+<span style="color:#707a7c">@Transactional</span>(timeout=30)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">a</span>() {
+	b();<span style="color:#228b22">// a事務傳播給了b事務，並且b事務的設置失效
+</span><span style="color:#228b22"></span>	c();<span style="color:#228b22">// c單獨創建一個新事務
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>, timeout=2)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">b</span>() {
+}
+
+<span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRES_NEW</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">c</span>() {
+}
+</code></pre></div><h4 id="坑">坑</h4>
+<ul>
+<li>如果方法a、b、c都在同一個service裏面，事務傳播行為不生效，共享a的事務</li>
+<li>原理: 事務是用代理對象來控制的，內部調用b()、c()就相當於直接調用沒有經過事務，繞過了代理對象</li>
+<li>解決: 使用aspectJ代理，或是注入自己(Spring已經解決了循環依賴問題，透過三級Map)</li>
+</ul>
+<h1 id="分散式交易">分散式交易</h1>
+<blockquote>
+<p>Distributed Transactions，中國稱為分佈式事務</p>
+</blockquote>
+<ul>
+<li>分佈式事務不可用拋異常的方式回滾，因為異常可能是遠程調用產生的異常
+<ul>
+<li>例如遠程已經調用完了，但返回時出現網路故障，本地<code>@Transactional</code>收到異常就算回滾也沒用，因為它可管不到遠程的那些</li>
+</ul>
+</li>
+</ul>
+<h2 id="cap定理">CAP定理</h2>
+<blockquote>
+<p>又稱CAP原則，指的是在分佈式系統中的資料，要嘛犧牲一致性，要嘛犧牲可用性</p>
+</blockquote>
+<p><img src="image-20220130155516174.png" alt="image-20220130155516174"></p>
+<ul>
+<li>
+<p>Consistency 一致性: 在分佈式系統中的所有數據，在同一時刻是否同樣的值</p>
+</li>
+<li>
+<p>Availability 可用性: 集群內一部份機器網絡通信故障，是否還能繼續工作(數據的分布量是否夠多)</p>
+<ul>
+<li>為了分區容錯性，一致性跟可用性只能二選一</li>
+</ul>
+</li>
+<li>
+<p>Partition tolerance 分區容錯性: 分佈式系統總會出現網絡故障，當節點之間不流通的時候就形成分區(Partition)</p>
+<ul>
+<li>分區容錯的意思是，當你一個資料項目只在一個節點中保存，那麼分區出現後，和這個節點不連通的部分就訪問不到這個資料了。這時分區就是無法容忍的</li>
+<li>提高分區容忍性的辦法就是一個資料項目複製到多個節點上，這一資料項目就可能分佈到各個區裡。容忍性就提高了。</li>
+<li>然而，要把資料複製到多個節點，就會帶來一致性的問題，就是多個節點上面的資料可能是不一致的。要保證一致，每次寫操作就都要等待全部節點寫成功，而這等待又會帶來可用性的問題</li>
+<li>總的來說就是，資料存在的節點越多，分區容忍性越高，但要複製更新的資料就越多，一致性就越難保證。為了保證一致性，更新所有節點資料所需要的時間就越長，可用性就會降低</li>
+</ul>
+</li>
+<li>
+<p>為了在分布式系統實現一致性，Lesile Lamport提出了Paxos協議</p>
+<ul>
+<li>很難懂又難用，已過時。由raft算法接棒</li>
+</ul>
+</li>
+</ul>
+<h3 id="raft算法">raft算法</h3>
+<blockquote>
+<p>保證分布式系統中資料的一致性</p>
+</blockquote>
+<ul>
+<li>演示: <a href="http://thesecretlivesofdata.com/raft/">http://thesecretlivesofdata.com/raft/</a></li>
+<li>核心觀念: 領導選舉、日誌複製</li>
+</ul>
+<h4 id="領導選舉">領導選舉</h4>
+<ul>
+<li>
+<p>節點啓動預設都是隨從狀態</p>
+</li>
+<li>
+<p>節點如果沒有監聽到領導者命令自己(找不到大哥，形成分區了)，就轉變成候選者，經過多輪投票產生新領導</p>
+<ul>
+<li>選舉超時: election timeout 隨從變成候選者的時間，150ms and 300ms隨機的</li>
+</ul>
+</li>
+</ul>
+<h4 id="日誌複製">日誌複製</h4>
+<ul>
+<li>客户端通知領導修改一個數據，領導先創建一個節點日誌</li>
+<li>領導將這條日誌 發送給所有所有隨從節點
+<ul>
+<li>隨從節點收到並返回確認消息給領導</li>
+</ul>
+</li>
+<li>領導等待大多數隨從節點的確認消息，領導提交數據，然後通知隨從節點可以提交了
+<ul>
+<li>隨從節點也提交數據。最後領導節點給請求返回提交成功</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>就像我要求開船，船長問孩子們準備好了嗎，孩子們回應船長，船長收到大多數回應就認為可以開船，自己開船並且叫孩子們也開船</p>
+<p>當大家都開船，回應給我說船開了</p>
+</blockquote>
+<ul>
+<li>當分區發生，大多數人的那區可以提交，少部分的那區雖然可能有領導，但由於一直收不到<strong>大多數確認</strong>，所以無法提交</li>
+<li>直到分區重新合併(網路修好了)，舊領導退位，並且跟着舊領導未提交的數據需要回滾，並且同步新領導的日誌</li>
+</ul>
+<h2 id="base理論">BASE理論</h2>
+<blockquote>
+<p>分布式系統下網路故障必定會發生，但仍要讓用戶可用，即保證P和A，捨棄C的強一致性，改為弱一致性</p>
+</blockquote>
+<ul>
+<li>Basically Available 基本可用: 分佈式系統在出現故障的時候，允許損失部分可用性(例如響應時間、功能上的可用性)</li>
+<li>Soft State 軟狀態: 允許系統存在中間狀態，例如告訴用戶正在排隊中</li>
+<li>Eventual Consistency 最終一致性: 系統中的所有數據副本經過一定時間後，最終能夠達到一致的狀態，是一種弱一致性</li>
+</ul>
+<h2 id="分佈式事務幾種方案">分佈式事務幾種方案</h2>
+<h3 id="2pc">2PC</h3>
+<blockquote>
+<p>2 phase commit二階提交</p>
+</blockquote>
+<ul>
+<li>劃分出了事務參與者和協調者的角色，並將整個過程劃分成兩個階段
+<ul>
+<li>第一階段: 事務協調器要求每個涉及到事務的參與者預提交(precommit)此操作，並反映是否可以提交</li>
+<li>第二階段: 所有事務預提交了各自的結果後，由協調者決定最終事務是成功(commit)還是失敗(rollback)</li>
+</ul>
+</li>
+<li>如果有任何一步驟失敗，那麼所有參與者都會被要求回滾</li>
+</ul>
+<h4 id="xa-transaction">XA Transaction</h4>
+<ul>
+<li>由資料庫來完成二階提交</li>
+<li>XA被許多資料庫如Oracle、DB2、SQL Server、MySQL支援</li>
+<li>優勢在於簡單，缺點是面對併發時性能差，故很少用</li>
+</ul>
+<h4 id="at模式">AT模式</h4>
+<blockquote>
+<p>Auto Transiaction 自動事務模式</p>
+</blockquote>
+<ul>
+<li>優勢在於簡單無侵入</li>
+</ul>
+<p><img src="image-20220130165825007.png" alt="image-20220130165825007"></p>
+<h4 id="tcc模式">TCC模式</h4>
+<blockquote>
+<p>需要手動編寫回滾的方法(例如在try+1，就要在cancel-1)</p>
+</blockquote>
+<ul>
+<li>優勢在於高性能，多被採用</li>
+</ul>
+<p><img src="image-20220130165847756.png" alt="image-20220130165847756"></p>
+<hr>
+<h3 id="最大努力通知">最大努力通知</h3>
+<blockquote>
+<p>Best-effort delivery 是一種柔性事務</p>
+</blockquote>
+<p><img src="image-20220130171049026.png" alt="image-20220130171049026"></p>
+<ul>
+<li>
+<p>適用於最終一致性時間敏感度低的業務，且被動方處理結果不影響主動方的處理結果</p>
+</li>
+<li>
+<p>最大努力通知型的實現方案，一般符合以下特點:</p>
+<ul>
+<li>不可靠消息: 主動方在完成業務處理之後，向被動方發送消息，直到通知N次後不再通知，允許消息丟失(不可靠消息)</li>
+<li>定期校對: 被動方根據定時策略，向主動方查詢(主動方提供查詢介面)，恢復丟失的業務消息</li>
+</ul>
+</li>
+<li>
+<p>典型的使用場景: 如銀行通知、商戶通知等</p>
+</li>
+</ul>
+<h3 id="可靠消息最終一致性">可靠消息最終一致性</h3>
+<p><img src="image-20220130171239629.png" alt="image-20220130171239629"></p>
+<ul>
+<li>基於MQ實現</li>
+<li>當事務發起方執行完成本地事務後並發出一條消息，事務參與方(消息消費者)一定能夠接收消息並處理事務成功</li>
+<li>此方案強調的是只要消息發給事務參與方<strong>最終事務要達到一致</strong>(異步確保性)</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-06</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220207-alibaba-java-guide/">
+			下一篇<br>阿里巴巴Java開發手冊
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220206-eu-name/">
+			上一篇<br>生活雜記
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

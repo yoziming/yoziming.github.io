@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Windows 11與WSL</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="順便整理Windows重灌後的事項">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Windows 11與WSL" />
+<meta property="og:description" content="順便整理Windows重灌後的事項" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220226-win11-wsl2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-26T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Windows 11與WSL"/>
+<meta name="twitter:description" content="順便整理Windows重灌後的事項"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#win-11" onclick="onNavClick(`#win-11-nav`)" id="win-11-nav">
+									Win 11
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#chocolatey" onclick="onNavClick(`#chocolatey-nav`)" id="chocolatey-nav">
+									chocolatey
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#wsl" onclick="onNavClick(`#wsl-nav`)" id="wsl-nav">
+									WSL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96windows%e5%b7%a5%e5%85%b7" onclick="onNavClick(`#其他windows工具-nav`)" id="其他windows工具-nav">
+									其他Windows工具
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#win-11" onclick="onNavClick(`#win-11-nav`)" id="win-11-nav">
+									Win 11
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#chocolatey" onclick="onNavClick(`#chocolatey-nav`)" id="chocolatey-nav">
+									chocolatey
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#wsl" onclick="onNavClick(`#wsl-nav`)" id="wsl-nav">
+									WSL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96windows%e5%b7%a5%e5%85%b7" onclick="onNavClick(`#其他windows工具-nav`)" id="其他windows工具-nav">
+									其他Windows工具
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/linux.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Windows 11與WSL
+                    
+                    <div class="post-subtitle">
+                        順便整理Windows重灌後的事項
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-26 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="win-11">Win 11</h1>
+<ul>
+<li>其實單純就是手癢，順便記錄一下重灌後的事項</li>
+</ul>
+<h2 id="chocolatey">chocolatey</h2>
+<ul>
+<li>Windows 上的套件管理工具，類似<code>apt</code>跟<code>brew</code></li>
+<li>安裝使用powershell執行:</li>
+</ul>
+<pre tabindex="0"><code>Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+</code></pre><ul>
+<li>(非必要) 修改安裝路徑，預設是在</li>
+</ul>
+<pre tabindex="0"><code>C:\ProgramData\chocolatey
+</code></pre><ul>
+<li>他其實是一個系統環境變數，所以也可以手動修改，例如</li>
+</ul>
+<pre tabindex="0"><code>setx.exe ChocolateyInstall D:\Chocolatey /M
+</code></pre><ul>
+<li>安裝常用的工具，可以自己做批次腳本執行
+<ul>
+<li><code>-y</code>的意思是自動確認，可以全自動安裝</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>choco install chocolateygui -y
+choco install -y notepadplusplus
+choco install qdir -y
+choco install -y git
+choco install -y hugo
+choco install typora --version=0.11.18.20211125 -y
+choco pin add --name=&quot;'typora'&quot; --version=&quot;'0.11.18.20211125'&quot;
+choco install brave -y
+choco install paint.net -y
+choco install locale-emulator -y
+choco install screentogif.install -y
+choco install foobar2000 -y
+choco install vscode -y
+choco install nodejs-lts --version=14.19.0 -y
+choco pin add --name=&quot;'nodejs-lts'&quot; --version=&quot;'14.19.0'&quot;
+</code></pre><ul>
+<li>也有GUI可以使用，能夠快速查看本地安裝的跟瀏覽市集</li>
+</ul>
+<p><img src="image-20220226201152272.png" alt="image-20220226201152272"></p>
+<h2 id="wsl">WSL</h2>
+<blockquote>
+<p>Windows Subsystem for Linux</p>
+</blockquote>
+<ul>
+<li>微軟官方的虛擬機，到win11變很好用了(win11的兩個重點其實就是WSL跟WSA)</li>
+<li>開啟一個終端，用<code>wsl --list --online</code>查看有哪些版本可以裝</li>
+<li>比如我選擇安裝Ubuntu 20.04 LTS</li>
+</ul>
+<pre tabindex="0"><code>wsl --install -d Ubuntu-20.04
+</code></pre><ul>
+<li>安裝成功它會需要設定帳戶名稱跟密碼，然後就可以進入linux了</li>
+<li>接著安裝gedit，它會一併把WSL GUI要用到的東西都裝了，所以會比較久</li>
+</ul>
+<pre tabindex="0"><code>sudo apt install gedit -y
+</code></pre><ul>
+<li>安裝完後能直接在windows的開始選單內找到，可以像windows的程式一樣直接開啟linux的程式，非常快速、順滑</li>
+<li>用來調測、修改文件整個超方便，媽媽再也不擔心我被vi困住出不來了</li>
+</ul>
+<p><img src="image-20220226201343123.png" alt="image-20220226201343123"></p>
+<ul>
+<li>題外話，裝完WSL記得去把docker desktop的橋接打開</li>
+</ul>
+<p><img src="image-20220226200733700.png" alt="image-20220226200733700"></p>
+<h2 id="其他windows工具">其他Windows工具</h2>
+<ul>
+<li>
+<p>WPD，禁止微軟的各種隱私追蹤、低能的自動更新&hellip;等等</p>
+<ul>
+<li><a href="https://wpd.app/">https://wpd.app/</a></li>
+</ul>
+</li>
+<li>
+<p>Dism++，不用多說，也是專治微軟的各種低能設定，用來重灌、備份也很方便</p>
+<ul>
+<li><a href="https://github.com/Chuyu-Team/Dism-Multi-language/releases/tag/v10.1.1002.1">https://github.com/Chuyu-Team/Dism-Multi-language/releases/tag/v10.1.1002.1</a></li>
+</ul>
+</li>
+<li>
+<p>Potplayer，用俄國geek封裝好的版本，去掉很多不必要的麻煩</p>
+<ul>
+<li><a href="https://potplayer.club/download.html">https://potplayer.club/download.html</a></li>
+</ul>
+</li>
+<li>
+<p>還原舊版工具列、開始、右鍵選單請用<em>StartAllBack</em>(收費軟體)</p>
+<ul>
+<li><a href="https://www.startallback.com/">https://www.startallback.com/</a></li>
+</ul>
+</li>
+<li>
+<p>經典音量混音程式，由於win11把右下的音量改的很低能，而且dism++的修正失效，只好用此替代方案，簡單說就是把系統預設的隱藏掉，然後把這個放到啟動</p>
+<ul>
+<li><a href="https://github.com/popeen/Classic-Volume-Mixer/releases">https://github.com/popeen/Classic-Volume-Mixer/releases</a></li>
+</ul>
+</li>
+<li>
+<p>jpegview，最快最小最好用的看圖程式，原作者棄坑，最近才得知有人接手</p>
+<ul>
+<li><a href="https://github.com/sylikc/jpegview">https://github.com/sylikc/jpegview</a></li>
+</ul>
+</li>
+<li>
+<p>snipaste，最好用的截圖軟體，也可以安裝微軟商店版</p>
+<ul>
+<li><a href="https://zh.snipaste.com/">https://zh.snipaste.com/</a></li>
+</ul>
+</li>
+<li>
+<p>字體必用更紗黑體</p>
+<ul>
+<li><a href="https://github.com/be5invis/Sarasa-Gothic">https://github.com/be5invis/Sarasa-Gothic</a></li>
+<li>抓sarasa-gothic-ttf，不用全部解壓縮，可以挑TC(台灣繁體)的兩個即可，例如:
+<ul>
+<li>sarasa-fixed-tc-regular 常規</li>
+<li>sarasa-mono-tc-regular 等距</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Brave瀏覽器個人常用的一些插件</p>
+</li>
+</ul>
+<p><img src="image-20220226201908793.png" alt="image-20220226201908793"></p>
+<ul>
+<li>油猴腳本主要是瀏覽大陸的網站時好用，可以避免強迫登入或是逼你開APP、各種廣告堵臉的情況，例如:
+<ul>
+<li><strong>CSDN广告完全过滤</strong></li>
+<li>知乎增强</li>
+<li>贴吧全能助手</li>
+<li>Login reminder popup remover</li>
+<li>反正只要不是特別小的站，遇到各種噁心人的關卡的，很多時候都有油猴腳本可以解決問題</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-26</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220224-idea-to-eclipse/">
+			上一篇<br>從IDEA換成Eclipse
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

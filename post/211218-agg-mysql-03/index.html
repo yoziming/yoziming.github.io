@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>多表查詢、JOIN ON連接</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL筆記-03">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="多表查詢、JOIN ON連接" />
+<meta property="og:description" content="尚硅谷MySQL筆記-03" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211218-agg-mysql-03/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-18T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多表查詢、JOIN ON連接"/>
+<meta name="twitter:description" content="尚硅谷MySQL筆記-03"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%a8%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#多表查詢-nav`)" id="多表查詢-nav">
+									多表查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e6%8f%90" onclick="onNavClick(`#前提-nav`)" id="前提-nav">
+									前提
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ad%89%e5%80%bc-vs-%e9%9d%9e%e7%ad%89%e5%80%bc" onclick="onNavClick(`#等值-vs-非等值-nav`)" id="等值-vs-非等值-nav">
+									等值 vs 非等值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e9%80%a3%e6%8e%a5-vs-%e9%9d%9e%e8%87%aa%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#自連接-vs-非自連接-nav`)" id="自連接-vs-非自連接-nav">
+									自連接 vs 非自連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a7%e9%80%a3%e6%8e%a5-vs-%e5%a4%96%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#內連接-vs-外連接-nav`)" id="內連接-vs-外連接-nav">
+									內連接 vs 外連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#join--on" onclick="onNavClick(`#join--on-nav`)" id="join--on-nav">
+									JOIN … ON
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#union" onclick="onNavClick(`#union-nav`)" id="union-nav">
+									UNION
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e5%af%a6%e7%8f%befull-outer-join" onclick="onNavClick(`#mysql實現full-outer-join-nav`)" id="mysql實現full-outer-join-nav">
+									MySQL實現full outer join
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#natural-join%e8%87%aa%e7%84%b6%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#natural-join自然連接-nav`)" id="natural-join自然連接-nav">
+									NATURAL JOIN自然連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#using" onclick="onNavClick(`#using-nav`)" id="using-nav">
+									USING
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%a8%e6%9f%a5%e8%a9%a2%e6%95%88%e7%8e%87%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#多表查詢效率問題-nav`)" id="多表查詢效率問題-nav">
+									多表查詢效率問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%a8%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#多表查詢-nav`)" id="多表查詢-nav">
+									多表查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e6%8f%90" onclick="onNavClick(`#前提-nav`)" id="前提-nav">
+									前提
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ad%89%e5%80%bc-vs-%e9%9d%9e%e7%ad%89%e5%80%bc" onclick="onNavClick(`#等值-vs-非等值-nav`)" id="等值-vs-非等值-nav">
+									等值 vs 非等值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e9%80%a3%e6%8e%a5-vs-%e9%9d%9e%e8%87%aa%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#自連接-vs-非自連接-nav`)" id="自連接-vs-非自連接-nav">
+									自連接 vs 非自連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a7%e9%80%a3%e6%8e%a5-vs-%e5%a4%96%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#內連接-vs-外連接-nav`)" id="內連接-vs-外連接-nav">
+									內連接 vs 外連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#join--on" onclick="onNavClick(`#join--on-nav`)" id="join--on-nav">
+									JOIN … ON
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#union" onclick="onNavClick(`#union-nav`)" id="union-nav">
+									UNION
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e5%af%a6%e7%8f%befull-outer-join" onclick="onNavClick(`#mysql實現full-outer-join-nav`)" id="mysql實現full-outer-join-nav">
+									MySQL實現full outer join
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#natural-join%e8%87%aa%e7%84%b6%e9%80%a3%e6%8e%a5" onclick="onNavClick(`#natural-join自然連接-nav`)" id="natural-join自然連接-nav">
+									NATURAL JOIN自然連接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#using" onclick="onNavClick(`#using-nav`)" id="using-nav">
+									USING
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%a8%e6%9f%a5%e8%a9%a2%e6%95%88%e7%8e%87%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#多表查詢效率問題-nav`)" id="多表查詢效率問題-nav">
+									多表查詢效率問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    多表查詢、JOIN ON連接
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL筆記-03
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-18 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/mysql%E7%B7%9A%E4%B8%8A%E8%AA%B2">MySQL線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="多表查詢">多表查詢</h1>
+<blockquote>
+<p>從多張表格的查詢結果，連結彙整成一個表</p>
+</blockquote>
+<h2 id="前提">前提</h2>
+<ul>
+<li>需要有連接條件
+<ul>
+<li>沒有正確的連接條件，則會變成每個元素都相乘得出超爆量的結果，數學上稱這種集合為<code>笛卡爾積</code>，例如<code>貓、狗</code>X<code>黑、白、黃</code>的排列組合</li>
+</ul>
+</li>
+<li>正確連接舉例:員工表中有部門ID，部門表有部門ID，用其串聯顯示部門名稱</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>e.employee_id,d.department_id,d.department_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e,departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>e.department_id=d.department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>employee_id;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>如果查詢的表中，多個表都有同一字段，必須指明所在的表，此例中<code>d.department_id</code>就是必須指明的，否則報錯
+<ul>
+<li>為了提高效率與可讀性，使用字段最好都指明來源表</li>
+</ul>
+</li>
+<li>最好使用別名，並且一但起了別名就必須使用別名，否則報錯</li>
+<li>當想實現N個表的多表查詢，必須至少有N-1個連接條件，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>e.employee_id,d.department_id,d.department_name,l.city<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e,departments<span style="color:#bbb"> </span>d,locations<span style="color:#bbb"> </span>l<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>e.department_id=d.department_id<span style="color:#bbb"> </span>&amp;&amp;<span style="color:#bbb"> </span>d.location_id=l.location_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>employee_id;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><h2 id="分類">分類</h2>
+<h3 id="等值-vs-非等值">等值 vs 非等值</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 非等值舉例，比如在某個範圍之內
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>e.employee_id,e.last_name,j.grade_level<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e,job_grades<span style="color:#bbb"> </span>j<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>e.salary&gt;=j.lowest_sal<span style="color:#bbb"> </span>&amp;&amp;<span style="color:#bbb"> </span>e.salary&lt;=j.highest_sal<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">ORDER</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>employee_id;<span style="color:#bbb">
+</span></code></pre></div><h3 id="自連接-vs-非自連接">自連接 vs 非自連接</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 自連接舉例，將同一張表拆成2個別名
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>emp.employee_id,emp.last_name,mgr.employee_id,mgr.last_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>emp<span style="color:#bbb"> </span>,employees<span style="color:#bbb"> </span>mgr<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>emp.`manager_id`<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>mgr.`employee_id`;<span style="color:#bbb">
+</span></code></pre></div><h3 id="內連接-vs-外連接">內連接 vs 外連接</h3>
+<ul>
+<li>內連接:就是小時候excel用的<code>VLOOKUP</code>，返回的是兩個表都有匹配到的項目</li>
+<li>外連接:返回包含不匹配的部分，又分左、右、全，還是上圖吧
+<ul>
+<li>當看到描述為查詢&quot;<code>所有</code>&ldquo;的XXX就要想到應該是外連接</li>
+</ul>
+</li>
+</ul>
+<p><img src="2020061017364774.jpg" alt="2020061017364774"></p>
+<ul>
+<li>
+<p>這個用<code>(+)</code>實現左外連是SQL92語法，但MySQL不認，必須使用<code>JOIN ... ON</code>，下面詳述</p>
+</li>
+<li>
+<p>又MySQL不支援<code>FULL OUTER JOIN</code>，還需要關鍵字<code>UNION</code>輔助</p>
+</li>
+</ul>
+<h2 id="實現">實現</h2>
+<blockquote>
+<p>這張圖基本上已經說明一切</p>
+</blockquote>
+<p><img src="1035967-20170907174926054-907920122.jpg" alt="1035967-20170907174926054-907920122"></p>
+<h3 id="join--on">JOIN &hellip; ON</h3>
+<ul>
+<li>用來取代<code>WHERE a=b</code>的用法</li>
+<li>舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">inner</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>d.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>employees.department_id;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>通常把列數較多的放在<code>A</code>然後使用<code>left join</code></li>
+</ul>
+<h3 id="union">UNION</h3>
+<ul>
+<li>可以合併多個SELECT的結果，前提是他們的<strong>列數</strong>與對應的<strong>數據類型</strong>相同</li>
+<li>格式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">column</span>,...<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>table1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">UNION</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">ALL</span>]<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">column</span>,...<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>table2<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>
+<p><code>UNION</code>會去除重複項，<code>UNION ALL</code>則可能有重複的部分</p>
+<ul>
+<li>因為沒檢查就合併所以<code>UNION ALL</code>效率更高</li>
+</ul>
+</li>
+<li>
+<p>如果可重複或確定不存在重複，盡量用<code>UNION ALL</code></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">-<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">範例，返回姓名以</span>A開頭與薪水&gt;<span style="color:#b452cd">5000</span><span style="color:#a61717;background-color:#e3d2d2">的不重複員工名單</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employees.first_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;A%&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">UNION</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>salary&gt;<span style="color:#b452cd">5000</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="mysql實現full-outer-join">MySQL實現full outer join</h3>
+<ul>
+<li>左下圖</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#實現查詢結果是A∪B
+</span><span style="color:#228b22">#用左外的A，union 右外的B
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位清單</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>A表<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">left</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>B表<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">關聯條件</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等其他子句</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">union</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位清單</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>A表<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">right</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>B表<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">關聯條件</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等其他子句</span>;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>右下圖</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">#實現A∪B -  A∩B  或   (A -  A∩B) ∪ （B - A∩B）
+</span><span style="color:#228b22">#使用左外的 (A -  A∩B)  union 右外的（B - A∩B）
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位清單</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>A表<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">left</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>B表<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">關聯條件</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">從表關聯欄位</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">is</span><span style="color:#bbb"> </span><span style="color:#00688b">null</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等其他子句</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">union</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">欄位清單</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>A表<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">right</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>B表<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">關聯條件</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">從表關聯欄位</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">is</span><span style="color:#bbb"> </span><span style="color:#00688b">null</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">等其他子句</span><span style="color:#bbb">
+</span></code></pre></div><h3 id="natural-join自然連接">NATURAL JOIN自然連接</h3>
+<ul>
+<li>自動查詢兩張表中<strong>所有</strong>相同的字段並等值連接，舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">natural</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>departments;<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>如果存在多個相同字段，結果可能比預期的少，因為要每個字段都等值</li>
+</ul>
+<h3 id="using">USING</h3>
+<ul>
+<li>手動指定等值連接同名的字段，舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">using</span><span style="color:#bbb"> </span>(department_id);<span style="color:#bbb">
+</span></code></pre></div><h2 id="多表查詢效率問題">多表查詢效率問題</h2>
+<ul>
+<li>多表連接相當於多層套用for循環，資源消耗嚴重</li>
+<li>超過三個表禁止join</li>
+<li>需要join的字段，數據類型必須一致、保證被關聯的字段有索引</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-18</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211219-agg-mysql-04/">
+			下一篇<br>常用函數:數值/字串/時間/流程控制...等
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211217-agg-mysql-02/">
+			上一篇<br>SQL語言基本關鍵字、排序與分頁
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

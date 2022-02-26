@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>商品屬性維護、庫存模組、基礎篇總結</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-07">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="商品屬性維護、庫存模組、基礎篇總結" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-07" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220124-gulimall-07/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-24T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="商品屬性維護、庫存模組、基礎篇總結"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-07"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7%e7%b6%ad%e8%ad%b7" onclick="onNavClick(`#商品屬性維護-nav`)" id="商品屬性維護-nav">
+									商品屬性維護
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spu%e6%aa%a2%e7%b4%a2" onclick="onNavClick(`#spu檢索-nav`)" id="spu檢索-nav">
+									spu檢索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96spu%e8%a6%8f%e6%a0%bc%e8%88%87%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#獲取spu規格與修改-nav`)" id="獲取spu規格與修改-nav">
+									獲取spu規格與修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sku%e6%aa%a2%e7%b4%a2" onclick="onNavClick(`#sku檢索-nav`)" id="sku檢索-nav">
+									sku檢索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ba%ab%e5%ad%98%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#庫存模組-nav`)" id="庫存模組-nav">
+									庫存模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e7%b5%84%e5%8a%9f%e8%83%bd%e8%aa%aa%e6%98%8e" onclick="onNavClick(`#模組功能說明-nav`)" id="模組功能說明-nav">
+									模組功能說明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b9%be%e5%80%8b%e7%b0%a1%e5%96%ae%e7%9a%84%e6%90%9c%e7%b4%a2" onclick="onNavClick(`#幾個簡單的搜索-nav`)" id="幾個簡單的搜索-nav">
+									幾個簡單的搜索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%88%e4%bd%b5%e6%8e%a1%e8%b3%bc%e9%9c%80%e6%b1%82" onclick="onNavClick(`#合併採購需求-nav`)" id="合併採購需求-nav">
+									合併採購需求
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%a0%98%e5%8f%96%e6%8e%a1%e8%b3%bc%e5%96%ae" onclick="onNavClick(`#領取採購單-nav`)" id="領取採購單-nav">
+									領取採購單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%88%90%e6%8e%a1%e8%b3%bc%e5%96%ae" onclick="onNavClick(`#完成採購單-nav`)" id="完成採購單-nav">
+									完成採購單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e5%9f%ba%e7%a4%8e%e7%af%87%e7%b8%bd%e7%b5%90" onclick="onNavClick(`#分佈式基礎篇總結-nav`)" id="分佈式基礎篇總結-nav">
+									分佈式基礎篇總結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7%e7%b6%ad%e8%ad%b7" onclick="onNavClick(`#商品屬性維護-nav`)" id="商品屬性維護-nav">
+									商品屬性維護
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spu%e6%aa%a2%e7%b4%a2" onclick="onNavClick(`#spu檢索-nav`)" id="spu檢索-nav">
+									spu檢索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96spu%e8%a6%8f%e6%a0%bc%e8%88%87%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#獲取spu規格與修改-nav`)" id="獲取spu規格與修改-nav">
+									獲取spu規格與修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sku%e6%aa%a2%e7%b4%a2" onclick="onNavClick(`#sku檢索-nav`)" id="sku檢索-nav">
+									sku檢索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ba%ab%e5%ad%98%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#庫存模組-nav`)" id="庫存模組-nav">
+									庫存模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e7%b5%84%e5%8a%9f%e8%83%bd%e8%aa%aa%e6%98%8e" onclick="onNavClick(`#模組功能說明-nav`)" id="模組功能說明-nav">
+									模組功能說明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b9%be%e5%80%8b%e7%b0%a1%e5%96%ae%e7%9a%84%e6%90%9c%e7%b4%a2" onclick="onNavClick(`#幾個簡單的搜索-nav`)" id="幾個簡單的搜索-nav">
+									幾個簡單的搜索
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%88%e4%bd%b5%e6%8e%a1%e8%b3%bc%e9%9c%80%e6%b1%82" onclick="onNavClick(`#合併採購需求-nav`)" id="合併採購需求-nav">
+									合併採購需求
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%a0%98%e5%8f%96%e6%8e%a1%e8%b3%bc%e5%96%ae" onclick="onNavClick(`#領取採購單-nav`)" id="領取採購單-nav">
+									領取採購單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%88%90%e6%8e%a1%e8%b3%bc%e5%96%ae" onclick="onNavClick(`#完成採購單-nav`)" id="完成採購單-nav">
+									完成採購單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e4%bd%88%e5%bc%8f%e5%9f%ba%e7%a4%8e%e7%af%87%e7%b8%bd%e7%b5%90" onclick="onNavClick(`#分佈式基礎篇總結-nav`)" id="分佈式基礎篇總結-nav">
+									分佈式基礎篇總結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    商品屬性維護、庫存模組、基礎篇總結
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-07
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-24 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="商品屬性維護">商品屬性維護</h1>
+<h2 id="spu檢索">spu檢索</h2>
+<ul>
+<li>一個快速找到API的方法
+<ul>
+<li>裝上插件<code>RestfulTool</code>，直接貼上文檔給的URL瞬間就能定位</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220118092156668.png" alt="image-20220118092156668"></p>
+<ul>
+<li>SpuInfoServiceImpl.java
+<ul>
+<li>處理多條件模糊搜索</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPageByKeyword</span>(Map&lt;String, Object&gt; params) {
+<span style="color:#228b22">/*
+</span><span style="color:#228b22">key: &#39;華為&#39;,//檢索關鍵字
+</span><span style="color:#228b22">catelogId: 6,//三級分類id
+</span><span style="color:#228b22">brandId: 1,//品牌id
+</span><span style="color:#228b22">status: 0,//商品狀態
+</span><span style="color:#228b22">*/</span>
+    QueryWrapper&lt;SpuInfoEntity&gt; wrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(key) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(key)) {
+        wrapper.<span style="color:#658b00">and</span>(w -&gt; {
+            <span style="color:#228b22">// 模糊搜索為了怕蓋掉下面的所以用and，其實也能放最後就好
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 優先 NOT&gt;AND&gt;OR
+</span><span style="color:#228b22"></span>            w.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;id&#34;</span>, key).<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;spu_name&#34;</span>, key);
+        });
+    }
+    String status = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;status&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(status)) {
+        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;publish_status&#34;</span>, status);
+    }
+    String catelogId = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catelogId&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(catelogId) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(catelogId)) {
+        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;catalog_id&#34;</span>, catelogId);
+    }
+    String brandId = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(brandId) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(brandId)) {
+        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>, brandId);
+    }
+
+    IPage&lt;SpuInfoEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> Query&lt;SpuInfoEntity&gt;().<span style="color:#658b00">getPage</span>(params), wrapper
+    );
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><ul>
+<li>指定時間日期格式，application.properties</li>
+</ul>
+<pre tabindex="0"><code>spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8
+</code></pre><ul>
+<li>另外發現一個小BUG，保存時沒指定status狀態竟然不是0自己修正一下
+<ul>
+<li>不對後來發現是因為Vo用long用接，結果原來他在資料庫與entity中是int所以對不上，BeanUtils對拷失敗</li>
+<li>其實這就存在一個坑點，就是前端校驗做不好，傳來null就算了，如果傳來0或&quot;0&quot;就容易坑</li>
+<li>我感覺當初設計代號碼就該直接避開0，就像HTTP錯誤代碼也沒見用0的，反正int能用到127</li>
+<li>但是預設0有時候又挺方便的，還是看實際狀況吧</li>
+</ul>
+</li>
+</ul>
+<h3 id="獲取spu規格與修改">獲取spu規格與修改</h3>
+<ul>
+<li>AttrController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取spu規格
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/base/listforspu/{spuId}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">baseAttrlistforspu</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;spuId&#34;</span>) Long spuId) {
+    List&lt;ProductAttrValueEntity&gt; entities = productAttrValueService.<span style="color:#658b00">baseAttrListforspu</span>(spuId);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;data&#34;</span>, entities);
+}
+
+<span style="color:#228b22">// 修改spu
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/update/{spuId}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">updateSpuAttr</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;spuId&#34;</span>) Long spuId,
+                       <span style="color:#707a7c">@RequestBody</span> List&lt;ProductAttrValueEntity&gt; entities) {
+    productAttrValueService.<span style="color:#658b00">updateSpuAttr</span>(spuId, entities);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><ul>
+<li>ProductAttrValueServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取spu規格
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> List&lt;ProductAttrValueEntity&gt; <span style="color:#008b45">baseAttrListforspu</span>(Long spuId) {
+    List&lt;ProductAttrValueEntity&gt; attrValueEntityList = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">selectList</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;ProductAttrValueEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;spu_id&#34;</span>, spuId));
+    <span style="color:#8b008b;font-weight:bold">return</span> attrValueEntityList;
+}
+
+<span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 修改商品規格
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param spuId
+</span><span style="color:#228b22"> * @param entities
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateSpuAttr</span>(Long spuId, List&lt;ProductAttrValueEntity&gt; entities) {
+    <span style="color:#228b22">// 1、刪除spuId之前對應的所有屬性
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">delete</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;ProductAttrValueEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;spu_id&#34;</span>, spuId));
+
+    <span style="color:#228b22">// 2、添加商品規格信息
+</span><span style="color:#228b22"></span>    List&lt;ProductAttrValueEntity&gt; collect = entities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
+        item.<span style="color:#658b00">setSpuId</span>(spuId);
+        <span style="color:#8b008b;font-weight:bold">return</span> item;
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+    <span style="color:#228b22">// 批量新增
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">saveBatch</span>(collect);
+}
+</code></pre></div><ul>
+<li>前端又要補一個非空判斷，我感覺這是因為不同版本載入順序不同造成的BUG，暫且不深究</li>
+</ul>
+<p><img src="image-20220118170207649.png" alt="image-20220118170207649"></p>
+<ul>
+<li>另外還有一個小BUG就是多選的屬性，只賦予單個值，且該值不屬於管理的屬性(attr表中可選的values，會出現在下拉表單中)，就是說那個值是save的時候或修改時現加的。會導致它在前端頁面修改屬性時回顯失敗(但資料庫中表格欄位沒錯)</li>
+</ul>
+<h2 id="sku檢索">sku檢索</h2>
+<ul>
+<li>SkuInfoServiceImpl.java
+<ul>
+<li>大同小異，另外從網友那學到mybatisplus自帶的工具包<code>StringUtils.isNotBlank</code>比Spring的<code>!StringUtils.isEmpty</code>更好用</li>
+<li>另外注意價格區間搜索，前端預設傳來是0要做判斷</li>
+<li>我注意到傳來的參數都轉成String處理，而mybatisplus搜索時也是會自動把String轉成資料庫中的對應的格式</li>
+<li>總之都用String乍看沒毛病</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPageByKeyword</span>(Map&lt;String, Object&gt; params) {
+    <span style="color:#228b22">// key: &#39;華為&#39;,//檢索關鍵字
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// catelogId: 0,
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// brandId: 0,
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// min: 0,
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// max: 0
+</span><span style="color:#228b22"></span>    QueryWrapper&lt;SkuInfoEntity&gt; wrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(key) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(key)) {
+        wrapper.<span style="color:#658b00">and</span>(w -&gt; {
+            <span style="color:#228b22">// 模糊搜索為了怕蓋掉下面的所以用and，其實也能放最後就好
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 優先 NOT&gt;AND&gt;OR
+</span><span style="color:#228b22"></span>            w.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;sku_id&#34;</span>, key).<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;sku_name&#34;</span>, key);
+        });
+    }
+    String catelogId = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catelogId&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(catelogId) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(catelogId)) {
+        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;catalog_id&#34;</span>, catelogId);
+    }
+    String brandId = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(brandId) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(brandId)) {
+        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>, brandId);
+    }
+    String min = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;min&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(min) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(min).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; 0) {
+        wrapper.<span style="color:#658b00">ge</span>(<span style="color:#cd5555">&#34;price&#34;</span>, min);
+    }
+    String max = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;max&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(max) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(max).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; 0) {
+        wrapper.<span style="color:#658b00">le</span>(<span style="color:#cd5555">&#34;price&#34;</span>, max);
+    }
+
+    IPage&lt;SkuInfoEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(<span style="color:#8b008b;font-weight:bold">new</span> Query&lt;SkuInfoEntity&gt;().<span style="color:#658b00">getPage</span>(params), wrapper);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><hr>
+<h1 id="庫存模組">庫存模組</h1>
+<p>複習一下開新模組設定</p>
+<ul>
+<li>啟動類註解掃描Mapper位置、開啟交易、開啟服務發現</li>
+<li>其實交易跟Mapper可以省略</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@EnableTransactionManagement</span>
+<span style="color:#707a7c">@MapperScan</span>(<span style="color:#cd5555">&#34;yozi.mall.ware.dao&#34;</span>)
+<span style="color:#707a7c">@EnableDiscoveryClient</span>
+<span style="color:#707a7c">@SpringBootApplication</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WareApplication</span> {
+</code></pre></div><ul>
+<li>application.properties
+<ul>
+<li>我感覺還是.properties好用，不用在那邊對齊，複製貼上也快</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 服務註冊發現相關
+server.port=11000
+server.servlet.session.timeout=30m
+spring.application.name=ware
+spring.cloud.nacos.discovery.server-addr=localhost:8848
+spring.cloud.nacos.config.server-addr=localhost:8848
+
+# DB
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.url=jdbc:mysql://localhost:3306/gulimall_wms?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# mybatis-plus設定
+mybatis-plus.mapper-locations=classpath:/mapper/**/*.xml
+mybatis-plus.global-config.db-config.id-type=auto
+
+# json日期時間格式
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8
+</code></pre><ul>
+<li>分頁插件，直接複製貼上
+<ul>
+<li>我感覺這種應該給common管理</li>
+</ul>
+</li>
+<li>回去設定網關規則，不要手賤轉換，.properties的數組很悲劇</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#8b008b;font-weight:bold">spring</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">cloud</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">gateway</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">routes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>product_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://product<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/product/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>member_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://member<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/member/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>ware_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://ware<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/ware/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>upload_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://third-party<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/third-party/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/third-party/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>admin_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://renren-fast<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/(?&lt;segment&gt;.*),/renren-fast/$\{segment}<span style="color:#bbb">
+</span></code></pre></div><h2 id="模組功能說明">模組功能說明</h2>
+<ul>
+<li>表與後台的對應</li>
+</ul>
+<p><img src="image-20220118122024322.png" alt="image-20220118122024322"></p>
+<ul>
+<li>基本單位是商品庫存id(wms_ware_sku表)，與一個商品sku_id對應，還有所在倉庫(關聯wms_ware_info表)與數量等等</li>
+<li>從商品庫存id新增採購需求(wms_purchase_detail表)，多個採購需求id彙整成一個採購單id(wms_purchase表)，這邊包含採購人、總金額等等</li>
+<li>從採購單id對應到庫存工作單(wms_ware_order_task)，這邊有採購單的配送狀態、物流、付款方式、任務進度等等，還能查看詳細採購的是那些sku(wms_ware_order_task_detail表)</li>
+</ul>
+<p><img src="image-20220118123014788.png" alt="image-20220118123014788"></p>
+<h2 id="幾個簡單的搜索">幾個簡單的搜索</h2>
+<ul>
+<li>搜索倉庫列表，WareInfoServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPage</span>(Map&lt;String, Object&gt; params) {
+    QueryWrapper&lt;WareInfoEntity&gt; queryWrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(key)) {
+        queryWrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;id&#34;</span>, key)
+                .<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;name&#34;</span>, key)
+                .<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;address&#34;</span>, key)
+                .<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;areacode&#34;</span>, key);
+    }
+    IPage&lt;WareInfoEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> Query&lt;WareInfoEntity&gt;().<span style="color:#658b00">getPage</span>(params),
+            queryWrapper
+    );
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><ul>
+<li>搜索採購需求，PurchaseDetailServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPage</span>(Map&lt;String, Object&gt; params) {
+    QueryWrapper&lt;PurchaseDetailEntity&gt; queryWrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;PurchaseDetailEntity&gt;();
+
+    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(key)) {
+        queryWrapper.<span style="color:#658b00">and</span>(wrapper -&gt; {
+            wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;purchase_id&#34;</span>, key).<span style="color:#658b00">or</span>().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;sku_id&#34;</span>, key);
+        });
+    }
+    String status = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;status&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(status) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(status)) {
+        queryWrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, status);
+    }
+    String wareId = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;wareId&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(wareId) &amp;&amp; !<span style="color:#cd5555">&#34;0&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(wareId)) {
+        queryWrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;ware_id&#34;</span>, wareId);
+    }
+    IPage&lt;PurchaseDetailEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> Query&lt;PurchaseDetailEntity&gt;().<span style="color:#658b00">getPage</span>(params),
+            queryWrapper
+    );
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><ul>
+<li>PurchaseServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 查詢未領取的採購單
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPageUnreceive</span>(Map&lt;String, Object&gt; params) {
+    QueryWrapper&lt;PurchaseEntity&gt; queryWrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;PurchaseEntity&gt;()
+            .<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 0).<span style="color:#658b00">or</span>().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 1);
+    IPage&lt;PurchaseEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(<span style="color:#8b008b;font-weight:bold">new</span> Query&lt;PurchaseEntity&gt;().<span style="color:#658b00">getPage</span>(params), queryWrapper);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><h2 id="合併採購需求">合併採購需求</h2>
+<ul>
+<li>PurchaseController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 合併採購需求
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/merge&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">merge</span>(<span style="color:#707a7c">@RequestBody</span> MergeVo mergeVo) {
+    purchaseService.<span style="color:#658b00">mergePurchase</span>(mergeVo);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><ul>
+<li>PurchaseServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 合併採購需求
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">mergePurchase</span>(MergeVo mergeVo) {
+    Long purchaseId = mergeVo.<span style="color:#658b00">getPurchaseId</span>();
+    <span style="color:#228b22">// 沒有選擇任何【採購單】，將自動創建新單進行合併。
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (purchaseId == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        PurchaseEntity purchaseEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseEntity();
+        <span style="color:#228b22">// 設置採購單的預設狀態
+</span><span style="color:#228b22"></span>        purchaseEntity.<span style="color:#658b00">setStatus</span>(WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">CREATED</span>.<span style="color:#658b00">getCode</span>());
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">save</span>(purchaseEntity);
+        <span style="color:#228b22">// 獲取新建採購單的id
+</span><span style="color:#228b22"></span>        purchaseId = purchaseEntity.<span style="color:#658b00">getId</span>();
+    }
+    <span style="color:#228b22">// 取出前端來的採購需求
+</span><span style="color:#228b22"></span>    List&lt;Long&gt; items = mergeVo.<span style="color:#658b00">getItems</span>();
+
+    <span style="color:#228b22">// 確認採購單狀態是0,1(還沒買)才可以合併
+</span><span style="color:#228b22"></span>    Collection&lt;PurchaseDetailEntity&gt; purchaseDetailEntities = purchaseDetailService.<span style="color:#658b00">listByIds</span>(items);
+    purchaseDetailEntities.<span style="color:#658b00">forEach</span>((item) -&gt; {
+        <span style="color:#8b008b;font-weight:bold">if</span> (!item.<span style="color:#658b00">getStatus</span>().<span style="color:#658b00">equals</span>(WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">CREATED</span>.<span style="color:#658b00">getCode</span>())
+                &amp;&amp; !item.<span style="color:#658b00">getStatus</span>().<span style="color:#658b00">equals</span>(WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">ASSIGNED</span>.<span style="color:#658b00">getCode</span>())) {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> IllegalArgumentException(<span style="color:#cd5555">&#34;正在採購，無法進行分配&#34;</span>);
+        }
+    });
+    <span style="color:#228b22">// lambda表達式說要final變數
+</span><span style="color:#228b22"></span>    Long finalPurchaseId = purchaseId;
+    <span style="color:#228b22">// 改變採購需求的狀態，併到這單上
+</span><span style="color:#228b22"></span>    List&lt;PurchaseDetailEntity&gt; collect = items.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(i -&gt; {
+        PurchaseDetailEntity purchaseDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseDetailEntity();
+        purchaseDetailEntity.<span style="color:#658b00">setId</span>(i);
+        purchaseDetailEntity.<span style="color:#658b00">setPurchaseId</span>(finalPurchaseId);
+        purchaseDetailEntity.<span style="color:#658b00">setStatus</span>(WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">ASSIGNED</span>.<span style="color:#658b00">getCode</span>());
+        <span style="color:#8b008b;font-weight:bold">return</span> purchaseDetailEntity;
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    <span style="color:#228b22">//批量修改
+</span><span style="color:#228b22"></span>    purchaseDetailService.<span style="color:#658b00">updateBatchById</span>(collect);
+
+    PurchaseEntity purchaseEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseEntity();
+    purchaseEntity.<span style="color:#658b00">setId</span>(purchaseId);
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(purchaseEntity);
+}
+</code></pre></div><ul>
+<li>受不了一直<code>new Date()</code>，讓日期自動填充
+<ul>
+<li><a href="https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/#%e8%87%aa%e5%8b%95%e5%a1%ab%e5%85%85">https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/#%e8%87%aa%e5%8b%95%e5%a1%ab%e5%85%85</a></li>
+</ul>
+</li>
+<li>常數類 WareConstant.java
+<ul>
+<li>才知道原來可以在一個類中寫多個enum</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WareConstant</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">enum</span> PurchaseStatusEnum {
+        CREATED(0, <span style="color:#cd5555">&#34;新建&#34;</span>),
+        ASSIGNED(1, <span style="color:#cd5555">&#34;已分配&#34;</span>),
+        RECEIVE(2, <span style="color:#cd5555">&#34;已領取&#34;</span>),
+        FINISH(3, <span style="color:#cd5555">&#34;已完成&#34;</span>),
+        HASERROR(4, <span style="color:#cd5555">&#34;有異常&#34;</span>),
+        ;
+    }
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">enum</span> PurchaseDetailStatusEnum {
+        CREATED(0, <span style="color:#cd5555">&#34;新建&#34;</span>),
+        ASSIGNED(1, <span style="color:#cd5555">&#34;已分配&#34;</span>),
+        BUYING(2, <span style="color:#cd5555">&#34;正在採購&#34;</span>),
+        FINISH(3, <span style="color:#cd5555">&#34;已完成&#34;</span>),
+        HASERROR(4, <span style="color:#cd5555">&#34;採購失敗&#34;</span>),
+</code></pre></div><ul>
+<li>這裡前端有一個BUG，當合併某些需求到採購單後，產生的採購單id，在ROM中為purchaseId，會汙染到新增完顯示的預設值(假象)</li>
+<li>把這條ban了就好了，反正本來post就沒要傳接那麼多東西</li>
+</ul>
+<p><img src="image-20220118143537293.png" alt="image-20220118143537293"></p>
+<h2 id="領取採購單">領取採購單</h2>
+<ul>
+<li>暫時先假裝採購人員有個app之類能夠領取，驗證那些先不管，發給後端的就是採購單id構成的數組[]</li>
+</ul>
+<p><img src="image-20220118144431155.png" alt="image-20220118144431155"></p>
+<ul>
+<li>PurchaseController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 領取採購單
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/received&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">received</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;Long&gt; ids) {
+    purchaseService.<span style="color:#658b00">received</span>(ids);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><ul>
+<li>PurchaseServiceImpl.java
+<ul>
+<li>//TODO 這裡有邏輯漏洞，沒分配也能領(員工自主搶活幹?)，會導致採購人那些欄位都是空的卻進入採購狀態，先留著吧</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 領取採購單
+</span><span style="color:#228b22"> * @param ids 採購單的id
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">received</span>(List&lt;Long&gt; ids) {
+
+    List&lt;PurchaseEntity&gt; collect = ids.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(<span style="color:#8b008b;font-weight:bold">this</span>::getById)
+            .<span style="color:#658b00">filter</span>(
+                    <span style="color:#228b22">// 1、確認當前採購單是新建或者是已分配狀態
+</span><span style="color:#228b22"></span>                    item -&gt; item.<span style="color:#658b00">getStatus</span>() == WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">CREATED</span>.<span style="color:#658b00">getCode</span>() ||
+                            item.<span style="color:#658b00">getStatus</span>() == WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">ASSIGNED</span>.<span style="color:#658b00">getCode</span>())
+            .<span style="color:#658b00">peek</span>(
+                    <span style="color:#228b22">// 改變採購單狀態為已領取
+</span><span style="color:#228b22"></span>                    item -&gt; {
+                        item.<span style="color:#658b00">setStatus</span>(WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">RECEIVE</span>.<span style="color:#658b00">getCode</span>());
+                    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    <span style="color:#228b22">// 保存
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateBatchById</span>(collect);
+
+    <span style="color:#228b22">// 改變採購需求的狀態
+</span><span style="color:#228b22"></span>    collect.<span style="color:#658b00">forEach</span>((item) -&gt; {
+        <span style="color:#228b22">// 用採購單號查其下的採購需求，且status&lt;2(還沒去買)的
+</span><span style="color:#228b22"></span>        QueryWrapper&lt;PurchaseDetailEntity&gt; wrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;PurchaseDetailEntity&gt;();
+        wrapper.<span style="color:#658b00">and</span>(q -&gt; {
+            q.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;purchase_id&#34;</span>, item.<span style="color:#658b00">getId</span>());
+            q.<span style="color:#658b00">lt</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 2);
+        });
+        List&lt;PurchaseDetailEntity&gt; list = purchaseDetailService.<span style="color:#658b00">list</span>(wrapper);
+
+        List&lt;PurchaseDetailEntity&gt; detailEntities = list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(entity -&gt; {
+            <span style="color:#228b22">// 更新要拿出id
+</span><span style="color:#228b22"></span>            PurchaseDetailEntity purchaseDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseDetailEntity();
+            purchaseDetailEntity.<span style="color:#658b00">setId</span>(entity.<span style="color:#658b00">getId</span>());
+            purchaseDetailEntity.<span style="color:#658b00">setStatus</span>(WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">BUYING</span>.<span style="color:#658b00">getCode</span>());
+            <span style="color:#8b008b;font-weight:bold">return</span> purchaseDetailEntity;
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+        purchaseDetailService.<span style="color:#658b00">updateBatchById</span>(detailEntities);
+    });
+}
+</code></pre></div><h2 id="完成採購單">完成採購單</h2>
+<ul>
+<li>API與Vo</li>
+</ul>
+<p><img src="image-20220118144826792.png" alt="image-20220118144826792"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">請求body，第一個id是採購單號，裡面的itemId是採購需求號</span>
+{
+  <span style="color:#8b008b;font-weight:bold">&#34;id&#34;</span>: <span style="color:#b452cd">8</span>,
+  <span style="color:#8b008b;font-weight:bold">&#34;items&#34;</span>: [{<span style="color:#8b008b;font-weight:bold">&#34;itemId&#34;</span>:<span style="color:#b452cd">16</span>,<span style="color:#8b008b;font-weight:bold">&#34;status&#34;</span>:<span style="color:#b452cd">3</span>,<span style="color:#8b008b;font-weight:bold">&#34;reason&#34;</span>:<span style="color:#cd5555">&#34;&#34;</span>},{<span style="color:#8b008b;font-weight:bold">&#34;itemId&#34;</span>:<span style="color:#b452cd">17</span>,<span style="color:#8b008b;font-weight:bold">&#34;status&#34;</span>:<span style="color:#b452cd">4</span>,<span style="color:#8b008b;font-weight:bold">&#34;reason&#34;</span>:<span style="color:#cd5555">&#34;缺貨&#34;</span>}]
+}
+</code></pre></div><ul>
+<li>PurchaseServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 完成採購單
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param doneVo
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">done</span>(PurchaseDoneVo doneVo) {
+
+    <span style="color:#228b22">// 採購單id
+</span><span style="color:#228b22"></span>    Long id = doneVo.<span style="color:#658b00">getId</span>();
+    <span style="color:#228b22">// TODO 應該是要先判斷採購單與採購需求是否完成才能往下
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 改變採購需求的狀態
+</span><span style="color:#228b22"></span>    Boolean flag = <span style="color:#8b008b;font-weight:bold">true</span>;
+    List&lt;PurchaseItemDoneVo&gt; items = doneVo.<span style="color:#658b00">getItems</span>();
+    List&lt;PurchaseDetailEntity&gt; updates = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">for</span> (PurchaseItemDoneVo item : items) {
+        PurchaseDetailEntity purchaseDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseDetailEntity();
+        <span style="color:#228b22">// 採購需求失敗
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (item.<span style="color:#658b00">getStatus</span>() == WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">HASERROR</span>.<span style="color:#658b00">getCode</span>()) {
+            flag = <span style="color:#8b008b;font-weight:bold">false</span>;
+            purchaseDetailEntity.<span style="color:#658b00">setStatus</span>(item.<span style="color:#658b00">getStatus</span>());
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            purchaseDetailEntity.<span style="color:#658b00">setStatus</span>(WareConstant.<span style="color:#658b00">PurchaseDetailStatusEnum</span>.<span style="color:#658b00">FINISH</span>.<span style="color:#658b00">getCode</span>());
+            <span style="color:#228b22">// 將成功採購的進行入庫
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 查出當前採購項的詳細信息，入庫
+</span><span style="color:#228b22"></span>            PurchaseDetailEntity entity = purchaseDetailService.<span style="color:#658b00">getById</span>(item.<span style="color:#658b00">getItemId</span>());
+            wareSkuService.<span style="color:#658b00">addStock</span>(entity.<span style="color:#658b00">getSkuId</span>(), entity.<span style="color:#658b00">getWareId</span>(), entity.<span style="color:#658b00">getSkuNum</span>());
+        }
+        purchaseDetailEntity.<span style="color:#658b00">setId</span>(item.<span style="color:#658b00">getItemId</span>());
+        <span style="color:#228b22">// 裝進更新的list
+</span><span style="color:#228b22"></span>        updates.<span style="color:#658b00">add</span>(purchaseDetailEntity);
+    }
+    <span style="color:#228b22">// 批量更新
+</span><span style="color:#228b22"></span>    purchaseDetailService.<span style="color:#658b00">updateBatchById</span>(updates);
+
+    <span style="color:#228b22">// 改變採購單狀態
+</span><span style="color:#228b22"></span>    PurchaseEntity purchaseEntity = <span style="color:#8b008b;font-weight:bold">new</span> PurchaseEntity();
+    purchaseEntity.<span style="color:#658b00">setId</span>(id);
+    purchaseEntity.<span style="color:#658b00">setStatus</span>(flag ? WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">FINISH</span>.<span style="color:#658b00">getCode</span>() :
+            WareConstant.<span style="color:#658b00">PurchaseStatusEnum</span>.<span style="color:#658b00">HASERROR</span>.<span style="color:#658b00">getCode</span>());
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(purchaseEntity);
+}
+</code></pre></div><ul>
+<li>WareSkuServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addStock</span>(Long skuId, Long wareId, Integer skuNum) {
+
+    <span style="color:#228b22">// 某倉庫中的某sku應該是唯一的
+</span><span style="color:#228b22"></span>    WareSkuEntity isExistWareSku = wareSkuDao.<span style="color:#658b00">selectOne</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;WareSkuEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;sku_id&#34;</span>, skuId).<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;ware_id&#34;</span>, wareId));
+    <span style="color:#8b008b;font-weight:bold">if</span> (isExistWareSku == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// 判讀如果沒有這個庫存記錄，新增
+</span><span style="color:#228b22"></span>        WareSkuEntity wareSkuEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareSkuEntity();
+        wareSkuEntity.<span style="color:#658b00">setSkuId</span>(skuId);
+        wareSkuEntity.<span style="color:#658b00">setStock</span>(skuNum);
+        wareSkuEntity.<span style="color:#658b00">setWareId</span>(wareId);
+        wareSkuEntity.<span style="color:#658b00">setStockLocked</span>(0);
+        <span style="color:#228b22">// 遠端查找setSkuName
+</span><span style="color:#228b22"></span>        R info = productFeignService.<span style="color:#658b00">info</span>(skuId);
+        Map&lt;String, Object&gt; data = (Map&lt;String, Object&gt;) info.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuInfo&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == 0) {
+            wareSkuEntity.<span style="color:#658b00">setSkuName</span>((String) data.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuName&#34;</span>));
+        }
+        <span style="color:#228b22">// 添加庫存信息
+</span><span style="color:#228b22"></span>        wareSkuDao.<span style="color:#658b00">insert</span>(wareSkuEntity);
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 修改庫存信息
+</span><span style="color:#228b22"></span>        Integer oldStock = isExistWareSku.<span style="color:#658b00">getStock</span>();
+        wareSkuDao.<span style="color:#658b00">addStock</span>(skuId, wareId, oldStock + skuNum);
+    }
+}
+</code></pre></div><ul>
+<li>這邊又造了一個Feign接口，挺簡單的，在啟動類註解enable&hellip;</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@FeignClient</span>(<span style="color:#cd5555">&#34;product&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ProductFeignService</span> {
+
+    <span style="color:#228b22">// 完成採購需求時，存表需要sku_name
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/product/skuinfo/info/{skuId}&#34;</span>)
+    R <span style="color:#008b45">info</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId);
+
+}
+</code></pre></div><ul>
+<li>更新庫存數量寫了一個SQL，原來可以快速生成@Param</li>
+</ul>
+<p><img src="image-20220118150055379.png" alt="image-20220118150055379"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;update</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;addStock&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        UPDATE wms_ware_sku
+        SET stock = #{skuNum}
+        WHERE sku_id = #{skuId}
+          AND ware_id = #{wareId}
+    <span style="color:#8b008b;font-weight:bold">&lt;/update&gt;</span>
+</code></pre></div><h1 id="分佈式基礎篇總結">分佈式基礎篇總結</h1>
+<ul>
+<li>
+<p>分佈式基礎概念</p>
+<ul>
+<li>微服務、註冊中心（Nacos）、配置中心（Nacos Cofig）、遠程調用、Feign、網關</li>
+</ul>
+</li>
+<li>
+<p>基礎開發</p>
+<ul>
+<li>SpringBoot2.0、SpringCloud、Mybatis-Plus、Vue組件化、雲存儲</li>
+</ul>
+</li>
+<li>
+<p>環境</p>
+<ul>
+<li>Vagrant、Linux、Docker、MySQL、Redis、逆向工程&amp;人人開源</li>
+</ul>
+</li>
+<li>
+<p>開發規範</p>
+<ul>
+<li>數據校驗JSR303、全局異常處理、全局統一返回、跨域處理</li>
+<li>枚舉狀態、業務狀態、VO與TO與PO劃分、邏輯刪除</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/">
+			下一篇<br>ElasticSearch與Spring整合
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220123-array-list-polymorphism/">
+			上一篇<br>array、list多型與BaseMapper之謎
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

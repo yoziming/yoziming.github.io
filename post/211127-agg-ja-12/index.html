@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>繼承:方法重寫、關鍵字super與物件實例化過程</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaSE筆記-12">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="繼承:方法重寫、關鍵字super與物件實例化過程" />
+<meta property="og:description" content="尚硅谷JavaSE筆記-12" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211127-agg-ja-12/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-11-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-27T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="繼承:方法重寫、關鍵字super與物件實例化過程"/>
+<meta name="twitter:description" content="尚硅谷JavaSE筆記-12"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b9%bc%e6%89%bf" onclick="onNavClick(`#繼承-nav`)" id="繼承-nav">
+									繼承
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9b%ae%e7%9a%84" onclick="onNavClick(`#目的-nav`)" id="目的-nav">
+									目的
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%bc%e5%bc%8f" onclick="onNavClick(`#格式-nav`)" id="格式-nav">
+									格式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%8a%e9%99%90%e4%bf%ae%e9%a3%be%e7%ac%a6protected%e7%9a%84%e6%87%89%e7%94%a8" onclick="onNavClick(`#權限修飾符protected的應用-nav`)" id="權限修飾符protected的應用-nav">
+									權限修飾符protected的應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e7%9a%84%e9%87%8d%e5%af%ab" onclick="onNavClick(`#方法的重寫-nav`)" id="方法的重寫-nav">
+									方法的重寫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97super" onclick="onNavClick(`#關鍵字super-nav`)" id="關鍵字super-nav">
+									關鍵字super
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e5%b1%ac%e6%80%a7%e8%88%87%e6%96%b9%e6%b3%95" onclick="onNavClick(`#調用屬性與方法-nav`)" id="調用屬性與方法-nav">
+									調用屬性與方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%a7%8b%e9%80%a0%e5%99%a8" onclick="onNavClick(`#調用構造器-nav`)" id="調用構造器-nav">
+									調用構造器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e9%a1%9e%e7%89%a9%e4%bb%b6%e5%af%a6%e4%be%8b%e5%8c%96%e7%9a%84%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#子類物件實例化的過程-nav`)" id="子類物件實例化的過程-nav">
+									子類物件實例化的過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%9e%e7%b5%90%e6%9e%9c%e4%b8%8a%e4%be%86%e7%9c%8b" onclick="onNavClick(`#從結果上來看-nav`)" id="從結果上來看-nav">
+									從結果上來看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9e%e9%81%8e%e7%a8%8b%e4%b8%8a%e4%be%86%e7%9c%8b" onclick="onNavClick(`#從過程上來看-nav`)" id="從過程上來看-nav">
+									從過程上來看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b9%bc%e6%89%bf" onclick="onNavClick(`#繼承-nav`)" id="繼承-nav">
+									繼承
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9b%ae%e7%9a%84" onclick="onNavClick(`#目的-nav`)" id="目的-nav">
+									目的
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%bc%e5%bc%8f" onclick="onNavClick(`#格式-nav`)" id="格式-nav">
+									格式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%ac%8a%e9%99%90%e4%bf%ae%e9%a3%be%e7%ac%a6protected%e7%9a%84%e6%87%89%e7%94%a8" onclick="onNavClick(`#權限修飾符protected的應用-nav`)" id="權限修飾符protected的應用-nav">
+									權限修飾符protected的應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e7%9a%84%e9%87%8d%e5%af%ab" onclick="onNavClick(`#方法的重寫-nav`)" id="方法的重寫-nav">
+									方法的重寫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e9%8d%b5%e5%ad%97super" onclick="onNavClick(`#關鍵字super-nav`)" id="關鍵字super-nav">
+									關鍵字super
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e5%b1%ac%e6%80%a7%e8%88%87%e6%96%b9%e6%b3%95" onclick="onNavClick(`#調用屬性與方法-nav`)" id="調用屬性與方法-nav">
+									調用屬性與方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%a7%8b%e9%80%a0%e5%99%a8" onclick="onNavClick(`#調用構造器-nav`)" id="調用構造器-nav">
+									調用構造器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e9%a1%9e%e7%89%a9%e4%bb%b6%e5%af%a6%e4%be%8b%e5%8c%96%e7%9a%84%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#子類物件實例化的過程-nav`)" id="子類物件實例化的過程-nav">
+									子類物件實例化的過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%9e%e7%b5%90%e6%9e%9c%e4%b8%8a%e4%be%86%e7%9c%8b" onclick="onNavClick(`#從結果上來看-nav`)" id="從結果上來看-nav">
+									從結果上來看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9e%e9%81%8e%e7%a8%8b%e4%b8%8a%e4%be%86%e7%9c%8b" onclick="onNavClick(`#從過程上來看-nav`)" id="從過程上來看-nav">
+									從過程上來看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    繼承:方法重寫、關鍵字super與物件實例化過程
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaSE筆記-12
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-27 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javase%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaSE線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="繼承">繼承</h1>
+<h3 id="目的">目的</h3>
+<ul>
+<li>減少代碼冗餘、提高復用性</li>
+<li>便於功能擴展</li>
+<li>為多態鋪路</li>
+</ul>
+<h3 id="格式">格式</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> <span style="color:#8b008b;font-weight:bold">extends</span> B{} <span style="color:#228b22">// A延展了B
+</span><span style="color:#228b22"></span>A:子類<span style="color:#a61717;background-color:#e3d2d2">、</span>派生類<span style="color:#a61717;background-color:#e3d2d2">、</span>subclass
+B:父類<span style="color:#a61717;background-color:#e3d2d2">、</span>超類<span style="color:#a61717;background-color:#e3d2d2">、</span>基類<span style="color:#a61717;background-color:#e3d2d2">、</span>superclass
+</code></pre></div><p>繪圖時，通常用<strong>空心箭頭從子指向父</strong>，例如:Student→Person，表示學生類繼承了人類</p>
+<h3 id="特性">特性</h3>
+<ul>
+<li>A繼承B之後，子類A就獲取了B聲明的所有屬性與方法，<strong>包含了私有(private)的</strong>，<strong>但是</strong>由於封裝性的影響，<strong>子類無法直接調用</strong>父類私有(private)的屬性與方法</li>
+<li>不允許多重繼承(一人只能有一個老爸)</li>
+<li>可以多層繼承(允許有孫子，孫子也會繼承爺爺的特性)</li>
+<li>一個父類可以有多個子類(允許家族開枝散葉)</li>
+<li>所有類都繼承自<code>java.lang.Object</code>，換言之所有類都具有<code>Object類</code>的特性</li>
+</ul>
+<h3 id="權限修飾符protected的應用">權限修飾符protected的應用</h3>
+<ul>
+<li>之前提過<code>protected</code>的範圍是<strong>不同包的子類</strong>也能用，就是應在這了
+<ul>
+<li>實際發開中用的比較少一點</li>
+</ul>
+</li>
+</ul>
+<h1 id="方法的重寫">方法的重寫</h1>
+<ul>
+<li>
+<p>子類繼承父類後，對父類<strong>同名同參數</strong>的方法，進行覆蓋</p>
+</li>
+<li>
+<p>子類重寫的方法權限修飾符必須不小於父類被重寫的方法</p>
+<ul>
+<li>白話:不能把公車私有化，權限範圍不能縮小</li>
+<li>注意:不能重寫父類中聲明為<code>private</code>的方法(本身就見不到)，可以在子類中硬寫一個同名的方法，但那就不是構成重寫</li>
+</ul>
+</li>
+<li>
+<p>若父類被重寫的方法返回值是<code>void</code>，子類重寫的方法也必須返回<code>void</code></p>
+</li>
+<li>
+<p>若父類被重寫的方法返回值是A類型，子類重寫的方法返回值可以是A類或A類的子類</p>
+<ul>
+<li>舉例:父類返回值是動物類，子類可以重寫返回動物類或貓類狗類</li>
+</ul>
+</li>
+<li>
+<p>若父類被重寫的方法返回值是基本數據類型，子類重寫的方法返回值必須是相同基本數據類</p>
+<ul>
+<li>舉例:父類返回<code>double</code>子類也必須是<code>double</code>，<strong>不能</strong>是<code>int</code>期待他自動類型提升</li>
+</ul>
+</li>
+<li>
+<p>拋出異常(<code>throws</code>)的規則與返回值相同</p>
+</li>
+<li>
+<p>以上白話小結:<strong>權限不能小於爸爸、返回值不能大於爸爸</strong></p>
+</li>
+<li>
+<p>補充:子類與父類同名同參數的方法要嘛都聲明為非<code>static</code>的(考慮重寫)，要嘛都聲明為<code>static</code>的(不是重寫，靜態類的方法不能被覆蓋)</p>
+</li>
+</ul>
+<h1 id="關鍵字super">關鍵字super</h1>
+<p>用來表示<strong>父類中的</strong>屬性、方法、構造器</p>
+<h3 id="調用屬性與方法">調用屬性與方法</h3>
+<ul>
+<li>可以在子類的方法或構造中，用&quot;<code>super.方法</code>&ldquo;或&rdquo;<code>super.屬性</code>&ldquo;來顯式調用父類中聲明的屬性或方法</li>
+<li>就近原則，比如有人很欠揍的在A01類A02類A03類三代中都命名了同為<code>id</code>的屬性，我在A03調<code>super.id</code>會調到A02的<code>id</code></li>
+<li>方法則基本上就是用來區分重寫的子類方法，跟原先父類的同名方法</li>
+<li><code>super</code>不能突破封裝性的限制</li>
+</ul>
+<h3 id="調用構造器">調用構造器</h3>
+<ul>
+<li>
+<p>在子類的構造器中，顯示使用&rdquo;<code>super(形參列表)</code>&ldquo;顯式調用父類中聲明的指定構造器</p>
+</li>
+<li>
+<p>&ldquo;<code>super(形參列表)</code>&ldquo;必須聲明在子類構造器的首行</p>
+<ul>
+<li>意味著&rdquo;<code>super(形參列表)</code>&ldquo;與&rdquo;<code>this(形參列表)</code>&ldquo;只能二選一</li>
+</ul>
+</li>
+<li>
+<p>若沒寫則首行預設是一個&rdquo;<code>super()</code>&rdquo;</p>
+<ul>
+<li>意味著子類構造器中必定至少存在一個構造器來自於父類</li>
+<li>要是在父類中的空參構造器寫了某個特徵，那他所有往下的子類都帶有這個特徵</li>
+</ul>
+</li>
+</ul>
+<h1 id="子類物件實例化的過程">子類物件實例化的過程</h1>
+<h3 id="從結果上來看">從結果上來看</h3>
+<ul>
+<li>子類繼承父類後，就獲取了父類聲明的屬性或方法</li>
+<li>創建子類的物件，在堆空間中就會加載所有父類中聲明的屬性</li>
+</ul>
+<h3 id="從過程上來看">從過程上來看</h3>
+<ul>
+<li>當創建子類的物件時，必定會直接或間接的調用其父類的構造器，層層往上直到調用了<code>java.lang.Object</code>類中的空參構造器為止，正因為加載過所有父類的結構，所以才可以看到內存中有父類的結構，子類物件才可以考慮進行調用</li>
+<li>雖然子類創立物件時調用了父類的構造器，但自始至終就只<code>new</code>一個子類的物件</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-11-27</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211128-agg-ja-13/">
+			下一篇<br>多態:關鍵字instanceof、Object類與包裝類
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211126-agg-ja-11/">
+			上一篇<br>項目練習2-客戶訊息管理系統
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

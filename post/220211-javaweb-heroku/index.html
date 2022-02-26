@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>用Heroku部署Tomcat網站</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="將JavaWeb專案部署Heroku的踩坑紀錄">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="用Heroku部署Tomcat網站" />
+<meta property="og:description" content="將JavaWeb專案部署Heroku的踩坑紀錄" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220211-javaweb-heroku/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-11T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="用Heroku部署Tomcat網站"/>
+<meta name="twitter:description" content="將JavaWeb專案部署Heroku的踩坑紀錄"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#heroku%e9%83%a8%e7%bd%b2javaweb%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#heroku部署javaweb項目-nav`)" id="heroku部署javaweb項目-nav">
+									Heroku部署JavaWeb項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8heroku%e4%bd%bf%e7%94%a8mysql" onclick="onNavClick(`#在heroku使用mysql-nav`)" id="在heroku使用mysql-nav">
+									在heroku使用mySQL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javaweb%e6%94%b9%e7%94%a8https" onclick="onNavClick(`#javaweb改用https-nav`)" id="javaweb改用https-nav">
+									JavaWeb改用Https
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#tomcat%e9%83%a8%e5%88%86" onclick="onNavClick(`#tomcat部分-nav`)" id="tomcat部分-nav">
+									Tomcat部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e9%83%a8%e5%88%86" onclick="onNavClick(`#java部分-nav`)" id="java部分-nav">
+									Java部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bacros%e8%88%87307%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#解決cros與307問題-nav`)" id="解決cros與307問題-nav">
+									解決CROS與307問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#heroku%e9%80%a3%e7%b5%90github" onclick="onNavClick(`#heroku連結github-nav`)" id="heroku連結github-nav">
+									heroku連結github
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java-8%e8%88%8711%e7%9a%84%e5%b0%88%e6%a1%88%e7%b5%90%e6%a7%8b%e5%b7%ae%e7%95%b0" onclick="onNavClick(`#java-8與11的專案結構差異-nav`)" id="java-8與11的專案結構差異-nav">
+									Java 8與11的專案結構差異
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bamaven%e8%a9%ad%e7%95%b0%e5%a0%b1%e9%8c%af" onclick="onNavClick(`#解決maven詭異報錯-nav`)" id="解決maven詭異報錯-nav">
+									解決Maven詭異報錯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#git%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#git指令-nav`)" id="git指令-nav">
+									git指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#heroku%e9%83%a8%e7%bd%b2javaweb%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#heroku部署javaweb項目-nav`)" id="heroku部署javaweb項目-nav">
+									Heroku部署JavaWeb項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8heroku%e4%bd%bf%e7%94%a8mysql" onclick="onNavClick(`#在heroku使用mysql-nav`)" id="在heroku使用mysql-nav">
+									在heroku使用mySQL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javaweb%e6%94%b9%e7%94%a8https" onclick="onNavClick(`#javaweb改用https-nav`)" id="javaweb改用https-nav">
+									JavaWeb改用Https
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#tomcat%e9%83%a8%e5%88%86" onclick="onNavClick(`#tomcat部分-nav`)" id="tomcat部分-nav">
+									Tomcat部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e9%83%a8%e5%88%86" onclick="onNavClick(`#java部分-nav`)" id="java部分-nav">
+									Java部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bacros%e8%88%87307%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#解決cros與307問題-nav`)" id="解決cros與307問題-nav">
+									解決CROS與307問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#heroku%e9%80%a3%e7%b5%90github" onclick="onNavClick(`#heroku連結github-nav`)" id="heroku連結github-nav">
+									heroku連結github
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java-8%e8%88%8711%e7%9a%84%e5%b0%88%e6%a1%88%e7%b5%90%e6%a7%8b%e5%b7%ae%e7%95%b0" onclick="onNavClick(`#java-8與11的專案結構差異-nav`)" id="java-8與11的專案結構差異-nav">
+									Java 8與11的專案結構差異
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bamaven%e8%a9%ad%e7%95%b0%e5%a0%b1%e9%8c%af" onclick="onNavClick(`#解決maven詭異報錯-nav`)" id="解決maven詭異報錯-nav">
+									解決Maven詭異報錯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#git%e6%8c%87%e4%bb%a4" onclick="onNavClick(`#git指令-nav`)" id="git指令-nav">
+									git指令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/cloud.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    用Heroku部署Tomcat網站
+                    
+                    <div class="post-subtitle">
+                        將JavaWeb專案部署Heroku的踩坑紀錄
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-11 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/cloud">cloud</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="heroku部署javaweb項目">Heroku部署JavaWeb項目</h2>
+<ul>
+<li>
+<p>我自己的JavaWeb是運行在Tomcat的，所以要用heroku提供的Tomcat，叫做webapp-runner</p>
+</li>
+<li>
+<p>用法也很簡單，本地maven引用webapp-runner，打包成war，push到heroku倉庫，自動就能運行起來了</p>
+</li>
+<li>
+<p>首先在專案根目錄新增<code>Procfile</code>，沒有副檔名</p>
+</li>
+</ul>
+<pre tabindex="0"><code>web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war 
+</code></pre><ul>
+<li>加入<code>webapp-runner</code>依賴，注意它版本是跟Tomcat的，我用8版Tomcat所以選8.5.68</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;build&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;plugins&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;plugin&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;executions&gt;</span>
+                    <span style="color:#8b008b;font-weight:bold">&lt;execution&gt;</span>
+                        <span style="color:#8b008b;font-weight:bold">&lt;phase&gt;</span>package<span style="color:#8b008b;font-weight:bold">&lt;/phase&gt;</span>
+                        <span style="color:#8b008b;font-weight:bold">&lt;goals&gt;</span>
+                            <span style="color:#8b008b;font-weight:bold">&lt;goal&gt;</span>copy<span style="color:#8b008b;font-weight:bold">&lt;/goal&gt;</span>
+                        <span style="color:#8b008b;font-weight:bold">&lt;/goals&gt;</span>
+                        <span style="color:#8b008b;font-weight:bold">&lt;configuration&gt;</span>
+                            <span style="color:#8b008b;font-weight:bold">&lt;artifactItems&gt;</span>
+                                <span style="color:#8b008b;font-weight:bold">&lt;artifactItem&gt;</span>
+                                    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.heroku<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                                    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>webapp-runner<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                                    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>8.5.68.1<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+                                    <span style="color:#8b008b;font-weight:bold">&lt;destFileName&gt;</span>webapp-runner.jar<span style="color:#8b008b;font-weight:bold">&lt;/destFileName&gt;</span>
+                                <span style="color:#8b008b;font-weight:bold">&lt;/artifactItem&gt;</span>
+                            <span style="color:#8b008b;font-weight:bold">&lt;/artifactItems&gt;</span>
+                        <span style="color:#8b008b;font-weight:bold">&lt;/configuration&gt;</span>
+                    <span style="color:#8b008b;font-weight:bold">&lt;/execution&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;/executions&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/plugin&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/plugins&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/build&gt;</span>
+</code></pre></div><ul>
+<li>打包完成專案長這樣</li>
+</ul>
+<p><img src="image-20220210142439370.png" alt="image-20220210142439370"></p>
+<ul>
+<li>
+<p>我是有安裝heroku cli，比較方便一點，可以直接在本地用heroku指令，也可以在網頁版上面做到一樣的步驟</p>
+</li>
+<li>
+<p>建立heroku倉庫，可以自己取名，但不能跟別人重複(因為到時候網址就是heroku倉庫，它叫app的名稱)，不自訂就讓系統生成，反正之後都可以改</p>
+</li>
+</ul>
+<pre tabindex="0"><code>heroku create
+</code></pre><ul>
+<li>初始化、推送</li>
+</ul>
+<pre tabindex="0"><code>git init
+git add .
+git commit -m &quot;Ready to deploy&quot;
+git push heroku master
+</code></pre><ul>
+<li>
+<p>分支master或main都能自動找到</p>
+</li>
+<li>
+<p>部署成功，使用指令<code>heroku open</code>，或是在網頁點Open app就能打開專案的index</p>
+</li>
+</ul>
+<p><img src="image-20220210151157375.png" alt="image-20220210151157375"></p>
+<ul>
+<li>成功看到網頁，DB也有連上，但是css跑掉了，排查原因是CORS跨域問題</li>
+</ul>
+<p><img src="image-20220210151141195.png" alt="image-20220210151141195"></p>
+<ul>
+<li>因為我在本地開發都是用http，但部屬到heroku後預設是https，這樣也算跨域，可以看到一些靜態資源是OK的，但JS或ajax請求就全被擋</li>
+</ul>
+<p><img src="image-20220210152404372.png" alt="image-20220210152404372"></p>
+<h2 id="在heroku使用mysql">在heroku使用mySQL</h2>
+<ul>
+<li>
+<p>它的插件叫cleardb，免費，heroku有很多插件，自己去官網查，安裝也都很簡單就不多提</p>
+</li>
+<li>
+<p>安裝成功後輸入<code>heroku addons</code>查看插件</p>
+</li>
+</ul>
+<p><img src="image-20220210143654987.png" alt="image-20220210143654987"></p>
+<ul>
+<li>輸入 <code>heroku config</code>查看設定訊息，它會顯示所有變數，可以取得完整的DB存取資料
+<ul>
+<li>如果顯示太多遠端，需要手動指定</li>
+<li>或是用<code>git remote -v</code>查看列表，用 <code>git remote rm 遠端名</code>刪除多餘的</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220210144852239.png" alt="image-20220210144852239"></p>
+<ul>
+<li>嘗試連線，資料庫名稱<code>heroku_fcc76bee56a43e4</code>顯然不是我這種免費仔能控制的，只好修改自己專案的連線地址</li>
+</ul>
+<p><img src="image-20220210144752386.png" alt="image-20220210144752386"></p>
+<ul>
+<li>導入SQL資料，修改一下資料庫名稱，順利上傳</li>
+</ul>
+<p><img src="image-20220210145515768.png" alt="image-20220210145515768"></p>
+<ul>
+<li>修改一下專案中的網址，測試一下是否能成功連上</li>
+</ul>
+<p><img src="image-20220210150410231.png" alt="image-20220210150410231"></p>
+<h2 id="javaweb改用https">JavaWeb改用Https</h2>
+<h3 id="tomcat部分">Tomcat部分</h3>
+<ul>
+<li>首先要有證書(證明你是可信的，通常需要跟大機構買憑證，也有一些免費的)</li>
+<li>我自用測試所以直接在本地先生成一個，用jdk自帶的keytool生成keystone</li>
+</ul>
+<pre tabindex="0"><code>keytool -genkey -alias tomcat -keyalg RSA
+</code></pre><ul>
+<li>過程需要輸入密碼，其他隨便enter就好</li>
+</ul>
+<p><img src="image-20220210160700735.png" alt="image-20220210160700735"></p>
+<ul>
+<li>生出來預設是在<code>我的文件</code>之下，可以把它搬到順眼的位置</li>
+<li>接著修改tomcat設定，打開<code>\apache-tomcat-8.5.75\conf\server.xml</code></li>
+<li>需要指定<code>keystoreFile</code>跟<code>keystorePass</code>，其餘不用變
+<ul>
+<li>注意空格或換行的問題，參數前後連在一起會報錯</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>	&lt;Connector port=&quot;8443&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot; 
+	maxThreads=&quot;150&quot; scheme=&quot;https&quot; secure=&quot;true&quot; clientAuth=&quot;false&quot; 
+	keystoreFile=&quot;G:/Java/apache-tomcat-8.5.75/.keystore&quot; 
+	keystorePass=&quot;123456&quot; sslProtocol=&quot;TLS&quot; /&gt;
+</code></pre><h3 id="java部分">Java部分</h3>
+<ul>
+<li>回到<code>web.xml</code>，啟用加密連線，可以自訂規則<code>&lt;url-pattern&gt;</code>
+<ul>
+<li><code>/*</code>就是全部都用加密</li>
+<li>我本來挺蠢的，還用了一個filter在那邊攔截請求修改頭部訊息</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#228b22">&lt;!--改用https--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;security-constraint&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;web-resource-collection&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;web-resource-name&gt;</span>SSL<span style="color:#8b008b;font-weight:bold">&lt;/web-resource-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/*<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/web-resource-collection&gt;</span>
+
+        <span style="color:#8b008b;font-weight:bold">&lt;user-data-constraint&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;transport-guarantee&gt;</span>CONFIDENTIAL<span style="color:#8b008b;font-weight:bold">&lt;/transport-guarantee&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/user-data-constraint&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/security-constraint&gt;</span>
+</code></pre></div><ul>
+<li>修改部署設定，由於是自製的證書，打開瀏覽器會跳一個警告</li>
+</ul>
+<p><img src="image-20220210162722900.png" alt="image-20220210162722900"></p>
+<ul>
+<li>成功</li>
+</ul>
+<p><img src="image-20220210163051925.png" alt="image-20220210163051925"></p>
+<h2 id="解決cros與307問題">解決CROS與307問題</h2>
+<ul>
+<li>然而這樣本地成功了，部署上雲端卻會顯示代碼307無限卡死</li>
+<li>嘗試用最老派的filter方法，還是不行</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> Filter {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilter</span>(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) <span style="color:#8b008b;font-weight:bold">throws</span> IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Access-Control-Allow-Origin&#34;</span>, <span style="color:#cd5555">&#34;*&#34;</span>);
+        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Access-Control-Allow-Methods&#34;</span>, <span style="color:#cd5555">&#34;POST, GET, OPTIONS, DELETE&#34;</span>);
+        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Access-Control-Max-Age&#34;</span>, <span style="color:#cd5555">&#34;3600&#34;</span>);
+        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Access-Control-Allow-Headers&#34;</span>, <span style="color:#cd5555">&#34;content-type,Authorization&#34;</span>);
+        <span style="color:#228b22">// response.setHeader(&#34;Access-Control-Allow-Credentials&#34;, &#34;true&#34;);
+</span><span style="color:#228b22"></span>        filterChain.<span style="color:#658b00">doFilter</span>(servletRequest, servletResponse);
+    }
+</code></pre></div><ul>
+<li>一樣會報錯Mixed Content</li>
+</ul>
+<p><img src="image-20220210200059090.png" alt="image-20220210200059090"></p>
+<ul>
+<li>最後找到解法是在每個JSP都加上一行</li>
+</ul>
+<pre tabindex="0"><code>&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;upgrade-insecure-requests&quot;&gt;
+</code></pre><p><img src="image-20220210200155460.png" alt="image-20220210200155460"></p>
+<ul>
+<li>xml裡面的https設定就不要了</li>
+<li>後來發現但凡涉及轉址，部署到雲端後的行為都可能有坑要注意，例如這個:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 轉址回原先頁
+</span><span style="color:#228b22"></span>response.<span style="color:#658b00">sendRedirect</span>(request.<span style="color:#658b00">getHeader</span>(<span style="color:#cd5555">&#34;Referer&#34;</span>));
+</code></pre></div><ul>
+<li>本來是返回上一個請求，結果大概因為http-https會自動跳轉，這樣寫就變成無限跳轉又307了</li>
+<li>說實在還是沒弄得太懂部署https到底要怎做，但正常來說一般項目都是前後分離，且內部有網關或nginx做反向代理，外部靜態資源的請求在nginx就能直接打回去了，應該反而不會搞得這麼麻煩</li>
+</ul>
+<h2 id="heroku連結github">heroku連結github</h2>
+<ul>
+<li>發現有更簡單的方法，直接連到指定github的倉庫</li>
+<li>往下拉能設定自動部署，也可以手動</li>
+</ul>
+<p><img src="image-20220210205300690.png" alt="image-20220210205300690"></p>
+<ul>
+<li>好處是要上傳的檔案會小很多(直接傳到heroku是含輸出打包後的那整坨)</li>
+<li>從github過去就省掉這一步，打包輸出交給heroku去幹，但是可能它包的會有些微差異(有些變成亂碼之類)，需要自己在確認一遍</li>
+</ul>
+<h2 id="java-8與11的專案結構差異">Java 8與11的專案結構差異</h2>
+<ul>
+<li>Java8的預設結構是這樣，東西都是放在\src\main</li>
+</ul>
+<p><img src="image-20220210134553895.png" alt="image-20220210134553895"></p>
+<ul>
+<li>
+<p>java 11 預設結構卻是這樣</p>
+</li>
+<li>
+<p>要注意.properties與web資源的位置不同</p>
+</li>
+</ul>
+<p><img src="image-20220210140632716.png" alt="image-20220210140632716"></p>
+<h2 id="解決maven詭異報錯">解決Maven詭異報錯</h2>
+<ul>
+<li>排錯半天明明沒問題卻報錯，很有可能是Cache問題，選這邊清空重開即可</li>
+</ul>
+<p><img src="image-20220210142043033.png" alt="image-20220210142043033"></p>
+<h2 id="git指令">git指令</h2>
+<ul>
+<li>本地連到遠端倉庫
+<ul>
+<li>給遠端倉庫取別名叫做<code>origin</code>，因為如果是載下來的倉庫預設就叫<code>origin</code></li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>git remote add origin https://倉庫網址.git
+</code></pre><ul>
+<li>將檔案加入暫存</li>
+</ul>
+<pre tabindex="0"><code>git add .
+</code></pre><ul>
+<li>註記</li>
+</ul>
+<pre tabindex="0"><code>git commit -m &quot;本次上傳的註解&quot;
+</code></pre><ul>
+<li>把叫origin的推上它的遠端master分支上
+<ul>
+<li>以前主分支預設叫<code>master</code>，後來說有歧視所以預設改叫<code>main</code></li>
+<li><code>-u</code> 設定 upstream ，在 Git 裡面每一個分支可以設定一個「上游」</li>
+<li>如果不用<code>-u</code>就要輸入完整的遠端節點名稱</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>git push -u origin master
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-11</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220212-aws-phone/">
+			下一篇<br>初識AWS與帳號驗證的趣事
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220210-gulimall-24-sentinel/">
+			上一篇<br>高併發方案、Sentinel限流、Sleuth鏈路追蹤
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

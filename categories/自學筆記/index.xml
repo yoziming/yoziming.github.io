@@ -1,93 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>自學筆記 on yoziming&#39; Blog</title>
-    <link>https://yoziming.github.io/categories/%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98/</link>
-    <description>Recent content in 自學筆記 on yoziming&#39; Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>yoziming</copyright>
-    <lastBuildDate>Sun, 17 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/%E8%87%AA%E5%AD%B8%E7%AD%86%E8%A8%98/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>修改css或js後瀏覽器快取不更新問題</title>
-      <link>https://yoziming.github.io/post/211017-%E4%BF%AE%E6%94%B9css%E6%88%96js%E5%BE%8C%E7%80%8F%E8%A6%BD%E5%99%A8%E5%BF%AB%E5%8F%96%E4%B8%8D%E6%9B%B4%E6%96%B0%E5%95%8F%E9%A1%8C/</link>
-      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/211017-%E4%BF%AE%E6%94%B9css%E6%88%96js%E5%BE%8C%E7%80%8F%E8%A6%BD%E5%99%A8%E5%BF%AB%E5%8F%96%E4%B8%8D%E6%9B%B4%E6%96%B0%E5%95%8F%E9%A1%8C/</guid>
-      <description>修改css或js後瀏覽器快取不更新問題  當初我真的是被這個整到懷疑人生
- 解決方式一：
-​ 使用者按Ctrl + F5強制重新整理頁面或者手動清空了瀏覽器的快取。此時瀏覽器會重新向伺服器獲取CSS和JS檔案,新的檔案便會生效。
-解決方式二：
-​ 但是使用者量過大的時候總不能讓每個使用者一一清理快取吧，於是便從程式碼的角度著手解決這個問題。在js後面新增版本號，讓瀏覽器把這個JS檔案當做新的檔案重新向伺服器獲取資源。
-加版本號前：
- &amp;lt;script type=&amp;#34;text/javascript&amp;#34; th:src=&amp;#34;@{/js/test/index.js}&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;  加版本號後：
- &amp;lt;script type=&amp;#34;text/javascript&amp;#34; th:src=&amp;#34;@{/js/test/index.js?v=1.0}&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;  參考 https://www.itread01.com/content/1548610940.html</description>
-    </item>
-    
-    <item>
-      <title>Docker &amp; Hyper-V占用port問題</title>
-      <link>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</link>
-      <pubDate>Fri, 15 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</guid>
-      <description>Docker &amp;amp; Hyper-V占用port問題 在window下用docker desktop有時候遇上port被莫名佔用 用指令netstat -ano | findstr xxx查詢xxx埠被誰佔用卻又顯示沒有
-原來是因為在window下用docker需要依賴hyper-v技術， 而這個hyper-v每次都會隨機搶走一部分tcp埠，使用命令可以得知應避開的範圍:
-# powershell / cmd netsh interface ipv4 show excludedportrange protocol=tcp 如果避不開就手動叫Hyper-V讓路   關閉hyper-v
-# powershell / cmd dism.exe /Online /Disable-Feature:Microsoft-Hyper-V   配置ipv4動態埠 / 或者配置需要的埠不被佔用
-# powershell / cmd 管理員許可權 # start 起始埠 num 表示可用埠數 按自己的需求來 netsh int ipv4 set dynamicport tcp start=30000 num=16383 // 叫他去用30000以後的阜 # 排除ipv4動態埠佔用 startport 起始埠 numberofports 埠數 netsh int ipv4 add excludedportrange protocol=tcp startport=50051 numberofports=1 // 或是指定端口50051為要讓路的   重新啟動hyper-v</description>
-    </item>
-    
-    <item>
-      <title>Kubernetes基礎認識</title>
-      <link>https://yoziming.github.io/post/211006-k8s/</link>
-      <pubDate>Wed, 06 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/211006-k8s/</guid>
-      <description>Kubernetes基礎認識  自動化地以容器的形式管理你的應用程式 To host your application in the form of containers in a automated fashion
- 名詞解釋   Cluster:集群，計算、儲存資源的集合。一個Cluster通常包含一個Controller Plane和數個Node，視需求而定(也可能有Multi-Controller Plane 的集群)
- Controller Plane:(以前叫Mater)控制主節點，調度指揮所  APIserver:管理整個 K8s 所需 API 的接口(Endpoint)，提供HTTP Rest介面的關鍵服務處理程序，是集群中各個節點的溝通橋樑 etcd:存資料 Scheduler:資源調配，例如調度Pod運行在哪個Node Controller-manager:總經理，負責管理並運行 controller ，controller定義各種Pod的部屬特性(如最常用的Deployment)來滿足不同的業務場景   Node:節點，讓物件(resource-objects)運行的實體或虛擬機器  kubelet:對應api-server的接口，可以看成每個Node上的&amp;quot;實際執行者&amp;quot;或&amp;quot;操作者&amp;quot;，負責接收來自api-server的訊息，並做出相對應的動作，例如，負責Pod對應的容器的建立、啟動或停止等。 kube-proxy:維護網路規則(iptables)，這些規則允許從群集內部或外部的與Pod進行通訊。 Container Runtime:容器的運行引擎，預設是Docker，也支援其他滿足CRI標準的。  Pod:可被調度的最小單位，每個Pod包含一或多個容器，Pod內共享生命週期、資源、通信(使用同一個網路namespace，即相同的IP與port)、儲存空間。通常使用是一個Pod中放一個容器；當需要高度共享資源時才會用一個Pod內多個容器的形式      延伸觀念  Deployment:部屬，例如把Pod做橫向擴展，適用自動管理，或達成無停機系統升級 Service:服務，Deployment可以部屬多個Pod，每個Pod都有自己的IP，隨時都在生滅浮動，外界如何訪問? 答案就是透過Service，可以說Controller負責運行Pod，而Service負責訪問Pod。 Ingress:Service 中是將每個 Service 元件對外的 port number 跟 Node 上的 port number 做 mapping，這樣在我們的 Service 變多時，port number 以及分流規則的管理變得相當困難。而 Ingress 可以透過 HTTP/HTTPS，在我們眾多的 Service 前搭建一個 reverse-proxy。這樣 Ingress 可以幫助我們統一一個對外的 port number，並且根據 hostname 或是 pathname 決定封包要轉發到哪個 Service 上 Namespace:命名空間，假如有多個用戶使用同一個Cluster，想把他們創建的Controller、Pod等資源分開，就靠Namespace。Namespace將物理的Cluster從邏輯上切成多個虛擬Cluster，每一個虛擬Cluster就是一個Namespace，不同Namespace中的資源完全隔離。K8s默認創建2個Namespace:  default:如果不指定，資源就預設放這 kube-system:K8s自己創建的系統資源會放在這個Namespace中      </description>
-    </item>
-    
-    <item>
-      <title>MySQL常用語句 &amp; Workbench</title>
-      <link>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</link>
-      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/211005-mysql-%E5%B8%B8%E7%94%A8%E8%AA%9E%E5%8F%A5/</guid>
-      <description>MySQL 常用語句 資料庫database
-create database XXX;show databases;use XXX;drop database XXX;資料表table
-create table mytable(school char(5),name char(10),id int);show tables;describe mytable; // 顯示這表有哪些欄位跟屬性drop table mytable;select * from mytable; // 顯示mytable中所有資料insert into mytable(school, name, id) values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);insert into mytable values (&#39;NCTU&#39;,&#39;Jerry&#39;,&#39;123&#39;);update mytable set name = &#39;HaHa&#39; where id = &#39;123&#39;;delete from mytable where name = &#39;HaHa&#39;;delete from 表格; // 把表格內資料都刪除(但格式宣告還在)select * from mytable where id = &#39;123&#39; order by name DESC; // 資料表查詢+條件+排序 (DESC 代表由大到小排序)load data local infile &amp;quot;c:\\data.</description>
-    </item>
-    
-    <item>
-      <title>Golang下透過grpc調用服務案例</title>
-      <link>https://yoziming.github.io/post/210927-grpc/</link>
-      <pubDate>Mon, 27 Sep 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210927-grpc/</guid>
-      <description>Golang下透過grpc調用服務案例  grpc簡單說就是跨平台(跨語言)調用各種服務的通用轉接口
- 對.proto文件使用轉譯指令:
-protoc --go_out=plugins=grpc:. *.proto 案例:透過grpc遠程傳遞一個調用teacher資料類型的服務
- .proto:
-syntax=&amp;quot;proto3&amp;quot;;option go_package=&amp;quot;/.;pb&amp;quot;;message Teacher{int32 age=1;string name=2;}service SayName{rpc SayHello(Teacher) returns(Teacher);}server:
-type Children struct{}// 綁定類方法func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {t.Name += &amp;quot;is sleeping&amp;quot;return t, nil}func main() {// 初始一個grpc對象grpcServer := grpc.NewServer()// 註冊服務pb.RegisterSayNameServer(grpcServer, new(Children))// 監聽listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.</description>
-    </item>
-    
-    <item>
-      <title>Golang中使用ProtoBuf</title>
-      <link>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</link>
-      <pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210926-golang%E4%B8%8B%E4%BD%BF%E7%94%A8protobuf/</guid>
-      <description>Golang中使用ProtoBuf  protobuf類似json，它體積更小效率更高，規範統一(沒有大小寫等困擾)。
-缺點是改動協議就要重新生成、數據本身是二進位沒有可讀性
-   下載，window系統選.exe，解壓縮放到$GOPATH/bin
-https://github.com/protocolbuffers/protobuf/releases  安裝golang對應的庫跟插件
-go get github.com/golang/protobuf/protogo get github.com/golang/protobuf/protoc-gen-go  測試
-protoc -h 或 protoc --version沒報錯就是成功
-  消息體舉例，xxx.proto
-// 指定版本，不打3就會是2syntax=&amp;quot;proto3&amp;quot;;// 指定輸出位置&amp;amp;go包名，沒寫轉換不了// option go_package =&amp;quot;path;name&amp;quot;;option go_package =&amp;quot;/.&amp;quot;; // 放在同一目錄下包名為__(空)// 定義消息體，分配唯一編號 (不能用19000~19999)message Student{int32 age = 1; // 可以不從1開始，但不可重複string name = 2;People p=3;repeated int32 score=4; // 數組Week w=5;// 聯合體oneof data{string teacher=6;string class=7;}}// 消息體可以嵌套message People{int32 weight=1;}// 定義枚舉類型enum Week{Monday=0; // 必須從0開始Turesday=1;}  生成go文件</description>
-    </item>
-    
-  </channel>
-</rss>

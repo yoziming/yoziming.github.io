@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>醫院設定模組、swagger2、統一返回/異常/日誌</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Spring筆記-03">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="醫院設定模組、swagger2、統一返回/異常/日誌" />
+<meta property="og:description" content="尚硅谷Spring筆記-03" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220113-agg-spring-03/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-13T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="醫院設定模組、swagger2、統一返回/異常/日誌"/>
+<meta name="twitter:description" content="尚硅谷Spring筆記-03"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%90%ad%e5%bb%ba%e9%86%ab%e9%99%a2%e8%a8%ad%e5%ae%9a%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#搭建醫院設定模組-nav`)" id="搭建醫院設定模組-nav">
+									搭建醫院設定模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#getmapping" onclick="onNavClick(`#getmapping-nav`)" id="getmapping-nav">
+									@GetMapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pathvariable" onclick="onNavClick(`#pathvariable-nav`)" id="pathvariable-nav">
+									@PathVariable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#swagger2" onclick="onNavClick(`#swagger2-nav`)" id="swagger2-nav">
+									swagger2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e8%bf%94%e5%9b%9e%e7%b5%90%e6%9e%9c" onclick="onNavClick(`#統一返回結果-nav`)" id="統一返回結果-nav">
+									統一返回結果
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a2%9d%e4%bb%b6%e6%9f%a5%e8%a9%a2%e5%b8%b6%e5%88%86%e9%a0%81" onclick="onNavClick(`#條件查詢帶分頁-nav`)" id="條件查詢帶分頁-nav">
+									條件查詢帶分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#requestbody" onclick="onNavClick(`#requestbody-nav`)" id="requestbody-nav">
+									@RequestBody
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#其他功能-nav`)" id="其他功能-nav">
+									其他功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e7%95%b0%e5%b8%b8%e8%99%95%e7%90%86" onclick="onNavClick(`#統一異常處理-nav`)" id="統一異常處理-nav">
+									統一異常處理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e6%97%a5%e8%aa%8c%e7%ae%a1%e7%90%86" onclick="onNavClick(`#統一日誌管理-nav`)" id="統一日誌管理-nav">
+									統一日誌管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%90%ad%e5%bb%ba%e9%86%ab%e9%99%a2%e8%a8%ad%e5%ae%9a%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#搭建醫院設定模組-nav`)" id="搭建醫院設定模組-nav">
+									搭建醫院設定模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#getmapping" onclick="onNavClick(`#getmapping-nav`)" id="getmapping-nav">
+									@GetMapping
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pathvariable" onclick="onNavClick(`#pathvariable-nav`)" id="pathvariable-nav">
+									@PathVariable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#swagger2" onclick="onNavClick(`#swagger2-nav`)" id="swagger2-nav">
+									swagger2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e8%bf%94%e5%9b%9e%e7%b5%90%e6%9e%9c" onclick="onNavClick(`#統一返回結果-nav`)" id="統一返回結果-nav">
+									統一返回結果
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a2%9d%e4%bb%b6%e6%9f%a5%e8%a9%a2%e5%b8%b6%e5%88%86%e9%a0%81" onclick="onNavClick(`#條件查詢帶分頁-nav`)" id="條件查詢帶分頁-nav">
+									條件查詢帶分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#requestbody" onclick="onNavClick(`#requestbody-nav`)" id="requestbody-nav">
+									@RequestBody
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#其他功能-nav`)" id="其他功能-nav">
+									其他功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e7%95%b0%e5%b8%b8%e8%99%95%e7%90%86" onclick="onNavClick(`#統一異常處理-nav`)" id="統一異常處理-nav">
+									統一異常處理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%b1%e4%b8%80%e6%97%a5%e8%aa%8c%e7%ae%a1%e7%90%86" onclick="onNavClick(`#統一日誌管理-nav`)" id="統一日誌管理-nav">
+									統一日誌管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/spring.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    醫院設定模組、swagger2、統一返回/異常/日誌
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Spring筆記-03
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-13 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/spring%E7%B7%9A%E4%B8%8A%E8%AA%B2">Spring線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="搭建醫院設定模組">搭建醫院設定模組</h1>
+<blockquote>
+<p>service-hosp，提供查詢與管理醫院設定</p>
+</blockquote>
+<ul>
+<li>首先父節點service的pom已經將model設為依賴，可以引用其下的實體類model</li>
+</ul>
+<p><img src="image-20220106154735193.png" alt="image-20220106154735193"></p>
+<ul>
+<li>進到service-hosp修改pom，引用<code>spring-boot-maven-plugin</code>，讓maven打包的時候把依賴也包進去，包成一個可以直接執行的jar包</li>
+</ul>
+<p><img src="image-20220106154808608.png" alt="image-20220106154808608"></p>
+<ul>
+<li>添加<code>application.properties</code>，指定服務連接的名稱、端口、資料庫連接等等</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 服務端口
+server.port=8201
+# 服務名
+spring.application.name=service-hosp
+
+# 環境設置：dev、test、prod
+spring.profiles.active=dev
+
+# mysql資料庫連接
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/yygh_hosp?characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=GMT%2B8
+spring.datasource.username=root
+spring.datasource.password=1234
+
+#返回json的全局時間格式
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8
+</code></pre><ul>
+<li>創建當前包<code>servicehosp</code>，加入啟動類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">package</span> <span style="color:#008b45;text-decoration:underline">yoziming.ad.servicehosp</span>
+<span style="color:#707a7c">@SpringBootApplication</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceHospApplication</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        SpringApplication.<span style="color:#658b00">run</span>(ServiceHospApplication.<span style="color:#658b00">class</span>, args);
+    }
+}
+</code></pre></div><ul>
+<li>在<code>yoziming.ad.servicehosp</code>包下新增三個包controller、mapper、service，實現mybatis+的要求以執行CRUD操作</li>
+</ul>
+<p><img src="image-20220106154845510.png" alt="image-20220106154845510"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">mapper下新增接口<span style="color:#a61717;background-color:#e3d2d2">，</span>繼承BaseMapper&lt;bean&gt;
+<span style="color:#707a7c">@Mapper</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">HospitalSetMapper</span> <span style="color:#8b008b;font-weight:bold">extends</span> BaseMapper&lt;HospitalSet&gt; {
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">service下新增接口<span style="color:#a61717;background-color:#e3d2d2">，</span>繼承IService&lt;bean&gt;
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">HospitalSetService</span> <span style="color:#8b008b;font-weight:bold">extends</span> IService&lt;HospitalSet&gt; {
+}
+
+service下再增加impl包<span style="color:#a61717;background-color:#e3d2d2">，</span>放實現類<span style="color:#a61717;background-color:#e3d2d2">，</span>繼承ServiceImpl&lt;剛創的Mapper,bean&gt;<span style="color:#a61717;background-color:#e3d2d2">，</span>實現接口
+<span style="color:#707a7c">@Service</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HospitalSetServiceImpl</span> <span style="color:#8b008b;font-weight:bold">extends</span> ServiceImpl&lt;HospitalSetMapper, HospitalSet&gt; <span style="color:#8b008b;font-weight:bold">implements</span> HospitalSetService {
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Controller綁定網址<span style="color:#a61717;background-color:#e3d2d2">，</span>注入service<span style="color:#a61717;background-color:#e3d2d2">，</span>即可開始業務邏輯
+<span style="color:#707a7c">@RestController</span>
+<span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/admin/hosp/hospitalSet&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HospitalSetController</span> {
+
+    <span style="color:#228b22">// 注入service
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> HospitalSetService hospitalSetService;
+
+    <span style="color:#228b22">// 查詢醫院表所有訊息
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;findAll&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;HospitalSet&gt; <span style="color:#008b45">findAllHospitalSet</span>(){
+        <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">list</span>();
+    }
+
+    <span style="color:#228b22">// 邏輯刪除指定醫院
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@DeleteMapping</span>(<span style="color:#cd5555">&#34;{id}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">removeHospSet</span>(<span style="color:#707a7c">@PathVariable</span> Long id){
+        <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">removeById</span>(id);
+    }
+}
+</code></pre></div><h2 id="getmapping">@GetMapping</h2>
+<p>等同於</p>
+<pre tabindex="0"><code>@RequestMapping(method = RequestMethod.GET)
+</code></pre><h2 id="pathvariable">@PathVariable</h2>
+<blockquote>
+<p>知識點</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">使用<span style="color:#707a7c">@RequestParam時</span><span style="color:#a61717;background-color:#e3d2d2">，</span>
+URL是這樣的<span style="color:#a61717;background-color:#e3d2d2">：</span>http:<span style="color:#228b22">//host:port/path?引數名=引數值
+</span><span style="color:#228b22"></span>
+使用<span style="color:#707a7c">@PathVariable時</span><span style="color:#a61717;background-color:#e3d2d2">，</span>
+URL是這樣的<span style="color:#a61717;background-color:#e3d2d2">：</span>http:<span style="color:#228b22">//host:port/path/引數值
+</span></code></pre></div><h2 id="測試">測試</h2>
+<ul>
+<li>由於課件資料庫那邊是空的，到資料庫hospital_set中先隨便新增一筆資料，開瀏覽器訪問設定的網址</li>
+<li>http://localhost:8201/admin/hosp/hospitalSet/findAll</li>
+</ul>
+<p><img src="image-20220106154913452.png" alt="image-20220106154913452"></p>
+<ul>
+<li>返回類似這樣的json串，但刪除就不好測試了，需要用postman或swagger</li>
+</ul>
+<h2 id="swagger2">swagger2</h2>
+<ul>
+<li>引入依賴，由於整個專案都會用到，引用於<code>&lt;artifactId&gt;common&lt;/artifactId&gt;</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!--swagger--&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>io.springfox<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>springfox-swagger2<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>io.springfox<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>springfox-swagger-ui<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>層層模組依賴關係要注意
+<ul>
+<li>common模組之下有service-util子模組</li>
+<li>service模組依賴引用了model模組與service-util模組</li>
+</ul>
+</li>
+<li>在<code>yoziming.ad.common.config</code>包貼上現成的工具類</li>
+</ul>
+<p><img src="image-20220106155540043.png" alt="image-20220106155540043"></p>
+<ul>
+<li>回到service-hosp模組，<code>servicehosp</code>啟動類，加上註解讓它掃描整個專案包的插件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@SpringBootApplication</span>
+<span style="color:#707a7c">@ComponentScan</span>(basePackages = <span style="color:#cd5555">&#34;yoziming.ad&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceHospApplication</span> {
+</code></pre></div><ul>
+<li>訪問 http://localhost:8201/swagger-ui.html</li>
+</ul>
+<p><img src="image-20220106160504636.png" alt="image-20220106160504636"></p>
+<ul>
+<li>右上角API切換欄就是<code>Swagger2Config</code>裡面<code>Docket</code>的設定</li>
+<li>改造Controller，加上@Api註解</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Api</span>(tags = <span style="color:#cd5555">&#34;醫院設定管理&#34;</span>)
+<span style="color:#707a7c">@RestController</span>
+<span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/admin/hosp/hospitalSet&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HospitalSetController</span> {
+
+    <span style="color:#228b22">// 注入service
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> HospitalSetService hospitalSetService;
+
+    <span style="color:#228b22">// 查詢醫院表所有訊息
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢所有醫院設定訊息&#34;</span>)
+    <span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;findAll&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;HospitalSet&gt; <span style="color:#008b45">findAllHospitalSet</span>(){
+        <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">list</span>();
+    }
+
+
+    <span style="color:#228b22">// 邏輯刪除指定醫院
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;邏輯刪除指定醫院設定&#34;</span>)
+    <span style="color:#707a7c">@ApiParam</span>(name = <span style="color:#cd5555">&#34;id&#34;</span>,value = <span style="color:#cd5555">&#34;醫院設定id&#34;</span>,required = <span style="color:#8b008b;font-weight:bold">true</span>)
+    <span style="color:#707a7c">@DeleteMapping</span>(<span style="color:#cd5555">&#34;{id}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">removeHospSet</span>(<span style="color:#707a7c">@PathVariable</span> Long id){
+        <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">removeById</span>(id);
+    }
+}
+</code></pre></div><h2 id="統一返回結果">統一返回結果</h2>
+<blockquote>
+<p>spring內建有ResponseEntity其實也是一樣的用法</p>
+</blockquote>
+<ul>
+<li>在common-util模組下建立yoziming.ad.common.result包</li>
+<li>導入造好的工具類，返回統一為Result類，自帶泛型裝資料(比如List、boolean那些，類中有靜態方法用來裝)、代號、訊息</li>
+</ul>
+<p><img src="image-20220106163225344.png" alt="image-20220106163225344"></p>
+<p><img src="image-20220106163016323.png" alt="image-20220106163016323"></p>
+<ul>
+<li>service-util模組依賴引用common-util就不多說了</li>
+<li>回頭改造Controller，</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 查詢醫院表所有訊息
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢所有醫院設定訊息&#34;</span>)
+<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;findAll&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">findAllHospitalSet</span>() {
+    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(hospitalSetService.<span style="color:#658b00">list</span>());
+}
+
+<span style="color:#228b22">// 邏輯刪除指定醫院
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;邏輯刪除指定醫院設定&#34;</span>)
+<span style="color:#707a7c">@ApiParam</span>(name = <span style="color:#cd5555">&#34;id&#34;</span>, value = <span style="color:#cd5555">&#34;醫院設定id&#34;</span>, required = <span style="color:#8b008b;font-weight:bold">true</span>)
+<span style="color:#707a7c">@DeleteMapping</span>(<span style="color:#cd5555">&#34;{id}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">removeHospSet</span>(<span style="color:#707a7c">@PathVariable</span> Long id) {
+    <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">removeById</span>(id) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">fail</span>();
+}
+</code></pre></div><ul>
+<li>現在可以看到類似這樣的結果了</li>
+</ul>
+<p><img src="image-20220106164518384.png" alt="image-20220106164518384"></p>
+<h2 id="條件查詢帶分頁">條件查詢帶分頁</h2>
+<ul>
+<li>建立對應的VO類，這邊model模組下的實體類已經導好了</li>
+</ul>
+<p><img src="image-20220106165310611.png" alt="image-20220106165310611"></p>
+<ul>
+<li>回到Controller</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 條件查詢帶分頁
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;findPageHospSet/{current}/{limit}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">findPageHospSet</span>(<span style="color:#707a7c">@PathVariable</span> <span style="color:#00688b;font-weight:bold">long</span> current,
+                              <span style="color:#707a7c">@PathVariable</span> <span style="color:#00688b;font-weight:bold">long</span> limit,
+                              <span style="color:#707a7c">@RequestBody</span>(required = <span style="color:#8b008b;font-weight:bold">false</span>) HospitalQueryVo hospitalQueryVo) {
+    <span style="color:#228b22">// 建造Page物件，引用是mp的
+</span><span style="color:#228b22"></span>    Page&lt;HospitalSet&gt; page=<span style="color:#8b008b;font-weight:bold">new</span> Page&lt;&gt;(current,limit);
+    <span style="color:#228b22">// 設定查詢條件
+</span><span style="color:#228b22"></span>    QueryWrapper&lt;HospitalSet&gt; qw =<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    <span style="color:#228b22">// 先判斷傳來的資料是不是空
+</span><span style="color:#228b22"></span>    String hosname = hospitalQueryVo.<span style="color:#658b00">getHosname</span>(); <span style="color:#228b22">// 醫院名
+</span><span style="color:#228b22"></span>    String hoscode = hospitalQueryVo.<span style="color:#658b00">getHoscode</span>(); <span style="color:#228b22">// 醫院編號
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(hosname)){
+        <span style="color:#228b22">// 第一個參數是資料庫中欄位名稱
+</span><span style="color:#228b22"></span>        qw.<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;hosname&#34;</span>,hosname);
+    }
+    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(hoscode)){
+        qw.<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>,hoscode);
+    }
+
+    <span style="color:#228b22">// 查詢並返回
+</span><span style="color:#228b22"></span>    Page&lt;HospitalSet&gt; resPage = hospitalSetService.<span style="color:#658b00">page</span>(page, qw);
+    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(resPage);
+}
+</code></pre></div><h3 id="requestbody">@RequestBody</h3>
+<blockquote>
+<p>知識點</p>
+</blockquote>
+<ul>
+<li>表示前端傳來的是json格式，框架會自己解析</li>
+<li>required = false表示不一定要有(預設是true)</li>
+<li>由於用了@RequestBody，請求就不能是get，所以轉@PostMapping</li>
+</ul>
+<p><img src="image-20220106173010215.png" alt="image-20220106173010215"></p>
+<ul>
+<li>右邊可以複製範例，但注意填入json最後一行不要加<code>,</code></li>
+</ul>
+<h2 id="其他功能">其他功能</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 添加醫院設定
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;添加醫院設定&#34;</span>)
+<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveHospitalSet&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveHospitalSet</span>(<span style="color:#707a7c">@RequestBody</span> HospitalSet hospitalSet) {
+    <span style="color:#228b22">// 設定醫院狀態，1可用，0不可用
+</span><span style="color:#228b22"></span>    hospitalSet.<span style="color:#658b00">setStatus</span>(1);
+    <span style="color:#228b22">// 隨機生成32位簽名密鑰
+</span><span style="color:#228b22"></span>    Random random = <span style="color:#8b008b;font-weight:bold">new</span> Random();
+    hospitalSet.<span style="color:#658b00">setSignKey</span>(MD5.<span style="color:#658b00">encrypt</span>(System.<span style="color:#658b00">currentTimeMillis</span>() + <span style="color:#cd5555">&#34;&#34;</span> + random.<span style="color:#658b00">nextInt</span>(1000)));
+    <span style="color:#228b22">// 返回
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">save</span>(hospitalSet) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">fail</span>();
+}
+
+<span style="color:#228b22">// 根據id查醫院
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;根據id查醫院設定訊息&#34;</span>)
+<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;getHospitalSet/{id}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">getHospitalSet</span>(<span style="color:#707a7c">@PathVariable</span> Long id) {
+    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(hospitalSetService.<span style="color:#658b00">getById</span>(id));
+}
+
+<span style="color:#228b22">// 修改醫院設定
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;修改醫院設定&#34;</span>)
+<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;updateHospitalSet&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">updateHospitalSet</span>(<span style="color:#707a7c">@RequestBody</span> HospitalSet hospitalSet) {
+    <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">updateById</span>(hospitalSet) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">fail</span>();
+}
+
+<span style="color:#228b22">// 批量刪除醫院設定
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;批量刪除醫院設定&#34;</span>)
+<span style="color:#707a7c">@DeleteMapping</span>(<span style="color:#cd5555">&#34;batchRemove&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">batchRemove</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;Long&gt; idList) {
+    <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">removeByIds</span>(idList) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">fail</span>();
+}
+
+<span style="color:#228b22">// 修改醫院鎖定狀態
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;修改醫院鎖定狀態&#34;</span>)
+<span style="color:#707a7c">@PutMapping</span>(<span style="color:#cd5555">&#34;lockHospitalSet/{id}/{status}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">lockHospitalSet</span>(<span style="color:#707a7c">@PathVariable</span> Long id,
+                              <span style="color:#707a7c">@PathVariable</span> Integer status) {
+    HospitalSet hospitalSet = hospitalSetService.<span style="color:#658b00">getById</span>(id);
+    hospitalSet.<span style="color:#658b00">setStatus</span>(status);
+    <span style="color:#8b008b;font-weight:bold">return</span> hospitalSetService.<span style="color:#658b00">updateById</span>(hospitalSet) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">fail</span>();
+}
+
+<span style="color:#228b22">// 發送密鑰
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;發送密鑰&#34;</span>)
+<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;sendKey/{id}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">sendKey</span>(<span style="color:#707a7c">@PathVariable</span> Long id) {
+    HospitalSet hospitalSet = hospitalSetService.<span style="color:#658b00">getById</span>(id);
+    String signKey = hospitalSet.<span style="color:#658b00">getSignKey</span>();
+    String hoscode = hospitalSet.<span style="color:#658b00">getHoscode</span>();
+    <span style="color:#228b22">// TODO 簡訊驗證
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><hr>
+<h1 id="統一異常處理">統一異常處理</h1>
+<blockquote>
+<p>目標在於出錯時不會只送前端一個500跟亂七八糟的，而是捕捉異常訊息並用json傳過去</p>
+</blockquote>
+<ul>
+<li>回到common-util模組建立<code>yoziming.ad.common.exception</code>包，建立<code>GlobalExceptionHandler</code>全局異常處理類，然後再引入自訂異常類<code>YyghException</code></li>
+</ul>
+<p><img src="image-20220106185802010.png" alt="image-20220106185802010"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RestControllerAdvice</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">GlobalExceptionHandler</span> {
+
+    <span style="color:#228b22">// 全局異常
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@ExceptionHandler</span>(Exception.<span style="color:#658b00">class</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">error</span>(Exception e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">fail</span>();
+    }
+
+    <span style="color:#228b22">// 自訂異常
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@ExceptionHandler</span>(YyghException.<span style="color:#658b00">class</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">error</span>(YyghException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(201,e.<span style="color:#658b00">toString</span>());
+    }
+}
+</code></pre></div><ul>
+<li>@ControllerAdvice用來捕捉@Controller拋出的異常</li>
+<li>@ExceptionHandler指定Exception類型</li>
+<li>@ResponseBody用json返回輸出的結果</li>
+<li>@RestControllerAdvice = @ControllerAdvice + @ResponseBody</li>
+<li>自訂異常返回設定的編號或訊息</li>
+</ul>
+<hr>
+<h1 id="統一日誌管理">統一日誌管理</h1>
+<ul>
+<li>spring內建日誌級別分為:OFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL</li>
+<li>預設情況下從控制台列印出來的日誌級別只有INFO以上，可以到<code>application.properties</code>配置</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 設置日誌級別
+logging.level.root=WARN
+</code></pre><ul>
+<li>spring內建logback用來把日誌輸出到硬碟，用法跟log4j差不多</li>
+<li>在設定檔同層放一個<code>logback-spring.xml</code>即可
+<ul>
+<li>注意存的檔案路徑要用反斜線或雙斜線</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220106191039628.png" alt="image-20220106191039628"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;configuration</span>  <span style="color:#658b00">scan=</span><span style="color:#cd5555">&#34;true&#34;</span> <span style="color:#658b00">scanPeriod=</span><span style="color:#cd5555">&#34;10 seconds&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    <span style="color:#228b22">&lt;!-- 日誌級別從低到高分為TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL，如果設置為WARN，則低於WARN的信息都不會輸出 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- scan:當此屬性設置為true時，配置文件如果發生改變，將會被重新加載，預設值為true --&gt;</span>
+    <span style="color:#228b22">&lt;!-- scanPeriod:設置監測配置文件是否有修改的時間間隔，如果沒有給出時間單位，預設單位是毫秒。當scan為true時，此屬性生效。預設的時間間隔為1分鐘。 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- debug:當此屬性設置為true時，將打印出logback內部日誌信息，實時查看logback運行狀態。預設值為false。 --&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;contextName&gt;</span>logback<span style="color:#8b008b;font-weight:bold">&lt;/contextName&gt;</span>
+    <span style="color:#228b22">&lt;!-- name的值是變量的名稱，value的值時變量定義的值。通過定義的值會被插入到logger上下文中。定義變量后，可以使“${}”來使用變量。 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;property</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;log.path&#34;</span> <span style="color:#658b00">value=</span><span style="color:#cd5555">&#34;G:\Java\code\appoint-doctor\log&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+
+    <span style="color:#228b22">&lt;!-- 彩色日誌 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- 配置格式變量：CONSOLE_LOG_PATTERN 彩色日誌格式 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- magenta:洋紅 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- boldMagenta:粗紅--&gt;</span>
+    <span style="color:#228b22">&lt;!-- cyan:青色 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- white:白色 --&gt;</span>
+    <span style="color:#228b22">&lt;!-- magenta:洋紅 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;property</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;CONSOLE_LOG_PATTERN&#34;</span>
+              <span style="color:#658b00">value=</span><span style="color:#cd5555">&#34;%yellow(%date{yyyy-MM-dd HH:mm:ss}) |%highlight(%-5level) |%blue(%thread) |%blue(%file:%line) |%green(%logger) |%cyan(%msg%n)&#34;</span><span style="color:#8b008b;font-weight:bold">/&gt;</span>
+
+
+    <span style="color:#228b22">&lt;!--輸出到控制台--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;appender</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;CONSOLE&#34;</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.ConsoleAppender&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        <span style="color:#228b22">&lt;!--此日誌appender是為開發使用，只配置最底級別，控制台輸出的日誌級別是大於或等於此級別的日誌信息--&gt;</span>
+        <span style="color:#228b22">&lt;!-- 例如：如果此處配置了INFO級別，則後面其他位置即使配置了DEBUG級別的日誌，也不會被輸出 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;filter</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.classic.filter.ThresholdFilter&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;level&gt;</span>INFO<span style="color:#8b008b;font-weight:bold">&lt;/level&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/filter&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;encoder&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;Pattern&gt;</span>${CONSOLE_LOG_PATTERN}<span style="color:#8b008b;font-weight:bold">&lt;/Pattern&gt;</span>
+            <span style="color:#228b22">&lt;!-- 設置字符集 --&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;charset&gt;</span>UTF-8<span style="color:#8b008b;font-weight:bold">&lt;/charset&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/encoder&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/appender&gt;</span>
+
+
+    <span style="color:#228b22">&lt;!--輸出到文件--&gt;</span>
+
+    <span style="color:#228b22">&lt;!-- 時間滾動輸出 level為 INFO 日誌 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;appender</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;INFO_FILE&#34;</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.RollingFileAppender&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        <span style="color:#228b22">&lt;!-- 正在記錄的日誌文件的路徑及文件名 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;file&gt;</span>${log.path}/log_info.log<span style="color:#8b008b;font-weight:bold">&lt;/file&gt;</span>
+        <span style="color:#228b22">&lt;!--日誌文件輸出格式--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;encoder&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n<span style="color:#8b008b;font-weight:bold">&lt;/pattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;charset&gt;</span>UTF-8<span style="color:#8b008b;font-weight:bold">&lt;/charset&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/encoder&gt;</span>
+        <span style="color:#228b22">&lt;!-- 日誌記錄器的滾動策略，按日期，按大小記錄 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;rollingPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#228b22">&lt;!-- 每天日誌歸檔路徑以及格式 --&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;fileNamePattern&gt;</span>${log.path}/info/log-info-%d{yyyy-MM-dd}.%i.log<span style="color:#8b008b;font-weight:bold">&lt;/fileNamePattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;timeBasedFileNamingAndTriggeringPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;maxFileSize&gt;</span>100MB<span style="color:#8b008b;font-weight:bold">&lt;/maxFileSize&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/timeBasedFileNamingAndTriggeringPolicy&gt;</span>
+            <span style="color:#228b22">&lt;!--日誌文件保留天數--&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;maxHistory&gt;</span>15<span style="color:#8b008b;font-weight:bold">&lt;/maxHistory&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/rollingPolicy&gt;</span>
+        <span style="color:#228b22">&lt;!-- 此日誌文件只記錄info級別的 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;filter</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.classic.filter.LevelFilter&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;level&gt;</span>INFO<span style="color:#8b008b;font-weight:bold">&lt;/level&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMatch&gt;</span>ACCEPT<span style="color:#8b008b;font-weight:bold">&lt;/onMatch&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMismatch&gt;</span>DENY<span style="color:#8b008b;font-weight:bold">&lt;/onMismatch&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/filter&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/appender&gt;</span>
+
+    <span style="color:#228b22">&lt;!-- 時間滾動輸出 level為 WARN 日誌 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;appender</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;WARN_FILE&#34;</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.RollingFileAppender&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        <span style="color:#228b22">&lt;!-- 正在記錄的日誌文件的路徑及文件名 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;file&gt;</span>${log.path}/log_warn.log<span style="color:#8b008b;font-weight:bold">&lt;/file&gt;</span>
+        <span style="color:#228b22">&lt;!--日誌文件輸出格式--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;encoder&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n<span style="color:#8b008b;font-weight:bold">&lt;/pattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;charset&gt;</span>UTF-8<span style="color:#8b008b;font-weight:bold">&lt;/charset&gt;</span> <span style="color:#228b22">&lt;!-- 此處設置字符集 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/encoder&gt;</span>
+        <span style="color:#228b22">&lt;!-- 日誌記錄器的滾動策略，按日期，按大小記錄 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;rollingPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;fileNamePattern&gt;</span>${log.path}/warn/log-warn-%d{yyyy-MM-dd}.%i.log<span style="color:#8b008b;font-weight:bold">&lt;/fileNamePattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;timeBasedFileNamingAndTriggeringPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;maxFileSize&gt;</span>100MB<span style="color:#8b008b;font-weight:bold">&lt;/maxFileSize&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/timeBasedFileNamingAndTriggeringPolicy&gt;</span>
+            <span style="color:#228b22">&lt;!--日誌文件保留天數--&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;maxHistory&gt;</span>15<span style="color:#8b008b;font-weight:bold">&lt;/maxHistory&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/rollingPolicy&gt;</span>
+        <span style="color:#228b22">&lt;!-- 此日誌文件只記錄warn級別的 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;filter</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.classic.filter.LevelFilter&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;level&gt;</span>warn<span style="color:#8b008b;font-weight:bold">&lt;/level&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMatch&gt;</span>ACCEPT<span style="color:#8b008b;font-weight:bold">&lt;/onMatch&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMismatch&gt;</span>DENY<span style="color:#8b008b;font-weight:bold">&lt;/onMismatch&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/filter&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/appender&gt;</span>
+
+
+    <span style="color:#228b22">&lt;!-- 時間滾動輸出 level為 ERROR 日誌 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;appender</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;ERROR_FILE&#34;</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.RollingFileAppender&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        <span style="color:#228b22">&lt;!-- 正在記錄的日誌文件的路徑及文件名 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;file&gt;</span>${log.path}/log_error.log<span style="color:#8b008b;font-weight:bold">&lt;/file&gt;</span>
+        <span style="color:#228b22">&lt;!--日誌文件輸出格式--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;encoder&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;pattern&gt;</span>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n<span style="color:#8b008b;font-weight:bold">&lt;/pattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;charset&gt;</span>UTF-8<span style="color:#8b008b;font-weight:bold">&lt;/charset&gt;</span> <span style="color:#228b22">&lt;!-- 此處設置字符集 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/encoder&gt;</span>
+        <span style="color:#228b22">&lt;!-- 日誌記錄器的滾動策略，按日期，按大小記錄 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;rollingPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;fileNamePattern&gt;</span>${log.path}/error/log-error-%d{yyyy-MM-dd}.%i.log<span style="color:#8b008b;font-weight:bold">&lt;/fileNamePattern&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;timeBasedFileNamingAndTriggeringPolicy</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;maxFileSize&gt;</span>100MB<span style="color:#8b008b;font-weight:bold">&lt;/maxFileSize&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/timeBasedFileNamingAndTriggeringPolicy&gt;</span>
+            <span style="color:#228b22">&lt;!--日誌文件保留天數--&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;maxHistory&gt;</span>15<span style="color:#8b008b;font-weight:bold">&lt;/maxHistory&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/rollingPolicy&gt;</span>
+        <span style="color:#228b22">&lt;!-- 此日誌文件只記錄ERROR級別的 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;filter</span> <span style="color:#658b00">class=</span><span style="color:#cd5555">&#34;ch.qos.logback.classic.filter.LevelFilter&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;level&gt;</span>ERROR<span style="color:#8b008b;font-weight:bold">&lt;/level&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMatch&gt;</span>ACCEPT<span style="color:#8b008b;font-weight:bold">&lt;/onMatch&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;onMismatch&gt;</span>DENY<span style="color:#8b008b;font-weight:bold">&lt;/onMismatch&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/filter&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/appender&gt;</span>
+
+    <span style="color:#228b22">&lt;!--
+</span><span style="color:#228b22">        &lt;logger&gt;用來設置某一個包或者具體的某一個類的日誌打印級別、以及指定&lt;appender&gt;。
+</span><span style="color:#228b22">        &lt;logger&gt;僅有一個name屬性，
+</span><span style="color:#228b22">        一個可選的level和一個可選的addtivity屬性。
+</span><span style="color:#228b22">        name:用來指定受此logger約束的某一個包或者具體的某一個類。
+</span><span style="color:#228b22">        level:用來設置打印級別，大小寫無關：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+</span><span style="color:#228b22">              如果未設置此屬性，那麼當前logger將會繼承上級的級別。
+</span><span style="color:#228b22">    --&gt;</span>
+    <span style="color:#228b22">&lt;!--
+</span><span style="color:#228b22">        使用mybatis的時候，sql語句是debug下才會打印，而這裏我們只配置了info，所以想要查看sql語句的話，有以下兩種操作：
+</span><span style="color:#228b22">        第一種把&lt;root level=&#34;INFO&#34;&gt;改成&lt;root level=&#34;DEBUG&#34;&gt;這樣就會打印sql，不過這樣日誌那邊會出現很多其他消息
+</span><span style="color:#228b22">        第二種就是單獨給mapper下目錄配置DEBUG模式，代碼如下，這樣配置sql語句會打印，其他還是正常DEBUG級別：
+</span><span style="color:#228b22">     --&gt;</span>
+    <span style="color:#228b22">&lt;!--開發環境:打印控制台--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;springProfile</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;dev&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        <span style="color:#228b22">&lt;!--可以輸出項目中的debug日誌，包括mybatis的sql日誌--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;logger</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;com.guli&#34;</span> <span style="color:#658b00">level=</span><span style="color:#cd5555">&#34;INFO&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+
+        <span style="color:#228b22">&lt;!--
+</span><span style="color:#228b22">            root節點是必選節點，用來指定最基礎的日誌輸出級別，只有一個level屬性
+</span><span style="color:#228b22">            level:用來設置打印級別，大小寫無關：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，預設是DEBUG
+</span><span style="color:#228b22">            可以包含零個或多個appender元素。
+</span><span style="color:#228b22">        --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;root</span> <span style="color:#658b00">level=</span><span style="color:#cd5555">&#34;INFO&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;CONSOLE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;INFO_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;WARN_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;ERROR_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/root&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/springProfile&gt;</span>
+
+
+    <span style="color:#228b22">&lt;!--生產環境:輸出到文件--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;springProfile</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;pro&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+
+        <span style="color:#8b008b;font-weight:bold">&lt;root</span> <span style="color:#658b00">level=</span><span style="color:#cd5555">&#34;INFO&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;CONSOLE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;DEBUG_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;INFO_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;ERROR_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;appender-ref</span> <span style="color:#658b00">ref=</span><span style="color:#cd5555">&#34;WARN_FILE&#34;</span> <span style="color:#8b008b;font-weight:bold">/&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/root&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/springProfile&gt;</span>
+
+<span style="color:#8b008b;font-weight:bold">&lt;/configuration&gt;</span>
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-13</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220114-agg-spring-04/">
+			下一篇<br>前端:ES6、Vue、Node.js
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/">
+			上一篇<br>MyBatis-Plus快速上手
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

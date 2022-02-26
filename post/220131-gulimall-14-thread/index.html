@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>線程池與CompletableFuture異步編排</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-14">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="線程池與CompletableFuture異步編排" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-14" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220131-gulimall-14-thread/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-31T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="線程池與CompletableFuture異步編排"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-14"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%b7%9a%e7%a8%8b" onclick="onNavClick(`#多線程-nav`)" id="多線程-nav">
+									多線程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e7%b7%9a%e7%a8%8b%e7%9a%844%e7%a8%ae%e6%96%b9%e5%bc%8f" onclick="onNavClick(`#初始化線程的4種方式-nav`)" id="初始化線程的4種方式-nav">
+									初始化線程的4種方式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8d%80%e5%88%a5" onclick="onNavClick(`#區別-nav`)" id="區別-nav">
+									區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e6%b1%a0%e7%9a%84%e5%84%aa%e5%8b%a2" onclick="onNavClick(`#線程池的優勢-nav`)" id="線程池的優勢-nav">
+									線程池的優勢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%8b%e5%8b%95%e5%89%b5%e5%bb%ba%e7%b7%9a%e7%a8%8b%e6%b1%a0" onclick="onNavClick(`#手動創建線程池-nav`)" id="手動創建線程池-nav">
+									手動創建線程池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#順序-nav`)" id="順序-nav">
+									順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e6%b1%a0execute%e5%92%8csubmit%e5%8d%80%e5%88%a5" onclick="onNavClick(`#線程池execute和submit區別-nav`)" id="線程池execute和submit區別-nav">
+									線程池execute和submit區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9b%e7%a8%ae%e7%b7%9a%e7%a8%8b%e6%b1%a0%e6%a8%a1%e6%9d%bf" onclick="onNavClick(`#四種線程池模板-nav`)" id="四種線程池模板-nav">
+									四種線程池模板
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#completablefuture-%e7%95%b0%e6%ad%a5%e7%b7%a8%e6%8e%92" onclick="onNavClick(`#completablefuture-異步編排-nav`)" id="completablefuture-異步編排-nav">
+									CompletableFuture 異步編排
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e6%b4%be%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#指派任務-nav`)" id="指派任務-nav">
+									指派任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a5%e6%94%b6%e4%bb%bb%e5%8b%99%e8%bf%94%e5%9b%9e%e5%80%bc" onclick="onNavClick(`#接收任務返回值-nav`)" id="接收任務返回值-nav">
+									接收任務返回值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#handle%e6%96%b9%e6%b3%95" onclick="onNavClick(`#handle方法-nav`)" id="handle方法-nav">
+									handle方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%b2%e8%a1%8c%e5%8c%96" onclick="onNavClick(`#串行化-nav`)" id="串行化-nav">
+									串行化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bd%99%e6%95%b4%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#彙整任務-nav`)" id="彙整任務-nav">
+									彙整任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%a9%e5%80%8b%e4%bb%bb%e5%8b%99%e5%bf%85%e9%a0%88%e9%83%bd%e5%ae%8c%e6%88%90" onclick="onNavClick(`#兩個任務必須都完成-nav`)" id="兩個任務必須都完成-nav">
+									兩個任務必須都完成
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8c%e8%80%85%e4%b8%ad%e6%9c%89%e4%b8%80%e5%80%8b%e5%ae%8c%e6%88%90" onclick="onNavClick(`#二者中有一個完成-nav`)" id="二者中有一個完成-nav">
+									二者中有一個完成
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a8%e5%ae%8c%e6%88%90%e6%88%96%e8%87%b3%e5%b0%91%e4%b8%80%e5%80%8b" onclick="onNavClick(`#全完成或至少一個-nav`)" id="全完成或至少一個-nav">
+									全完成或至少一個
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%b7%9a%e7%a8%8b" onclick="onNavClick(`#多線程-nav`)" id="多線程-nav">
+									多線程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e7%b7%9a%e7%a8%8b%e7%9a%844%e7%a8%ae%e6%96%b9%e5%bc%8f" onclick="onNavClick(`#初始化線程的4種方式-nav`)" id="初始化線程的4種方式-nav">
+									初始化線程的4種方式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8d%80%e5%88%a5" onclick="onNavClick(`#區別-nav`)" id="區別-nav">
+									區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e6%b1%a0%e7%9a%84%e5%84%aa%e5%8b%a2" onclick="onNavClick(`#線程池的優勢-nav`)" id="線程池的優勢-nav">
+									線程池的優勢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%8b%e5%8b%95%e5%89%b5%e5%bb%ba%e7%b7%9a%e7%a8%8b%e6%b1%a0" onclick="onNavClick(`#手動創建線程池-nav`)" id="手動創建線程池-nav">
+									手動創建線程池
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%86%e5%ba%8f" onclick="onNavClick(`#順序-nav`)" id="順序-nav">
+									順序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%9a%e7%a8%8b%e6%b1%a0execute%e5%92%8csubmit%e5%8d%80%e5%88%a5" onclick="onNavClick(`#線程池execute和submit區別-nav`)" id="線程池execute和submit區別-nav">
+									線程池execute和submit區別
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9b%e7%a8%ae%e7%b7%9a%e7%a8%8b%e6%b1%a0%e6%a8%a1%e6%9d%bf" onclick="onNavClick(`#四種線程池模板-nav`)" id="四種線程池模板-nav">
+									四種線程池模板
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#completablefuture-%e7%95%b0%e6%ad%a5%e7%b7%a8%e6%8e%92" onclick="onNavClick(`#completablefuture-異步編排-nav`)" id="completablefuture-異步編排-nav">
+									CompletableFuture 異步編排
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e6%b4%be%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#指派任務-nav`)" id="指派任務-nav">
+									指派任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a5%e6%94%b6%e4%bb%bb%e5%8b%99%e8%bf%94%e5%9b%9e%e5%80%bc" onclick="onNavClick(`#接收任務返回值-nav`)" id="接收任務返回值-nav">
+									接收任務返回值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#handle%e6%96%b9%e6%b3%95" onclick="onNavClick(`#handle方法-nav`)" id="handle方法-nav">
+									handle方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%b2%e8%a1%8c%e5%8c%96" onclick="onNavClick(`#串行化-nav`)" id="串行化-nav">
+									串行化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%bd%99%e6%95%b4%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#彙整任務-nav`)" id="彙整任務-nav">
+									彙整任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%a9%e5%80%8b%e4%bb%bb%e5%8b%99%e5%bf%85%e9%a0%88%e9%83%bd%e5%ae%8c%e6%88%90" onclick="onNavClick(`#兩個任務必須都完成-nav`)" id="兩個任務必須都完成-nav">
+									兩個任務必須都完成
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8c%e8%80%85%e4%b8%ad%e6%9c%89%e4%b8%80%e5%80%8b%e5%ae%8c%e6%88%90" onclick="onNavClick(`#二者中有一個完成-nav`)" id="二者中有一個完成-nav">
+									二者中有一個完成
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%a8%e5%ae%8c%e6%88%90%e6%88%96%e8%87%b3%e5%b0%91%e4%b8%80%e5%80%8b" onclick="onNavClick(`#全完成或至少一個-nav`)" id="全完成或至少一個-nav">
+									全完成或至少一個
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/thread.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    線程池與CompletableFuture異步編排
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-14
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-31 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="多線程">多線程</h1>
+<h2 id="初始化線程的4種方式">初始化線程的4種方式</h2>
+<ol>
+<li>繼承 Thread</li>
+<li>實現 Runnable接口</li>
+<li>實現 Callable接口 + FutureTask（可以拿到返回結果，可以處理異常）</li>
+<li>線程池</li>
+</ol>
+<blockquote>
+<p>複習 <a href="https://yoziming.github.io/post/211204-agg-ja-19/">https://yoziming.github.io/post/211204-agg-ja-19/</a></p>
+</blockquote>
+<h3 id="區別">區別</h3>
+<ul>
+<li>1、2不能得到返回值。3可以獲取返回值</li>
+<li>1、2、3都不能控制資源</li>
+<li>4可以控制資源，性能穩定，不會一下子所有線程一起運行</li>
+<li>實際開發中，只用線程池，因為高併發狀態開啓了n個線程，會直接耗盡資源</li>
+</ul>
+<h2 id="線程池的優勢">線程池的優勢</h2>
+<ul>
+<li>降低資源的消耗: 省得在那創了又刪，刪了又創</li>
+<li>提高響應速度: 已經在池子那等了，來活就幹</li>
+<li>提高線程的可管理性: 例如系統中可以創建兩個線程池，核心線程池、非核心線程池，有需要時可以關閉非核心線程池釋放記憶體資源
+<ul>
+<li>就像公司分兩部門，壓力大就把非核心的部門關了</li>
+</ul>
+</li>
+</ul>
+<h2 id="手動創建線程池">手動創建線程池</h2>
+<p><img src="image-20220124093616789.png" alt="image-20220124093616789"></p>
+<ul>
+<li>可以<code>new ThreadPoolExecutor(參數)</code>手動創建線程池，七大參數:</li>
+</ul>
+<pre tabindex="0"><code>// ThreadPoolExecutor.java 原始碼
+corePoolSize – the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set
+maximumPoolSize – the maximum number of threads to allow in the pool
+keepAliveTime – when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.
+unit – the time unit for the keepAliveTime argument
+workQueue – the queue to use for holding tasks before they are executed. This queue will hold only the Runnable tasks submitted by the execute method.
+threadFactory – the factory to use when the executor creates a new thread
+handler – the handler to use when execution is blocked because the thread bounds and queue capacities are reached
+</code></pre><ul>
+<li>corePoolSize: 元老級員工，即使摸魚也不會被解雇</li>
+<li>maximumPoolSize: 最大招募數量，用於控制資源</li>
+<li>keepAliveTime: 臨時員工摸魚多久就把他們解雇</li>
+<li>unit: 計算摸魚時間的單位</li>
+<li>workQueue: 阻塞隊列，任務太多暫時沒員工可分配了，新來的任務排隊的地方</li>
+<li>threadFactory: 創建執行緒的工廠，給員工命名的人資</li>
+<li>handler: 如果隊列滿了，執行指定的拒絕策略
+<ul>
+<li>RejectedExecutionHandler 有以下幾種</li>
+<li>預設是AbortPolicy，跟客戶說公司幹不過來請他找別家</li>
+<li>CallerRunsPolicy類似開小灶，硬幫你執行</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220124090358219.png" alt="image-20220124090358219"></p>
+<h3 id="順序">順序</h3>
+<ul>
+<li>創建線程池，懶加載核心線程(任務來了就招募核心員工)</li>
+<li>核心線程滿放入阻塞隊列(員工不夠用，請任務先排隊，馬上招臨時工)</li>
+<li>創建線程，直到達到maximumPoolSize</li>
+<li>如果傳入了拒絕策略會執行，否則拋出異常</li>
+</ul>
+<h4 id="範例">範例</h4>
+<ul>
+<li>一個線程池 core = 7, max = 20, queue = 50 當100個併發進來</li>
+<li>7個任務立即被核心執行，50個進隊列，然後創建13個線程執行13個任務。剩下30個執行拒絕策略</li>
+</ul>
+<h3 id="線程池execute和submit區別">線程池execute和submit區別</h3>
+<ul>
+<li>execute: 參數只能是Runnable，沒有返回值</li>
+<li>submit: 參數可以是Runnable、Callable，返回值是FutureTask</li>
+</ul>
+<h2 id="四種線程池模板">四種線程池模板</h2>
+<p><img src="image-20220124093548225.png" alt="image-20220124093548225"></p>
+<ul>
+<li>CachedThreadPool: 核心線程數是0，如果空閒會回收所有線程。全員派遣公司，沒事幹就裁員</li>
+<li>FixedThreadPool: 核心線程數 = 最大線程數。佛心公司，永不拋棄員工，但占用就多、不靈活</li>
+<li>ScheduledThreadPool: 定時任務線程池，多久之後執行，可設定核心線程數、最大線程數是Integer.Max。限定營業時間的公司</li>
+<li>SingleThreadPool: 核心與最大都只有一個，後台從隊列中獲取任務。個人接案公司，一件一件幹</li>
+</ul>
+<h1 id="completablefuture-異步編排">CompletableFuture 異步編排</h1>
+<blockquote>
+<p>就像為了做咖哩飯，白米在電鍋蒸，紅蘿蔔難熟提前丟去煮，我還能一邊切馬鈴薯。類似vue的Promise也是為了異步任務</p>
+</blockquote>
+<ul>
+<li>因為要實現Runnable，所以幾乎都是用lambda表達式來縮寫，省得寫好幾行</li>
+</ul>
+<h2 id="指派任務">指派任務</h2>
+<blockquote>
+<p>把紅蘿蔔丟去鍋裡煮</p>
+</blockquote>
+<ul>
+<li>CompletableFuture提供了四個靜態方法來創建一個異步操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> Completab1eFuture&lt;Void&gt; <span style="color:#008b45">runAsync</span>(Runnable runnable)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> completableFuturecVoid&gt; <span style="color:#008b45">runAsync</span>(Runnable runnable<span style="color:#a61717;background-color:#e3d2d2">，</span>Executor executor)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;U&gt; CompletableFuture&lt;U&gt; <span style="color:#008b45">supplyAsync</span>(Supplier&lt;U&gt;supplier)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;U&gt; CompletableFuturecU&gt; <span style="color:#008b45">supplyAsync</span>(Supplier&lt;U&gt; supplier<span style="color:#a61717;background-color:#e3d2d2">，</span>Executor executor)
+</code></pre></div><ul>
+<li>可以傳入自定義線程池，否則使用預設線程池</li>
+<li>runXXX沒有返回結果，supplyXxx有返回結果
+<ul>
+<li>用<code>future.get()</code>獲取結果</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThreadTest</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ExecutorService executor = Executors.<span style="color:#658b00">newFixedThreadPool</span>(10);
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ....&#34;</span>);
+        CompletableFuture&lt;Integer&gt; future = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(ThreadTest::asyncFunction, executor);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end.... result: &#34;</span> + future.<span style="color:#658b00">get</span>());
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">asyncFunction</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;執行任務 1+1&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">return</span> 1 + 1;
+    }
+
+}
+</code></pre></div><h2 id="接收任務返回值">接收任務返回值</h2>
+<blockquote>
+<p>煮了紅蘿蔔之後要幹嘛</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> completableFuture&lt;T&gt; <span style="color:#008b45">whencomplete</span>(BiConsumer&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T, ? <span style="color:#8b008b;font-weight:bold">super</span> Throwable&gt; action);
+
+<span style="color:#8b008b;font-weight:bold">public</span> completableFuture&lt;T&gt; <span style="color:#008b45">whenCompleteAsync</span>(BiConsumer&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T, ? <span style="color:#8b008b;font-weight:bold">super</span> Throwable&gt; action<span style="color:#a61717;background-color:#e3d2d2">，</span>Executor executor);
+
+<span style="color:#8b008b;font-weight:bold">public</span> completableFuture&lt;T&gt; <span style="color:#008b45">exceptionally</span>(Function&lt;Throwable, ? <span style="color:#8b008b;font-weight:bold">extends</span> T&gt; fn);
+</code></pre></div><ul>
+<li>whenComplete可以處理正常結果和感知異常，exceptionally特別用於處理異常情況</li>
+<li>whenComplete和whenCompleteAsync的區別:
+<ul>
+<li>whenComplete: 是執行當前任務的線程執行繼續執行whenComplete的任務</li>
+<li>whenCompleteAsync: 是執行把 whenCompleteAsync這個任務繼續提交給線程池來進行執行</li>
+</ul>
+</li>
+<li>方法不以Async結尾，意味着Action使用相同的線程執行，而Async可能會使用其他線程執行（如果是使用相同的線程池，也可能會被同一個線程選中執行)
+<ul>
+<li>就是這個鍋煮完這批紅蘿蔔要不要換個鍋</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThreadTest</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ExecutorService executor = Executors.<span style="color:#658b00">newFixedThreadPool</span>(10);
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ...&#34;</span>);
+        CompletableFuture&lt;String&gt; future = CompletableFuture
+                .<span style="color:#658b00">supplyAsync</span>(ThreadTest::asyncFunction, executor)
+                .<span style="color:#658b00">whenComplete</span>(ThreadTest::accept)
+                .<span style="color:#658b00">exceptionally</span>(ThreadTest::apply);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end... 返回值：&#34;</span> + future.<span style="color:#658b00">get</span>());
+    }
+
+    <span style="color:#228b22">// 指派任務
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">asyncFunction</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;線程池執行任務 煮紅蘿蔔&#34;</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> i = 10 / 0; <span style="color:#228b22">// 讓異常發生
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;煮好了&#34;</span>;
+    }
+
+    <span style="color:#228b22">// 指派任務完成後要幹的事
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">accept</span>(String result, Throwable exception) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的結果：&#34;</span> + result);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的異常：&#34;</span> + exception);
+    }
+
+    <span style="color:#228b22">// 異常時要返回的
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">apply</span>(Throwable exception) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;紅蘿蔔異常&#34;</span> + exception);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;紅蘿蔔沒熟需要重煮&#34;</span>;
+    }
+}
+</code></pre></div><h3 id="handle方法">handle方法</h3>
+<p>whenComplete只能感知異常，他只能跟你說結果沒熟，但是不能對沒熟的紅蘿蔔怎樣，太弱了所以通常不用。通常是用handle</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThreadTest</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ExecutorService executor = Executors.<span style="color:#658b00">newFixedThreadPool</span>(10);
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ...&#34;</span>);
+        CompletableFuture&lt;String&gt; future = CompletableFuture
+                .<span style="color:#658b00">supplyAsync</span>(ThreadTest::asyncFunction, executor)
+                .<span style="color:#658b00">whenComplete</span>(ThreadTest::accept)
+                .<span style="color:#658b00">exceptionally</span>(ThreadTest::apply)
+                .<span style="color:#658b00">handle</span>(ThreadTest::handle);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end... 返回值：&#34;</span> + future.<span style="color:#658b00">get</span>());
+    }
+
+    <span style="color:#228b22">// 指派任務
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">asyncFunction</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;線程池執行任務 煮紅蘿蔔&#34;</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> i = 10 / 0; <span style="color:#228b22">// 讓異常發生
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;煮好了&#34;</span>;
+    }
+
+    <span style="color:#228b22">// 指派任務完成後要幹的事
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">accept</span>(String result, Throwable exception) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的結果：&#34;</span> + result);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的異常：&#34;</span> + exception);
+    }
+
+    <span style="color:#228b22">// 異常時要返回的
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">apply</span>(Throwable exception) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;紅蘿蔔異常&#34;</span> + exception);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;紅蘿蔔沒熟需要重煮&#34;</span>;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">handle</span>(String result, Throwable exception) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的結果：&#34;</span> + result);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;獲取任務1的異常：&#34;</span> + exception);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;異常不會傳播，前面調用exceptionally方法處理了異常&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">return</span> result + <span style="color:#cd5555">&#34;，並且基於任務1的結果，把鍋裡的東西撈出來&#34;</span>;
+    }
+}
+</code></pre></div><h2 id="串行化">串行化</h2>
+<blockquote>
+<p>handle是用於處理a方法的結果，接著執行b方法要用串行</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> Completionstage&lt;Void&gt; <span style="color:#008b45">thenRun</span>(Runnable action);
+
+<span style="color:#8b008b;font-weight:bold">public</span> completionstage&lt;Void&gt; <span style="color:#008b45">thenAccept</span>(Consumer&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T&gt; action);
+
+<span style="color:#8b008b;font-weight:bold">public</span> &lt;U&gt; CompletableFuturecU&gt; <span style="color:#008b45">thenApply</span>(Function&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T,? <span style="color:#8b008b;font-weight:bold">extends</span> U&gt; fn)
+</code></pre></div><ul>
+<li>thenRun：繼續執行，不接受上一個任務的返回結果</li>
+<li>thenAccept：繼續執行，接受上一個任務的返回結果</li>
+<li>thenApply：繼續執行，接受上一任務的返回結果，並且自己有返回值</li>
+<li>他們也都有Async版本，跟前面一樣就不多說</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ...&#34;</span>);
+    CompletableFuture&lt;String&gt; future = CompletableFuture
+            .<span style="color:#658b00">supplyAsync</span>(ThreadTest::asyncFunction, executor)
+            .<span style="color:#658b00">whenComplete</span>(ThreadTest::accept)
+            .<span style="color:#658b00">exceptionally</span>(ThreadTest::apply)
+            .<span style="color:#658b00">handle</span>(ThreadTest::handle)
+            .<span style="color:#658b00">thenApply</span>(ThreadTest::thenApply);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end... 返回值：&#34;</span> + future.<span style="color:#658b00">get</span>());
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> String <span style="color:#008b45">thenApply</span>(String result) {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2啓動&#34;</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2可以獲取任務1的結果：&#34;</span> + result);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;現在換煮馬鈴薯&#34;</span>;
+}
+</code></pre></div><h2 id="彙整任務">彙整任務</h2>
+<blockquote>
+<p>現在米飯、咖哩、紅蘿蔔、馬鈴薯都煮了，要來擺盤</p>
+</blockquote>
+<h3 id="兩個任務必須都完成">兩個任務必須都完成</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> &lt;U,V&gt; CompletableFuture&lt;V&gt; <span style="color:#008b45">thenCombine</span>(CompletionStage&lt;? <span style="color:#8b008b;font-weight:bold">extends</span> U&gt; other, BiFunction&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T,? <span style="color:#8b008b;font-weight:bold">super</span> U,? <span style="color:#8b008b;font-weight:bold">extends</span> V&gt; fn);
+
+<span style="color:#8b008b;font-weight:bold">public</span> &lt;U&gt; CompletableFuture&lt;Void&gt; <span style="color:#008b45">thenAcceptBoth</span>(CompletionStage&lt;? <span style="color:#8b008b;font-weight:bold">extends</span> U&gt; other, BiConsumer&lt;? <span style="color:#8b008b;font-weight:bold">super</span> T, ? <span style="color:#8b008b;font-weight:bold">super</span> U&gt; action);
+
+<span style="color:#8b008b;font-weight:bold">public</span> CompletableFuture&lt;Void&gt; <span style="color:#008b45">runAfterBoth</span>(CompletionStage&lt;?&gt; other, Runnable action);
+
+</code></pre></div><ul>
+<li>thenCombine: 獲取兩個future的返回結果，並返回當前任務的返回值</li>
+<li>thenAcceptBoth: 獲取兩個future任務的返回結果，然後處理任務，沒有返回值</li>
+<li>runAfterBoth: 不需要獲取future的結果，只需兩個future處理完任務後，處理該任務</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ...&#34;</span>);
+    CompletableFuture&lt;String&gt; future1 = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務1 煮紅蘿蔔start..&#34;</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務1 end..&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;紅蘿蔔煮好了&#34;</span>;
+    });
+
+    CompletableFuture&lt;String&gt; future2 = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2 煮馬鈴薯start..&#34;</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2 end..&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;馬鈴薯煮好了&#34;</span>;
+    });
+
+    CompletableFuture&lt;String&gt; future3 = future1.<span style="color:#658b00">thenCombineAsync</span>(future2, (result1, result2) -&gt; {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;任務3 組合前兩個任務的返回值返回: &#34;</span> + result1 + <span style="color:#cd5555">&#34;且&#34;</span> + result2;
+    }, executor);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end... 返回值：&#34;</span> + future3.<span style="color:#658b00">get</span>());
+}
+</code></pre></div><h3 id="二者中有一個完成">二者中有一個完成</h3>
+<blockquote>
+<p>應該很少用到，了解就好</p>
+</blockquote>
+<ul>
+<li>applyToEither: 帶參有返回值，能獲取前面任務的結果(成功的那個)，自己有返回結果</li>
+<li>acceptEither: 帶參無返回值，能獲取前面任務的結果</li>
+<li>runAfterEither: 無參無返回值，不能獲取前面任務的結果，自己也沒有返回結果(要你何用)</li>
+</ul>
+<h3 id="全完成或至少一個">全完成或至少一個</h3>
+<ul>
+<li>
+<p>都是CompletableFuture的靜態方法</p>
+<ul>
+<li>
+<p>allOf</p>
+</li>
+<li>
+<p>anyOf</p>
+</li>
+</ul>
+</li>
+<li>
+<p>配合<code>.get()</code>可以讓線程阻塞</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThreadTest</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ExecutorService executor = Executors.<span style="color:#658b00">newFixedThreadPool</span>(10);
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main start ...&#34;</span>);
+        CompletableFuture&lt;String&gt; future1 = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務1 煮紅蘿蔔start..&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">try</span> {
+                Thread.<span style="color:#658b00">sleep</span>(3000);
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
+                e.<span style="color:#658b00">printStackTrace</span>();
+            }
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務1 end..&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;紅蘿蔔煮好了&#34;</span>;
+        });
+
+        CompletableFuture&lt;String&gt; future2 = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2 煮馬鈴薯start..&#34;</span>);
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務2 end..&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;馬鈴薯煮好了&#34;</span>;
+        });
+
+        CompletableFuture&lt;String&gt; future3 = future1.<span style="color:#658b00">thenCombineAsync</span>(future2, (result1, result2) -&gt; {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務3 組合配菜，需要配菜都煮熟&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">try</span> {
+                Thread.<span style="color:#658b00">sleep</span>(3000);
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
+                e.<span style="color:#658b00">printStackTrace</span>();
+            }
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;任務3 end..&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;配菜完成&#34;</span>;
+        }, executor);
+
+        CompletableFuture&lt;Void&gt; all = CompletableFuture.<span style="color:#658b00">allOf</span>(future1, future2, future3);
+        all.<span style="color:#658b00">get</span>(); <span style="color:#228b22">// 使方法阻塞，不阻塞若有人超時，主線程會提前關閉
+</span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(future1.<span style="color:#658b00">get</span>() + future2.<span style="color:#658b00">get</span>() + future3.<span style="color:#658b00">get</span>());
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;main end...&#34;</span>);
+    }
+}
+</code></pre></div><h1 id="小結">小結</h1>
+<ul>
+<li>實際都用線程池，省資源、反應快、好控制</li>
+<li>線程池七參數:
+<ul>
+<li>core: 核心員工，創了就不滅</li>
+<li>max: 最大員工數量(含臨時工)</li>
+<li>factory: 工廠，人資</li>
+<li>aliveTime: 臨時工過期時間</li>
+<li>unit: 過期時間單位</li>
+<li>queue: 任務排隊處</li>
+<li>handler: 拒絕策略</li>
+</ul>
+</li>
+<li>併發進來，核心接活、去排隊、擴大池子臨時工接活直到max，超出的依照拒絕策略辦事</li>
+<li>CompletableFuture:
+<ul>
+<li>Accept就是純接收結果</li>
+<li>Apply是接收結果，且自己也有結果</li>
+<li>Run就是不管上一個結果，現在做這件事</li>
+<li><code>get()</code>方法可以讓線程阻塞</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-31</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220201-gulimall-15/">
+			下一篇<br>商品詳情
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220130-gulimall-13/">
+			上一篇<br>用ElasticSearch實現商品搜索
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

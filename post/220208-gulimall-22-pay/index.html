@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>串接第三方支付</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-22">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="串接第三方支付" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-22" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220208-gulimall-22-pay/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-08T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="串接第三方支付"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-22"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e6%94%af%e4%bb%98" onclick="onNavClick(`#商城支付-nav`)" id="商城支付-nav">
+									商城支付
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9d%9e%e5%b0%8d%e7%a8%b1%e5%8a%a0%e5%af%86-rsa" onclick="onNavClick(`#非對稱加密-rsa-nav`)" id="非對稱加密-rsa-nav">
+									非對稱加密 RSA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#nat%e7%a9%bf%e9%80%8f" onclick="onNavClick(`#nat穿透-nav`)" id="nat穿透-nav">
+									NAT穿透
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%af%e4%bb%98%e6%b2%99%e7%9b%92" onclick="onNavClick(`#支付沙盒-nav`)" id="支付沙盒-nav">
+									支付沙盒
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%af%e4%bb%98%e4%b8%b2%e6%8e%a5%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#支付串接流程-nav`)" id="支付串接流程-nav">
+									支付串接流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%83%e5%93%a1%e6%9f%a5%e8%a9%a2%e8%a8%82%e5%96%ae" onclick="onNavClick(`#會員查詢訂單-nav`)" id="會員查詢訂單-nav">
+									會員查詢訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e8%b8%a9%e5%9d%91" onclick="onNavClick(`#記踩坑-nav`)" id="記踩坑-nav">
+									記踩坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e6%94%af%e4%bb%98" onclick="onNavClick(`#商城支付-nav`)" id="商城支付-nav">
+									商城支付
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9d%9e%e5%b0%8d%e7%a8%b1%e5%8a%a0%e5%af%86-rsa" onclick="onNavClick(`#非對稱加密-rsa-nav`)" id="非對稱加密-rsa-nav">
+									非對稱加密 RSA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#nat%e7%a9%bf%e9%80%8f" onclick="onNavClick(`#nat穿透-nav`)" id="nat穿透-nav">
+									NAT穿透
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%af%e4%bb%98%e6%b2%99%e7%9b%92" onclick="onNavClick(`#支付沙盒-nav`)" id="支付沙盒-nav">
+									支付沙盒
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%94%af%e4%bb%98%e4%b8%b2%e6%8e%a5%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#支付串接流程-nav`)" id="支付串接流程-nav">
+									支付串接流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%83%e5%93%a1%e6%9f%a5%e8%a9%a2%e8%a8%82%e5%96%ae" onclick="onNavClick(`#會員查詢訂單-nav`)" id="會員查詢訂單-nav">
+									會員查詢訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e8%b8%a9%e5%9d%91" onclick="onNavClick(`#記踩坑-nav`)" id="記踩坑-nav">
+									記踩坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    串接第三方支付
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-22
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-08 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="商城支付">商城支付</h1>
+<h2 id="非對稱加密-rsa">非對稱加密 RSA</h2>
+<p><img src="image-20220131093614541.png" alt="image-20220131093614541"></p>
+<ul>
+<li>加密跟解密是不同的鑰匙
+<ul>
+<li>我用私鑰加密，發給給你，你用公鑰解密，你不知道我的私鑰</li>
+</ul>
+</li>
+<li>加簽: 根據明文(例如: &ldquo;我給小明100元&rdquo;)用MD5生成一個簽名，如果明文任意字符修改，簽名就會天差地別(MD5特性)</li>
+<li>驗簽: 確定 明文與簽名是否對應(明文是否被篡改)</li>
+</ul>
+<h2 id="nat穿透">NAT穿透</h2>
+<blockquote>
+<p>Network Address Translation Traversal</p>
+</blockquote>
+<ul>
+<li>內部IP就是192.168.X.X開頭的那些，穿透技術就是讓外部可以透過公有IP訪問到你的內部IP</li>
+<li>原理就是透過各種網路服務供應商幫你搭橋</li>
+<li>使用場景:
+<ul>
+<li>開發測試，取得暫時的對外域名讓外部可以訪問本機</li>
+<li>智慧家電連網，例如出門在外用手機網路可以看家裡監控那種</li>
+<li>遠程控制，遠端桌面</li>
+</ul>
+</li>
+<li>以前玩Minecraft架server有用過類似的東西</li>
+</ul>
+<h2 id="支付沙盒">支付沙盒</h2>
+<ul>
+<li>大部分的電子支付API都有提供一個sandbox做測試開發用
+<ul>
+<li>LinePay的 <a href="https://pay.line.me/jp/developers/techsupport/sandbox/creation?locale=zh_TW">https://pay.line.me/jp/developers/techsupport/sandbox/creation?locale=zh_TW</a></li>
+</ul>
+</li>
+<li>但是這個申請都要有店家資格，不好弄
+<ul>
+<li>我研究了一下這個EcPAY的 <a href="https://www.ecpay.com.tw/Service/API_Dwnld">https://www.ecpay.com.tw/Service/API_Dwnld</a></li>
+</ul>
+</li>
+<li>大致使用流程就是申請帳號，然後下載支付網站提供的API與SDK，包到自己的專案之下，填上各種授權key，串接付款與跳轉的頁面這樣</li>
+</ul>
+<h2 id="支付串接流程">支付串接流程</h2>
+<ul>
+<li>PayWebController.java
+<ul>
+<li>這邊接收前端來的訂單號<code>@RequestParam(&quot;orderSn&quot;)</code>，用訂單號去查詢訂單內容，然後帶著訂單內容往支付的API</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/payOrder&#34;</span>, produces = <span style="color:#cd5555">&#34;text/html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">payOrder</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;orderSn&#34;</span>) String orderSn) <span style="color:#8b008b;font-weight:bold">throws</span> AlipayApiException {
+
+	PayVo payVo = orderService.<span style="color:#658b00">getOrderPay</span>(orderSn);
+	String pay = alipayTemplate.<span style="color:#658b00">pay</span>(payVo);
+	System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(pay);
+	<span style="color:#8b008b;font-weight:bold">return</span> pay;
+}
+</code></pre></div><ul>
+<li>AlipayTemplate.java
+<ul>
+<li>這個是由第三方提供的，台灣的我查了一下接近的有綠界的站內付2.0，但是他屬於高級會員才有的服務，API也沒有對外公開。只能說台灣在支付這塊真的落後很多，大部分是要自己寫一個前端頁面給顧客填付款資訊，把資訊串進第三方金流提供的SDK，生成付款的訂單訊息，就沒那麼方便</li>
+<li>他這個Template都已經做好付款、退款、查詢等功能，只要填入自己支付的私鑰、公鑰、支付完要跳轉到的成功頁面，串上訂單號、金額、商品描述等等就能使用</li>
+<li>用戶點支付，就從訂單跳轉到專屬生成的支付頁面(SDK直接生成的一個html頁面)，付完就回到成功頁面，串接真的是超簡單</li>
+<li>並且只要支付成功，會發一個異步通知給商戶(一樣提前設定好<code>notify_url</code>)，收到通知驗證一下簽名(用商戶的key)，就能從裡面取出支付的詳細內容，根據這個內容，在後台修改訂單狀態、保存交易的流水號等訊息，自此完成一個完整的支付</li>
+</ul>
+</li>
+</ul>
+<h1 id="會員查詢訂單">會員查詢訂單</h1>
+<blockquote>
+<p>他把會員的訂單歸到會員模組了</p>
+</blockquote>
+<ul>
+<li>
+<p>整理新建模組要幹的事:</p>
+<ul>
+<li>引入thymeleaf、放頁面、放靜態檔案</li>
+<li>設定網域與網關轉發</li>
+<li>由於會員需要登入，設定登入攔截器、註冊WebMvcConfigurer</li>
+<li>登入狀態存在session，所以還要導入spring-session與data-redis</li>
+<li>其實應該用Spring Security的OA2做登入權限的統一管理會更好，否則這有些還要給feign調用放行特別寫規則還挺麻煩的</li>
+</ul>
+</li>
+<li>
+<p>MemberWebController.java</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/memberOrder.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">memberOrderPage</span>(<span style="color:#707a7c">@RequestParam</span>(value = <span style="color:#cd5555">&#34;pageNum&#34;</span>, required = <span style="color:#8b008b;font-weight:bold">false</span>, defaultValue = <span style="color:#cd5555">&#34;0&#34;</span>) Integer pageNum,
+                              Model model) {
+
+    <span style="color:#228b22">//查出當前登錄用戶的所有訂單列表數據
+</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; page = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+    page.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;page&#34;</span>, pageNum.<span style="color:#658b00">toString</span>());
+
+    <span style="color:#228b22">//遠程查詢訂單服務訂單數據
+</span><span style="color:#228b22"></span>    R orderInfo = orderFeignService.<span style="color:#658b00">listWithItem</span>(page);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(JSON.<span style="color:#658b00">toJSONString</span>(orderInfo));
+    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;orders&#34;</span>, orderInfo);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;orderList&#34;</span>;
+}
+</code></pre></div><ul>
+<li>因為請求是從member.mall.com發出去的，由於也需要帶著會員登入的cookie所以也用FeignConfig做了請求頭複製</li>
+<li>查詢返回裡面包的是OrderEntity，因為member的thymeleaf渲染也要能訪問到這個bean，所以又要從order模組複製一份到member模組</li>
+<li>老師這樣用其實很坑，一是貪方便要顯示訂單中的商品項，把OrderEntity魔改多了一個<code>List&lt;OrderItemEntity&gt;</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// OrderEntity
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@TableField</span>(exist = <span style="color:#8b008b;font-weight:bold">false</span>)
+<span style="color:#8b008b;font-weight:bold">private</span> List&lt;OrderItemEntity&gt; orderItemEntityList;
+</code></pre></div><ul>
+<li>與其改Entity，反正都要跨模組傳，還不如抽出一個TO更規範
+<ul>
+<li>結果又會想把TO當成VO傳給前端，唉前後端不分離就是這樣討人厭，還不如都轉成JSON最統一</li>
+</ul>
+</li>
+</ul>
+<h3 id="記踩坑">記踩坑</h3>
+<ul>
+<li>
+<p>當遠程調用傳入的參數不是單純的String或Int，而是有一個map或list，此時必然是帶有RequestBody請求體的<code>@PostMapping</code></p>
+</li>
+<li>
+<p>所以被遠程調用的也必須是<code>@PostMapping</code>，也可以用<code>@RequestMapping</code></p>
+</li>
+<li>
+<p>thymeleaf返回字串而不是頁面的時候，看一下方法是不是<code>@ResponseBody</code>，當用了<code>@ResponseBody</code>或<code>@RestController</code>就不會解析成html</p>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-08</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220209-maven-parent-module/">
+			下一篇<br>Maven微服務多模組管理
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220207-gulimall-21-delay-queue/">
+			上一篇<br>Seata、消息隊列分佈式事務
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

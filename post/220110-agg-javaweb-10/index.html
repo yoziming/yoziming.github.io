@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Filter過濾器、ThreadLocal</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-10">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Filter過濾器、ThreadLocal" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-10" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220110-agg-javaweb-10/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-10T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Filter過濾器、ThreadLocal"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-10"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#filter過濾器-nav`)" id="filter過濾器-nav">
+									Filter過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filterconfig" onclick="onNavClick(`#filterconfig-nav`)" id="filterconfig-nav">
+									FilterConfig
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filterchain" onclick="onNavClick(`#filterchain-nav`)" id="filterchain-nav">
+									FilterChain
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#webxml" onclick="onNavClick(`#webxml-nav`)" id="webxml-nav">
+									web.xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#匹配規則-nav`)" id="匹配規則-nav">
+									匹配規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3" onclick="onNavClick(`#註解-nav`)" id="註解-nav">
+									註解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8%e8%87%b3%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#應用至書城項目-nav`)" id="應用至書城項目-nav">
+									應用至書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#threadlocal" onclick="onNavClick(`#threadlocal-nav`)" id="threadlocal-nav">
+									ThreadLocal
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#tomcat%e9%8c%af%e8%aa%a4%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#tomcat錯誤頁面-nav`)" id="tomcat錯誤頁面-nav">
+									Tomcat錯誤頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#filter過濾器-nav`)" id="filter過濾器-nav">
+									Filter過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filterconfig" onclick="onNavClick(`#filterconfig-nav`)" id="filterconfig-nav">
+									FilterConfig
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filterchain" onclick="onNavClick(`#filterchain-nav`)" id="filterchain-nav">
+									FilterChain
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#webxml" onclick="onNavClick(`#webxml-nav`)" id="webxml-nav">
+									web.xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#匹配規則-nav`)" id="匹配規則-nav">
+									匹配規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3" onclick="onNavClick(`#註解-nav`)" id="註解-nav">
+									註解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8%e8%87%b3%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#應用至書城項目-nav`)" id="應用至書城項目-nav">
+									應用至書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#threadlocal" onclick="onNavClick(`#threadlocal-nav`)" id="threadlocal-nav">
+									ThreadLocal
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#tomcat%e9%8c%af%e8%aa%a4%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#tomcat錯誤頁面-nav`)" id="tomcat錯誤頁面-nav">
+									Tomcat錯誤頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Filter過濾器、ThreadLocal
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-10
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-10 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="filter過濾器">Filter過濾器</h1>
+<blockquote>
+<p>用來修飾請求或響應</p>
+</blockquote>
+<ul>
+<li>
+<p>在Web資源被訪問前，檢查request物件，修改請求頭和請求正文，或對請求進行預處理操作</p>
+</li>
+<li>
+<p>將請求傳遞到下一個過濾器或目標資源</p>
+</li>
+<li>
+<p>在Web資源被訪問後，檢查response物件，修改回應頭和回應正文</p>
+</li>
+<li>
+<p>常用來做權限控管、設定統一編碼等等</p>
+</li>
+</ul>
+<h2 id="方法">方法</h2>
+<blockquote>
+<p>Filter都是接口，用起來跟servlet一樣需要實現方法</p>
+<p>前面都是偷雞造一個base去實現基本的方法然後繼承</p>
+</blockquote>
+<ul>
+<li>
+<p><code>init (FilterConfig filterConfig)</code>:初始化，由web容器調用</p>
+</li>
+<li>
+<p><code>doFilter(ServletRequest request,SeivletResponse response, FilterChain chain)</code>:主要方法，在這邊對req或resp毛手毛腳，或是<code>chain.doFilter</code>再傳到下一個過濾器</p>
+</li>
+<li>
+<p><code>destroy()</code>:釋放被這個filter物件占用的資源，由web容器調用</p>
+</li>
+</ul>
+<h2 id="生命週期">生命週期</h2>
+<ul>
+<li>構造、<code>init()</code>:跟隨web工程而啟動，被執行一次</li>
+<li><code>doFilter()</code>:在每次攔截請求都調用</li>
+<li><code>destrory()</code>:跟隨web工程結束而消亡，也只執行一次</li>
+</ul>
+<h2 id="filterconfig">FilterConfig</h2>
+<blockquote>
+<p>跟Servlet基本一樣</p>
+</blockquote>
+<ul>
+<li>
+<p>每個Filter都有自己伴生的FilterConfig實例物件，當web容器啟動時一併被創造出來，其中包含了它Filter的訊息</p>
+</li>
+<li>
+<p><code>filterconfig.getFilterName()</code>:</p>
+</li>
+<li>
+<p><code>filterconfig.getInitParameter()</code>:取得初始參數(例如寫在web.xml中的<code>&lt;init-param&gt;</code></p>
+</li>
+<li>
+<p><code>filterconfig.getServletContext()</code>:也能獲得<code>ServletContext</code></p>
+<ul>
+<li>記住取出的<code>ServletContext context</code>是整個web工程共用的唯一一個</li>
+<li>複習:可以用來從url網址取到對應的硬碟路徑， 例如<code>context.getRealPath(&quot;/&quot;)</code></li>
+<li>也可以當map用存<code>setAttribute</code>，與取<code>getAttribute</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="filterchain">FilterChain</h2>
+<ul>
+<li>串聯多個過濾器，直到沒有<code>chain.doFilter()</code>，就調用目標資源的<code>service()</code>方法</li>
+<li>它的執行順序，類似把doFilter()當作中隔的中序遍歷
+<ul>
+<li>F1上半部-F2上半部-資源-F2下半部-F1下半部</li>
+</ul>
+</li>
+<li>F1、F2的順序是由web.xml中標籤上下所決定</li>
+<li>如果是用註解的，無法決定順序
+<ul>
+<li>實作上，每個過濾器都應該是獨立的，不應受順序影響功能</li>
+</ul>
+</li>
+</ul>
+<h2 id="實作">實作</h2>
+<blockquote>
+<p>引用 <a href="http://c.biancheng.net/servlet2/filter.html">http://c.biancheng.net/servlet2/filter.html</a></p>
+</blockquote>
+<h3 id="webxml">web.xml</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;filter&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;filter-name&gt;</span>myFilter<span style="color:#8b008b;font-weight:bold">&lt;/filter-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;filter-class&gt;</span>com.MyFilter<span style="color:#8b008b;font-weight:bold">&lt;/filter-class&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>name<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>我的Filter<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>URL<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>www.MyFilter.net<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/filter&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;filter-mapping&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;filter-name&gt;</span>myFilter<span style="color:#8b008b;font-weight:bold">&lt;/filter-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/login<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;dispatcher&gt;</span>REQUEST<span style="color:#8b008b;font-weight:bold">&lt;/dispatcher&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;dispatcher&gt;</span>FORWARD<span style="color:#8b008b;font-weight:bold">&lt;/dispatcher&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/filter-mapping&gt;</span>
+</code></pre></div><h3 id="匹配規則">匹配規則</h3>
+<blockquote>
+<p>規則跟servlet一樣</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>規則</th>
+<th>範例</th>
+<th>可訪問的URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>精確</td>
+<td>以<code>/</code>開始，不能包含萬用字元<code>*</code>且必須完全匹配</td>
+<td>/myServlet</td>
+<td>/myServlet</td>
+</tr>
+<tr>
+<td>路徑</td>
+<td>以<code>/</code>開始，並以<code>/*</code>結尾</td>
+<td>/user/</td>
+<td>/user/之下都可以</td>
+</tr>
+<tr>
+<td>後綴</td>
+<td>以<code>*.</code>開始，並以某種後綴結尾</td>
+<td>*.jsp</td>
+<td>工程目錄下所有.jsp</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>但是要注意，servlet匹配是從上到下，有符合就交給它，剩下不管，一次必然只有一個servlet執行</li>
+<li>但filter是只要符合匹配規則就通通抓起來篩，所以可能符合多個且filter全都執行</li>
+</ul>
+<h3 id="註解">註解</h3>
+<ul>
+<li>
+<p>@WebFilter 注解也可以對篩檢程式進行配置，容器在部署應用時，會根據其具體屬性配置將相應的類部署為篩檢程式</p>
+</li>
+<li>
+<p>@WebFilter 注解具有下表給出的一些常用屬性。以下所有屬性均為可選屬性，但 value、urlPatterns、servletNames 三者必需至少包含一個，且 value 和 urlPatterns 不能共存，如果同時指定，通常忽略 value 的取值</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>屬性名</strong></th>
+<th><strong>類型</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filterName</td>
+<td>String</td>
+<td>指定篩檢程式的 name 屬性，等價於 <!-- raw HTML omitted --></td>
+</tr>
+<tr>
+<td>urlPatterns</td>
+<td>String[]</td>
+<td>指定篩檢程式的 URL 匹配模式。等價於 <!-- raw HTML omitted --> 標籤</td>
+</tr>
+<tr>
+<td>value</td>
+<td>String[]</td>
+<td>該屬性等價於 urlPatterns 屬性，但是兩者不能同時使用</td>
+</tr>
+<tr>
+<td>servletNames</td>
+<td>String[]</td>
+<td>指定篩檢程式將應用於哪些 Servlet。取值是 @WebServlet 中 filterName 屬性的取值，或者 web.xml 中  <!-- raw HTML omitted --> 的取值</td>
+</tr>
+<tr>
+<td>dispatcherTypes</td>
+<td>DispatcherType</td>
+<td>指定篩檢程式攔截的資源被 Servlet 容器調用的方式。具體取值包括：ASYNC、ERROR、FORWARD、INCLUDE、REQUEST</td>
+</tr>
+<tr>
+<td>initParams</td>
+<td>WebInitParam[]</td>
+<td>指定一組篩檢程式初始化參數，等價於 <!-- raw HTML omitted --> 標籤</td>
+</tr>
+<tr>
+<td>asyncSupported</td>
+<td>boolean</td>
+<td>聲明篩檢程式是否支援非同步作業模式，等價於 <!-- raw HTML omitted --> 標籤</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>指定篩檢程式的描述資訊，等價於 <!-- raw HTML omitted --> 標籤</td>
+</tr>
+<tr>
+<td>displayName</td>
+<td>String</td>
+<td>指定篩檢程式的顯示名，等價於 <!-- raw HTML omitted --> 標籤</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@WebFilter</span>(filterName=<span style="color:#cd5555">&#34;FirstFilter&#34;</span>,urlPatterns={<span style="color:#cd5555">&#34;/first&#34;</span>,<span style="color:#cd5555">&#34;*.do&#34;</span>,<span style="color:#cd5555">&#34;*.jsp&#34;</span>})
+</code></pre></div><h3 id="應用至書城項目">應用至書城項目</h3>
+<blockquote>
+<p>不要導錯包，是javax的</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@WebFilter</span>(filterName = <span style="color:#cd5555">&#34;ManagerFilter&#34;</span>, urlPatterns = {<span style="color:#cd5555">&#34;/pages/manager/*&#34;</span>, <span style="color:#cd5555">&#34;/manager/*&#34;</span>, <span style="color:#cd5555">&#34;/BookServlet&#34;</span>})
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ManagerFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> Filter {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">init</span>(FilterConfig config) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException {
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">destroy</span>() {
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilter</span>(ServletRequest request, ServletResponse response, FilterChain chain) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException
+            , IOException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        User user = (User) httpServletRequest.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(<span style="color:#cd5555">&#34;user&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (user == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            httpServletRequest.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (user.<span style="color:#658b00">getId</span>() &lt;= 3) {
+            <span style="color:#228b22">// 判斷為管理員ID
+</span><span style="color:#228b22"></span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;有管理員來操作&#34;</span>);
+            chain.<span style="color:#658b00">doFilter</span>(request, response);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;雖然登入但不是管理員&#34;</span>);
+            request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+        }
+    }
+}
+</code></pre></div><hr>
+<h1 id="threadlocal">ThreadLocal</h1>
+<blockquote>
+<p><a href="http://www.jasongj.com/java/threadlocal/">http://www.jasongj.com/java/threadlocal/</a></p>
+<p><a href="https://kucw.github.io/blog/2018/7/java-thread-local/">https://kucw.github.io/blog/2018/7/java-thread-local/</a></p>
+</blockquote>
+<ul>
+<li>用於在同一個線程中存取一個資料</li>
+<li>某方面來說可以解決線程資料安全問題，但是有區別</li>
+<li>ThreadLocal適用於每個線程需要自己獨立的實例且該實例需要在多個方法中被使用，也即變數在線程間隔離而在方法或類間共用的場景</li>
+<li>Synchronize是應用在多線程間&quot;共用變量&quot;的加解鎖</li>
+<li>ThreadLocal是一個線程的一個變量在&quot;多個方法&quot;間傳遞
+<ul>
+<li>在方法參數都引用那個變量也可以達成，但是就需要每個方法都傳參，不夠優雅且耦合高</li>
+<li>ThreadLocal底層有一個ThreadLocalMap，用set與get方法就能存取值(key固定是ThreadLocal的ID，所以只能存一個值)</li>
+<li>白話:理解為&quot;線程域&quot;</li>
+</ul>
+</li>
+<li>應用場景:Session、線程池事務</li>
+</ul>
+<h2 id="使用">使用</h2>
+<ul>
+<li>前提是同一個線程</li>
+<li>一般都會設成static，方便跨方法資料的存取，例如</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;資料的類&gt; 資料 = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+</code></pre></div><h2 id="範例">範例</h2>
+<blockquote>
+<p>用來確保一個線程使用同一個conn連接資料庫，來完成事務操作</p>
+</blockquote>
+<ul>
+<li><code>JdbcUtils.java</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">JdbcUtils</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> DruidDataSource dataSource;
+    <span style="color:#228b22">// 造一個ThreadLocal，裡面存的是Connection
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 我預期讓同一個線程都用同一個conn來完成資料庫的事務操作
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 因為事務要全部提交或全部回滾所以需要是同一個conn
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;Connection&gt; threadLocalConn = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+
+    <span style="color:#228b22">// 讀取設定
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">static</span> {
+        Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            properties.<span style="color:#658b00">load</span>(JdbcUtils.<span style="color:#658b00">class</span>.<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;jdbc.properties&#34;</span>));
+            dataSource = (DruidDataSource) DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+
+    <span style="color:#228b22">// 獲取連接，返回null說明連接失敗
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> Connection <span style="color:#008b45">getConnection</span>() {
+        <span style="color:#228b22">// 從threadLocal拿連接
+</span><span style="color:#228b22"></span>        Connection conn = threadLocalConn.<span style="color:#658b00">get</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (conn == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 裡面還沒存東西呢
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">try</span> {
+                <span style="color:#228b22">// 就從連接池拿一個新的連線
+</span><span style="color:#228b22"></span>                conn = dataSource.<span style="color:#658b00">getConnection</span>();
+                <span style="color:#228b22">// 並且存到線程域中，以後都調用它
+</span><span style="color:#228b22"></span>                threadLocalConn.<span style="color:#658b00">set</span>(conn);
+                <span style="color:#228b22">// 設置手動提交準備搞事務
+</span><span style="color:#228b22"></span>                conn.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">false</span>);
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+                e.<span style="color:#658b00">printStackTrace</span>();
+            }
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> conn;
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 提交事務並且關閉
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">commitAndClose</span>() {
+        <span style="color:#228b22">// 現在不需要把conn當作參數傳進來了，因為同一個線程我get就能取到它
+</span><span style="color:#228b22"></span>        Connection conn = threadLocalConn.<span style="color:#658b00">get</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (conn != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 表示這個線程中有某dao取了連接並做了某些操作
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">try</span> {
+                <span style="color:#228b22">// 提交
+</span><span style="color:#228b22"></span>                conn.<span style="color:#658b00">commit</span>();
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+                e.<span style="color:#658b00">printStackTrace</span>();
+            } <span style="color:#8b008b;font-weight:bold">finally</span> {
+                <span style="color:#8b008b;font-weight:bold">try</span> {
+                    conn.<span style="color:#658b00">close</span>();
+                } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+                    e.<span style="color:#658b00">printStackTrace</span>();
+                }
+            }
+            <span style="color:#228b22">// 銷毀線程中的conn防止記憶體洩漏，
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 雖然GC內建會做這事，但手動可以增加效率
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 且Tomcat使用了線程池，不手動remove會直接報錯
+</span><span style="color:#228b22"></span>            threadLocalConn.<span style="color:#658b00">remove</span>();
+        }
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 回滾事務並且關閉
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackAndClose</span>() {
+        Connection conn = threadLocalConn.<span style="color:#658b00">get</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (conn != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#8b008b;font-weight:bold">try</span> {
+                <span style="color:#228b22">// 回滾
+</span><span style="color:#228b22"></span>                conn.<span style="color:#658b00">rollback</span>();
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+                e.<span style="color:#658b00">printStackTrace</span>();
+            } <span style="color:#8b008b;font-weight:bold">finally</span> {
+                <span style="color:#8b008b;font-weight:bold">try</span> {
+                    conn.<span style="color:#658b00">close</span>();
+                } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+                    e.<span style="color:#658b00">printStackTrace</span>();
+                }
+            }
+            threadLocalConn.<span style="color:#658b00">remove</span>();
+        }
+    }
+
+    <span style="color:#228b22">// // 關閉連接
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// public static void close(Connection conn) {
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//     if (conn != null) {
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//         try {
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//             conn.close();
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//         } catch (SQLException e) {
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//             e.printStackTrace();
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//         }
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//     }
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// }
+</span><span style="color:#228b22"></span>}
+</code></pre></div><ul>
+<li>修改<code>baseDao</code>中每個操作資料庫的方法，把原來的close()方法去掉，並且在出錯時手動拋出異常</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">update</span>(String sql, Object... args) {
+    Connection conn = JdbcUtils.<span style="color:#658b00">getConnection</span>();
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> queryRunner.<span style="color:#658b00">update</span>(conn, sql, args);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+        <span style="color:#228b22">// 遇到異常手動往外拋，否則事務不知道要回滾
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> RuntimeException(e);
+    }
+}
+</code></pre></div><ul>
+<li>Service層只是簡單的調用dao，沒有拋出異常</li>
+<li>接著就到了<code>baseServlet</code>，這邊用反射判斷請求對應的方法轉給各個Service，也捕獲了異常，需要手動拋出</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    request.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+    <span style="color:#228b22">// 判斷請求的隱藏標籤
+</span><span style="color:#228b22"></span>    String action = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;action&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#228b22">// 用反射找到方法
+</span><span style="color:#228b22"></span>        Method declaredMethod = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getClass</span>().<span style="color:#658b00">getDeclaredMethod</span>(action, HttpServletRequest.<span style="color:#658b00">class</span>,
+                HttpServletResponse.<span style="color:#658b00">class</span>);
+        <span style="color:#228b22">// 調用方法
+</span><span style="color:#228b22"></span>        declaredMethod.<span style="color:#658b00">invoke</span>(<span style="color:#8b008b;font-weight:bold">this</span>, request, response);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+        <span style="color:#228b22">// 手動拋出異常給過濾器
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> RuntimeException(e);
+    }
+}
+</code></pre></div><ul>
+<li>最後來到過濾器，過濾條件設定<code>&quot;/*&quot;</code>讓所有人都要被過濾</li>
+<li>一個線程的所有請求、涉及的方法都要經過<code>doFilter</code>方法才能層層往下調用<code>servlet &gt; service &gt; dao</code>，並且我用ThreadLocal確保它都是同一個conn了，只要任何一個環節出錯，就回滾，以此完成事務操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@WebFilter</span>(filterName = <span style="color:#cd5555">&#34;TransactionFilter&#34;</span>, value = <span style="color:#cd5555">&#34;/*&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">TransactionFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> Filter {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">init</span>(FilterConfig config) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException {
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">destroy</span>() {
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilter</span>(ServletRequest request, ServletResponse response, FilterChain chain) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException
+            , IOException {
+        <span style="color:#228b22">// 因為篩選條件是/*所有人都要來這關，當然也包含了所有事務
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+            chain.<span style="color:#658b00">doFilter</span>(request, response);
+            <span style="color:#228b22">// 在此提交事務
+</span><span style="color:#228b22"></span>            JdbcUtils.<span style="color:#658b00">commitAndClose</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            <span style="color:#228b22">// 出錯就回滾，剛剛讓baseServlet手動拋出就是為了在這邊能接到
+</span><span style="color:#228b22"></span>            JdbcUtils.<span style="color:#658b00">rollbackAndClose</span>();
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+}
+</code></pre></div><h3 id="tomcat錯誤頁面">Tomcat錯誤頁面</h3>
+<blockquote>
+<p>展示友好的錯誤頁面</p>
+</blockquote>
+<ul>
+<li>哈哈剛剛的<code>/*</code>過濾器還有戲，因為它是過濾所有，自然也會抓住所有異常，這裡把異常再往外拋</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+<span style="color:#228b22">// 出錯就回滾，剛剛讓baseServlet手動拋出就是為了在這邊能接到
+</span><span style="color:#228b22"></span>JdbcUtils.<span style="color:#658b00">rollbackAndClose</span>();
+e.<span style="color:#658b00">printStackTrace</span>();
+<span style="color:#228b22">// 手動拋出異常給Tomcat
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> RuntimeException(e);
+}
+</code></pre></div><ul>
+<li>web.xml</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;error-page&gt;</span>
+	<span style="color:#8b008b;font-weight:bold">&lt;location&gt;</span>/pages/error/error.html<span style="color:#8b008b;font-weight:bold">&lt;/location&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/error-page&gt;</span>
+
+也可以指定
+<span style="color:#8b008b;font-weight:bold">&lt;error-page&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;error-code&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;exception-type&gt;</span>
+        把不同類型的error引導到對應的頁面
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-10</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220111-agg-javaweb-11/">
+			下一篇<br>JSON、AJAX、i18n
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220109-agg-javaweb-09/">
+			上一篇<br>Cookie與Session，書城訂單模組
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>預存程序Procedure與自訂函數Function</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL筆記-11">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="預存程序Procedure與自訂函數Function" />
+<meta property="og:description" content="尚硅谷MySQL筆記-11" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211226-agg-mysql-11/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-26T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="預存程序Procedure與自訂函數Function"/>
+<meta name="twitter:description" content="尚硅谷MySQL筆記-11"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e8%88%87%e5%87%bd%e6%95%b8" onclick="onNavClick(`#存儲過程與函數-nav`)" id="存儲過程與函數-nav">
+									存儲過程與函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#1-存儲過程概述-nav`)" id="1-存儲過程概述-nav">
+									1. 存儲過程概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#11-%e7%90%86%e8%a7%a3" onclick="onNavClick(`#11-理解-nav`)" id="11-理解-nav">
+									1.1 理解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#12-%e5%88%86%e9%a1%9e" onclick="onNavClick(`#12-分類-nav`)" id="12-分類-nav">
+									1.2 分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#2-%e5%89%b5%e5%bb%ba%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#2-創建存儲過程-nav`)" id="2-創建存儲過程-nav">
+									2. 創建存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e8%aa%9e%e6%b3%95%e5%88%86%e6%9e%90" onclick="onNavClick(`#21-語法分析-nav`)" id="21-語法分析-nav">
+									2.1 語法分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#22-代碼舉例-nav`)" id="22-代碼舉例-nav">
+									2.2 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e8%aa%bf%e7%94%a8%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#3-調用存儲過程-nav`)" id="3-調用存儲過程-nav">
+									3. 調用存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#31-%e8%aa%bf%e7%94%a8%e6%a0%bc%e5%bc%8f" onclick="onNavClick(`#31-調用格式-nav`)" id="31-調用格式-nav">
+									3.1 調用格式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#32-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#32-代碼舉例-nav`)" id="32-代碼舉例-nav">
+									3.2 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#33-%e5%a6%82%e4%bd%95%e8%aa%bf%e8%a9%a6" onclick="onNavClick(`#33-如何調試-nav`)" id="33-如何調試-nav">
+									3.3 如何調試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#4-%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#4-存儲函數的使用-nav`)" id="4-存儲函數的使用-nav">
+									4. 存儲函數的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e8%aa%9e%e6%b3%95%e5%88%86%e6%9e%90" onclick="onNavClick(`#41-語法分析-nav`)" id="41-語法分析-nav">
+									4.1 語法分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e8%aa%bf%e7%94%a8%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8" onclick="onNavClick(`#42-調用存儲函數-nav`)" id="42-調用存儲函數-nav">
+									4.2 調用存儲函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#43-代碼舉例-nav`)" id="43-代碼舉例-nav">
+									4.3 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#44-%e5%b0%8d%e6%af%94%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8%e5%92%8c%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#44-對比存儲函數和存儲過程-nav`)" id="44-對比存儲函數和存儲過程-nav">
+									4.4 對比存儲函數和存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#5-%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e5%92%8c%e5%87%bd%e6%95%b8%e7%9a%84%e6%9f%a5%e7%9c%8b%e4%bf%ae%e6%94%b9%e5%88%aa%e9%99%a4" onclick="onNavClick(`#5-存儲過程和函數的查看修改刪除-nav`)" id="5-存儲過程和函數的查看修改刪除-nav">
+									5. 存儲過程和函數的查看、修改、刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#51-%e6%9f%a5%e7%9c%8b" onclick="onNavClick(`#51-查看-nav`)" id="51-查看-nav">
+									5.1 查看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#52-%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#52-修改-nav`)" id="52-修改-nav">
+									5.2 修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#53-%e5%88%aa%e9%99%a4" onclick="onNavClick(`#53-刪除-nav`)" id="53-刪除-nav">
+									5.3 刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#6-%e9%97%9c%e6%96%bc%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e4%bd%bf%e7%94%a8%e7%9a%84%e7%88%ad%e8%ad%b0" onclick="onNavClick(`#6-關於存儲過程使用的爭議-nav`)" id="6-關於存儲過程使用的爭議-nav">
+									6. 關於存儲過程使用的爭議
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#61-%e5%84%aa%e9%bb%9e" onclick="onNavClick(`#61-優點-nav`)" id="61-優點-nav">
+									6.1 優點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#62-%e7%bc%ba%e9%bb%9e" onclick="onNavClick(`#62-缺點-nav`)" id="62-缺點-nav">
+									6.2 缺點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%98%bf%e8%a3%a1%e9%96%8b%e7%99%bc%e8%a6%8f%e7%af%84" onclick="onNavClick(`#阿裡開發規範-nav`)" id="阿裡開發規範-nav">
+									阿裡開發規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e8%88%87%e5%87%bd%e6%95%b8" onclick="onNavClick(`#存儲過程與函數-nav`)" id="存儲過程與函數-nav">
+									存儲過程與函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1-%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#1-存儲過程概述-nav`)" id="1-存儲過程概述-nav">
+									1. 存儲過程概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#11-%e7%90%86%e8%a7%a3" onclick="onNavClick(`#11-理解-nav`)" id="11-理解-nav">
+									1.1 理解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#12-%e5%88%86%e9%a1%9e" onclick="onNavClick(`#12-分類-nav`)" id="12-分類-nav">
+									1.2 分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#2-%e5%89%b5%e5%bb%ba%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#2-創建存儲過程-nav`)" id="2-創建存儲過程-nav">
+									2. 創建存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#21-%e8%aa%9e%e6%b3%95%e5%88%86%e6%9e%90" onclick="onNavClick(`#21-語法分析-nav`)" id="21-語法分析-nav">
+									2.1 語法分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#22-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#22-代碼舉例-nav`)" id="22-代碼舉例-nav">
+									2.2 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#3-%e8%aa%bf%e7%94%a8%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#3-調用存儲過程-nav`)" id="3-調用存儲過程-nav">
+									3. 調用存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#31-%e8%aa%bf%e7%94%a8%e6%a0%bc%e5%bc%8f" onclick="onNavClick(`#31-調用格式-nav`)" id="31-調用格式-nav">
+									3.1 調用格式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#32-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#32-代碼舉例-nav`)" id="32-代碼舉例-nav">
+									3.2 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#33-%e5%a6%82%e4%bd%95%e8%aa%bf%e8%a9%a6" onclick="onNavClick(`#33-如何調試-nav`)" id="33-如何調試-nav">
+									3.3 如何調試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#4-%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#4-存儲函數的使用-nav`)" id="4-存儲函數的使用-nav">
+									4. 存儲函數的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#41-%e8%aa%9e%e6%b3%95%e5%88%86%e6%9e%90" onclick="onNavClick(`#41-語法分析-nav`)" id="41-語法分析-nav">
+									4.1 語法分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#42-%e8%aa%bf%e7%94%a8%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8" onclick="onNavClick(`#42-調用存儲函數-nav`)" id="42-調用存儲函數-nav">
+									4.2 調用存儲函數
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#43-%e4%bb%a3%e7%a2%bc%e8%88%89%e4%be%8b" onclick="onNavClick(`#43-代碼舉例-nav`)" id="43-代碼舉例-nav">
+									4.3 代碼舉例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#44-%e5%b0%8d%e6%af%94%e5%ad%98%e5%84%b2%e5%87%bd%e6%95%b8%e5%92%8c%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b" onclick="onNavClick(`#44-對比存儲函數和存儲過程-nav`)" id="44-對比存儲函數和存儲過程-nav">
+									4.4 對比存儲函數和存儲過程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#5-%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e5%92%8c%e5%87%bd%e6%95%b8%e7%9a%84%e6%9f%a5%e7%9c%8b%e4%bf%ae%e6%94%b9%e5%88%aa%e9%99%a4" onclick="onNavClick(`#5-存儲過程和函數的查看修改刪除-nav`)" id="5-存儲過程和函數的查看修改刪除-nav">
+									5. 存儲過程和函數的查看、修改、刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#51-%e6%9f%a5%e7%9c%8b" onclick="onNavClick(`#51-查看-nav`)" id="51-查看-nav">
+									5.1 查看
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#52-%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#52-修改-nav`)" id="52-修改-nav">
+									5.2 修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#53-%e5%88%aa%e9%99%a4" onclick="onNavClick(`#53-刪除-nav`)" id="53-刪除-nav">
+									5.3 刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#6-%e9%97%9c%e6%96%bc%e5%ad%98%e5%84%b2%e9%81%8e%e7%a8%8b%e4%bd%bf%e7%94%a8%e7%9a%84%e7%88%ad%e8%ad%b0" onclick="onNavClick(`#6-關於存儲過程使用的爭議-nav`)" id="6-關於存儲過程使用的爭議-nav">
+									6. 關於存儲過程使用的爭議
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#61-%e5%84%aa%e9%bb%9e" onclick="onNavClick(`#61-優點-nav`)" id="61-優點-nav">
+									6.1 優點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#62-%e7%bc%ba%e9%bb%9e" onclick="onNavClick(`#62-缺點-nav`)" id="62-缺點-nav">
+									6.2 缺點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%98%bf%e8%a3%a1%e9%96%8b%e7%99%bc%e8%a6%8f%e7%af%84" onclick="onNavClick(`#阿裡開發規範-nav`)" id="阿裡開發規範-nav">
+									阿裡開發規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    預存程序Procedure與自訂函數Function
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL筆記-11
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-26 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/mysql%E7%B7%9A%E4%B8%8A%E8%AA%B2">MySQL線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="存儲過程與函數">存儲過程與函數</h1>
+<blockquote>
+<p>就是巨集Macro啦，這部分我暫時用不到，先直接貼上筆記過眼完事了，以後有用到再回來補</p>
+</blockquote>
+<p>MySQL從5.0版本開始支援存儲過程和函數。存儲過程和函數能夠將複雜的SQL邏輯封裝在一起，應用程式無須關注存儲過程和函數內部複雜的SQL邏輯，而只需要簡單地調用存儲過程和函數即可。</p>
+<h2 id="1-存儲過程概述">1. 存儲過程概述</h2>
+<h3 id="11-理解">1.1 理解</h3>
+<p><strong>含義</strong>：存儲過程的英文是 <code>Stored Procedure</code>。它的思想很簡單，就是一組經過<code>預先編譯</code>的 SQL 語句的封裝。</p>
+<p>執行過程：存儲過程預先存儲在 MySQL 伺服器上，需要執行的時候，用戶端只需要向伺服器端發出調用存儲過程的命令，伺服器端就可以把預先存儲好的這一系列 SQL 語句全部執行。</p>
+<p><strong>好處</strong>：</p>
+<p>1、簡化操作，提高了sql語句的重用性，減少了開發程式師的壓力
+2、減少操作過程中的失誤，提高效率
+3、減少網路傳輸量（用戶端不需要把所有的 SQL 語句通過網路發給伺服器）
+4、減少了 SQL 語句暴露在網上的風險，也提高了資料查詢的安全性</p>
+<p><strong>和視圖、函數的對比</strong>：</p>
+<p>它和視圖有著同樣的優點，清晰、安全，還可以減少網路傳輸量。不過它和視圖不同，視圖是<code>虛擬表</code>，通常不對底層資料表直接操作，而存儲過程是程式化的 SQL，可以<code>直接操作底層資料表</code>，相比于面向集合的操作方式，能夠實現一些更複雜的資料處理。</p>
+<p>一旦存儲過程被創建出來，使用它就像使用函數一樣簡單，我們直接通過調用存儲過程名即可。相較於函數，存儲過程是<code>沒有返回值</code>的。</p>
+<h3 id="12-分類">1.2 分類</h3>
+<p>存儲過程的參數類型可以是IN、OUT和INOUT。根據這點分類如下：</p>
+<p>1、沒有參數（無參數無返回）
+2、僅僅帶 IN 類型（有參數無返回）
+3、僅僅帶 OUT 類型（無參數有返回）
+4、既帶 IN 又帶 OUT（有參數有返回）
+5、帶 INOUT（有參數有返回）</p>
+<p>注意：IN、OUT、INOUT 都可以在一個存儲過程中帶多個。</p>
+<h2 id="2-創建存儲過程">2. 創建存儲過程</h2>
+<h3 id="21-語法分析">2.1 語法分析</h3>
+<p>語法：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程名</span>(<span style="color:#8b008b;font-weight:bold">IN</span>|<span style="color:#8b008b;font-weight:bold">OUT</span>|<span style="color:#8b008b;font-weight:bold">INOUT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">參數名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">參數類型</span>,...)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>[characteristics<span style="color:#bbb"> </span>...]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">存儲過程體</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb">
+</span></code></pre></div><p>類似於Java中的方法：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#a61717;background-color:#e3d2d2">修飾符</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">返回類型</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">方法名</span>(<span style="color:#a61717;background-color:#e3d2d2">參數類型</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">參數名</span>,...)<span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">方法體</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span></code></pre></div><p>說明：</p>
+<p>1、參數前面的符號的意思</p>
+<ul>
+<li>
+<p><code>IN</code>：當前參數為輸入參數，也就是表示入參；</p>
+<p>存儲過程只是讀取這個參數的值。如果沒有定義參數種類，<code>預設就是 IN</code>，表示輸入參數。</p>
+</li>
+<li>
+<p><code>OUT</code>：當前參數為輸出參數，也就是表示出參；</p>
+<p>執行完成之後，調用這個存儲過程的用戶端或者應用程式就可以讀取這個參數返回的值了。</p>
+</li>
+<li>
+<p><code>INOUT</code>：當前參數既可以為輸入參數，也可以為輸出參數。</p>
+</li>
+</ul>
+<p>2、形參類型可以是 MySQL資料庫中的任意類型。</p>
+<p>3、<code>characteristics</code> 表示創建存儲過程時指定的對存儲過程的約束條件，其取值資訊如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">LANGUAGE<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">NOT</span>]<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DETERMINISTIC</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb"> </span>CONTAINS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>NO<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">READS</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MODIFIES</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>SECURITY<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb"> </span>DEFINER<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>INVOKER<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>COMMENT<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;string&#39;</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>LANGUAGE SQL</code>：說明存儲過程執行體是由SQL語句組成的，當前系統支援的語言為SQL。</li>
+<li><code>[NOT] DETERMINISTIC</code>：指明存儲過程執行的結果是否確定。DETERMINISTIC表示結果是確定的。每次執行存儲過程時，相同的輸入會得到相同的輸出。NOT DETERMINISTIC表示結果是不確定的，相同的輸入可能得到不同的輸出。如果沒有指定任意一個值，預設為NOT DETERMINISTIC。</li>
+<li><code>{ CONTAINS SQL | NO SQL | READS SQL DATA | MODIFIES SQL DATA }</code>：指明副程式使用SQL語句的限制。
+<ul>
+<li>CONTAINS SQL表示當前存儲過程的副程式包含SQL語句，但是並不包含讀寫資料的SQL語句；</li>
+<li>NO SQL表示當前存儲過程的副程式中不包含任何SQL語句；</li>
+<li>READS SQL DATA表示當前存儲過程的副程式中包含讀數據的SQL語句；</li>
+<li>MODIFIES SQL DATA表示當前存儲過程的副程式中包含寫資料的SQL語句。</li>
+<li>預設情況下，系統會指定為CONTAINS SQL。</li>
+</ul>
+</li>
+<li><code>SQL SECURITY { DEFINER | INVOKER }</code>：執行當前存儲過程的許可權，即指明哪些使用者能夠執行當前存儲過程。
+<ul>
+<li><code>DEFINER</code>表示只有當前存儲過程的創建者或者定義者才能執行當前存儲過程；</li>
+<li><code>INVOKER</code>表示擁有當前存儲過程的存取權限的使用者能夠執行當前存儲過程。</li>
+<li>如果沒有設置相關的值，則MySQL預設指定值為DEFINER。</li>
+</ul>
+</li>
+<li><code>COMMENT 'string'</code>：注釋資訊，可以用來描述存儲過程。</li>
+</ul>
+<p>4、存儲過程體中可以有多條 SQL 語句，如果僅僅一條SQL 語句，則可以省略 BEGIN 和 END</p>
+<p>編寫存儲過程並不是一件簡單的事情，可能存儲過程中需要複雜的 SQL 語句。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#b452cd">1</span>.<span style="color:#bbb"> </span>BEGIN<span style="color:#a61717;background-color:#e3d2d2">…</span>END<span style="color:#a61717;background-color:#e3d2d2">：</span>BEGIN<span style="color:#a61717;background-color:#e3d2d2">…</span>END<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">中間包含了多個語句，每個語句都以（</span>;<span style="color:#a61717;background-color:#e3d2d2">）號為結束符。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">2</span>.<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#a61717;background-color:#e3d2d2">：</span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">用來聲明變數，使用的位置在於</span><span style="color:#bbb"> </span>BEGIN<span style="color:#a61717;background-color:#e3d2d2">…</span>END<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">語句中間，而且需要在其他語句使用之前進行變數的聲明。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">3</span>.<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#a61717;background-color:#e3d2d2">：設定陳述式，用於對變數進行賦值。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">4</span>.<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#a61717;background-color:#e3d2d2">…</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#a61717;background-color:#e3d2d2">：把從資料表中查詢的結果存放到變數中，也就是為變數賦值。</span><span style="color:#bbb">
+</span></code></pre></div><p>5、需要設置新的結束標記</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">新的結束標記</span><span style="color:#bbb">
+</span></code></pre></div><p>因為MySQL預設的語句結束符號為分號‘;’。為了避免與存儲過程中SQL語句結束符相衝突，需要使用DELIMITER改變存儲過程的結束符。</p>
+<p>比如：&ldquo;DELIMITER //&ldquo;語句的作用是將MySQL的結束符設置為//，並以&quot;END //&ldquo;結束存儲過程。存儲程序定義完畢之後再使用&quot;DELIMITER ;&ldquo;恢復預設結束符。DELIMITER也可以指定其他符號作為結束符。</p>
+<p>當使用DELIMITER命令時，應該避免使用反斜線（‘\’）字元，因為反斜線是MySQL的轉義字元。</p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程名</span>(<span style="color:#8b008b;font-weight:bold">IN</span>|<span style="color:#8b008b;font-weight:bold">OUT</span>|<span style="color:#8b008b;font-weight:bold">INOUT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">參數名</span><span style="color:#bbb">  </span><span style="color:#a61717;background-color:#e3d2d2">參數類型</span>,...)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>[characteristics<span style="color:#bbb"> </span>...]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>sql語句1;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>sql語句2;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#bbb">
+</span></code></pre></div><h3 id="22-代碼舉例">2.2 代碼舉例</h3>
+<p>舉例1：創建存儲過程select_all_data()，查看 emps 表的所有資料</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">select_all_data</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例2：創建存儲過程avg_employee_salary()，返回所有員工的平均工資</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">avg_employee_salary</span><span style="color:#bbb"> </span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AS</span><span style="color:#bbb"> </span>avg_salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例3：創建存儲過程show_max_salary()，用來查看&quot;emps&quot;表的最高薪資值。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">show_max_salary</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>LANGUAGE<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DETERMINISTIC</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>CONTAINS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>SECURITY<span style="color:#bbb"> </span>DEFINER<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>COMMENT<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;查看最高薪資&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MAX</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例4：創建存儲過程show_min_salary()，查看&quot;emps&quot;表的最低薪資值。並將最低薪資通過OUT參數&quot;ms&quot;輸出</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">show_min_salary</span>(<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>ms<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">MIN</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>ms<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例5：創建存儲過程show_someone_salary()，查看&quot;emps&quot;表的某個員工的薪資，並用IN參數empname輸入員工姓名。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">show_someone_salary</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>empname<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">20</span>))<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>ename<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>empname;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例6：創建存儲過程show_someone_salary2()，查看&quot;emps&quot;表的某個員工的薪資，並用IN參數empname輸入員工姓名，用OUT參數empsalary輸出員工薪資。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">show_someone_salary2</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>empname<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">20</span>),<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>empsalary<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">DOUBLE</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>empsalary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>ename<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>empname;<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>舉例7：創建存儲過程show_mgr_name()，查詢某個員工領導的姓名，並用INOUT參數&quot;empname&quot;輸入員工姓名，輸出領導的姓名。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">show_mgr_name</span>(<span style="color:#8b008b;font-weight:bold">INOUT</span><span style="color:#bbb"> </span>empname<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">20</span>))<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>ename<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>empname<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps<span style="color:#bbb">
+</span><span style="color:#bbb">		</span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>eid<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>MID<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>emps<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>ename=empname);<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><h2 id="3-調用存儲過程">3. 調用存儲過程</h2>
+<h3 id="31-調用格式">3.1 調用格式</h3>
+<p>存儲過程有多種調用方法。存儲過程必須使用CALL語句調用，並且存儲過程和資料庫相關，如果要執行其他資料庫中的存儲過程，需要指定資料庫名稱，例如CALL dbname.procname。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程名</span>(<span style="color:#a61717;background-color:#e3d2d2">實參列表</span>)<span style="color:#bbb">
+</span></code></pre></div><p><strong>格式：</strong></p>
+<p>1、調用in模式的參數：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">sp1</span>(<span style="color:#cd5555">&#39;值&#39;</span>);<span style="color:#bbb">
+</span></code></pre></div><p>2、調用out模式的參數：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@name;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">sp1</span>(@name);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@name;<span style="color:#bbb">
+</span></code></pre></div><p>3、調用inout模式的參數：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@name=<span style="color:#a61717;background-color:#e3d2d2">值</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">sp1</span>(@name);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@name;<span style="color:#bbb">
+</span></code></pre></div><h3 id="32-代碼舉例">3.2 代碼舉例</h3>
+<p><strong>舉例1：</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span><span style="color:#008b45">CountProc</span>(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>sid<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>,<span style="color:#8b008b;font-weight:bold">OUT</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">COUNT</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>num<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>fruits<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>s_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>sid;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用存儲過程：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CALL</span><span style="color:#bbb"> </span><span style="color:#008b45">CountProc</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">101</span>,<span style="color:#bbb"> </span>@num);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#008b45">affected</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><p>查看返回結果：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@num;<span style="color:#bbb">
+</span></code></pre></div><p>該存儲過程返回了指定 s_id=101 的水果商提供的水果種類，返回值存儲在num變數中，使用SELECT查看，返回結果為3。</p>
+<p>**舉例2：**創建存儲過程，實現累加運算，計算 1+2+…+n 等於多少。具體的代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>`add_num`(<span style="color:#8b008b;font-weight:bold">IN</span><span style="color:#bbb"> </span>n<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">DECLARE</span><span style="color:#bbb"> </span>sum<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>sum<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">WHILE</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span>n<span style="color:#bbb"> </span>DO<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>sum<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>sum<span style="color:#bbb"> </span>+<span style="color:#bbb"> </span>i;<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>i<span style="color:#bbb"> </span>+<span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">       </span>END<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHILE</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">       </span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>sum;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>如果你用的是 Navicat 工具，那麼在編寫存儲過程的時候，Navicat 會自動設置 DELIMITER 為其他符號，我們不需要再進行 DELIMITER 的操作。</p>
+<p>直接使用 <code>CALL add_num(50);</code>即可。這裡我傳入的參數為 50，也就是統計 1+2+…+50 的積累之和。</p>
+<h3 id="33-如何調試">3.3 如何調試</h3>
+<p>在 MySQL 中，存儲過程不像普通的程式設計語言（比如 VC++、Java 等）那樣有專門的整合式開發環境。因此，你可以通過 SELECT 語句，把程式執行的中間結果查詢出來，來調試一個 SQL 語句的正確性。調試成功之後，把 SELECT 語句後移到下一個 SQL 語句之後，再調試下一個 SQL 語句。這樣<code>逐步推進</code>，就可以完成對存儲過程中所有操作的調試了。當然，你也可以把存儲過程中的 SQL 語句複製出來，逐段單獨調試。</p>
+<h2 id="4-存儲函數的使用">4. 存儲函數的使用</h2>
+<p>前面學習了很多函數，使用這些函數可以對資料進行的各種處理操作，極大地提高使用者對資料庫的管理效率。MySQL支援自訂函數，定義好之後，調用方式與調用MySQL預定義的系統函數一樣。</p>
+<h3 id="41-語法分析">4.1 語法分析</h3>
+<p>學過的函數：LENGTH、SUBSTR、CONCAT等</p>
+<p>語法格式：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">函數名</span>(<span style="color:#a61717;background-color:#e3d2d2">參數名</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">參數類型</span>,...)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>RETURNS<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">返回數值型別</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>[characteristics<span style="color:#bbb"> </span>...]<span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#a61717;background-color:#e3d2d2">函數體</span><span style="color:#bbb">   </span><span style="color:#228b22">#函數體中肯定有 RETURN 語句
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb">
+</span></code></pre></div><p>說明：</p>
+<p>1、參數列表：指定參數為IN、OUT或INOUT只對PROCEDURE是合法的，FUNCTION中總是預設為IN參數。</p>
+<p>2、RETURNS type 語句表示函數返回資料的類型；</p>
+<p>RETURNS子句只能對FUNCTION做指定，對函數而言這是<code>強制</code>的。它用來指定函數的返回類型，而且函數體必須包含一個<code>RETURN value</code>語句。</p>
+<p>3、characteristic 創建函數時指定的對函數的約束。取值與創建存儲過程時相同，這裡不再贅述。</p>
+<p>4、函數體也可以用BEGIN…END來表示SQL代碼的開始和結束。如果函數體只有一條語句，也可以省略BEGIN…END。</p>
+<h3 id="42-調用存儲函數">4.2 調用存儲函數</h3>
+<p>在MySQL中，存儲函數的使用方法與MySQL內建函式的使用方法是一樣的。換言之，使用者自己定義的存儲函數與MySQL內建函式是一個性質的。區別在於，存儲函數是<code>使用者自己定義</code>的，而內建函式是MySQL的<code>開發者定義</code>的。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">函數名</span>(<span style="color:#a61717;background-color:#e3d2d2">實參清單</span>)<span style="color:#bbb">
+</span></code></pre></div><h3 id="43-代碼舉例">4.3 代碼舉例</h3>
+<p><strong>舉例1：</strong></p>
+<p>創建存儲函數，名稱為email_by_name()，參數定義為空，該函數查詢Abel的email，並返回，資料類型為字串型。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span><span style="color:#008b45">email_by_name</span>()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>RETURNS<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DETERMINISTIC</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>CONTAINS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">RETURN</span><span style="color:#bbb"> </span>(<span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Abel&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">email_by_name</span>();<span style="color:#bbb">
+</span></code></pre></div><p><strong>舉例2：</strong></p>
+<p>創建存儲函數，名稱為email_by_id()，參數傳入emp_id，該函數查詢emp_id的email，並返回，資料類型為字串型。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span><span style="color:#008b45">email_by_id</span>(emp_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>RETURNS<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">VARCHAR</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DETERMINISTIC</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>CONTAINS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">RETURN</span><span style="color:#bbb"> </span>(<span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>email<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>emp_id);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@emp_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">102</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">email_by_id</span>(<span style="color:#b452cd">102</span>);<span style="color:#bbb">
+</span></code></pre></div><p><strong>舉例3：</strong></p>
+<p>創建存儲函數count_by_id()，參數傳入dept_id，該函數查詢dept_id部門的員工人數，並返回，資料類型為整型。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">DELIMITER<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span><span style="color:#008b45">count_by_id</span>(dept_id<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>RETURNS<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">INT</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>LANGUAGE<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DETERMINISTIC</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">READS</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>SECURITY<span style="color:#bbb"> </span>DEFINER<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>COMMENT<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;查詢部門平均工資&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>BEGIN<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#8b008b;font-weight:bold">RETURN</span><span style="color:#bbb"> </span>(<span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">COUNT</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>dept_id);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>END<span style="color:#bbb"> </span>//<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>DELIMITER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>調用：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>@dept_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">50</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#008b45">count_by_id</span>(@dept_id);<span style="color:#bbb">
+</span></code></pre></div><p><strong>注意：</strong></p>
+<p>若在創建存儲函數中報錯&rdquo;<code>you might want to use the less safe log_bin_trust_function_creators variable</code>&quot;，有兩種處理方法：</p>
+<ul>
+<li>
+<p>方式1：加上必要的函數特性&rdquo;[NOT] DETERMINISTIC&quot;和&rdquo;{CONTAINS SQL | NO SQL | READS SQL DATA | MODIFIES SQL DATA}&rdquo;</p>
+</li>
+<li>
+<p>方式2：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">SET</span><span style="color:#bbb"> </span>GLOBAL<span style="color:#bbb"> </span>log_bin_trust_function_creators<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>;<span style="color:#bbb">
+</span></code></pre></div><h3 id="44-對比存儲函數和存儲過程">4.4 對比存儲函數和存儲過程</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>關鍵字</th>
+<th>調用語法</th>
+<th>返回值</th>
+<th>應用場景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存儲過程</td>
+<td>PROCEDURE</td>
+<td>CALL 存儲過程()</td>
+<td>理解為有0個或多個</td>
+<td>一般用於更新</td>
+</tr>
+<tr>
+<td>存儲函數</td>
+<td>FUNCTION</td>
+<td>SELECT 函數()</td>
+<td>只能是一個</td>
+<td>一般用於查詢結果為一個值並返回時</td>
+</tr>
+</tbody>
+</table>
+<p>此外，<strong>存儲函數可以放在查詢語句中使用，存儲過程不行</strong>。反之，存儲過程的功能更加強大，包括能夠執行對表的操作（比如創建表，刪除表等）和事務操作，這些功能是存儲函數不具備的。</p>
+<h2 id="5-存儲過程和函數的查看修改刪除">5. 存儲過程和函數的查看、修改、刪除</h2>
+<h3 id="51-查看">5.1 查看</h3>
+<p>創建完之後，怎麼知道我們創建的存儲過程、存儲函數是否成功了呢？</p>
+<p>MySQL存儲了存儲過程和函數的狀態資訊，使用者可以使用SHOW STATUS語句或SHOW CREATE語句來查看，也可直接從系統的information_schema資料庫中查詢。這裡介紹3種方法。</p>
+<p><strong>1. 使用SHOW CREATE語句查看存儲過程和函數的創建資訊</strong></p>
+<p>基本語法結構如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>FUNCTION<span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程名或函數名</span><span style="color:#bbb">
+</span></code></pre></div><p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span>test_db.CountProc<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">\</span>G<span style="color:#bbb">
+</span></code></pre></div><p><strong>2. 使用SHOW STATUS語句查看存儲過程和函數的狀態資訊</strong></p>
+<p>基本語法結構如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>FUNCTION<span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb"> </span>STATUS<span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;pattern&#39;</span>]<span style="color:#bbb">
+</span></code></pre></div><p>這個語句返回副程式的特徵，如資料庫、名字、類型、創建者及創建和修改日期。</p>
+<p>[LIKE &lsquo;pattern&rsquo;]：匹配存儲過程或函數的名稱，可以省略。當省略不寫時，會列出MySQL資料庫中存在的所有存儲過程或函數的資訊。
+舉例：SHOW STATUS語句示例，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">mysql&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SHOW</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>STATUS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">LIKE</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;SELECT%&#39;</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">\</span>G<span style="color:#bbb">
+</span><span style="color:#bbb"></span>***************************<span style="color:#bbb"> </span><span style="color:#b452cd">1</span>.<span style="color:#bbb"> </span>row<span style="color:#bbb"> </span>***************************<span style="color:#bbb">
+</span><span style="color:#bbb">                  </span>Db:<span style="color:#bbb"> </span>test_db<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>Name:<span style="color:#bbb"> </span>SelectAllData<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>Type:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb">
+</span><span style="color:#bbb">             </span>Definer:<span style="color:#bbb"> </span>root@localhost<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>Modified:<span style="color:#bbb"> </span><span style="color:#b452cd">2021</span>-<span style="color:#b452cd">10</span>-<span style="color:#b452cd">16</span><span style="color:#bbb"> </span><span style="color:#b452cd">15</span>:<span style="color:#b452cd">55</span>:<span style="color:#b452cd">07</span><span style="color:#bbb">
+</span><span style="color:#bbb">             </span>Created:<span style="color:#bbb"> </span><span style="color:#b452cd">2021</span>-<span style="color:#b452cd">10</span>-<span style="color:#b452cd">16</span><span style="color:#bbb"> </span><span style="color:#b452cd">15</span>:<span style="color:#b452cd">55</span>:<span style="color:#b452cd">07</span><span style="color:#bbb">
+</span><span style="color:#bbb">       </span>Security_type:<span style="color:#bbb"> </span>DEFINER<span style="color:#bbb">
+</span><span style="color:#bbb">             </span>Comment:<span style="color:#bbb">
+</span><span style="color:#bbb"></span>character_set_client:<span style="color:#bbb"> </span>utf8mb4<span style="color:#bbb">
+</span><span style="color:#bbb"></span>collation_connection:<span style="color:#bbb"> </span>utf8mb4_general_ci<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">Database</span><span style="color:#bbb"> </span>Collation:<span style="color:#bbb"> </span>utf8mb4_general_ci<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#b452cd">1</span><span style="color:#bbb"> </span>row<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">0</span>.<span style="color:#b452cd">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></code></pre></div><p><strong>3. 從information_schema.Routines表中查看存儲過程和函數的資訊</strong></p>
+<p>MySQL中存儲過程和函數的資訊存儲在information_schema資料庫下的Routines表中。可以通過查詢該表的記錄來查詢存儲過程和函數的資訊。其基本語法形式如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>information_schema.Routines<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>ROUTINE_NAME=<span style="color:#cd5555">&#39;存儲過程或函數的名&#39;</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>ROUTINE_TYPE<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#cd5555">&#39;PROCEDURE|FUNCTION&#39;</span><span style="color:#a61717;background-color:#e3d2d2">}</span>];<span style="color:#bbb">
+</span></code></pre></div><p>說明：如果在MySQL資料庫中存在存儲過程和函數名稱相同的情況，最好指定ROUTINE_TYPE查詢準則來指明查詢的是存儲過程還是函數。</p>
+<p>舉例：從Routines表中查詢名稱為CountProc的存儲函數的資訊，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>information_schema.Routines<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>ROUTINE_NAME=<span style="color:#cd5555">&#39;count_by_id&#39;</span><span style="color:#bbb">　</span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb">　</span>ROUTINE_TYPE<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;FUNCTION&#39;</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">\</span>G<span style="color:#bbb">
+</span></code></pre></div><h3 id="52-修改">5.2 修改</h3>
+<p>修改存儲過程或函數，不影響存儲過程或函數功能，只是修改相關特性。使用ALTER語句實現。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>FUNCTION<span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程或函數的名</span><span style="color:#bbb"> </span>[characteristic<span style="color:#bbb"> </span>...]<span style="color:#bbb">
+</span></code></pre></div><p>其中，characteristic指定存儲過程或函數的特性，其取值資訊與創建存儲過程、函數時的取值資訊略有不同。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb"> </span>CONTAINS<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>NO<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">READS</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MODIFIES</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>SECURITY<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb"> </span>DEFINER<span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>INVOKER<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>|<span style="color:#bbb"> </span>COMMENT<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;string&#39;</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>CONTAINS SQL</code>，表示副程式包含SQL語句，但不包含讀或寫數據的語句。</li>
+<li><code>NO SQL</code>，表示副程式中不包含SQL語句。</li>
+<li><code>READS SQL DATA</code>，表示副程式中包含讀數據的語句。</li>
+<li><code>MODIFIES SQL DATA</code>，表示副程式中包含寫資料的語句。</li>
+<li><code>SQL SECURITY { DEFINER | INVOKER }</code>，指明誰有許可權來執行。
+<ul>
+<li><code>DEFINER</code>，表示只有定義者自己才能夠執行。</li>
+<li><code>INVOKER</code>，表示調用者可以執行。</li>
+</ul>
+</li>
+<li><code>COMMENT 'string'</code>，表示注釋資訊。</li>
+</ul>
+<blockquote>
+<p>修改存儲過程使用ALTER PROCEDURE語句，修改存儲函數使用ALTER FUNCTION語句。但是，這兩個語句的結構是一樣的，語句中的所有參數也是一樣的。</p>
+</blockquote>
+<p><strong>舉例1：</strong></p>
+<p>修改存儲過程CountProc的定義。將讀寫許可權改為MODIFIES SQL DATA，並指明調用者可以執行，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb">　</span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb">　</span>CountProc<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">MODIFIES</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>SECURITY<span style="color:#bbb"> </span>INVOKER<span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>查詢修改後的資訊：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>specific_name,sql_data_access,security_type<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>information_schema.`ROUTINES`<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>routine_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;CountProc&#39;</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AND</span><span style="color:#bbb"> </span>routine_type<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;PROCEDURE&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><p>結果顯示，存儲過程修改成功。從查詢的結果可以看出，訪問資料的許可權（SQL_DATA_ ACCESS）已經變成MODIFIES SQL DATA，安全類型（SECURITY_TYPE）已經變成INVOKER。</p>
+<p><strong>舉例2：</strong></p>
+<p>修改存儲函數CountProc的定義。將讀寫許可權改為READS SQL DATA，並加上注釋資訊&quot;FIND NAME&quot;，代碼如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">ALTER</span><span style="color:#bbb">　</span>FUNCTION<span style="color:#bbb">　</span>CountProc<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">READS</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">SQL</span><span style="color:#bbb"> </span>DATA<span style="color:#bbb">
+</span><span style="color:#bbb"></span>COMMENT<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;FIND NAME&#39;</span><span style="color:#bbb"> </span>;<span style="color:#bbb">
+</span></code></pre></div><p>存儲函數修改成功。從查詢的結果可以看出，訪問資料的許可權（SQL_DATA_ACCESS）已經變成READS SQL DATA，函數注釋（ROUTINE_COMMENT）已經變成FIND NAME。</p>
+<h3 id="53-刪除">5.3 刪除</h3>
+<p>刪除存儲過程和函數，可以使用DROP語句，其語法結構如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>|<span style="color:#bbb"> </span>FUNCTION<span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb"> </span>[<span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span>]<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">存儲過程或函數的名</span><span style="color:#bbb">
+</span></code></pre></div><p>IF EXISTS：如果程式或函數不存儲，它可以防止發生錯誤，產生一個用SHOW WARNINGS查看的警告。</p>
+<p>舉例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">PROCEDURE</span><span style="color:#bbb"> </span>CountProc;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span>FUNCTION<span style="color:#bbb"> </span>CountProc;<span style="color:#bbb">
+</span></code></pre></div><h2 id="6-關於存儲過程使用的爭議">6. 關於存儲過程使用的爭議</h2>
+<p>儘管存儲過程有諸多優點，但是對於存儲過程的使用，<strong>一直都存在著很多爭議</strong>，比如有些公司對於大型專案要求使用存儲過程，而有些公司在手冊中明確禁止使用存儲過程，為什麼這些公司對存儲過程的使用需求差別這麼大呢？</p>
+<h3 id="61-優點">6.1 優點</h3>
+<p>**1、存儲過程可以一次編譯多次使用。**存儲過程只在創建時進行編譯，之後的使用都不需要重新編譯，這就提升了 SQL 的執行效率。</p>
+<p>**2、可以減少開發工作量。**將代碼<code>封裝</code>成模組，實際上是程式設計的核心思想之一，這樣可以把複雜的問題拆解成不同的模組，然後模組之間可以<code>重複使用</code>，在減少開發工作量的同時，還能保證代碼的結構清晰。</p>
+<p>**3、存儲過程的安全性強。**我們在設定存儲過程的時候可以<code>設置對用戶的使用權限</code>，這樣就和視圖一樣具有較強的安全性。</p>
+<p>**4、可以減少網路傳輸量。**因為代碼封裝到存儲過程中，每次使用只需要調用存儲過程即可，這樣就減少了網路傳輸量。</p>
+<p>**5、良好的封裝性。**在進行相對複雜的資料庫操作時，原本需要使用一條一條的 SQL 語句，可能要連接多次資料庫才能完成的操作，現在變成了一次存儲過程，只需要<code>連接一次即可</code>。</p>
+<h3 id="62-缺點">6.2 缺點</h3>
+<p>基於上面這些優點，不少大公司都要求大型專案使用存儲過程，比如微軟、IBM 等公司。但是國內的阿裡並不推薦開發人員使用存儲過程，這是為什麼呢？</p>
+<blockquote>
+<h4 id="阿裡開發規範">阿裡開發規範</h4>
+<p>【強制】禁止使用存儲過程，存儲過程難以調試和擴展，更沒有移植性。</p>
+</blockquote>
+<p>存儲過程雖然有諸如上面的好處，但缺點也是很明顯的。</p>
+<p>**1、可攜性差。**存儲過程不能跨資料庫移植，比如在 MySQL、Oracle 和 SQL Server 裡編寫的存儲過程，在換成其他資料庫時都需要重新編寫。</p>
+<p>**2、調試困難。**只有少數 DBMS 支援存儲過程的調試。對於複雜的存儲過程來說，開發和維護都不容易。雖然也有一些協力廠商工具可以對存儲過程進行調試，但要收費。</p>
+<p>**3、存儲過程的版本管理很困難。**比如資料表索引發生變化了，可能會導致存儲過程失效。我們在開發軟體的時候往往需要進行版本管理，但是存儲過程本身沒有版本控制，版本反覆運算更新的時候很麻煩。</p>
+<p>**4、它不適合高併發的場景。**高併發的場景需要減少資料庫的壓力，有時資料庫會採用分庫分表的方式，而且對可擴展性要求很高，在這種情況下，存儲過程會變得難以維護，<code>增加資料庫的壓力</code>，顯然就不適用了。</p>
+<p>小結：</p>
+<p>存儲過程既方便，又有局限性。儘管不同的公司對存儲過程的態度不一，但是對於我們開發人員來說，不論怎樣，掌握存儲過程都是必備的技能之一。</p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-26</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211227-agg-mysql-12/">
+			下一篇<br>變量、流程控制與游標
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211225-agg-mysql-10/">
+			上一篇<br>視圖View
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

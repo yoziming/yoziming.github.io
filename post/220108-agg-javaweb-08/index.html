@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>書城項目:Maven管理依賴、圖書模塊</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-08">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="書城項目:Maven管理依賴、圖書模塊" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-08" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220108-agg-javaweb-08/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-08T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="書城項目:Maven管理依賴、圖書模塊"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-08"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#maven%e7%ae%a1%e7%90%86%e4%be%9d%e8%b3%b4" onclick="onNavClick(`#maven管理依賴-nav`)" id="maven管理依賴-nav">
+									Maven管理依賴
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%88%e6%a1%88%e9%87%8d%e6%a7%8b" onclick="onNavClick(`#專案重構-nav`)" id="專案重構-nav">
+									專案重構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%af%e5%be%91%e5%84%aa%e5%8c%96" onclick="onNavClick(`#路徑優化-nav`)" id="路徑優化-nav">
+									路徑優化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#beanutils" onclick="onNavClick(`#beanutils-nav`)" id="beanutils-nav">
+									BeanUtils
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%96%e6%9b%b8%e6%a8%a1%e5%a1%8a" onclick="onNavClick(`#圖書模塊-nav`)" id="圖書模塊-nav">
+									圖書模塊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#model%e9%83%a8%e5%88%86" onclick="onNavClick(`#model部分-nav`)" id="model部分-nav">
+									Model部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#javabean" onclick="onNavClick(`#javabean-nav`)" id="javabean-nav">
+									JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%87%8d%e9%bb%9e%e7%ad%86%e8%a8%98" onclick="onNavClick(`#重點筆記-nav`)" id="重點筆記-nav">
+									重點筆記
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#service%e5%8c%85" onclick="onNavClick(`#service包-nav`)" id="service包-nav">
+									Service包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#controller%e9%83%a8%e5%88%86" onclick="onNavClick(`#controller部分-nav`)" id="controller部分-nav">
+									Controller部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#doget%e5%81%b7%e9%9b%9e" onclick="onNavClick(`#doget偷雞-nav`)" id="doget偷雞-nav">
+									doGet偷雞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%82%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#亂碼問題-nav`)" id="亂碼問題-nav">
+									亂碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e5%96%ae%e9%87%8d%e8%a4%87%e6%8f%90%e4%ba%a4" onclick="onNavClick(`#表單重複提交-nav`)" id="表單重複提交-nav">
+									表單重複提交
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e6%8f%90%e7%a4%ba" onclick="onNavClick(`#刪除提示-nav`)" id="刪除提示-nav">
+									刪除提示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%b3%87%e6%96%99" onclick="onNavClick(`#修改資料-nav`)" id="修改資料-nav">
+									修改資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#view%e9%83%a8%e5%88%86" onclick="onNavClick(`#view部分-nav`)" id="view部分-nav">
+									View部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sjtl%e9%81%8d%e6%ad%b7%e8%b3%87%e6%96%99" onclick="onNavClick(`#sjtl遍歷資料-nav`)" id="sjtl遍歷資料-nav">
+									SJTL遍歷資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81" onclick="onNavClick(`#分頁-nav`)" id="分頁-nav">
+									分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%80%9d%e8%b7%af" onclick="onNavClick(`#思路-nav`)" id="思路-nav">
+									思路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pojo" onclick="onNavClick(`#pojo-nav`)" id="pojo-nav">
+									Pojo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#dao" onclick="onNavClick(`#dao-nav`)" id="dao-nav">
+									Dao
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#service" onclick="onNavClick(`#service-nav`)" id="service-nav">
+									Service
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet" onclick="onNavClick(`#servlet-nav`)" id="servlet-nav">
+									Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pages" onclick="onNavClick(`#pages-nav`)" id="pages-nav">
+									Pages
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%81%e5%ae%9a%e9%a6%96%e9%a0%81" onclick="onNavClick(`#綁定首頁-nav`)" id="綁定首頁-nav">
+									綁定首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e5%8f%96%e5%88%86%e9%a0%81%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#抽取分頁導航-nav`)" id="抽取分頁導航-nav">
+									抽取分頁導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%83%b9%e6%a0%bc%e5%8d%80%e9%96%93%e7%af%a9%e9%81%b8" onclick="onNavClick(`#價格區間篩選-nav`)" id="價格區間篩選-nav">
+									價格區間篩選
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9f%a5%e8%ad%98%e9%bb%9e" onclick="onNavClick(`#知識點-nav`)" id="知識點-nav">
+									知識點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9c%80%e5%a4%a7%e5%80%bc" onclick="onNavClick(`#最大值-nav`)" id="最大值-nav">
+									最大值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#排序-nav`)" id="排序-nav">
+									排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9e%e9%a1%af" onclick="onNavClick(`#回顯-nav`)" id="回顯-nav">
+									回顯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#分頁導航-nav`)" id="分頁導航-nav">
+									分頁導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#maven%e7%ae%a1%e7%90%86%e4%be%9d%e8%b3%b4" onclick="onNavClick(`#maven管理依賴-nav`)" id="maven管理依賴-nav">
+									Maven管理依賴
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%88%e6%a1%88%e9%87%8d%e6%a7%8b" onclick="onNavClick(`#專案重構-nav`)" id="專案重構-nav">
+									專案重構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%af%e5%be%91%e5%84%aa%e5%8c%96" onclick="onNavClick(`#路徑優化-nav`)" id="路徑優化-nav">
+									路徑優化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#beanutils" onclick="onNavClick(`#beanutils-nav`)" id="beanutils-nav">
+									BeanUtils
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%96%e6%9b%b8%e6%a8%a1%e5%a1%8a" onclick="onNavClick(`#圖書模塊-nav`)" id="圖書模塊-nav">
+									圖書模塊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#model%e9%83%a8%e5%88%86" onclick="onNavClick(`#model部分-nav`)" id="model部分-nav">
+									Model部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#javabean" onclick="onNavClick(`#javabean-nav`)" id="javabean-nav">
+									JavaBean
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%87%8d%e9%bb%9e%e7%ad%86%e8%a8%98" onclick="onNavClick(`#重點筆記-nav`)" id="重點筆記-nav">
+									重點筆記
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#service%e5%8c%85" onclick="onNavClick(`#service包-nav`)" id="service包-nav">
+									Service包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#controller%e9%83%a8%e5%88%86" onclick="onNavClick(`#controller部分-nav`)" id="controller部分-nav">
+									Controller部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#doget%e5%81%b7%e9%9b%9e" onclick="onNavClick(`#doget偷雞-nav`)" id="doget偷雞-nav">
+									doGet偷雞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%82%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#亂碼問題-nav`)" id="亂碼問題-nav">
+									亂碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e5%96%ae%e9%87%8d%e8%a4%87%e6%8f%90%e4%ba%a4" onclick="onNavClick(`#表單重複提交-nav`)" id="表單重複提交-nav">
+									表單重複提交
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa%e9%99%a4%e6%8f%90%e7%a4%ba" onclick="onNavClick(`#刪除提示-nav`)" id="刪除提示-nav">
+									刪除提示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e8%b3%87%e6%96%99" onclick="onNavClick(`#修改資料-nav`)" id="修改資料-nav">
+									修改資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#view%e9%83%a8%e5%88%86" onclick="onNavClick(`#view部分-nav`)" id="view部分-nav">
+									View部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sjtl%e9%81%8d%e6%ad%b7%e8%b3%87%e6%96%99" onclick="onNavClick(`#sjtl遍歷資料-nav`)" id="sjtl遍歷資料-nav">
+									SJTL遍歷資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81" onclick="onNavClick(`#分頁-nav`)" id="分頁-nav">
+									分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%80%9d%e8%b7%af" onclick="onNavClick(`#思路-nav`)" id="思路-nav">
+									思路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pojo" onclick="onNavClick(`#pojo-nav`)" id="pojo-nav">
+									Pojo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#dao" onclick="onNavClick(`#dao-nav`)" id="dao-nav">
+									Dao
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#service" onclick="onNavClick(`#service-nav`)" id="service-nav">
+									Service
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet" onclick="onNavClick(`#servlet-nav`)" id="servlet-nav">
+									Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pages" onclick="onNavClick(`#pages-nav`)" id="pages-nav">
+									Pages
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%81%e5%ae%9a%e9%a6%96%e9%a0%81" onclick="onNavClick(`#綁定首頁-nav`)" id="綁定首頁-nav">
+									綁定首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e5%8f%96%e5%88%86%e9%a0%81%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#抽取分頁導航-nav`)" id="抽取分頁導航-nav">
+									抽取分頁導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%83%b9%e6%a0%bc%e5%8d%80%e9%96%93%e7%af%a9%e9%81%b8" onclick="onNavClick(`#價格區間篩選-nav`)" id="價格區間篩選-nav">
+									價格區間篩選
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9f%a5%e8%ad%98%e9%bb%9e" onclick="onNavClick(`#知識點-nav`)" id="知識點-nav">
+									知識點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9c%80%e5%a4%a7%e5%80%bc" onclick="onNavClick(`#最大值-nav`)" id="最大值-nav">
+									最大值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#排序-nav`)" id="排序-nav">
+									排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9e%e9%a1%af" onclick="onNavClick(`#回顯-nav`)" id="回顯-nav">
+									回顯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#分頁導航-nav`)" id="分頁導航-nav">
+									分頁導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    書城項目:Maven管理依賴、圖書模塊
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-08
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-08 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="maven管理依賴">Maven管理依賴</h1>
+<ul>
+<li>
+<p>傳統作法是建一個lib資料夾然後手動引入</p>
+</li>
+<li>
+<p>項目越多就越麻煩，打包的時候還要注意引用的有沒有包到</p>
+</li>
+</ul>
+<h2 id="專案重構">專案重構</h2>
+<blockquote>
+<p>把專案整個重構，可以先把src下做的那些頁面跟java檔複製出來</p>
+</blockquote>
+<ul>
+<li>
+<p>第一層最好先造一個空的專案方便命名與分類</p>
+<ul>
+<li>如果直接拿第一層的project當同名的module用，我的IDEA偶爾會有奇怪的BUG，生出兩個同名的module</li>
+<li>後來知道原因了，就是模組根目錄下的.iml檔案裡面有重復的句子導致，備份後把它刪了讓IDEA重創一份就可</li>
+</ul>
+</li>
+<li>
+<p>我這邊放尚硅谷課程的練習，所以project就叫atguigu</p>
+</li>
+</ul>
+<p><img src="image-20211230010435600.png" alt="image-20211230010435600"></p>
+<ul>
+<li>因為是空的專案，進去之後IDEA馬上會叫你建一個Module，選javaEE，模板選到webapp</li>
+</ul>
+<p><img src="image-20211230010618550.png" alt="image-20211230010618550"></p>
+<ul>
+<li>
+<p>如果不想重造，在專案設定 &gt; Facets</p>
+<ul>
+<li>右上設定部屬的描述檔案，就是那些web.xml之類</li>
+<li>右下決定資源根目錄，如果顯示紅字可以點它自動生成</li>
+</ul>
+</li>
+<li>
+<p>由於管理選的maven，造出來會自帶一個pom.xml，這個就是maven的設定檔，一個maven專案的標準目錄結構是這樣</p>
+</li>
+</ul>
+<p><img src="image-20211230011401367.png" alt="image-20211230011401367"></p>
+<ul>
+<li>點開<code>pom.xml</code>，裡面有一些描述，往下拉到<code>&lt;dependencies&gt;</code>標籤，在這邊告知項目要引用那些包</li>
+</ul>
+<p><img src="image-20211230011941709.png" alt="image-20211230011941709"></p>
+<ul>
+<li>不像<code>golang</code>在終端輸入<code>go get xxx</code>就完事，maven導包需要寫標籤代碼，但還是能偷懶的，點開中央庫搜尋頁面 <a href="https://search.maven.org/#browse">https://search.maven.org/#browse</a></li>
+</ul>
+<p><img src="image-20211230011602494.png" alt="image-20211230011602494"></p>
+<ul>
+<li>查到想要找的包，對他一通按，點進去要引用的版本</li>
+</ul>
+<p><img src="image-20211230012351643.png" alt="image-20211230012351643"></p>
+<ul>
+<li>看到右邊，貼心的代碼已經準備好了</li>
+</ul>
+<p><img src="image-20211230012403339.png" alt="image-20211230012403339"></p>
+<ul>
+<li>愉快的一頓複製貼上之後，回到IDEA刷新maven，他會把這些從中央倉庫引用的jar包下載一份到(預設是我的文件中.m2資料夾)放好
+<ul>
+<li>所以第一次可能會比較久一點</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20211230012825123.png" alt="image-20211230012825123"></p>
+<ul>
+<li>之後有引用都是同理，從此不需要手動把jar包放進lib目錄，部屬打包的時候它也會自動去準備配菜</li>
+</ul>
+<h2 id="路徑優化">路徑優化</h2>
+<ul>
+<li>現在Servlet用註解方式引用，解放了<code>web.xml</code></li>
+<li>前端頁面用共通的<code>head.jsp</code>指定了動態的<code>basePath</code>，跳轉主頁的引用直接留空就是指向<code>basePath</code>，例如:</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;a href=&quot;&quot;&gt;跳轉主頁&lt;/a&gt;
+&lt;!-- 注意不是&quot;/&quot;，如果用/會回到http://localhost:8080/ --&gt;
+</code></pre><ul>
+<li>綜合以上，tomcat的部屬就不需要修改部屬的地址<code>book_war_exploded/</code>那些了</li>
+</ul>
+<h1 id="beanutils">BeanUtils</h1>
+<ul>
+<li>用於把前端拿到的參數map，透過反射直接塞進一個bean物件，但是要注意一個字都不能差，大小寫都要對
+<ul>
+<li>他賦參數是透過set方法，前面講過bean物件一定要提供set，如果沒有set會失敗</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String username=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+String password=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+String email=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;email&#34;</span>);
+String code=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;code&#34;</span>);
+User user = <span style="color:#8b008b;font-weight:bold">new</span> User();
+BeanUtils.<span style="color:#658b00">populate</span>(user,request.<span style="color:#658b00">getParameterMap</span>());
+</code></pre></div><ul>
+<li>比如這邊如果沒有特別需要使用參數去驗證啥的，<code>String username</code>那些都可以省略掉，反正收到<code>ParameterMap</code>就塞成一個bean，完事</li>
+</ul>
+<h1 id="圖書模塊">圖書模塊</h1>
+<blockquote>
+<p>書城項目中有關書籍後台的部分，以MVC模式劃分</p>
+</blockquote>
+<h2 id="model部分">Model部分</h2>
+<blockquote>
+<p>相當於資料層+業務邏輯層</p>
+</blockquote>
+<h3 id="javabean">JavaBean</h3>
+<blockquote>
+<p>pojo與dao包與他們的Impl實現類</p>
+</blockquote>
+<ol>
+<li>建立資料庫表、決定需要那些欄位、設定約束</li>
+<li>建立pojo，也就是對應的bean</li>
+<li>建立Dao接口(xxxDao)，列出需要與資料庫互動的功能</li>
+<li>實現接口<code>(XxxDaoImpl extends BaseDao implements XxxDao)</code>，實際寫出sql語句、操作資料庫</li>
+<li>測試，造一個<code>private XxxDao xxxDao =new XxxDaoImpl()</code>調用看看功能</li>
+</ol>
+<h3 id="重點筆記">重點筆記</h3>
+<ul>
+<li>book的bean</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 預設的圖片
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> String imgPath=<span style="color:#cd5555">&#34;static/img/default.jpg&#34;</span>;
+
+<span style="color:#228b22">// 在有參構造器與set加入一個判斷
+</span><span style="color:#228b22">// 如果上傳的是空則不給賦，讓它顯示預設的圖片路徑
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (imgPath!=<span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; !<span style="color:#cd5555">&#34;&#34;</span>.<span style="color:#658b00">equals</span>(imgPath)){
+            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">imgPath</span> = imgPath;
+        }
+</code></pre></div><ul>
+<li>BookDaoImpl</li>
+</ul>
+<pre tabindex="0"><code>關於書的路徑，pojo叫imgPath，資料庫裡叫img_path
+
+之前寫的queryForOne方法，其中調用的queryRunner.query(conn,sql,new BeanHandler&lt;T&gt;(tClass),args)
+這個BeanHandler將查到的資料填充bean的方法是用查詢到結果的欄位名去反射賦值
+所以sql必須要起別名img_path imgPath
+&quot;select id, name, author, price, sales, stock, img_path imgPath from t_book where id=?&quot;
+
+測試的時候因為sql語句換行導致了一些bug，排查了好久，記住這個教訓
+String sql=&quot;語句&quot;最好不要換行
+
+</code></pre><h3 id="service包">Service包</h3>
+<ul>
+<li>建立Service接口(<code>XxxService</code>)，列出前端需要的業務功能(如登入、增刪改查&hellip;等等)
+<ul>
+<li>這邊方法的返回值最好是boolean或int，方便判斷是否成功</li>
+</ul>
+</li>
+<li>實現接口<code>XxxServiceImpl implements XxxService</code>
+<ul>
+<li>造一個它的Dao實例物件<code>private XxxDao xxxDao =new XxxDaoImpl()</code></li>
+<li>用此Dao實例物件調用它的方法間接與資料庫互動，這步非常輕鬆只是套層皮而已</li>
+</ul>
+</li>
+</ul>
+<h2 id="controller部分">Controller部分</h2>
+<blockquote>
+<p>處理請求、轉發，即是在web包下的XxxServlet.java</p>
+</blockquote>
+<ul>
+<li>建立Servlet(<code>XxxServlet</code>)，接收參數
+<ul>
+<li>造一個它的Service實例物件<code>private XxxService xxxService = new XxxServiceImpl()</code></li>
+<li>用此Service實例物件，配合接收到的請求與參數，完成業務邏輯，將結果用JSP或<code>request.setAttribute(&quot;msg&quot;,&quot;錯誤代碼&quot;)</code>之類的方法回傳給前端</li>
+</ul>
+</li>
+</ul>
+<h3 id="doget偷雞">doGet偷雞</h3>
+<ul>
+<li>在doGet裡面放一個doPost，不管來哪種請求，反正都看action標籤來決定調用的方法</li>
+<li>由於是繼承BaseServlet中的方法，IDEA新造的XxxServlet預設是繼承httpServlet記得修改</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doGet</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    doPost(request,response);
+}
+</code></pre></div><h3 id="亂碼問題">亂碼問題</h3>
+<ul>
+<li>doPost收到的請求有可能亂碼，給他指定一下編碼就OK了</li>
+<li>看到有人說可以在web.xml加入characterEncodingFilter，先插眼</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">request.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>)
+</code></pre></div><h3 id="表單重複提交">表單重複提交</h3>
+<ul>
+<li>當用戶提交了某請求，瀏覽器會記下最後一次請求的全部訊息，這時候按F5刷新就會再次提交</li>
+<li>比如新增圖書這個功能，如果存好書之後用<code>request.getRequestDispatcher</code>轉回去檢視圖書的頁面，那會視為一個請求，用戶手賤F5刷新就會重複上傳一次那本書</li>
+<li>所以改用<code>response.sendRedirect</code>讓它變成另一個新的請求，轉去檢視圖書頁面，這時候用戶最後一個請求是檢視圖書頁面，就不怕他F5了</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">add</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        <span style="color:#228b22">// 封裝成book物件
+</span><span style="color:#228b22"></span>        Book book = <span style="color:#8b008b;font-weight:bold">new</span> Book();
+        BeanUtils.<span style="color:#658b00">populate</span>(book, request.<span style="color:#658b00">getParameterMap</span>());
+
+        <span style="color:#228b22">// 存到資料庫
+</span><span style="color:#228b22"></span>        bookService.<span style="color:#658b00">addBook</span>(book);
+
+        <span style="color:#228b22">// request.getRequestDispatcher 會是同一個請求
+</span><span style="color:#228b22"></span>
+        <span style="color:#228b22">// 轉發到另一個請求
+</span><span style="color:#228b22"></span>        response.<span style="color:#658b00">sendRedirect</span>(request.<span style="color:#658b00">getContextPath</span>() + <span style="color:#cd5555">&#34;/manager/bookServlet?action=list&#34;</span>);
+    }
+</code></pre></div><h3 id="刪除提示">刪除提示</h3>
+<ul>
+<li>跳不出提示的在瀏覽器按F12看是不是JS載入的問題
+<ul>
+<li>看下面console有沒有報錯找不到jquery-1.7.2.js</li>
+<li>或是無法識別$</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">	&lt;script type=&quot;text/javascript&quot;&gt;
+		$(function () {
+			// 給刪除的a標籤綁定單擊事件，用於刪除的確認提示操作
+			$(&quot;a.deleteClass&quot;).click(function () {
+				return confirm(&quot;你確定要刪除【&quot; + $(this).parent().parent().find(&quot;td:first&quot;).text() + &quot;】?&quot;);
+				// return false// 阻止元素的預設行為===不提交請求
+			});
+		});
+	&lt;/script&gt;
+...
+	&lt;td&gt;&lt;a class=&quot;deleteClass&quot; href=&quot;BookServlet?action=delete&amp;id=${book.id}&quot;&gt;刪除&lt;/a&gt;&lt;/td&gt;
+</code></pre><h3 id="修改資料">修改資料</h3>
+<ul>
+<li>為了實現回顯功能，修改其實要拆成2步驟，第一個步驟是發起請求時，進到修改頁面，資料欄位要填上原先的值，所以需要先請求一次
+<ul>
+<li>我原先自己做用網址參數把值都帶過去，欄位少還行，欄位多就顯得很蠢了</li>
+<li>前端用<code>&lt;a href=&quot;BookServlet?action=getBook&amp;id=${book.id}&quot;&gt;</code>先把要修改的id傳過去</li>
+<li>BookServlet先造一個getBook方法，用id從資料庫找到對應的書本資訊，用setAttribute把整個book再送回前端，同時轉址到修改頁面，這樣就完成了資料回顯</li>
+</ul>
+</li>
+<li>接著要實現提交修改，這邊故意挖了一個坑，修改跟新增是用同一份表單，為了讓提交的請求可以分辨，有3種作法:</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- 方案1 在發起請求的網址後面指定參數method=xxx --&gt;
+&lt;a href=&quot;pages/manager/book_edit.jsp?method=add&quot;&gt;添加圖書&lt;/a&gt;
+&lt;a href=&quot;BookServlet?action=getBook&amp;id=${book.id}?method=update&quot;&gt;修改&lt;/a&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;${param.method}&quot;/&gt;
+
+&lt;!-- 方案2 提交表單的時候，判斷id是否存在，空的表示要新增 --&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;${empty param.id?&quot;add&quot;:&quot;update&quot;}&quot;/&gt;
+
+&lt;!-- 方案3 提交表單的時候，判斷請求域的book物件是否存在，空的表示要新增 --&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;${empty requestScope.book?&quot;add&quot;:&quot;update&quot;}&quot;/&gt;
+</code></pre><ul>
+<li>
+<p>最後提交修改還有一個坑，表單裡面是不包含id的，而修改功能需要id到資料庫定位，所以再新增一行隱藏標籤，把id裝在<code>requestScope.book</code>再送回去</p>
+<ul>
+<li>這一個id還真是來來回回跑了好多趟</li>
+</ul>
+</li>
+<li>
+<p>book_manager.jsp</p>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;div id=&quot;main&quot;&gt;
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;名稱&lt;/td&gt;
+			&lt;td&gt;價格&lt;/td&gt;
+			&lt;td&gt;作者&lt;/td&gt;
+			&lt;td&gt;銷量&lt;/td&gt;
+			&lt;td&gt;庫存&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;操作&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;c:forEach items=&quot;${requestScope.books}&quot; var=&quot;book&quot;&gt;
+			&lt;tr&gt;
+				&lt;td&gt;${book.name}&lt;/td&gt;
+				&lt;td&gt;${book.price}&lt;/td&gt;
+				&lt;td&gt;${book.author}&lt;/td&gt;
+				&lt;td&gt;${book.sales}&lt;/td&gt;
+				&lt;td&gt;${book.stock}&lt;/td&gt;
+				&lt;td&gt;&lt;a href=&quot;BookServlet?action=getBook&amp;id=${book.id}&quot;&gt;修改
+				&lt;/a&gt;&lt;/td&gt;
+				&lt;td&gt;&lt;a class=&quot;deleteClass&quot; href=&quot;BookServlet?action=delete&amp;id=${book.id}&quot;&gt;刪除&lt;/a&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+		&lt;/c:forEach&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;a href=&quot;pages/manager/book_edit.jsp&quot;&gt;添加圖書&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+&lt;/div&gt;
+</code></pre><ul>
+<li>book_edit.jsp</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;div id=&quot;main&quot;&gt;
+    &lt;form action=&quot;BookServlet&quot; method=&quot;post&quot;&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;${empty param.id?&quot;add&quot;:&quot;update&quot;}&quot;/&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;${requestScope.book.id}&quot;/&gt;
+        &lt;table&gt;
+            &lt;tr&gt;
+                &lt;td&gt;名稱&lt;/td&gt;
+                &lt;td&gt;價格&lt;/td&gt;
+                &lt;td&gt;作者&lt;/td&gt;
+                &lt;td&gt;銷量&lt;/td&gt;
+                &lt;td&gt;庫存&lt;/td&gt;
+                &lt;td colspan=&quot;2&quot;&gt;操作&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;input name=&quot;name&quot; type=&quot;text&quot; value=&quot;${requestScope.book.name}&quot;/&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;input name=&quot;price&quot; type=&quot;text&quot; value=&quot;${requestScope.book.price}&quot;/&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;input name=&quot;author&quot; type=&quot;text&quot; value=&quot;${requestScope.book.author}&quot;/&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;input name=&quot;sales&quot; type=&quot;text&quot; value=&quot;${requestScope.book.sales}&quot;/&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;input name=&quot;stock&quot; type=&quot;text&quot; value=&quot;${requestScope.book.stock}&quot;/&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre><h2 id="view部分">View部分</h2>
+<blockquote>
+<p>負責給人看得東西，即webapp資源目錄下的Jsp與html</p>
+</blockquote>
+<ul>
+<li>建構網頁畫面，排版、引用圖片、靜態包含等等</li>
+<li>將請求綁定到對應的Servlet，用EL表達式呈現資訊</li>
+</ul>
+<h3 id="sjtl遍歷資料">SJTL遍歷資料</h3>
+<ul>
+<li>記得要引包</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;tr&gt;
+	&lt;td&gt;名稱&lt;/td&gt;
+	&lt;td&gt;價格&lt;/td&gt;
+	&lt;td&gt;作者&lt;/td&gt;
+	&lt;td&gt;銷量&lt;/td&gt;
+	&lt;td&gt;庫存&lt;/td&gt;
+	&lt;td colspan=&quot;2&quot;&gt;操作&lt;/td&gt;
+&lt;/tr&gt;
+&lt;c:forEach items=&quot;${requestScope.books}&quot; var=&quot;book&quot;&gt;
+	&lt;tr&gt;
+		&lt;td&gt;${book.name}&lt;/td&gt;
+		&lt;td&gt;${book.price}&lt;/td&gt;
+		&lt;td&gt;${book.author}&lt;/td&gt;
+		&lt;td&gt;${book.sales}&lt;/td&gt;
+		&lt;td&gt;${book.stock}&lt;/td&gt;
+		&lt;td&gt;&lt;a href=&quot;pages/manager/book_edit.jsp&quot;&gt;修改&lt;/a&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;a href=&quot;#&quot;&gt;刪除&lt;/a&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/c:forEach&gt;
+
+</code></pre><h1 id="分頁">分頁</h1>
+<blockquote>
+<p>一個不起眼的分頁顯示功能，要實現卻挺繁瑣的</p>
+</blockquote>
+<h2 id="思路">思路</h2>
+<ul>
+<li>造一個Page類，裝著這是第幾頁、一頁有幾筆、這一頁的內容有哪些(實際呈現的項目，比如這邊就是Book的List)、總共有幾頁(幾筆)</li>
+<li>前端請求看第幾頁就丟那個page過去，不指定就第1頁</li>
+</ul>
+<blockquote>
+<p>這邊換用三層結構，專案結構目錄分類，由後往前走</p>
+</blockquote>
+<h2 id="pojo">Pojo</h2>
+<ul>
+<li>造一個pojo為Page<!-- raw HTML omitted -->，泛型方便可以塞進Book類以外的，復用性++</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Page</span>&lt;T&gt; {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> PAGE_SIZE = 4;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageNo;
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageTotal;
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageSize = PAGE_SIZE;
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageTotalCount;
+    <span style="color:#8b008b;font-weight:bold">private</span> String url; <span style="color:#228b22">// 網址，這是轉發的伏筆
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;T&gt; items;
+    ...
+
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setPageNo</span>(<span style="color:#00688b;font-weight:bold">int</span> pageNo) {
+    <span style="color:#228b22">// 檢查邊界，比如有人手賤想查第-5頁或9999999頁
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageNo &lt; 1) {
+        pageNo = 1;
+    }
+    <span style="color:#8b008b;font-weight:bold">if</span> (pageNo &gt; pageTotal) {
+        pageNo = pageTotal;
+    }
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">pageNo</span> = pageNo;
+}
+</code></pre></div><h2 id="dao">Dao</h2>
+<blockquote>
+<p>由於是用來分頁顯示Book的，寫在BookDao之下</p>
+</blockquote>
+<ul>
+<li>SQL中查找的索引大多都是從1開始，但頁數例外，直覺上認為的&quot;第一頁&quot;是從0開始，但不急可以在service解決這個隱患</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>t_book<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">limit</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">begin</span>,pageSize<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> List&lt;Book&gt; <span style="color:#008b45">queryForPageItems</span>(<span style="color:#00688b;font-weight:bold">int</span> begin, <span style="color:#00688b;font-weight:bold">int</span> pageSize) {
+	String sql=<span style="color:#cd5555">&#34;select id, name, author, price, sales, stock, img_path imgPath from t_book limit ? , ?&#34;</span>;
+	<span style="color:#8b008b;font-weight:bold">return</span> (List&lt;Book&gt;) queryForList(Book.<span style="color:#658b00">class</span>,sql,begin,pageSize);
+}
+</code></pre></div><ul>
+<li>SQL查到有關數字的結果都是long，直接強轉int會報錯，可以用<code>intValue()</code>方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">queryForPageTotalCount</span>() {
+    String sql = <span style="color:#cd5555">&#34;select count(*) from t_book&#34;</span>;
+    <span style="color:#00688b;font-weight:bold">long</span> l = (<span style="color:#00688b;font-weight:bold">long</span>) queryForSingleValue(sql);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Long(l).<span style="color:#658b00">intValue</span>();
+}
+</code></pre></div><h2 id="service">Service</h2>
+<ul>
+<li>
+<p>到這邊要思路清晰，業務邏輯是:</p>
+<ul>
+<li>前端告知&quot;想看第幾頁&quot;與&quot;一頁顯示幾筆&quot;</li>
+<li>要去資料庫撈對應的資料與總頁數</li>
+<li>封裝成一個Page物件丟回給Servlet</li>
+</ul>
+</li>
+<li>
+<p>數字的加減乘除不要搞錯了，順便解決SQL分頁查找begin從0開始的問題</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> Page&lt;Book&gt; <span style="color:#008b45">page</span>(<span style="color:#00688b;font-weight:bold">int</span> pageNo, <span style="color:#00688b;font-weight:bold">int</span> pageSize) {
+    <span style="color:#228b22">// 收到前端來的調用請求，準備一個Page物件來裝
+</span><span style="color:#228b22"></span>    Page&lt;Book&gt; page = <span style="color:#8b008b;font-weight:bold">new</span> Page&lt;Book&gt;();
+    page.<span style="color:#658b00">setPageSize</span>(pageSize);
+
+    <span style="color:#228b22">// 先看資料庫總共有幾筆資料，算共會裝成幾頁
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> pageTotalCount = bookDao.<span style="color:#658b00">queryForPageTotalCount</span>();
+    page.<span style="color:#658b00">setPageTotalCount</span>(pageTotalCount);
+
+    <span style="color:#228b22">// 求總頁碼
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> pageTotal = pageTotalCount / pageSize;
+    <span style="color:#8b008b;font-weight:bold">if</span> (pageTotalCount % pageSize &gt; 0) {
+        <span style="color:#228b22">// 除不盡要加一頁，也包含不到一頁的情況
+</span><span style="color:#228b22"></span>        pageTotal += 1;
+    }
+    page.<span style="color:#658b00">setPageTotal</span>(pageTotal);
+
+    page.<span style="color:#658b00">setPageNo</span>(pageNo);
+    <span style="color:#228b22">// 當前頁面的資料
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> begin = (page.<span style="color:#658b00">getPageNo</span>() - 1) * pageSize;
+    List&lt;Book&gt; items = bookDao.<span style="color:#658b00">queryForPageItems</span>(begin, pageSize);
+    <span style="color:#228b22">// 封裝
+</span><span style="color:#228b22"></span>    page.<span style="color:#658b00">setItems</span>(items);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> page;
+}
+</code></pre></div><h2 id="servlet">Servlet</h2>
+<ul>
+<li>
+<p>處理轉發，由於圖書管理跟首頁的顯示商品都用到分頁顯示功能，而前端的網址控制上下頁是用這邊setAttribute的page物件中的屬性</p>
+</li>
+<li>
+<p>重新理一下，同一個請求內</p>
+<ul>
+<li>後端的:<code>request.setAttribute(&quot;page&quot;, page)</code></li>
+<li>前端對應是:<code>${requestScope.page}</code>，這個能用EL表達式取出的物件是由web容器建立</li>
+</ul>
+</li>
+<li>
+<p>我在這個page物件中封裝了url屬性，用戶發上下頁請求時就可以動態的綁定住本身來源的Servlet</p>
+<ul>
+<li>為了把前端分頁導航的代碼抽出所以這麼做</li>
+</ul>
+</li>
+<li>
+<p>於是我造了2個Servlet，一個負責圖書管理的，一個負責首頁商品的，他們的page方法設定的轉址都是指向自己那個Servlet</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">page</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
+    Page&lt;Book&gt; page = bookService.<span style="color:#658b00">page</span>(pageNo, pageSize);
+    <span style="color:#228b22">// 屬於誰的servlet就把網址設給誰
+</span><span style="color:#228b22"></span>    page.<span style="color:#658b00">setUrl</span>(<span style="color:#cd5555">&#34;BookServlet?action=page&#34;</span>);
+    request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;page&#34;</span>, page);
+    <span style="color:#228b22">// 屬於誰的servlet就轉發給誰
+</span><span style="color:#228b22"></span>    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/manager/book_manager.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+}
+</code></pre></div><h2 id="pages">Pages</h2>
+<ul>
+<li>先改兩個地方
+<ul>
+<li>本來訪問Servlet中list改成page</li>
+<li>遍歷顯示圖書列表，books改成page.items</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;a href=&quot;BookServlet?action=page&quot;&gt;圖書管理&lt;/a&gt;
+
+&lt;c:forEach items=&quot;${requestScope.page.items}&quot; var=&quot;book&quot;&gt;
+</code></pre><ul>
+<li>現在後臺管理應該可以成功顯示第一頁與4個項目了，接著處理跳轉分頁功能</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;div id=&quot;page_nav&quot;&gt;
+	共${requestScope.page.pageTotalCount}條記錄
+	&lt;c:if test=&quot;${requestScope.page.pageNo&gt;1}&quot;&gt;
+		&lt;a href=&quot;BookServlet?action=page&amp;pageNo=1&quot;&gt;首頁&lt;/a&gt;
+		&lt;a href=&quot;BookServlet?action=page&amp;pageNo=${requestScope.page.pageNo-1}&quot;&gt;上一頁&lt;/a&gt;
+	&lt;/c:if&gt;
+		第【${requestScope.page.pageNo}】頁
+	&lt;c:if test=&quot;${requestScope.page.pageNo&lt;requestScope.page.pageTotal}&quot;&gt;
+		&lt;a href=&quot;BookServlet?action=page&amp;pageNo=${requestScope.page.pageNo+1}&quot;&gt;下一頁&lt;/a&gt;
+		&lt;a href=&quot;BookServlet?action=page&amp;pageNo=${requestScope.page.pageTotal}&quot;&gt;末頁&lt;/a&gt;
+	&lt;/c:if&gt;
+	共${requestScope.page.pageTotal}頁
+	到第&lt;input value=&quot;${param.pageNo}&quot; name=&quot;pn&quot; id=&quot;pn_input&quot;/&gt;頁
+	&lt;input id=&quot;searchPageBtn&quot; type=&quot;button&quot; value=&quot;確定&quot;&gt;
+	&lt;script type=&quot;text/javascript&quot;&gt;
+		$(function (){
+			$(&quot;#searchPageBtn&quot;).click(function (){
+				var pageNo = $(&quot;#pn_input&quot;).val();
+				var pageTotal=${requestScope.page.pageTotal};
+				// 限制pageNo，比1小就是1，比pageTotal大就是pageTotal
+				pageNo = Math.max(1, Math.min(pageNo, pageTotal));
+				location.href=&quot;${pageScope.basePath}BookServlet?action=page&amp;pageNo=&quot;+pageNo;
+			});
+		});
+	&lt;/script&gt;
+&lt;/div&gt;
+</code></pre><ul>
+<li>讓修改/刪除功能紀錄頁數，操作完後跳轉回同一頁</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">發起請求的地方加上參數
+...&amp;pageNo=${requestScope.page.pageNo}&quot;&gt;刪改
+...?pageNo=${requestScope.page.pageTotal}&quot;&gt;添加圖書
+
+提交修改表單的地方加傳隱藏參數
+&lt;input type=&quot;hidden&quot; name=&quot;pageNo&quot; value=&quot;${param.pageNo}&quot;/&gt;
+
+最後修改servlet中轉發地址
+response.sendRedirect(request.getContextPath() +
+&quot;/BookServlet?action=page&amp;pageNo=&quot;+request.getParameter(&quot;pageNo&quot;));
+
+新增的則是要跳到最末頁，給他強制+1
+int pageNo = WebUtils.parseInt(request.getParameter(&quot;pageNo&quot;), 0);
+pageNo+=1;
+response.sendRedirect(request.getContextPath() + &quot;/BookServlet?action=page&amp;pageNo=&quot;+pageNo);
+
+</code></pre><h3 id="綁定首頁">綁定首頁</h3>
+<ul>
+<li>為了解決用戶一來訪問的首頁，還沒辦法透過servlet獲取資訊的問題</li>
+<li>直接讓工程目錄的index.jsp全部只有一行轉址</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;jsp:forward page=&quot;/IndexServlet?action=page&amp;pageNo=1&quot;&gt;&lt;/jsp:forward&gt;
+</code></pre><ul>
+<li>這個IndexServlet實現了顯示商品的page方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">page</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
+    Page&lt;Book&gt; page = bookService.<span style="color:#658b00">page</span>(pageNo, pageSize);
+    page.<span style="color:#658b00">setUrl</span>(<span style="color:#cd5555">&#34;IndexServlet?action=page&#34;</span>);
+    request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;page&#34;</span>, page);
+    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/client/index.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+    }
+</code></pre></div><ul>
+<li>他轉址到&quot;/pages/client/index.jsp&quot;這個才是真正的首頁，這邊遍歷顯示商品跟分頁導航功能</li>
+</ul>
+<h3 id="抽取分頁導航">抽取分頁導航</h3>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">把本來寫死的BookServlet?action=page換成從{requestScope.page.url}動態獲取
+&lt;a href=&quot;${requestScope.page.url}&amp;pageNo=${requestScope.page.pageNo-1}&quot;&gt;上一頁&lt;/a&gt;
+
+...
+&lt;%--靜態包含分頁導航--%&gt;
+&lt;%@include file=&quot;/pages/common/page_nav.jsp&quot;%&gt;
+</code></pre><h1 id="價格區間篩選">價格區間篩選</h1>
+<ul>
+<li>按照同樣的思路自己練習，沒問題</li>
+</ul>
+<h2 id="知識點">知識點</h2>
+<h3 id="最大值">最大值</h3>
+<ul>
+<li>我還傻傻地在那邊999999，想了一會int的最大是多少</li>
+<li>結果有現成的<code>Integer.MAX_VALUE</code>，哭阿</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pageByPrice</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
+    <span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), 0);
+    <span style="color:#00688b;font-weight:bold">int</span> max = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>),Integer.<span style="color:#658b00">MAX_VALUE</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (min&gt;max){
+        min=0;
+    }
+</code></pre></div><h3 id="排序">排序</h3>
+<blockquote>
+<p>沒有想到SQL查還可以順便排序，傻了我</p>
+</blockquote>
+<pre tabindex="0"><code>        String sql=&quot;select id, name, author, price, sales, stock, img_path imgPath from t_book &quot; +
+                &quot;where price between ? and ? order by price limit ? , ?&quot;;
+</code></pre><h3 id="回顯">回顯</h3>
+<ul>
+<li>這個沒啥問題</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;form action=&quot;IndexServlet&quot; method=&quot;get&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;pageByPrice&quot;/&gt;
+價格：&lt;input id=&quot;min&quot; type=&quot;text&quot; name=&quot;min&quot; value=&quot;${param.min}&quot;&gt; 元 -
+&lt;input id=&quot;max&quot; type=&quot;text&quot; name=&quot;max&quot; value=&quot;${param.max}&quot;&gt; 元
+&lt;input type=&quot;submit&quot; value=&quot;查詢&quot; /&gt;
+&lt;/form&gt;
+</code></pre><h3 id="分頁導航">分頁導航</h3>
+<ul>
+<li>我是直接拼接了</li>
+</ul>
+<pre tabindex="0"><code>page.setUrl(&quot;IndexServlet?action=pageByPrice&amp;min=&quot; + min + &quot;&amp;max=&quot; + max);
+</code></pre><ul>
+<li>這樣確實會有一個問題，就是當用戶手賤空值點搜尋，這時候min會被預設為0且max=2147483647，雖然顯示的東西一樣，但回顯那會多出超大的數字很突兀</li>
+<li>修正</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), 0);
+<span style="color:#00688b;font-weight:bold">int</span> max = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>), Integer.<span style="color:#658b00">MAX_VALUE</span>);
+<span style="color:#8b008b;font-weight:bold">if</span> (min &gt; max) {
+    min = 0;
+}
+Page&lt;Book&gt; page = bookService.<span style="color:#658b00">pageByPrice</span>(pageNo, pageSize, min, max);
+StringBuilder sb = <span style="color:#8b008b;font-weight:bold">new</span> StringBuilder(<span style="color:#cd5555">&#34;IndexServlet?action=pageByPrice&#34;</span>);
+<span style="color:#228b22">// 如果有用戶從前端填入的參數
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>)!=<span style="color:#8b008b;font-weight:bold">null</span>){
+    sb.<span style="color:#658b00">append</span>(<span style="color:#cd5555">&#34;&amp;min=&#34;</span>).<span style="color:#658b00">append</span>(min);
+}
+<span style="color:#8b008b;font-weight:bold">if</span> (request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>)!=<span style="color:#8b008b;font-weight:bold">null</span>){
+    sb.<span style="color:#658b00">append</span>(<span style="color:#cd5555">&#34;&amp;max=&#34;</span>).<span style="color:#658b00">append</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>));
+}
+page.<span style="color:#658b00">setUrl</span>(sb.<span style="color:#658b00">toString</span>());
+</code></pre></div><ul>
+<li>因為我在上面判斷過一次，就是用戶搜尋的min&gt;max的話，我就把min=0，感覺這樣是最人性的</li>
+<li>其實我想了一下，min可以拼接，因為用戶手賤空值去按搜尋，結果顯示最小從0開始很合理，只要max獲取用戶輸入就好</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-08</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220109-agg-javaweb-09/">
+			下一篇<br>Cookie與Session，書城訂單模組
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220107-agg-javaweb-07/">
+			上一篇<br>檔案上傳與下載、書城項目優化
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

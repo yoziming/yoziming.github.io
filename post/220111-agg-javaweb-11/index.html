@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>JSON、AJAX、i18n</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-11">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="JSON、AJAX、i18n" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-11" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220111-agg-javaweb-11/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-11T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JSON、AJAX、i18n"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-11"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#json" onclick="onNavClick(`#json-nav`)" id="json-nav">
+									JSON
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#javascript%e4%b8%ad" onclick="onNavClick(`#javascript中-nav`)" id="javascript中-nav">
+									javaScript中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e4%b8%ad" onclick="onNavClick(`#java中-nav`)" id="java中-nav">
+									Java中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#ajax" onclick="onNavClick(`#ajax-nav`)" id="ajax-nav">
+									AJAX
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8e%9f%e7%94%9f%e7%94%a8%e6%b3%95" onclick="onNavClick(`#原生用法-nav`)" id="原生用法-nav">
+									原生用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jquery" onclick="onNavClick(`#jquery-nav`)" id="jquery-nav">
+									JQuery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8%e5%88%b0%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#應用到書城項目-nav`)" id="應用到書城項目-nav">
+									應用到書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a%e9%a9%97%e8%ad%89" onclick="onNavClick(`#註冊驗證-nav`)" id="註冊驗證-nav">
+									註冊驗證
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#購物車-nav`)" id="購物車-nav">
+									購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#i18n" onclick="onNavClick(`#i18n-nav`)" id="i18n-nav">
+									i18n
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%94%a8jstl%e7%9a%84fmt%e6%a8%99%e7%b1%a4" onclick="onNavClick(`#用jstl的fmt標籤-nav`)" id="用jstl的fmt標籤-nav">
+									用JSTL的fmt標籤
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e7%a8%8b%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#課程小結-nav`)" id="課程小結-nav">
+									課程小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#html" onclick="onNavClick(`#html-nav`)" id="html-nav">
+									Html
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jquery-1" onclick="onNavClick(`#jquery-1-nav`)" id="jquery-1-nav">
+									JQuery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#el%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#el表達式-nav`)" id="el表達式-nav">
+									EL表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%b8%e7%bf%92%e6%8a%80%e8%a1%93" onclick="onNavClick(`#學習技術-nav`)" id="學習技術-nav">
+									學習技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#json" onclick="onNavClick(`#json-nav`)" id="json-nav">
+									JSON
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#javascript%e4%b8%ad" onclick="onNavClick(`#javascript中-nav`)" id="javascript中-nav">
+									javaScript中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e4%b8%ad" onclick="onNavClick(`#java中-nav`)" id="java中-nav">
+									Java中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#ajax" onclick="onNavClick(`#ajax-nav`)" id="ajax-nav">
+									AJAX
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8e%9f%e7%94%9f%e7%94%a8%e6%b3%95" onclick="onNavClick(`#原生用法-nav`)" id="原生用法-nav">
+									原生用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jquery" onclick="onNavClick(`#jquery-nav`)" id="jquery-nav">
+									JQuery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8%e5%88%b0%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#應用到書城項目-nav`)" id="應用到書城項目-nav">
+									應用到書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a%e9%a9%97%e8%ad%89" onclick="onNavClick(`#註冊驗證-nav`)" id="註冊驗證-nav">
+									註冊驗證
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#購物車-nav`)" id="購物車-nav">
+									購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#i18n" onclick="onNavClick(`#i18n-nav`)" id="i18n-nav">
+									i18n
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%94%a8jstl%e7%9a%84fmt%e6%a8%99%e7%b1%a4" onclick="onNavClick(`#用jstl的fmt標籤-nav`)" id="用jstl的fmt標籤-nav">
+									用JSTL的fmt標籤
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e7%a8%8b%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#課程小結-nav`)" id="課程小結-nav">
+									課程小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#html" onclick="onNavClick(`#html-nav`)" id="html-nav">
+									Html
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jquery-1" onclick="onNavClick(`#jquery-1-nav`)" id="jquery-1-nav">
+									JQuery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#el%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#el表達式-nav`)" id="el表達式-nav">
+									EL表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%b8%e7%bf%92%e6%8a%80%e8%a1%93" onclick="onNavClick(`#學習技術-nav`)" id="學習技術-nav">
+									學習技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    JSON、AJAX、i18n
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-11
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-11 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="json">JSON</h1>
+<blockquote>
+<p>JavaScript Object Notation</p>
+</blockquote>
+<ul>
+<li>輕量(相較於xml)的資料交換格式</li>
+<li>用一對大括號<code>{}</code>包裹，中間以<code>:</code>分隔鍵值對，用<code>,</code>分隔多對</li>
+<li>裡面可以放:
+<ul>
+<li>數字(整數或浮點數，可用e表示指數)，不能是NaN</li>
+<li>字串(用<code>&quot;&quot;</code>包裹)</li>
+<li>布林值(boolean) (true 或 false)</li>
+<li>陣列(用<code>[]</code>包裹)</li>
+<li>物件 (用<code>{ }</code>套娃)</li>
+<li>null</li>
+</ul>
+</li>
+</ul>
+<h2 id="javascript中">javaScript中</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#8b008b;font-weight:bold">script</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;text/javascript&#34;</span>&gt;
+    <span style="color:#8b008b;font-weight:bold">var</span> jsonObj = {
+        <span style="color:#cd5555">&#34;key1&#34;</span>: <span style="color:#b452cd">123</span>,
+        <span style="color:#cd5555">&#34;key2&#34;</span>: <span style="color:#cd5555">&#34;abc&#34;</span>,
+        <span style="color:#cd5555">&#34;ket3&#34;</span>: [<span style="color:#cd5555">&#34;中&#34;</span>, <span style="color:#cd5555">&#34;文&#34;</span>]
+    };
+    alert(jsonObj.ket3)
+
+    <span style="color:#8b008b;font-weight:bold">var</span> jsonString = JSON.stringify(jsonObj);
+    alert(jsonString);
+    <span style="color:#8b008b;font-weight:bold">var</span> jsonObj2 = JSON.parse(jsonString);
+&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</code></pre></div><ul>
+<li>JSON可以是:
+<ul>
+<li>物件，用於操作</li>
+<li>字串，用於傳遞</li>
+</ul>
+</li>
+<li>用<code>JSON.stringify()</code>與<code>JSON.parse()</code>方法互相轉換</li>
+</ul>
+<h2 id="java中">Java中</h2>
+<ul>
+<li>要引用第三方包，例如Gson或Jackson</li>
+<li>Gson範例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() {
+    User user = <span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#cd5555">&#34;zhung3&#34;</span>, <span style="color:#cd5555">&#34;pass123&#34;</span>, <span style="color:#cd5555">&#34;zhung3@goo.com&#34;</span>);
+    Gson gson = <span style="color:#8b008b;font-weight:bold">new</span> Gson();
+
+    String userString = gson.<span style="color:#658b00">toJson</span>(user);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userString);
+
+    User user2 = gson.<span style="color:#658b00">fromJson</span>(userString, User.<span style="color:#658b00">class</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(user2);
+}
+</code></pre></div><ul>
+<li>如果是集合類轉回比較麻煩，要造一個TypeToken&lt;集合裡面的類&gt;，去當class用
+<ul>
+<li>用匿名類然後<code>.getType()</code>最快，只是會很長</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">User user4 = <span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#cd5555">&#34;U4&#34;</span>, <span style="color:#cd5555">&#34;pass123&#34;</span>, <span style="color:#cd5555">&#34;zhung3@goo.com&#34;</span>);
+
+List&lt;User&gt; userList = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+userList.<span style="color:#658b00">add</span>(user);
+userList.<span style="color:#658b00">add</span>(user4);
+
+<span style="color:#228b22">// 把list轉成json
+</span><span style="color:#228b22"></span>String userListString = gson.<span style="color:#658b00">toJson</span>(userList);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userListString);
+
+<span style="color:#228b22">// jsonString轉回集合
+</span><span style="color:#228b22"></span>List&lt;User&gt; fromJson = gson.<span style="color:#658b00">fromJson</span>(userListString, <span style="color:#8b008b;font-weight:bold">new</span> TypeToken&lt;List&lt;User&gt;&gt;() {
+}.<span style="color:#658b00">getType</span>());
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userList);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(fromJson); <span style="color:#228b22">// 兩者完全一樣
+</span></code></pre></div><hr>
+<h1 id="ajax">AJAX</h1>
+<blockquote>
+<p>Asynchronous Javascript And XML</p>
+</blockquote>
+<ul>
+<li>異步Javascript與XML</li>
+<li>通過瀏覽器異步發起請求，局部刷新頁面的技術
+<ul>
+<li>同步=打電話，異步=寄Email，不用等</li>
+<li>局部:URL網址不變，不會捨棄原頁面，而是在指定位置變化</li>
+</ul>
+</li>
+<li>應用:即時檢查輸入，比如用戶已存在，或搜尋推薦字</li>
+</ul>
+<h2 id="原生用法">原生用法</h2>
+<blockquote>
+<p>基本沒人用，了解一下就好</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#1e889b">&lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD HTML 4.01 Transitional//EN&#34; &#34;http://www.w3.org/TR/html4/loose.dtd&#34;&gt;</span>
+&lt;<span style="color:#8b008b;font-weight:bold">html</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">script</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;text/javascript&#34;</span>&gt;
+        <span style="color:#8b008b;font-weight:bold">function</span> ajaxRequest() {
+            <span style="color:#228b22">// 1、首先創建XMLHttpRequest
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">var</span> xhr = <span style="color:#8b008b;font-weight:bold">new</span> XMLHttpRequest();
+            <span style="color:#228b22">// 2、調用open方法設置請求參數，第三個true表示異步
+</span><span style="color:#228b22"></span>            xhr.open(<span style="color:#cd5555">&#34;GET&#34;</span>, <span style="color:#cd5555">&#34;http://localhost:8080/AjaxServlet&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>)
+            <span style="color:#228b22">// 4、在send方法前綁定onreadystatechange事件，處理請求完成后的操作
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 就是先講好收到回應(資料)要幹嘛
+</span><span style="color:#228b22"></span>            xhr.onreadystatechange = <span style="color:#8b008b;font-weight:bold">function</span> () {
+                <span style="color:#8b008b;font-weight:bold">if</span> (xhr.readyState == <span style="color:#b452cd">4</span> &amp;&amp; xhr.status == <span style="color:#b452cd">200</span>) {
+                    <span style="color:#228b22">// 4表示伺服器已完成回應
+</span><span style="color:#228b22"></span>                    <span style="color:#228b22">// 後端用jsonString傳來一個物件
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">var</span> jsonObj = JSON.parse(xhr.responseText);
+                    <span style="color:#228b22">// 把物件的內容展示出去
+</span><span style="color:#228b22"></span>                    <span style="color:#658b00">document</span>.getElementById(<span style="color:#cd5555">&#34;div01&#34;</span>).innerHTML = <span style="color:#cd5555">&#34;收到的東西:&#34;</span> + jsonObj.name;
+                }
+            }
+            <span style="color:#228b22">// 3、調用send方法發送請求，一收到回應就會執行剛剛綁定的動作
+</span><span style="color:#228b22"></span>            xhr.send();
+        }
+    &lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">button</span> <span style="color:#658b00">onclick</span>=<span style="color:#cd5555">&#34;ajaxRequest()&#34;</span>&gt;ajax request&lt;/<span style="color:#8b008b;font-weight:bold">button</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">id</span>=<span style="color:#cd5555">&#34;div01&#34;</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">html</span>&gt;
+</code></pre></div><h2 id="jquery">JQuery</h2>
+<blockquote>
+<p>正在被Axios庫取代</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">  $(<span style="color:#cd5555">&#34;#getJSONBtn&#34;</span>).click(<span style="color:#8b008b;font-weight:bold">function</span> () {
+      $.getJSON(<span style="color:#cd5555">&#34;http://localhost:8080/AjaxServlet&#34;</span>, <span style="color:#cd5555">&#34;action=jQueryGetJSON&#34;</span>, <span style="color:#8b008b;font-weight:bold">function</span> (data) {
+          $(<span style="color:#cd5555">&#34;#msg&#34;</span>).html(data.id)
+      })
+  })
+</code></pre></div><ul>
+<li><code>$.getJSON(</code>&ldquo;第一個參數是請求網址&rdquo;,&ldquo;第二參數&rdquo;,callback)</li>
+<li>第二參數data容易跟後面搞混，這邊指的是請求的data，是以<code>name=value&amp;name=value</code>JSON格式發給伺服器，可能是參數讓伺服器知道前端想做的action，也可以是一整段資料
+<ul>
+<li>加上<code>$(&quot;#form01&quot;).serialize()</code>把整個表單的資料都送到後端，讓後端執行檢查</li>
+</ul>
+</li>
+<li>callback是成功獲取響應後要做的事，就是function (data)，因為接收的格式還是JSON，這個data指的是收到的JSON格式包裝的(比如可能是一個序列化後的javabean)回應
+<ul>
+<li>這個data可以直接看做一個後端的pojo物件調用它的屬性，例如<code>data.price</code></li>
+</ul>
+</li>
+<li>function 後面的<code>{</code>就可以決定要如何展示資料</li>
+<li>JQuery其實就是把很多繁瑣的細節、JSONstring與Obj間的轉換都封裝起來了</li>
+</ul>
+<h2 id="應用到書城項目">應用到書城項目</h2>
+<h4 id="註冊驗證">註冊驗證</h4>
+<blockquote>
+<p>註冊時驗證用戶名稱是否可用</p>
+</blockquote>
+<ul>
+<li>前端</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">// 綁定用戶名失去焦點事件
+</span><span style="color:#228b22"></span>$(<span style="color:#cd5555">&#34;#username&#34;</span>).blur(<span style="color:#8b008b;font-weight:bold">function</span> () {
+    <span style="color:#228b22">// 取得輸入的用戶名
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">var</span> username = <span style="color:#8b008b;font-weight:bold">this</span>.value;
+    $.getJSON(<span style="color:#cd5555">&#34;${pageScope.basePath}UserServlet&#34;</span>, <span style="color:#cd5555">&#34;action=existsUsername&amp;username=&#34;</span> + username, <span style="color:#8b008b;font-weight:bold">function</span>
+        (data) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (data.existsUsername) {
+            $(<span style="color:#cd5555">&#34;span.errorMsg&#34;</span>).text(data.msg)
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            $(<span style="color:#cd5555">&#34;span.errorMsg&#34;</span>).text(<span style="color:#cd5555">&#34;用戶名可用!&#34;</span>)
+        }
+    })
+})
+</code></pre></div><ul>
+<li>後端</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">existsUsername</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    <span style="color:#228b22">// 接收參數
+</span><span style="color:#228b22"></span>    String username = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+    <span style="color:#228b22">// 跟資料庫驗證
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">boolean</span> existsUsername = userService.<span style="color:#658b00">existsUsername</span>(username);
+    <span style="color:#228b22">// 封裝結果
+</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; resultMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+    resultMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;existsUsername&#34;</span>, existsUsername);
+    resultMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#cd5555">&#34;用戶名已存在!&#34;</span>);
+    Gson gson = <span style="color:#8b008b;font-weight:bold">new</span> Gson();
+    String resultString = gson.<span style="color:#658b00">toJson</span>(resultMap);
+    <span style="color:#228b22">// 丟回給前端
+</span><span style="color:#228b22"></span>    response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(resultString);
+}
+</code></pre></div><h4 id="購物車">購物車</h4>
+<ul>
+<li>操作都一樣，由於會破壞本來的察看購物車功能所以就還原了</li>
+<li>注意在全局過濾器把編碼都換成UTF-8</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">request.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+response.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;text/html; charset=UTF-8&#34;</span>);
+</code></pre></div><hr>
+<h1 id="i18n">i18n</h1>
+<blockquote>
+<p>internationalization，國際化</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 從請求頭獲取區域訊息
+</span><span style="color:#228b22"></span>Locale locale = request.<span style="color:#658b00">getLocale</span>();
+<span style="color:#228b22">/* 根據語言讀取語言包，放在resources資料夾下
+</span><span style="color:#228b22">i18n_en_US.properties
+</span><span style="color:#228b22">i18n_zh_TW.properties
+</span><span style="color:#228b22">裡面存的就是一行行鍵值對，比如username=用戶名稱
+</span><span style="color:#228b22">*/</span>
+ResourceBundle i18n = ResourceBundle.<span style="color:#658b00">getBundle</span>(<span style="color:#cd5555">&#34;i18n&#34;</span>, locale);
+<span style="color:#228b22">// 取出對應顯示
+</span><span style="color:#228b22"></span>i18n.<span style="color:#658b00">getString</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+</code></pre></div><ul>
+<li>如果在前端就用js的<code>&lt;%i18n.getString(&quot;username&quot;)%&gt;</code>包起來</li>
+<li>注意properties檔案預設不會是UTF-8編碼，需要進IDEA設定，搜<code>encoding</code></li>
+<li>Editor &gt; File Encodings &gt; 下面default properties encoding 通通改成UTF-8</li>
+</ul>
+<h3 id="用jstl的fmt標籤">用JSTL的fmt標籤</h3>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ taglib prefix=&quot;fmt&quot; uri=&quot;http://java.sun.com/jsp/jstl/fmt&quot; %&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;%--1 使用標籤設置 Locale 信息--%&gt;
+&lt;fmt:setLocale value=&quot;${param.locale}&quot;/&gt;
+&lt;%--2 使用標籤設置 baseName--%&gt;
+&lt;fmt:setBundle basename=&quot;i18n&quot;/&gt;
+&lt;%--3 設置切換語言的開關--%&gt;
+&lt;a href=&quot;?locale=zh_TW&quot;&gt;中文&lt;/a&gt;
+&lt;a href=&quot;?locale=en_US&quot;&gt;english&lt;/a&gt;
+&lt;%--4 根據key顯示對應值--%&gt;
+&lt;h1&gt;&lt;fmt:message key=&quot;username&quot;/&gt;&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h1 id="課程小結">課程小結</h1>
+<blockquote>
+<p>也不知道老師那啥輸入法，總是出現<del>空罐少女、寒冰衛士胸甲</del>，真的有夠搶戲XD</p>
+</blockquote>
+<h2 id="html">Html</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#8b008b;font-weight:bold">div</span>&gt;一行
+&lt;<span style="color:#8b008b;font-weight:bold">span</span>&gt;資料多長就多長
+&lt;<span style="color:#8b008b;font-weight:bold">p</span>&gt;段落、空一行
+&lt;<span style="color:#8b008b;font-weight:bold">br</span>&gt;換行
+&amp;nbsp;空格
+&lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;超連結&#34;</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;輸入框類型&#34;</span> <span style="color:#658b00">value</span>=<span style="color:#cd5555">&#34;預設值&#34;</span> <span style="color:#658b00">placeholder</span>=<span style="color:#cd5555">&#34;佔位的點一下消失&#34;</span>&gt;
+表單&lt;<span style="color:#8b008b;font-weight:bold">form</span> <span style="color:#658b00">action</span>=<span style="color:#cd5555">&#34;url&#34;</span> <span style="color:#658b00">method</span>=<span style="color:#cd5555">&#34;post&#34;</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;submit&#34;</span> <span style="color:#658b00">value</span>=<span style="color:#cd5555">&#34;按鈕名&#34;</span> <span style="color:#658b00">id</span>=<span style="color:#cd5555">&#34;sub_btn&#34;</span>/&gt;
+
+</code></pre></div><h2 id="jquery-1">JQuery</h2>
+<p>三種綁定</p>
+<ul>
+<li><code>$(&quot;#id&quot;)</code></li>
+<li><code>$(&quot;標籤名&quot;)</code></li>
+<li><code>$(&quot;.class&quot;)</code></li>
+</ul>
+<h3 id="el表達式">EL表達式</h3>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">${key1}
+會自動從request域、session、applicaion域、Context從小往上找
+
+判斷是否有值
+&lt;c:if test=&quot;${empty sessionScope.key2}&quot;&gt;
+&lt;/c:if&gt;
+
+綁定點擊事件
+$(&quot;#sub_btn&quot;).click(function () {
+</code></pre><h3 id="學習技術">學習技術</h3>
+<h5 id="前端">前端</h5>
+<ul>
+<li>html、css、javascript
+<ul>
+<li>基本標籤<code>&lt;a href&gt;</code>、<code>&lt;input type&gt;</code>、<code>&lt;form&gt;</code></li>
+</ul>
+</li>
+<li>jsp、jQuery、JSTL標籤庫、EL運算式
+<ul>
+<li><code>&lt;c:if test=&quot;&quot;&gt;</code>、<code>${key1}</code>、綁定點擊事件</li>
+</ul>
+</li>
+<li>Ajax
+<ul>
+<li><code>$.getJSON()</code>輸出響應</li>
+</ul>
+</li>
+</ul>
+<h5 id="後端">後端</h5>
+<blockquote>
+<p>不依賴框架完成http請求與響應的操作模型</p>
+</blockquote>
+<ul>
+<li>JDBC、連線池、MySQL事務</li>
+<li>Servlet、Filter、Listener、Cookie、Session、JSON</li>
+<li>web容器的運作與部屬</li>
+<li>MVC與三層架構搭建javaweb專案</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-11</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220112-agg-spring-01/">
+			下一篇<br>Spring框架、預約就醫項目
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220110-agg-javaweb-10/">
+			上一篇<br>Filter過濾器、ThreadLocal
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

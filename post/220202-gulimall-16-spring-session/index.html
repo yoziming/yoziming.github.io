@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>註冊、登入與Spring Session</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-16">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="註冊、登入與Spring Session" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-16" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220202-gulimall-16-spring-session/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-02T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-02T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="註冊、登入與Spring Session"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-16"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#webmvcconfigurer" onclick="onNavClick(`#webmvcconfigurer-nav`)" id="webmvcconfigurer-nav">
+									WebMvcConfigurer
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a" onclick="onNavClick(`#註冊-nav`)" id="註冊-nav">
+									註冊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9f%a5%e8%ad%98%e9%bb%9e" onclick="onNavClick(`#知識點-nav`)" id="知識點-nav">
+									知識點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5" onclick="onNavClick(`#登入-nav`)" id="登入-nav">
+									登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ac%ac%e4%b8%89%e6%96%b9%e7%99%bb%e5%85%a5" onclick="onNavClick(`#第三方登入-nav`)" id="第三方登入-nav">
+									第三方登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#session%e5%85%b1%e4%ba%ab%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#session共享問題-nav`)" id="session共享問題-nav">
+									session共享問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-session" onclick="onNavClick(`#spring-session-nav`)" id="spring-session-nav">
+									Spring Session
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%a8%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#編碼問題-nav`)" id="編碼問題-nav">
+									編碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8%e5%9f%9f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#作用域問題-nav`)" id="作用域問題-nav">
+									作用域問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e8%b5%b7%e8%a7%a3%e6%b1%ba" onclick="onNavClick(`#一起解決-nav`)" id="一起解決-nav">
+									一起解決
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86" onclick="onNavClick(`#核心原理-nav`)" id="核心原理-nav">
+									核心原理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e5%96%84%e7%99%bb%e5%85%a5%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#完善登入功能-nav`)" id="完善登入功能-nav">
+									完善登入功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e9%bb%9e%e7%99%bb%e5%85%a5" onclick="onNavClick(`#單點登入-nav`)" id="單點登入-nav">
+									單點登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#webmvcconfigurer" onclick="onNavClick(`#webmvcconfigurer-nav`)" id="webmvcconfigurer-nav">
+									WebMvcConfigurer
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a" onclick="onNavClick(`#註冊-nav`)" id="註冊-nav">
+									註冊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%9f%a5%e8%ad%98%e9%bb%9e" onclick="onNavClick(`#知識點-nav`)" id="知識點-nav">
+									知識點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5" onclick="onNavClick(`#登入-nav`)" id="登入-nav">
+									登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%ac%ac%e4%b8%89%e6%96%b9%e7%99%bb%e5%85%a5" onclick="onNavClick(`#第三方登入-nav`)" id="第三方登入-nav">
+									第三方登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#session%e5%85%b1%e4%ba%ab%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#session共享問題-nav`)" id="session共享問題-nav">
+									session共享問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-session" onclick="onNavClick(`#spring-session-nav`)" id="spring-session-nav">
+									Spring Session
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%a8%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#編碼問題-nav`)" id="編碼問題-nav">
+									編碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8%e5%9f%9f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#作用域問題-nav`)" id="作用域問題-nav">
+									作用域問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e8%b5%b7%e8%a7%a3%e6%b1%ba" onclick="onNavClick(`#一起解決-nav`)" id="一起解決-nav">
+									一起解決
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86" onclick="onNavClick(`#核心原理-nav`)" id="核心原理-nav">
+									核心原理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e5%96%84%e7%99%bb%e5%85%a5%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#完善登入功能-nav`)" id="完善登入功能-nav">
+									完善登入功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e9%bb%9e%e7%99%bb%e5%85%a5" onclick="onNavClick(`#單點登入-nav`)" id="單點登入-nav">
+									單點登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    註冊、登入與Spring Session
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-16
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-02 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="webmvcconfigurer">WebMvcConfigurer</h2>
+<blockquote>
+<p>參考 <a href="https://blog.csdn.net/pan_junbiao/article/details/120039885">https://blog.csdn.net/pan_junbiao/article/details/120039885</a></p>
+</blockquote>
+<ul>
+<li>複習SpringMVC</li>
+<li>WebMvcConfigurer是一個接口，用JavaBean的方式代替web.xml，常用於:</li>
+<li>攔截器，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptors</span>(InterceptorRegistry registry) {
+    <span style="color:#8b008b;font-weight:bold">super</span>.<span style="color:#658b00">addInterceptors</span>(registry);
+    registry.<span style="color:#658b00">addInterceptor</span>(<span style="color:#8b008b;font-weight:bold">new</span> TestInterceptor()).<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>).<span style="color:#658b00">excludePathPatterns</span>(<span style="color:#cd5555">&#34;/emp/toLogin&#34;</span>,<span style="color:#cd5555">&#34;/emp/login&#34;</span>,<span style="color:#cd5555">&#34;/js/**&#34;</span>,<span style="color:#cd5555">&#34;/css/**&#34;</span>,<span style="color:#cd5555">&#34;/images/**&#34;</span>);
+}
+</code></pre></div><ul>
+<li>跨域設定，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 跨域
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addCorsMappings</span>(CorsRegistry registry) {
+    registry.<span style="color:#658b00">addMapping</span>(<span style="color:#cd5555">&#34;/**&#34;</span>)
+            .<span style="color:#658b00">allowedOrigins</span>(<span style="color:#cd5555">&#34;*&#34;</span>)  <span style="color:#228b22">//浏览器允许所有的域访问 / 注意 * 不能满足带有cookie的访问,Origin 必须是全匹配
+</span><span style="color:#228b22"></span>            .<span style="color:#658b00">allowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>)   <span style="color:#228b22">// 允许带cookie访问
+</span><span style="color:#228b22"></span>            .<span style="color:#658b00">allowedMethods</span>(<span style="color:#cd5555">&#34;GET&#34;</span>, <span style="color:#cd5555">&#34;POST&#34;</span>, <span style="color:#cd5555">&#34;PUT&#34;</span>, <span style="color:#cd5555">&#34;DELETE&#34;</span>, <span style="color:#cd5555">&#34;OPTIONS&#34;</span>)
+            .<span style="color:#658b00">allowedHeaders</span>(<span style="color:#cd5555">&#34;token&#34;</span>)
+            .<span style="color:#658b00">maxAge</span>(3600);
+}
+</code></pre></div><blockquote>
+<p>更多關於跨域，參考 <a href="https://segmentfault.com/a/1190000019485883">https://segmentfault.com/a/1190000019485883</a></p>
+</blockquote>
+<ul>
+<li>映射html頁面
+<ul>
+<li>前後綴一樣由thymeleaf加上</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MallWebConfig</span> <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
+
+    <span style="color:#228b22">// View映射，省下造controller一個一個設定
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addViewControllers</span>(ViewControllerRegistry registry) {
+        registry.<span style="color:#658b00">addViewController</span>(<span style="color:#cd5555">&#34;/&#34;</span>).<span style="color:#658b00">setViewName</span>(<span style="color:#cd5555">&#34;login&#34;</span>);
+        registry.<span style="color:#658b00">addViewController</span>(<span style="color:#cd5555">&#34;/login.html&#34;</span>).<span style="color:#658b00">setViewName</span>(<span style="color:#cd5555">&#34;login&#34;</span>);
+        registry.<span style="color:#658b00">addViewController</span>(<span style="color:#cd5555">&#34;/reg.html&#34;</span>).<span style="color:#658b00">setViewName</span>(<span style="color:#cd5555">&#34;reg&#34;</span>);
+    }
+}
+/* 相當於
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/login.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">loginPage</span>() {
+<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;login&#34;</span>;
+}
+</code></pre></div><h2 id="註冊">註冊</h2>
+<ul>
+<li>LoginController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 註冊
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/register&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">register</span>(<span style="color:#707a7c">@Valid</span> UserRegisterVo vos, BindingResult result, RedirectAttributes attributes) {
+
+    <span style="color:#228b22">// 如果有錯誤回到註冊頁面
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (result.<span style="color:#658b00">hasErrors</span>()) {
+        Map&lt;String, String&gt; errors =
+                result.<span style="color:#658b00">getFieldErrors</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(FieldError::getField,
+                        FieldError::getDefaultMessage));
+        attributes.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;errors&#34;</span>, errors);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/reg.html&#34;</span>;
+    }
+    <span style="color:#228b22">// 前端驗證被繞過，若傳空值讓他返回
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (vos.<span style="color:#658b00">getPassword</span>().<span style="color:#658b00">isEmpty</span>() || vos.<span style="color:#658b00">getCode</span>().<span style="color:#658b00">isEmpty</span>() || vos.<span style="color:#658b00">getUserName</span>().<span style="color:#658b00">isEmpty</span>() || vos.<span style="color:#658b00">getPhone</span>().<span style="color:#658b00">isEmpty</span>()) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/reg.html&#34;</span>;
+    }
+
+    <span style="color:#228b22">// 獲取驗證碼
+</span><span style="color:#228b22"></span>    String code = vos.<span style="color:#658b00">getCode</span>();
+    <span style="color:#228b22">//驗證碼通過，真正註冊，調用遠程服務進行註冊會員
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (code.<span style="color:#658b00">equals</span>(<span style="color:#cd5555">&#34;1234&#34;</span>)) {
+        R register = memberFeignService.<span style="color:#658b00">register</span>(vos);
+        <span style="color:#8b008b;font-weight:bold">if</span> (register.<span style="color:#658b00">getCode</span>() == 0) {
+            <span style="color:#228b22">//成功
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/login.html&#34;</span>;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#228b22">//失敗
+</span><span style="color:#228b22"></span>            Map&lt;String, String&gt; errors = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+            errors.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, register.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;String&gt;() {
+            }));
+            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;errors&#34;</span>, errors);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/reg.html&#34;</span>;
+        }
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">//驗證碼錯誤
+</span><span style="color:#228b22"></span>        Map&lt;String, String&gt; errors = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+        errors.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;code&#34;</span>, <span style="color:#cd5555">&#34;驗證碼錯誤&#34;</span>);
+        attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;errors&#34;</span>, errors);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/reg.html&#34;</span>;
+    }
+}
+</code></pre></div><ul>
+<li>
+<p>知識點:</p>
+<ul>
+<li>
+<p>用拋出異常的方式告知是否重複註冊</p>
+</li>
+<li>
+<p>用MD5加鹽加密，好處:</p>
+<ul>
+<li>快速、抗改(雪崩效應，只要有原始資料任何變化算出的MD5都會天差地別)、不可逆</li>
+<li>但是可以暴力破解，所以要加鹽</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>MemberController.java</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/register&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">register</span>(<span style="color:#707a7c">@RequestBody</span> MemberUserRegisterVo vo) {
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        memberService.<span style="color:#658b00">register</span>(vo);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (PhoneException e) {
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PHONE_EXIST_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PHONE_EXIST_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (UsernameException e) {
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">USER_EXIST_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">USER_EXIST_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><ul>
+<li>MemberServiceImpl.java
+<ul>
+<li>Spring的BCryptPasswordEncoder已經自動加鹽了</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">register</span>(MemberUserRegisterVo vo) {
+    MemberEntity memberEntity = <span style="color:#8b008b;font-weight:bold">new</span> MemberEntity();
+
+    <span style="color:#228b22">// 設置等級為普通會員
+</span><span style="color:#228b22"></span>    MemberLevelEntity levelEntity = memberLevelDao.<span style="color:#658b00">getDefaultLevel</span>();
+    memberEntity.<span style="color:#658b00">setLevelId</span>(levelEntity.<span style="color:#658b00">getId</span>());
+
+    <span style="color:#228b22">// 檢查用戶名和手機號是否唯一，可能拋出異常
+</span><span style="color:#228b22"></span>    checkPhoneUnique(vo.<span style="color:#658b00">getPhone</span>());
+    checkUserNameUnique(vo.<span style="color:#658b00">getUserName</span>());
+
+    <span style="color:#228b22">// 設定帳號密碼
+</span><span style="color:#228b22"></span>    memberEntity.<span style="color:#658b00">setNickname</span>(vo.<span style="color:#658b00">getUserName</span>());
+    memberEntity.<span style="color:#658b00">setUsername</span>(vo.<span style="color:#658b00">getUserName</span>());
+    <span style="color:#228b22">// 密碼進行MD5加密
+</span><span style="color:#228b22"></span>    BCryptPasswordEncoder bCryptPasswordEncoder = <span style="color:#8b008b;font-weight:bold">new</span> BCryptPasswordEncoder();
+    String encode = bCryptPasswordEncoder.<span style="color:#658b00">encode</span>(vo.<span style="color:#658b00">getPassword</span>());
+    memberEntity.<span style="color:#658b00">setPassword</span>(encode);
+    memberEntity.<span style="color:#658b00">setMobile</span>(vo.<span style="color:#658b00">getPhone</span>());
+    memberEntity.<span style="color:#658b00">setGender</span>(0);
+    <span style="color:#228b22">// memberEntity.setCreateTime(new Date());
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 保存
+</span><span style="color:#228b22"></span>    baseMapper.<span style="color:#658b00">insert</span>(memberEntity);
+}
+
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">checkPhoneUnique</span>(String phone) <span style="color:#8b008b;font-weight:bold">throws</span> PhoneException {
+    Long phoneCount = baseMapper.<span style="color:#658b00">selectCount</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;MemberEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;mobile&#34;</span>, phone));
+    <span style="color:#8b008b;font-weight:bold">if</span> (phoneCount &gt; 0) {
+        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> PhoneException();
+    }
+}
+
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">checkUserNameUnique</span>(String userName) <span style="color:#8b008b;font-weight:bold">throws</span> UsernameException {
+    Long usernameCount = baseMapper.<span style="color:#658b00">selectCount</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;MemberEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;username&#34;</span>, userName));
+    <span style="color:#8b008b;font-weight:bold">if</span> (usernameCount &gt; 0) {
+        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> UsernameException();
+    }
+}
+</code></pre></div><h3 id="知識點">知識點</h3>
+<blockquote>
+<p>addAttribute與addFlashAttribute的區別</p>
+</blockquote>
+<pre tabindex="0"><code>attr.addAttribute(“param”, value);
+</code></pre><ul>
+<li>這種方式就相當於重定向之後，在url後面拼接參數，這樣在重定向之後的頁面或者控制器再去獲取url後面的參數就可以了，但這個方式因為是在url後面添加參數的方式，所以暴露了參數，有風險</li>
+</ul>
+<pre tabindex="0"><code>attr.addFlashAttribute(“param”, value);
+</code></pre><ul>
+<li>這種方式也能達到重新向帶參，而且能隱藏參數，其原理就是放到session中，session在跳到頁面后馬上移除對象</li>
+</ul>
+<h2 id="登入">登入</h2>
+<ul>
+<li>LoginController.java
+<ul>
+<li><code>AuthServerConstant.LOGIN_USER</code>其實就是<code>&quot;loginUser&quot;</code>，放成常數是為了避免使用魔法值</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/login&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">login</span>(UserLoginVo vo, RedirectAttributes attributes, HttpSession session) {
+    <span style="color:#228b22">// 遠程調用member的驗證帳號密碼服務
+</span><span style="color:#228b22"></span>    R login = memberFeignService.<span style="color:#658b00">login</span>(vo);
+    <span style="color:#8b008b;font-weight:bold">if</span> (login.<span style="color:#658b00">getCode</span>() == 0) {
+        MemberResponseVo data = login.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;MemberResponseVo&gt;() {
+        });
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;用戶&#34;</span>+data.<span style="color:#658b00">getUsername</span>()+<span style="color:#cd5555">&#34;登入成功&#34;</span>);
+        session.<span style="color:#658b00">setAttribute</span>(AuthServerConstant.<span style="color:#658b00">LOGIN_USER</span>, data);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://mall.com&#34;</span>;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        Map&lt;String, String&gt; errors = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+        errors.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, login.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;String&gt;() {
+        }));
+        attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;errors&#34;</span>, errors);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://auth.mall.com/login.html&#34;</span>;
+    }
+}
+</code></pre></div><ul>
+<li>驗證帳號密碼很簡單就不貼了，接著主要處理Session的問題</li>
+</ul>
+<h3 id="第三方登入">第三方登入</h3>
+<ul>
+<li>第三方登入我自己用google試了都不成功，主要卡在不知道request網址到底該怎寫</li>
+</ul>
+<p><img src="image-20220125222347983.png" alt="image-20220125222347983"></p>
+<ul>
+<li>搜教學比較多是用spring security，照教學能造一個新的Login頁面，結合起來搞半天都失敗，唉先跳過吧</li>
+</ul>
+<h2 id="session共享問題">session共享問題</h2>
+<ul>
+<li>
+<p>子網域、分散式服務用傳統session應付不來，有幾種可選方案</p>
+</li>
+<li>
+<p>session複製，每一個session都複製到所有webserver中，Tomcat修改配置文件就能辦到</p>
+<ul>
+<li>缺點: 佔用多</li>
+</ul>
+</li>
+<li>
+<p>客户端存儲，保存在cookie中</p>
+<ul>
+<li>缺點: 安全隱患(篡改)、網絡流量、cookie長度限制</li>
+</ul>
+</li>
+<li>
+<p>hash一致性，例如拿客户端IP來計算，算出來一樣就負載均衡分到指定的伺服器</p>
+<ul>
+<li>缺點: 水平擴展會引發session失效</li>
+</ul>
+</li>
+<li>
+<p>統一存儲，例如把session存到redis</p>
+<ul>
+<li>缺點: redis還是比記憶體慢，多增溝通消耗，但問題不大</li>
+</ul>
+</li>
+</ul>
+<h1 id="spring-session">Spring Session</h1>
+<blockquote>
+<p>官方 <a href="https://docs.spring.io/spring-session/reference/samples.html">https://docs.spring.io/spring-session/reference/samples.html</a></p>
+</blockquote>
+<ul>
+<li>Spring都幫你想好了，引包吧</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.session&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-session-data-redis&lt;/artifactId&gt;
+    &lt;version&gt;2.6.1&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>application.properties
+<ul>
+<li>還可以設定過期時間等等，預設是30m</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>spring.session.store-type=redis
+# 當然還要設定redis所在
+spring.redis.host=localhost
+spring.redis.port=6379
+</code></pre><ul>
+<li>到啟動類註解<code>@EnableRedisHttpSession</code></li>
+</ul>
+<p><img src="image-20220125201947928.png" alt="image-20220125201947928"></p>
+<ul>
+<li>將要存進session的bean序列化</li>
+</ul>
+<p><img src="image-20220125204057093.png" alt="image-20220125204057093"></p>
+<h2 id="編碼問題">編碼問題</h2>
+<ul>
+<li>這樣一來存是能存了，然而是編成二進制類型，顯然不好用，應該改成JSON</li>
+</ul>
+<p><img src="image-20220125205905259.png" alt="image-20220125205905259"></p>
+<h2 id="作用域問題">作用域問題</h2>
+<ul>
+<li>預設的session是根據當前域(在auth伺服器)存的，當回到主網域或轉到其他子網域就用不了</li>
+</ul>
+<p><img src="image-20220125210029897.png" alt="image-20220125210029897"></p>
+<h2 id="一起解決">一起解決</h2>
+<ul>
+<li>MallSessionConfig.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MallSessionConfig</span> {
+
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> CookieSerializer <span style="color:#008b45">cookieSerializer</span>() {
+        DefaultCookieSerializer cookieSerializer = <span style="color:#8b008b;font-weight:bold">new</span> DefaultCookieSerializer();
+        <span style="color:#228b22">// 放大作用域
+</span><span style="color:#228b22"></span>        cookieSerializer.<span style="color:#658b00">setDomainName</span>(<span style="color:#cd5555">&#34;mall.com&#34;</span>);
+        <span style="color:#228b22">// 自訂名稱
+</span><span style="color:#228b22"></span>        cookieSerializer.<span style="color:#658b00">setCookieName</span>(<span style="color:#cd5555">&#34;MALLSESSION&#34;</span>);
+        cookieSerializer.<span style="color:#658b00">setCookieMaxAge</span>(60 * 60 * 24 * 7);
+        <span style="color:#8b008b;font-weight:bold">return</span> cookieSerializer;
+    }
+
+    <span style="color:#228b22">// 整成JSON格式
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> RedisSerializer&lt;Object&gt; <span style="color:#008b45">springSessionDefaultRedisSerializer</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> GenericJackson2JsonRedisSerializer();
+    }
+}
+</code></pre></div><ul>
+<li>成功!</li>
+</ul>
+<p><img src="image-20220125211255800.png" alt="image-20220125211255800"></p>
+<h2 id="核心原理">核心原理</h2>
+<blockquote>
+<p>裝飾者模式，就像鋼鐵人穿上<em>反浩克裝甲</em>，有額外增強但仍然保留原始功能</p>
+</blockquote>
+<ul>
+<li><code>@EnablcRedisHttpSession</code>導入RedisHttpSessionConfiguration配置類，在這個配置類中有<code>SessionRepositoryFilter</code>過濾器</li>
+<li>原始的http請求request和響應response經過濾器放行後，變成了<code>SessionRepositoryRequestWrapper</code>與<code>SessionRepositoryResponseWrapper</code></li>
+<li>之後我們操作session其實就是操作這些Wrapper，而Wrapper把原始的session方法都重寫(加料)了，例如RedisHttpSession的<code>.getSession()</code>方法就是去redis找東西</li>
+<li>Spring Session已經考慮過各種缺點，只要瀏覽器不關，會給redis中的session自動延期</li>
+</ul>
+<h2 id="完善登入功能">完善登入功能</h2>
+<ul>
+<li>添加Spring Session依賴、做好設定，現在Product模組、Search模組也都可以調用共享的session了</li>
+<li>修改前端頁面，依據session判斷是否已登入</li>
+</ul>
+<p><img src="image-20220125222040181.png" alt="image-20220125222040181"></p>
+<ul>
+<li>LoginController.java
+<ul>
+<li>已經登入的人還想登入就讓它跳轉</li>
+<li>要把之前設定的View映射關掉</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 判斷session是否有loginUser，沒有就跳轉登錄頁面，有就跳轉首頁
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/login.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">loginPage</span>(HttpSession session) {
+    <span style="color:#228b22">// 從session先取出來用戶的信息，判斷用戶是否已經登錄過了
+</span><span style="color:#228b22"></span>    Object attribute = session.<span style="color:#658b00">getAttribute</span>(AuthServerConstant.<span style="color:#658b00">LOGIN_USER</span>);
+    <span style="color:#228b22">// 如果用戶沒登錄那就跳轉到登錄頁面
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (attribute == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;login&#34;</span>;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://mall.com&#34;</span>;
+    }
+}
+
+<span style="color:#228b22">// 登出
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/loguot.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">logout</span>(HttpServletRequest request) {
+    request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">removeAttribute</span>(AuthServerConstant.<span style="color:#658b00">LOGIN_USER</span>);
+    request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">invalidate</span>();
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://mall.com&#34;</span>;
+}
+</code></pre></div><h1 id="單點登入">單點登入</h1>
+<blockquote>
+<p>Single Sign On，簡稱SSO</p>
+</blockquote>
+<ul>
+<li>用在不同域名，原理是有一個中央認證系統專門處理登入</li>
+</ul>
+<p><img src="image-20220125224243309.png" alt="image-20220125224243309"></p>
+<ul>
+<li>有很多實現方式，比較常見是用<strong>Token</strong></li>
+<li>暫時應該是用不上，就只先了解一下，有需要再回來補</li>
+<li><a href="https://www.bilibili.com/video/BV1np4y1C7Yf?p=233">https://www.bilibili.com/video/BV1np4y1C7Yf?p=233</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-02</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220203-bitcoin/">
+			下一篇<br>個人對區塊鏈的白話理解
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220201-gulimall-15/">
+			上一篇<br>商品詳情
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

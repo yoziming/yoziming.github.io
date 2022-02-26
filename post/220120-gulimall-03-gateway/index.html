@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>後台:商品分類、網關轉發微服務、跨域</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-03">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="後台:商品分類、網關轉發微服務、跨域" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-03" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220120-gulimall-03-gateway/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-20T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="後台:商品分類、網關轉發微服務、跨域"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-03"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#後台頁面-nav`)" id="後台頁面-nav">
+									後台頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%88%e7%ae%97%e5%b1%ac%e6%80%a7%e8%88%87%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#計算屬性與監聽器-nav`)" id="計算屬性與監聽器-nav">
+									計算屬性與監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#過濾器-nav`)" id="過濾器-nav">
+									過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%84%e4%bb%b6%e5%8c%96" onclick="onNavClick(`#組件化-nav`)" id="組件化-nav">
+									組件化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%85%b3%e6%89%8b%e6%9e%b6%e5%89%b5%e5%bb%ba%e8%a1%a8%e5%96%ae" onclick="onNavClick(`#腳手架創建表單-nav`)" id="腳手架創建表單-nav">
+									腳手架創建表單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javax%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#javax問題-nav`)" id="javax問題-nav">
+									javax問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e7%b6%b2%e9%97%9c" onclick="onNavClick(`#設定網關-nav`)" id="設定網關-nav">
+									設定網關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#rewritepath%e6%ad%a3%e5%89%87" onclick="onNavClick(`#rewritepath正則-nav`)" id="rewritepath正則-nav">
+									RewritePath正則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%a8%e5%9f%9f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#跨域問題-nav`)" id="跨域問題-nav">
+									跨域問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring-boot%e7%81%b0%e8%89%b2%e5%9c%96%e6%a1%88" onclick="onNavClick(`#spring-boot灰色圖案-nav`)" id="spring-boot灰色圖案-nav">
+									spring boot灰色圖案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#其他功能-nav`)" id="其他功能-nav">
+									其他功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%82%8f%e8%bc%af%e5%88%aa%e9%99%a4" onclick="onNavClick(`#邏輯刪除-nav`)" id="邏輯刪除-nav">
+									邏輯刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e8%88%87%e4%bf%ae%e6%94%b9%e7%af%80%e9%bb%9e" onclick="onNavClick(`#新增與修改節點-nav`)" id="新增與修改節點-nav">
+									新增與修改節點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8b%96%e6%9b%b3%e6%94%b9%e8%ae%8a%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#拖曳改變排序-nav`)" id="拖曳改變排序-nav">
+									拖曳改變排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#後台頁面-nav`)" id="後台頁面-nav">
+									後台頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%88%e7%ae%97%e5%b1%ac%e6%80%a7%e8%88%87%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#計算屬性與監聽器-nav`)" id="計算屬性與監聽器-nav">
+									計算屬性與監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%81%8e%e6%bf%be%e5%99%a8" onclick="onNavClick(`#過濾器-nav`)" id="過濾器-nav">
+									過濾器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%84%e4%bb%b6%e5%8c%96" onclick="onNavClick(`#組件化-nav`)" id="組件化-nav">
+									組件化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%85%b3%e6%89%8b%e6%9e%b6%e5%89%b5%e5%bb%ba%e8%a1%a8%e5%96%ae" onclick="onNavClick(`#腳手架創建表單-nav`)" id="腳手架創建表單-nav">
+									腳手架創建表單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#javax%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#javax問題-nav`)" id="javax問題-nav">
+									javax問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e7%b6%b2%e9%97%9c" onclick="onNavClick(`#設定網關-nav`)" id="設定網關-nav">
+									設定網關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#rewritepath%e6%ad%a3%e5%89%87" onclick="onNavClick(`#rewritepath正則-nav`)" id="rewritepath正則-nav">
+									RewritePath正則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%a8%e5%9f%9f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#跨域問題-nav`)" id="跨域問題-nav">
+									跨域問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring-boot%e7%81%b0%e8%89%b2%e5%9c%96%e6%a1%88" onclick="onNavClick(`#spring-boot灰色圖案-nav`)" id="spring-boot灰色圖案-nav">
+									spring boot灰色圖案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%8a%9f%e8%83%bd" onclick="onNavClick(`#其他功能-nav`)" id="其他功能-nav">
+									其他功能
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%82%8f%e8%bc%af%e5%88%aa%e9%99%a4" onclick="onNavClick(`#邏輯刪除-nav`)" id="邏輯刪除-nav">
+									邏輯刪除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e8%88%87%e4%bf%ae%e6%94%b9%e7%af%80%e9%bb%9e" onclick="onNavClick(`#新增與修改節點-nav`)" id="新增與修改節點-nav">
+									新增與修改節點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8b%96%e6%9b%b3%e6%94%b9%e8%ae%8a%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#拖曳改變排序-nav`)" id="拖曳改變排序-nav">
+									拖曳改變排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    後台:商品分類、網關轉發微服務、跨域
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-03
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-20 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/microservice">microservice</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="後台頁面">後台頁面</h1>
+<blockquote>
+<p>別的項目學過了，這邊快速跳過，只記幾個新知識</p>
+</blockquote>
+<h3 id="計算屬性與監聽器">計算屬性與監聽器</h3>
+<p><img src="image-20220112144118867.png" alt="image-20220112144118867"></p>
+<h3 id="過濾器">過濾器</h3>
+<p><img src="image-20220112144352550.png" alt="image-20220112144352550"></p>
+<h3 id="組件化">組件化</h3>
+<blockquote>
+<p>可以復用的模板</p>
+</blockquote>
+<ul>
+<li>沒有el屬性，不與頁面中的元素綁定</li>
+<li>template就是他的HTML模板</li>
+<li>data()必須是一個函數而非物件</li>
+</ul>
+<p><img src="image-20220112144809947.png" alt="image-20220112144809947"></p>
+<ul>
+<li>局部組件
+<ul>
+<li>用componments聲明，其中的key名就是標簽名</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220112145205606.png" alt="image-20220112145205606"></p>
+<p><img src="image-20220112145338652.png" alt="image-20220112145338652"></p>
+<h3 id="生命週期">生命週期</h3>
+<ul>
+<li>參考 <a href="https://book.vue.tw/CH1/1-7-lifecycle.html">https://book.vue.tw/CH1/1-7-lifecycle.html</a></li>
+</ul>
+<p><img src="image-20220112145744902.png" alt="image-20220112145744902"></p>
+<h3 id="腳手架創建表單">腳手架創建表單</h3>
+<ul>
+<li>之前這邊手動要先去router創建右邊的導航欄，腳手架可以用可視化工具直接創造，非常方便</li>
+<li>自己要實現的部分只剩接後端API的網址與資料呈現</li>
+</ul>
+<p><img src="image-20220112223255308.png" alt="image-20220112223255308"></p>
+<h3 id="javax問題">javax問題</h3>
+<ul>
+<li>啟動renren-fast服務時因為引用了common模組(為了讓後台的server也能上nacos服務發現)，又出了點問題，排查了半天</li>
+</ul>
+<pre tabindex="0"><code>package javax.validation.constraints does not exist
+解法:
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-validation&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>我感覺人人開源這個項目已經跟不上時代了，網路上目前2022年1月比較推薦的是若依腳手架，他這個star超高全站第2，也有一直在維護，issue處理很積極，有機會嘗試看看</li>
+<li><a href="https://gitee.com/y_project/RuoYi">https://gitee.com/y_project/RuoYi</a></li>
+</ul>
+<h1 id="後端">後端</h1>
+<ul>
+<li>現在要實現在後台檢視商品列表功能，進到product模組的controller，寫查詢的控制器與服務、實現類</li>
+<li>要返回的資料是這種表格</li>
+</ul>
+<p><img src="image-20220112224741940.png" alt="image-20220112224741940"></p>
+<ul>
+<li>三級樹形列表，老師這邊一次sql查出全部資料然後用stream工具類操作賦好值，實在太強。我想看懂就花了大半天，還是老實for循環，或是多查幾次SQL吧&hellip;</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 三級樹型列表
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @return
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">listTree</span>() {
+        <span style="color:#228b22">// 查所有分類
+</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; entities = baseMapper.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+        <span style="color:#228b22">// lamdba表達式左邊形參，右邊方法
+</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; levelMenus = entities.<span style="color:#658b00">stream</span>()
+                .<span style="color:#658b00">filter</span>(e -&gt; e.<span style="color:#658b00">getParentCid</span>() == 0) <span style="color:#228b22">// 先篩出第一級，set他的子級，調用下面的方法
+</span><span style="color:#228b22"></span>                .<span style="color:#658b00">map</span>((menu) -&gt; {
+                    menu.<span style="color:#658b00">setChildren</span>(findChildren(menu, entities));
+                    <span style="color:#8b008b;font-weight:bold">return</span> menu;
+                })
+                .<span style="color:#658b00">sorted</span>(Comparator.<span style="color:#658b00">comparingInt</span>(menu -&gt; (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>())))
+                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+        <span style="color:#8b008b;font-weight:bold">return</span> levelMenus;
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 找出所有子級並賦上
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @param root
+</span><span style="color:#228b22">     * @param all
+</span><span style="color:#228b22">     * @return
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">findChildren</span>(CategoryEntity root, List&lt;CategoryEntity&gt; all) {
+        <span style="color:#228b22">// all是全部的品項
+</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; children = all.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(categoryEntity -&gt; {
+            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(root.<span style="color:#658b00">getCatId</span>());
+        }).<span style="color:#658b00">map</span>(categoryEntity -&gt; {
+            <span style="color:#228b22">// 找到子菜單(遞歸)
+</span><span style="color:#228b22"></span>            categoryEntity.<span style="color:#658b00">setChildren</span>(findChildren(categoryEntity, all));
+            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity;
+        }).<span style="color:#658b00">sorted</span>((menu, menu2) -&gt; {
+            <span style="color:#228b22">// 菜單的排序
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>()) - (menu2.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu2.<span style="color:#658b00">getSort</span>());
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+        <span style="color:#8b008b;font-weight:bold">return</span> children;
+    }
+</code></pre></div><h2 id="設定網關">設定網關</h2>
+<ul>
+<li>首先把後台前端的<code>baseUrl</code>改了，讓他指向網關的阜88
+<ul>
+<li>這要理一下，<code>baseUrl</code>指的是後台頁面發出去的請求</li>
+<li>後台的<code>renren-fast-vue</code>本身啟動占用的還是8000或8001</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220112225502089.png" alt="image-20220112225502089"></p>
+<ul>
+<li>而後台的server(renren-fast)啟動的阜無所謂，重點是這個服務要註冊到nacos</li>
+</ul>
+<p><img src="image-20220112230026696.png" alt="image-20220112230026696"></p>
+<ul>
+<li>然後在網關中設定轉發</li>
+<li><code>uri</code>是要去的資源名，就是微服務名(同模組名，但有人是用包名要注意可能有<code>-</code>或<code>.</code>的差別)，<code>lb://</code>是負載均衡的意思</li>
+<li><code>predicates</code> 斷言，判斷的條件，網址長這樣的人</li>
+</ul>
+<pre tabindex="0"><code>spring:
+  cloud:
+    gateway:
+      routes:
+        - id: admin_route
+          uri: lb://renren-fast
+          predicates:
+            - Path=/api/**
+          filters:
+            - =/api/(?&lt;segment&gt;.*),/renren-fast/$\{segment}
+</code></pre><ul>
+<li>然後用<code>RewritePath</code>重寫路徑，因為他本來是這樣</li>
+</ul>
+<p><img src="image-20220112230347982.png" alt="image-20220112230347982"></p>
+<h3 id="rewritepath正則">RewritePath正則</h3>
+<ul>
+<li>我因為網關轉發寫錯又找好久
+<ul>
+<li>重點一:<code>predicates</code>後面的<code>/**</code>千萬別忘寫</li>
+<li>重點二: 匹配精確度高的要放上面(類似多層if的概念)</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>spring:
+  cloud:
+    gateway:
+      routes:
+        - id: product_route
+          uri: lb://product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?&lt;segment&gt;.*),/$\{segment}
+</code></pre><ul>
+<li>第一個<code>?&lt;segment&gt;</code>是要切出來的，可以叫任何自訂的變數名</li>
+<li>緊接的<code>.*</code>表示匹配幾次，這裡是無數次也就是全部</li>
+<li>然後括號)後的<code>,</code>後面放的是重寫成啥樣，接去給微服務</li>
+<li><code>$\</code>是因為yaml格式怕它當成編譯時的變數所以寫成這樣，相當於運行時的<code>$</code></li>
+</ul>
+<p><img src="image-20220112234936510.png" alt="image-20220112234936510"></p>
+<ul>
+<li>也可以用StripPrefix，切掉幾級
+<ul>
+<li>參考 <a href="https://www.jianshu.com/p/e7f126f4e00b">https://www.jianshu.com/p/e7f126f4e00b</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb"></span>- StripPrefix=1<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>都設定完後，相當於請求訪問都到88找網關，網關藉由服務發現轉介給其他服務</li>
+</ul>
+<p><img src="image-20220112225902832.png" alt="image-20220112225902832"></p>
+<ul>
+<li>到這裡登入畫面應該又能成功顯示驗證碼了，然而還沒完</li>
+</ul>
+<h2 id="跨域問題">跨域問題</h2>
+<ul>
+<li>老朋友又來了，除了簡單請求，複雜的例如ajax請求只要有以下三種情況都會引起跨域問題:
+<ul>
+<li>協議不同:http與https</li>
+<li>端口不同:9528與8201</li>
+<li>ip不同</li>
+</ul>
+</li>
+<li>解法很多例如:
+<ul>
+<li>使用nginx反向代理</li>
+<li>後端Controller註解<code>@CrossOrigin</code></li>
+<li>後端掛一個全局過濾器，這邊先用這個</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220112211942792.png" alt="image-20220112211942792"></p>
+<ul>
+<li>腳手架後台server自帶一個跨域，避免多重請求一樣會報錯要關掉</li>
+</ul>
+<p><img src="image-20220112212229477.png" alt="image-20220112212229477"></p>
+<ul>
+<li>結果老師教的方法不行，網路上試了幾個也不行，找半天最後終於找到一個可以的，需要造2個類(PS.版本spring boot=2.3.2.RELEASE，cloud=Hoxton.SR9)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsConfig</span> {
+
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> CorsResponseHeaderFilter <span style="color:#008b45">corsResponseHeaderFilter</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsResponseHeaderFilter();
+    }
+
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> CorsWebFilter <span style="color:#008b45">corsWebFilter</span>() {
+        UrlBasedCorsConfigurationSource source = <span style="color:#8b008b;font-weight:bold">new</span> UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = <span style="color:#8b008b;font-weight:bold">new</span> CorsConfiguration();
+
+        corsConfiguration.<span style="color:#658b00">addAllowedHeader</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        corsConfiguration.<span style="color:#658b00">addAllowedMethod</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        corsConfiguration.<span style="color:#658b00">addAllowedOrigin</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        corsConfiguration.<span style="color:#658b00">setAllowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        corsConfiguration.<span style="color:#658b00">setMaxAge</span>(600L);
+
+        source.<span style="color:#658b00">registerCorsConfiguration</span>(<span style="color:#cd5555">&#34;/**&#34;</span>, corsConfiguration);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsWebFilter(source);
+    }
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsResponseHeaderFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> GlobalFilter, Ordered {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getOrder</span>() {
+        <span style="color:#228b22">// 指定此過濾器位於NettyWriteResponseFilter之後
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 即待處理完響應體後接着處理響應頭
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> NettyWriteResponseFilter.<span style="color:#658b00">WRITE_RESPONSE_FILTER_ORDER</span> + 1;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#707a7c">@SuppressWarnings</span>(<span style="color:#cd5555">&#34;serial&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Mono&lt;Void&gt; <span style="color:#008b45">filter</span>(ServerWebExchange exchange, GatewayFilterChain chain) {
+        <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange).<span style="color:#658b00">then</span>(Mono.<span style="color:#658b00">defer</span>(() -&gt; {
+            exchange.<span style="color:#658b00">getResponse</span>().<span style="color:#658b00">getHeaders</span>().<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
+                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getValue</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">size</span>() &gt; 1))
+                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_ORIGIN</span>)
+                            || kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_CREDENTIALS</span>)))
+                    .<span style="color:#658b00">forEach</span>(kv -&gt;
+                    {
+                        kv.<span style="color:#658b00">setValue</span>(<span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;String&gt;() {{
+                            add(kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">get</span>(0));
+                        }});
+                    });
+
+            <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange);
+        }));
+    }
+}
+</code></pre></div><ul>
+<li>最後終於成功了，相當於透過網關轉發請求給微服務然後響應回去</li>
+</ul>
+<p><img src="image-20220113000015404.png" alt="image-20220113000015404"></p>
+<hr>
+<h3 id="spring-boot灰色圖案">spring boot灰色圖案</h3>
+<ul>
+<li>困擾我許久的小問題</li>
+</ul>
+<p><img src="image-20220113160956445.png" alt="image-20220113160956445"></p>
+<ul>
+<li>按+號手動添加即可</li>
+</ul>
+<p><img src="image-20220113161327010.png" alt="image-20220113161327010"></p>
+<ul>
+<li>並且這玩意原來可以拖動排序，換個辨識度高的名字+排序好，測試時批次啟動選取更方便</li>
+</ul>
+<p><img src="image-20220113161551510.png" alt="image-20220113161551510"></p>
+<h1 id="其他功能">其他功能</h1>
+<blockquote>
+<p>大多是前端模板的使用，有些我直接複製貼上了</p>
+</blockquote>
+<h2 id="邏輯刪除">邏輯刪除</h2>
+<p><img src="image-20220113023331862.png" alt="image-20220113023331862"></p>
+<ul>
+<li>由於這裡是反的，1才是要顯示，所以手動在註解中指定delval
+<ul>
+<li>通常是叫is_deleted之類的欄位</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220113023053838.png" alt="image-20220113023053838"></p>
+<ul>
+<li>前端:
+<ul>
+<li>綁確認提示框</li>
+<li><code>.then()</code>對接刪除API</li>
+<li>刷新頁面</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    remove(node, data) {
+      <span style="color:#8b008b;font-weight:bold">const</span> ids = [data.catId];
+      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">`是否刪除【</span><span style="color:#cd5555">${</span>data.name<span style="color:#cd5555">}</span><span style="color:#cd5555">】分類?`</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
+        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
+        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
+        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+      })
+        .then(() =&gt; {
+          <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+            url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/delete&#34;</span>),
+            method: <span style="color:#cd5555">&#34;post&#34;</span>,
+            data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(ids, <span style="color:#8b008b;font-weight:bold">false</span>),
+          }).then(({ data }) =&gt; {
+            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+              message: <span style="color:#cd5555">&#34;分類刪除成功&#34;</span>,
+              type: <span style="color:#cd5555">&#34;success&#34;</span>,
+            });
+            <span style="color:#228b22">//刷新出新的分類
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+            <span style="color:#228b22">//設置需要預設展開的分類
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [node.parent.data.catId];
+          });
+        })
+        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {});
+
+      console.log(<span style="color:#cd5555">&#34;remove&#34;</span>, node, data);
+    },
+</code></pre></div><h2 id="新增與修改節點">新增與修改節點</h2>
+<ul>
+<li>前端:
+<ul>
+<li>綁一個跳出的修改表單，get回顯表格</li>
+<li>對接後端API</li>
+<li>刷新頁面</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    edit(data) {
+      console.log(<span style="color:#cd5555">&#34;要修改的數據&#34;</span>, data);
+      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;edit&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;修改分類&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
+
+      <span style="color:#228b22">//發送請求獲取當前節點最新的數據
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">`/product/category/info/</span><span style="color:#cd5555">${</span>data.catId<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>),
+        method: <span style="color:#cd5555">&#34;get&#34;</span>,
+      }).then(({ data }) =&gt; {
+        <span style="color:#228b22">//請求成功
+</span><span style="color:#228b22"></span>        console.log(<span style="color:#cd5555">&#34;要回顯的數據&#34;</span>, data);
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.name = data.data.name;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = data.data.catId;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = data.data.icon;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = data.data.productUnit;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.data.parentCid;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.data.catLevel;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = data.data.sort;
+        <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = data.data.showStatus;
+        <span style="color:#228b22">/**
+</span><span style="color:#228b22">         *         parentCid: 0,
+</span><span style="color:#228b22">         catLevel: 0,
+</span><span style="color:#228b22">         showStatus: 1,
+</span><span style="color:#228b22">         sort: 0,
+</span><span style="color:#228b22">         */</span>
+      });
+    },
+    append(data) {
+      console.log(<span style="color:#cd5555">&#34;append&#34;</span>, data);
+      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;add&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;添加分類&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.catId;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.catLevel * <span style="color:#b452cd">1</span> + <span style="color:#b452cd">1</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = <span style="color:#8b008b;font-weight:bold">null</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.name = <span style="color:#cd5555">&#34;&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = <span style="color:#cd5555">&#34;&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = <span style="color:#cd5555">&#34;&#34;</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = <span style="color:#b452cd">0</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = <span style="color:#b452cd">1</span>;
+    },
+
+    submitData() {
+      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;add&#34;</span>) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.addCategory();
+      }
+      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;edit&#34;</span>) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.editCategory();
+      }
+    },
+    <span style="color:#228b22">//修改三級分類數據
+</span><span style="color:#228b22"></span>    editCategory() {
+      <span style="color:#8b008b;font-weight:bold">const</span> { catId, name, icon, productUnit } = <span style="color:#8b008b;font-weight:bold">this</span>.category;
+      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update&#34;</span>),
+        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData({ catId, name, icon, productUnit }, <span style="color:#8b008b;font-weight:bold">false</span>),
+      }).then(({ data }) =&gt; {
+        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+          message: <span style="color:#cd5555">&#34;分類修改成功&#34;</span>,
+          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+        });
+        <span style="color:#228b22">//關閉對話框
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
+        <span style="color:#228b22">//刷新出新的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+        <span style="color:#228b22">//設置需要預設展開的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
+      });
+    },
+    <span style="color:#228b22">//添加三級分類
+</span><span style="color:#228b22"></span>    addCategory() {
+      console.log(<span style="color:#cd5555">&#34;提交的三級分類數據&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.category);
+      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/save&#34;</span>),
+        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.category, <span style="color:#8b008b;font-weight:bold">false</span>),
+      }).then(({ data }) =&gt; {
+        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+          message: <span style="color:#cd5555">&#34;分類保存成功&#34;</span>,
+          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+        });
+        <span style="color:#228b22">//關閉對話框
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
+        <span style="color:#228b22">//刷新出新的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+        <span style="color:#228b22">//設置需要預設展開的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
+      });
+    },
+</code></pre></div><h2 id="拖曳改變排序">拖曳改變排序</h2>
+<blockquote>
+<p>這個太麻煩，草草略過</p>
+</blockquote>
+<ul>
+<li>
+<p>做開關控制拖曳許可</p>
+</li>
+<li>
+<p>判斷擺放的節點深度</p>
+</li>
+<li>
+<p>把完整的順序<code>(&quot;catId&quot;:23,&quot;sort&quot;:0,&quot;parentCid&quot;:1),...</code>傳給後端</p>
+<ul>
+<li>因為可能改變上下層級，所以共傳自己、排序、父節點</li>
+</ul>
+</li>
+<li>
+<p>後端用list去接、調用<code>updateBatchById(list)</code>方法</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    batchSave() {
+      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update/sort&#34;</span>),
+        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.updateNodes, <span style="color:#8b008b;font-weight:bold">false</span>),
+      }).then(({ data }) =&gt; {
+        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+          message: <span style="color:#cd5555">&#34;分類順序等修改成功&#34;</span>,
+          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+        });
+        <span style="color:#228b22">//刷新出新的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+        <span style="color:#228b22">//設置需要預設展開的分類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = <span style="color:#8b008b;font-weight:bold">this</span>.pCid;
+        <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes = [];
+        <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = <span style="color:#b452cd">0</span>;
+        <span style="color:#228b22">// this.pCid = 0;
+</span><span style="color:#228b22"></span>      });
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log(<span style="color:#cd5555">&#34;handleDrop: &#34;</span>, draggingNode, dropNode, dropType);
+      <span style="color:#228b22">//1、當前節點最新的父節點id
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> pCid = <span style="color:#b452cd">0</span>;
+      <span style="color:#8b008b;font-weight:bold">let</span> siblings = <span style="color:#8b008b;font-weight:bold">null</span>;
+      <span style="color:#8b008b;font-weight:bold">if</span> (dropType == <span style="color:#cd5555">&#34;before&#34;</span> || dropType == <span style="color:#cd5555">&#34;after&#34;</span>) {
+        pCid =
+          dropNode.parent.data.catId == <span style="color:#8b008b;font-weight:bold">undefined</span>
+            ? <span style="color:#b452cd">0</span>
+            : dropNode.parent.data.catId;
+        siblings = dropNode.parent.childNodes;
+      } <span style="color:#8b008b;font-weight:bold">else</span> {
+        pCid = dropNode.data.catId;
+        siblings = dropNode.childNodes;
+      }
+      <span style="color:#8b008b;font-weight:bold">this</span>.pCid.push(pCid);
+
+      <span style="color:#228b22">//2、當前拖拽節點的最新順序，
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; siblings.length; i++) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].data.catId == draggingNode.data.catId) {
+          <span style="color:#228b22">//如果遍歷的是當前正在拖拽的節點
+</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">let</span> catLevel = draggingNode.level;
+          <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].level != draggingNode.level) {
+            <span style="color:#228b22">//當前節點的層級發生變化
+</span><span style="color:#228b22"></span>            catLevel = siblings[i].level;
+            <span style="color:#228b22">//修改他子節點的層級
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(siblings[i]);
+          }
+          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
+            catId: siblings[i].data.catId,
+            sort: i,
+            parentCid: pCid,
+            catLevel: catLevel,
+          });
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({ catId: siblings[i].data.catId, sort: i });
+        }
+      }
+
+      <span style="color:#228b22">//3、當前拖拽節點的最新層級
+</span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;updateNodes&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes);
+    },
+    updateChildNodeLevel(node) {
+      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
+          <span style="color:#8b008b;font-weight:bold">const</span> cNode = node.childNodes[i].data;
+          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
+            catId: cNode.catId,
+            catLevel: node.childNodes[i].level,
+          });
+          <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(node.childNodes[i]);
+        }
+      }
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      <span style="color:#228b22">//1、被拖動的當前節點以及所在的父節點總層數不能大於3
+</span><span style="color:#228b22"></span>
+      <span style="color:#228b22">//1）、被拖動的當前節點總層數
+</span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;allowDrop:&#34;</span>, draggingNode, dropNode, type);
+      <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(draggingNode);
+      <span style="color:#228b22">//當前正在拖動的節點+父節點所在的深度不大於3即可
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> deep = <span style="color:#658b00">Math</span>.abs(<span style="color:#8b008b;font-weight:bold">this</span>.maxLevel - draggingNode.level) + <span style="color:#b452cd">1</span>;
+      console.log(<span style="color:#cd5555">&#34;深度：&#34;</span>, deep);
+
+      <span style="color:#228b22">//   this.maxLevel
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (type == <span style="color:#cd5555">&#34;inner&#34;</span>) {
+        <span style="color:#228b22">// console.log(
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">//   `this.maxLevel：${this.maxLevel}；draggingNode.data.catLevel：${draggingNode.data.catLevel}；dropNode.level：${dropNode.level}`
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// );
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.level &lt;= <span style="color:#b452cd">3</span>;
+      } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.parent.level &lt;= <span style="color:#b452cd">3</span>;
+      }
+    },
+    countNodeLevel(node) {
+      <span style="color:#228b22">//找到所有子節點，求出最大深度
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
+          <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes[i].level &gt; <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel) {
+            <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = node.childNodes[i].level;
+          }
+          <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(node.childNodes[i]);
+        }
+      }
+    },
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 修改排序
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/update/sort&#34;</span>)
+    <span style="color:#228b22">//@RequiresPermissions(&#34;product:category:update&#34;)
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">updateSort</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;CategoryEntity&gt; list) {
+        categoryService.<span style="color:#658b00">updateBatchById</span>(list);
+
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+    }
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-20</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220121-gulimall-04-jsr303/">
+			下一篇<br>逆向生成前端頁面、JSR303、雲儲存圖片
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220119-gulimall-02-nacos/">
+			上一篇<br>服務註冊nacos、feign、Gateway
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

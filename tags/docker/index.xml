@@ -1,19 +1,74 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Docker on yoziming&#39; Blog</title>
+    <title>docker on 柚子茶室</title>
     <link>https://yoziming.github.io/tags/docker/</link>
-    <description>Recent content in Docker on yoziming&#39; Blog</description>
+    <description>Recent content in docker on 柚子茶室</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>yoziming</copyright>
-    <lastBuildDate>Fri, 15 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Yoziming</copyright>
+    <lastBuildDate>Tue, 25 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DockerDekstop掛載相關設定</title>
+      <link>https://yoziming.github.io/post/220125-wsl2-docker/</link>
+      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220125-wsl2-docker/</guid>
+      <description>Docker Dekstop   Docker Dekstop本身可以在Windows 上執行(基於wsl)，簡單使用沒問題，然而需要匯出匯入、掛載檔案就比較麻煩，
+  wsl2可以透過加入一個中間橋(例如一個ubuntu)掛載雙方來達成操作檔案的目的
+  PS.一般教學會用到Windows市集安裝，但我個人特別不喜歡Windows內建的那些東西，啥更新、市集全都在安裝後就砍光光了，所以只能全手動
+  必要環境 Windows 10 64-bit：Home or Pro 2004 (build 19041) or higher, or Enterprise or Education 1909 (build 18363) or higher.
+啟動wsl與hyper-V dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart 安裝ubuntu   去微軟官方拿，我是選ubuntu-18.04版本
+  手動下載網址: https://aka.ms/wsl-ubuntu-1804
+  下載完直接改副檔名成.zip之類的，解壓縮
+ 注意好像必須在C槽且有管理員權限     執行這個一臉欠執行的.exe就會開始安裝，並且要求輸入建立用戶與密碼，記住帳號密碼  # 查看剛剛點ubuntu1804.exe裝的是否成功 wsl -l -v # 將 WSL 2 設定為預設版本 wsl --set-default-version 2 # 設定 WSL 預設 的Linux wsl --set-default Ubuntu-18.</description>
+    </item>
+    
+    <item>
+      <title>ElasticSearch與Spring整合</title>
+      <link>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</link>
+      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</guid>
+      <description>ElasticSearch  用來執行站內搜索(如商品查詢)的引擎
+  開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作 核心觀念: Inverted Index (反向索引) 是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取 名詞對應:     RDBMS 概念 Elasticsearch     Table 表 Index   Row 一筆資料(例如:張三) Document   Column 屬性(例如:姓名) Field   Schema 架構(例如:資料類型、允許為空等等) Mapping   SQL 操作語句 DSL     以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用 個人直接把它看作表了，畢竟是概念，不用分太細  安裝  使用docker
+  教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作  mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;quot;http.</description>
+    </item>
+    
+    <item>
+      <title>項目簡介 &amp; 環境搭建</title>
+      <link>https://yoziming.github.io/post/220118-gulimall-01/</link>
+      <pubDate>Tue, 18 Jan 2022 12:00:00 +0800</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220118-gulimall-01/</guid>
+      <description>項目簡介  市面上常見的電商模式
+   B2B(Business to Business)是指商家和商家建立的商業關係
+  B2C(Business to Consumer)就是我們經常看到的供應商直接把商品賣個用户，也就是商業零售，直接面向消費銷售產品和服務
+  C2B(Customer to Business)即消費者對企業，先有消費者需求產生而後有企業生產，即先有消費者提出需求，後又生產企業按需求組織生產
+  C2C(Customer to Consumer)客户之間把自己的東西放到網上去賣
+  O2O(Online To Offline)將線下商務的機會與互聯網結合在一起，讓互聯網成為線下交易前台，線上快速支付線下優質服務，如UBER
+    穀粒商城是一個B2C模式的電商平台
+  項目架構圖  微服務劃分圖  項目技術&amp;amp;特色  前後分離開發，並開發基於 vue 的 後台管理系統 SpringCloud 全新的解決方案 應用監控、限流、網關、熔斷降級、等分佈式方案，全方位涉及 透徹講解分佈式事務，分佈式鎖等分佈式系統的難點 壓力測試與性能優化 各種集群技術的區別以及使用 CI/CD 使用  環境搭建 安裝linux虛擬機   下載VirtualBox
+ https://www.virtualbox.org/    下載Vagrant
+ https://www.vagrantup.com/downloads.html    使用Vagrant快速建立linux虛擬機，打開window cmd或power shell</description>
+    </item>
+    
+    <item>
+      <title>MongoDB</title>
+      <link>https://yoziming.github.io/post/220117-agg-spring-07-mongodb/</link>
+      <pubDate>Mon, 17 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220117-agg-spring-07-mongodb/</guid>
+      <description>MongoDB  茫狗DB
+  屬於NoSQL，非關聯式 以JSON的格式儲存資料 強處:高併發讀寫、巨量資料、擴展好 弱點:交易  前置 # 拉取鏡像 docker pull mongo:latest # 創建和啓動容器 docker run --name mymongo -p 27017:27017 -d mongo # 進入容器 docker exec -it mymongo /bin/bash # 使用MongoDB客户端進行操作 mongo 庫操作 //Help查看命令提示db.help()//切換/創建資料庫(如果不存在就創建)usetest//查詢所有資料庫showdbs//刪除當前使用資料庫db.dropDatabase()//查看當前使用的資料庫db或db.getName()//顯示當前db狀態db.stats()//當前db版本db.version()//查看當前db的鏈接機器地址db.getMongo() 剛建立的db在show看不到，直到其中存了實際的資料才算數  命名限制  不能是空字符串&amp;quot;&amp;quot; 不得含有&#39; &#39;(空格)、.、$、/、\和\0 (空字符) 避免用_下畫線開頭 應全部小寫 最多64字節  名詞對應    SQL Mongo 解釋/説明     table collection 表/集合   row document 行/文檔，即一筆資料(如:張三&amp;hellip;)   column field 字段/域，欄位(如:姓名)   index index 索引   join embedded 表連接，MongoDB叫嵌入但略有不同   primary key _id 主鍵，MongoDB自動將_id當主鍵，沒指定就自動創    集合操作  相當於操作&amp;quot;表&amp;quot;</description>
+    </item>
+    
     <item>
       <title>Docker &amp; Hyper-V占用port問題</title>
-      <link>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</link>
+      <link>https://yoziming.github.io/post/211015-docker-hyper-v-port-problem/</link>
       <pubDate>Fri, 15 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/211015-docker-hyper-v%E5%8D%A0%E7%94%A8port%E5%95%8F%E9%A1%8C/</guid>
+      <guid>https://yoziming.github.io/post/211015-docker-hyper-v-port-problem/</guid>
       <description>Docker &amp;amp; Hyper-V占用port問題 在window下用docker desktop有時候遇上port被莫名佔用 用指令netstat -ano | findstr xxx查詢xxx埠被誰佔用卻又顯示沒有
 原來是因為在window下用docker需要依賴hyper-v技術， 而這個hyper-v每次都會隨機搶走一部分tcp埠，使用命令可以得知應避開的範圍:
 # powershell / cmd netsh interface ipv4 show excludedportrange protocol=tcp 如果避不開就手動叫Hyper-V讓路   關閉hyper-v
@@ -22,39 +77,50 @@
     </item>
     
     <item>
+      <title>Kubernetes基礎認識</title>
+      <link>https://yoziming.github.io/post/211006-k8s/</link>
+      <pubDate>Wed, 06 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/211006-k8s/</guid>
+      <description>Kubernetes基礎認識  自動化地以容器的形式管理你的應用程式 To host your application in the form of containers in a automated fashion
+ 名詞解釋   Cluster:集群，計算、儲存資源的集合。一個Cluster通常包含一個Controller Plane和數個Node，視需求而定(也可能有Multi-Controller Plane 的集群)
+ Controller Plane:(以前叫Mater)控制主節點，調度指揮所  APIserver:管理整個 K8s 所需 API 的接口(Endpoint)，提供HTTP Rest介面的關鍵服務處理程序，是集群中各個節點的溝通橋樑 etcd:存資料 Scheduler:資源調配，例如調度Pod運行在哪個Node Controller-manager:總經理，負責管理並運行 controller ，controller定義各種Pod的部屬特性(如最常用的Deployment)來滿足不同的業務場景   Node:節點，讓物件(resource-objects)運行的實體或虛擬機器  kubelet:對應api-server的接口，可以看成每個Node上的&amp;quot;實際執行者&amp;quot;或&amp;quot;操作者&amp;quot;，負責接收來自api-server的訊息，並做出相對應的動作，例如，負責Pod對應的容器的建立、啟動或停止等。 kube-proxy:維護網路規則(iptables)，這些規則允許從群集內部或外部的與Pod進行通訊。 Container Runtime:容器的運行引擎，預設是Docker，也支援其他滿足CRI標準的。  Pod:可被調度的最小單位，每個Pod包含一或多個容器，Pod內共享生命週期、資源、通信(使用同一個網路namespace，即相同的IP與port)、儲存空間。通常使用是一個Pod中放一個容器；當需要高度共享資源時才會用一個Pod內多個容器的形式      延伸觀念  Deployment:部屬，例如把Pod做橫向擴展，適用自動管理，或達成無停機系統升級 Service:服務，Deployment可以部屬多個Pod，每個Pod都有自己的IP，隨時都在生滅浮動，外界如何訪問? 答案就是透過Service，可以說Controller負責運行Pod，而Service負責訪問Pod。 Ingress:Service 中是將每個 Service 元件對外的 port number 跟 Node 上的 port number 做 mapping，這樣在我們的 Service 變多時，port number 以及分流規則的管理變得相當困難。而 Ingress 可以透過 HTTP/HTTPS，在我們眾多的 Service 前搭建一個 reverse-proxy。這樣 Ingress 可以幫助我們統一一個對外的 port number，並且根據 hostname 或是 pathname 決定封包要轉發到哪個 Service 上 Namespace:命名空間，假如有多個用戶使用同一個Cluster，想把他們創建的Controller、Pod等資源分開，就靠Namespace。Namespace將物理的Cluster從邏輯上切成多個虛擬Cluster，每一個虛擬Cluster就是一個Namespace，不同Namespace中的資源完全隔離。K8s預設創建2個Namespace:  default:如果不指定，資源就預設放這 kube-system:K8s自己創建的系統資源會放在這個Namespace中      </description>
+    </item>
+    
+    <item>
       <title>Docker啟用Redis</title>
-      <link>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</link>
+      <link>https://yoziming.github.io/post/211002-docker-redis/</link>
       <pubDate>Sat, 02 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/211002-docker%E5%95%9F%E7%94%A8redis/</guid>
-      <description>Docker啟用Redis 抓映象檔 docker pull redis:6.0 拉一個6.0版本的redis  執行 Image docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes –name redis6 ：將 Container 取名為 redis6 -p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器) -d :後台執行 Container ，並返回ID redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置  進入 Container docker exec -it redis6 bash -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  資料庫測試 redis-cliset hello worldget hello</description>
+      <guid>https://yoziming.github.io/post/211002-docker-redis/</guid>
+      <description>Docker啟用Redis 抓映象檔 docker pull redis:6.0  拉一個6.0版本的redis  執行 Image docker run --name redis6 -p 6379:6379 -d redis:6.0 redis-server --appendonly yes  –name redis6 ：將 Container 取名為 redis6 -p 6379:6379 ：將 Container 的 6379 Port 映射到主機的 6379 Port (前面代表主機，後面代表容器) -d :後台執行 Container ，並返回ID redis-server –appendonly yes : 在 Container 執行 redis-server 啟動命令，並打開redis持久化配置  進入 Container docker exec -it redis6 bash  -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  資料庫測試 redis-cli set hello world get hello </description>
     </item>
     
     <item>
       <title>Docker啟用Mysql</title>
-      <link>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</link>
+      <link>https://yoziming.github.io/post/211001-docker-mysql/</link>
       <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/211001-docker%E5%95%9F%E7%94%A8mysql/</guid>
-      <description>Docker啟用Mysql 抓映象檔 docker pull mysql/mysql-server:8.0 拉一個8.0版本的mysql  執行 Image docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password -d：同--detach，以背景模式執行。 -v ~/mysql-docker-data:/var/lib/mysql：同--volume，掛載host目錄到container目錄，也就是host的~/mysql-docker-data會保存container /var/lib/mysql的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。 -it：同--interactive加--tty，作用為運行container時可登入其bash操作。 --name mysql8，命名container名稱為mysql8。 -p：同--publish。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port -e：同--env，設定環境變數。MYSQL_ROOT_PASSWORD設定MySQL root帳號的登入密碼為1234，MYSQL_DATABASE設定資料庫名稱為mydb。 mysql:8：mysql為image名稱，8為image tag。所以運行的是mysql:8的image。 --default-authentication-plugin=mysql_native_password：把儲存密碼的方式改為MySQL 5的mysql_native_password，因為MySQL 8的儲存方式預設為caching_sha2_password，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。  檢視運行中的容器 docker ps進入 Container docker exec mysql8 mysql -u root -p docker exec指令的作用為在運行的container執行指令，所以意思就是在mysql8這個container執行mysql -u root -p的指令。  docker container exec -it mysql8 /bin/bash 遇到權限問題用這個  進入Mysql mysql -uroot -p新增 1 個開放外部連線的帳號 CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;;GRANT ALL ON your_database.</description>
+      <guid>https://yoziming.github.io/post/211001-docker-mysql/</guid>
+      <description>Docker啟用Mysql 抓映象檔 docker pull mysql/mysql-server:8.0  拉一個8.0版本的mysql  執行 Image docker run -d -it --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=mydb mysql:8 --default-authentication-plugin=mysql_native_password  -d：同--detach，以背景模式執行。 -v ~/mysql-docker-data:/var/lib/mysql：同--volume，掛載host目錄到container目錄，也就是host的~/mysql-docker-data會保存container /var/lib/mysql的資料；windos docker app這樣做的話，資料是暫時的重開機後會不見。 -it：同--interactive加--tty，作用為運行container時可登入其bash操作。 --name mysql8，命名container名稱為mysql8。 -p：同--publish。作用為將container的3306 port對映到&amp;quot;主機(host)&amp;ldquo;的3306 port -e：同--env，設定環境變數。MYSQL_ROOT_PASSWORD設定MySQL root帳號的登入密碼為1234，MYSQL_DATABASE設定資料庫名稱為mydb。 mysql:8：mysql為image名稱，8為image tag。所以運行的是mysql:8的image。 --default-authentication-plugin=mysql_native_password：把儲存密碼的方式改為MySQL 5的mysql_native_password，因為MySQL 8的儲存方式預設為caching_sha2_password，但一些免費的MySQL client圖形工具如Sequel Pro，Navicat等會無法連線，所以設定此參數。  檢視運行中的容器 docker ps 進入 Container docker exec mysql8 mysql -u root -p  docker exec指令的作用為在運行的container執行指令，所以意思就是在mysql8這個container執行mysql -u root -p的指令。  docker container exec -it mysql8 /bin/bash  遇到權限問題用這個  進入Mysql mysql -uroot -p 新增 1 個開放外部連線的帳號 CREATE USER &#39;user01&#39;@&#39;%&#39; IDENTIFIED BY &#39;1234&#39;; GRANT ALL ON your_database.</description>
     </item>
     
     <item>
-      <title>Docker常用語句</title>
-      <link>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+      <title>Docker常用指令與操作</title>
+      <link>https://yoziming.github.io/post/210930-docker-common-operations/</link>
       <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210930-docker%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
-      <description>Docker常用語句 抓映象檔 docker pull xxx檢視運行中的容器 docker ps進入 Container docker exec -it &amp;lt;container_id&amp;gt; /bin/bash -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端  查看字元編碼 locale臨時改成UTF8 export LANG=&amp;quot;en_US.UTF-8&amp;quot;  永久設置需在Dockerfile中設置環境字元集環境變數
-ENV LANG=&amp;quot;en_US.UTF-8&amp;quot;  </description>
+      <guid>https://yoziming.github.io/post/210930-docker-common-operations/</guid>
+      <description>Docker常用操作  官方 https://docs.docker.com/engine/reference/run/
+ 容器運行前  抓映像  docker pull xxx 容器運行中  檢視運行中的容器  docker ps  停止容器  啟動換成 start 重啟換成 restart 強殺換成 kill    docker stop 容器名或ID  批次全部重啟  這個在windows docker也有效，特別適合自己練習專案用 awk &#39;{ print $1}&#39;那種在windows就不行    docker restart $(docker ps -a -q)  刪除容器  docker rm -f 容器名或ID  檢視運行狀態(CPU、記憶體、I/O占用等等)  docker stats -a  顯示運行日誌  docker logs 容器名或ID  查看詳情  docker inspect 容器名或ID  更新運行參數  docker update --restart=always 容器名或ID  進入 Container  -i ：即使沒有附加也保持STDIN 打開 -t ：分配一個偽終端    docker exec -it &amp;lt;container_id&amp;gt; /bin/bash 容器內   就是進到/bin/sh之下，有個$符號的狀態</description>
     </item>
     
     <item>
       <title>Docker啟用MinIO</title>
-      <link>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</link>
+      <link>https://yoziming.github.io/post/210929-docker-minio/</link>
       <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210929-docker%E5%95%9F%E7%94%A8minio%E5%84%B2%E5%AD%98/</guid>
+      <guid>https://yoziming.github.io/post/210929-docker-minio/</guid>
       <description>Docker啟用MinIO儲存 執行 Image docker run -d --name minio -e &amp;quot;MINIO_ROOT_USER=root&amp;quot; -e &amp;quot;MINIO_ROOT_PASSWORD=root1234&amp;quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &amp;quot;:9001&amp;quot;  --name minio，命名container名稱為minio。 -v /data/minio:/data/minio該命令將主機 /data/minio 目錄對映到容器中的 /data/minio 目錄中 MinIO 還提供了圖形管理介面，在瀏覽器輸入 ip:9001即可檢視 不管是圖形介面操作，還是客戶端操作，預設賬號密碼都為 minioadmin -e環境變數，這裡用了自定義賬號密碼，賬號不能小於 3 字元，密碼不能小於 8 字元  Go初始化 導入github.com/minio/minio-go/v7，注意這個後面的v7，在自動引包時可能會漏掉，導致使用到舊版的同名函數而報錯
 func InitMinio() { ctx := context.Background() endpoint := &amp;#34;localhost:9000&amp;#34; accessKeyID := &amp;#34;root&amp;#34; secretAccessKey := &amp;#34;root1234&amp;#34; useSSL := false // Initialize minio client object. 	minioClient, err := minio.</description>
     </item>

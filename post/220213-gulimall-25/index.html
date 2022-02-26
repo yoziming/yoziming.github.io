@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>微服務商城之高可用集群篇</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-25">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="微服務商城之高可用集群篇" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-25" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220213-gulimall-25/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-13T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="微服務商城之高可用集群篇"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-25"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4%e7%af%87" onclick="onNavClick(`#高可用集群篇-nav`)" id="高可用集群篇-nav">
+									高可用集群篇
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#master" onclick="onNavClick(`#master-nav`)" id="master-nav">
+									Master
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#noede" onclick="onNavClick(`#noede-nav`)" id="noede-nav">
+									Noede
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pod" onclick="onNavClick(`#pod-nav`)" id="pod-nav">
+									Pod
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%90%8d%e8%a9%9e" onclick="onNavClick(`#其他名詞-nav`)" id="其他名詞-nav">
+									其他名詞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9a%ab%e6%99%82%e5%81%9c%e4%b8%8b" onclick="onNavClick(`#暫時停下-nav`)" id="暫時停下-nav">
+									暫時停下
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4%e7%af%87" onclick="onNavClick(`#高可用集群篇-nav`)" id="高可用集群篇-nav">
+									高可用集群篇
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#master" onclick="onNavClick(`#master-nav`)" id="master-nav">
+									Master
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#noede" onclick="onNavClick(`#noede-nav`)" id="noede-nav">
+									Noede
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pod" onclick="onNavClick(`#pod-nav`)" id="pod-nav">
+									Pod
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e5%90%8d%e8%a9%9e" onclick="onNavClick(`#其他名詞-nav`)" id="其他名詞-nav">
+									其他名詞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9a%ab%e6%99%82%e5%81%9c%e4%b8%8b" onclick="onNavClick(`#暫時停下-nav`)" id="暫時停下-nav">
+									暫時停下
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    微服務商城之高可用集群篇
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-25
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-13 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="高可用集群篇">高可用集群篇</h1>
+<ul>
+<li>微服務做到現在，終於要開始部署了，首先要認識Kubernetes(K8S)</li>
+<li>之前也有稍微了解過K8S，見筆記 <a href="https://yoziming.github.io/post/211006-k8s/">https://yoziming.github.io/post/211006-k8s/</a></li>
+<li>簡單來說就是用來管理doker的總控</li>
+</ul>
+<p><img src="image-20220208204752958.png" alt="image-20220208204752958"></p>
+<h2 id="master">Master</h2>
+<p><img src="image-20220208205030273.png" alt="image-20220208205030273"></p>
+<ul>
+<li>API Server: API介面</li>
+<li>etcd: K-V形式的消息隊列</li>
+<li>Scheduler: 監視Pod、調度叢集</li>
+<li>kube-controller-manager: 操作進程的管理員
+<ul>
+<li>節點控制器（Node Controller）: 負責在節點出現故障時進行通知和回應</li>
+<li>任務控制器（Job controller）: 監測代表一次性任務的 Job 物件，然後創建 Pods 來運行這些任務直至完成</li>
+<li>端點控制器（Endpoints Controller）: 填充端點(Endpoints)對象(即加入 Service 與 Pod)</li>
+<li>服務帳戶和權杖控制器（Service Account &amp; Token Controllers）: 為新的命名空間創建默認帳戶和 API 訪問權杖</li>
+</ul>
+</li>
+</ul>
+<h2 id="noede">Noede</h2>
+<p><img src="image-20220208205515104.png" alt="image-20220208205515104"></p>
+<ul>
+<li>Container Runtime: 正常就是Docker，負責運行容器</li>
+<li>kubelet: 工頭，每個節點的負責人，管理Pod</li>
+<li>kube-proxy: 節點的網路接口，負責通訊</li>
+<li>Fluentd: 日誌</li>
+</ul>
+<h2 id="pod">Pod</h2>
+<ul>
+<li>K8s管理的最小單元</li>
+<li>裡面可以有多個容器，共用一個網路位置</li>
+</ul>
+<h2 id="其他名詞">其他名詞</h2>
+<ul>
+<li>Controllers: Pod的高層抽象，用來實際執行部署</li>
+</ul>
+<p><img src="image-20220208210208666.png" alt="image-20220208210208666"></p>
+<ul>
+<li>Service: 也是抽象，Pod組成的一個服務</li>
+</ul>
+<p><img src="image-20220208210254829.png" alt="image-20220208210254829"></p>
+<ul>
+<li>Namespace: 邏輯隔離資源</li>
+</ul>
+<h1 id="暫時停下">暫時停下</h1>
+<ul>
+<li>要運行K8S對資源的要求(主要是ram)太狠了，我的小破電腦已經扛不住了</li>
+<li>課程只好暫時先停在這，整理一下手邊的資源，先去準備工作的事</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-13</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220216-java-interview-01/">
+			下一篇<br>Java初階面試題整理-01
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220212-aws-phone/">
+			上一篇<br>初識AWS與帳號驗證的趣事
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

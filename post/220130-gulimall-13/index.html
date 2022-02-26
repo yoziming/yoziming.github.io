@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>用ElasticSearch實現商品搜索</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-13">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="用ElasticSearch實現商品搜索" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-13" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220130-gulimall-13/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-30T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="用ElasticSearch實現商品搜索"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-13"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%90%9c%e7%b4%a2%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#搜索頁面-nav`)" id="搜索頁面-nav">
+									搜索頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e7%b6%b2%e6%ae%b5" onclick="onNavClick(`#設定網段-nav`)" id="設定網段-nav">
+									設定網段
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%9c%e6%85%8b%e8%b3%87%e6%ba%90" onclick="onNavClick(`#靜態資源-nav`)" id="靜態資源-nav">
+									靜態資源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%abvo" onclick="onNavClick(`#寫vo-nav`)" id="寫vo-nav">
+									寫Vo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%ba%b5%e5%8c%85%e5%b1%91%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#麵包屑導航-nav`)" id="麵包屑導航-nav">
+									麵包屑導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%81%9a%e5%90%88%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#聚合問題-nav`)" id="聚合問題-nav">
+									聚合問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%90%9c%e7%b4%a2%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#搜索頁面-nav`)" id="搜索頁面-nav">
+									搜索頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e7%b6%b2%e6%ae%b5" onclick="onNavClick(`#設定網段-nav`)" id="設定網段-nav">
+									設定網段
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%9c%e6%85%8b%e8%b3%87%e6%ba%90" onclick="onNavClick(`#靜態資源-nav`)" id="靜態資源-nav">
+									靜態資源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%abvo" onclick="onNavClick(`#寫vo-nav`)" id="寫vo-nav">
+									寫Vo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%ba%b5%e5%8c%85%e5%b1%91%e5%b0%8e%e8%88%aa" onclick="onNavClick(`#麵包屑導航-nav`)" id="麵包屑導航-nav">
+									麵包屑導航
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%81%9a%e5%90%88%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#聚合問題-nav`)" id="聚合問題-nav">
+									聚合問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/elasticsearch.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    用ElasticSearch實現商品搜索
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-13
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-30 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="搜索頁面">搜索頁面</h1>
+<ul>
+<li>
+<p>搜尋頁面有自己的子網域，網址是 <a href="http://search.mall.com/">http://search.mall.com/</a></p>
+</li>
+<li>
+<p>我觀察了一下，台灣的商城網站大多是用子目錄，例如:</p>
+</li>
+</ul>
+<pre tabindex="0"><code>https://www.momoshop.com.tw/search/
+
+https://www.etmall.com.tw/Search?
+
+https://shopping.friday.tw/ec2/search?
+</code></pre><ul>
+<li>
+<p>而用子網域的通常是大陸的電商網站，經過查詢兩者其實沒太大差異</p>
+</li>
+<li>
+<p>通常來說，屬於網站下的附屬小功能，用子目錄；而體量大到可以分割出去才用會用子網域</p>
+</li>
+<li>
+<p>子網域複雜了一點，反正都學學吧</p>
+</li>
+</ul>
+<h2 id="設定網段">設定網段</h2>
+<ul>
+<li>改host模擬DNS</li>
+</ul>
+<p><img src="image-20220122225938223.png" alt="image-20220122225938223"></p>
+<ul>
+<li>nginx
+<ul>
+<li>採了坑，改完忘記要重開服務</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220122230310851.png" alt="image-20220122230310851"></p>
+<ul>
+<li>網關</li>
+</ul>
+<pre tabindex="0"><code>- id: mall_search_route
+  uri: lb://search
+  predicates:
+    - Host=search.mall.com
+</code></pre><h2 id="靜態資源">靜態資源</h2>
+<ul>
+<li>這邊一樣用thymeleaf渲染，引包</li>
+<li>關閉 spring.thymeleaf.cache=false</li>
+<li>調整 <code>list.html</code>，確認一下跟首頁的超連結是否正確</li>
+</ul>
+<h2 id="寫vo">寫Vo</h2>
+<blockquote>
+<p>這可就複雜了，需要考慮各種搜尋條件、返回的結果&hellip;</p>
+</blockquote>
+<ul>
+<li>搜尋條件 SearchParam.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SearchParam</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 頁面傳遞過來的全文匹配關鍵字
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String keyword;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 品牌id,可以多選
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Long&gt; brandId;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 三級分類id
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long catalog3Id;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 排序條件：sort=price/salecount/hotscore_desc/asc
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String sort;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 是否有貨
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer hasStock;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 價格區間查詢
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String skuPrice;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 按照屬性進行篩選
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;String&gt; attrs;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 頁碼
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer pageNum = 1;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 原生的所有查詢條件
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String _queryString;
+
+}
+</code></pre></div><ul>
+<li>返回的結果 SearchResult.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SearchResult</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 查詢到的所有商品信息
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;SkuEsModel&gt; product;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 當前頁碼
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer pageNum;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 總記錄數
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long total;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 總頁碼
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer totalPages;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Integer&gt; pageNavs;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 當前查詢到的結果，所有涉及到的品牌
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;BrandVo&gt; brands;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 當前查詢到的結果，所有涉及到的所有屬性
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;AttrVo&gt; attrs;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 當前查詢到的結果，所有涉及到的所有分類
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;CatalogVo&gt; catalogs;
+
+    <span style="color:#228b22">//===========================以上是返回給頁面的所有信息============================//
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">/* 麵包屑導航數據 */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;NavVo&gt; navs;
+
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">NavVo</span> {
+        <span style="color:#8b008b;font-weight:bold">private</span> String navName;
+        <span style="color:#8b008b;font-weight:bold">private</span> String navValue;
+        <span style="color:#8b008b;font-weight:bold">private</span> String link;
+    }
+
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">BrandVo</span> {
+
+        <span style="color:#8b008b;font-weight:bold">private</span> Long brandId;
+
+        <span style="color:#8b008b;font-weight:bold">private</span> String brandName;
+
+        <span style="color:#8b008b;font-weight:bold">private</span> String brandImg;
+    }
+
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AttrVo</span> {
+
+        <span style="color:#8b008b;font-weight:bold">private</span> Long attrId;
+
+        <span style="color:#8b008b;font-weight:bold">private</span> String attrName;
+
+        <span style="color:#8b008b;font-weight:bold">private</span> List&lt;String&gt; attrValue;
+    }
+
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CatalogVo</span> {
+
+        <span style="color:#8b008b;font-weight:bold">private</span> Long catalogId;
+
+        <span style="color:#8b008b;font-weight:bold">private</span> String catalogName;
+    }
+}
+</code></pre></div><ul>
+<li>返回的結果中的屬性 AttrResponseVo.java
+<ul>
+<li>就是這些啦，根據結果從ES抽出的屬性</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220122235040745.png" alt="image-20220122235040745"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AttrResponseVo</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 屬性id
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long attrId;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 屬性名
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String attrName;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 是否需要檢索[0-不需要，1-需要]
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer searchType;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 屬性圖標
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String icon;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 可選值列表[用逗號分隔]
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String valueSelect;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 屬性類型[0-銷售屬性，1-基本屬性，2-既是銷售屬性又是基本屬性]
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer attrType;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 啟用狀態[0 - 禁用，1 - 啟用]
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long enable;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 所屬分類
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long catalogId;
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 快速展示【是否展示在介紹上；0-否 1-是】，在sku中仍然可以調整
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer showDesc;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> Long attrGroupId;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> String catalogName;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> String groupName;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> Long[] catalogPath;
+
+}
+</code></pre></div><h2 id="查詢">查詢</h2>
+<blockquote>
+<p>這一節真的太偏了，前後端不分的thymeleaf本身已經很少人用，ES查詢語句的編寫真的枯燥又無聊，暫時先複製貼上跳過</p>
+</blockquote>
+<ul>
+<li>簡單整理一下流程:
+<ul>
+<li>造Vo封裝搜索條件與呈現的結果</li>
+<li>先在ES根據搜索條件寫出DSL</li>
+<li>將DSL編譯成Java語法</li>
+<li>處理聚合</li>
+<li>將結果封裝，推回給前端</li>
+</ul>
+</li>
+<li>SearchController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/list.html&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">listPage</span>(SearchParam param, Model model, HttpServletRequest request) {
+    <span style="color:#228b22">// Spring自動將頁面提交過來的所有請求參數封裝成我們指定的SearchParam
+</span><span style="color:#228b22"></span>    param.<span style="color:#658b00">set_queryString</span>(request.<span style="color:#658b00">getQueryString</span>());
+
+    <span style="color:#228b22">// 根據傳遞來的頁面的查詢參數，去es中檢索商品
+</span><span style="color:#228b22"></span>    SearchResult result = mallSearchService.<span style="color:#658b00">search</span>(param);
+    <span style="color:#228b22">// 存到model
+</span><span style="color:#228b22"></span>    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;result&#34;</span>, result);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;list&#34;</span>;
+}
+</code></pre></div><ul>
+<li>MallSearchServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 在es檢索
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param param 檢索的所有參數
+</span><span style="color:#228b22"> * @return 返回的結果
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">public</span> SearchResult <span style="color:#008b45">search</span>(SearchParam param) {
+    SearchResult result = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#228b22">// 1、動態構建檢索需要的DSL語句
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 1、準備檢索請求
+</span><span style="color:#228b22"></span>    SearchRequest searchRequest = buildSearchRequest(param);
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#228b22">// 2、執行檢索請求
+</span><span style="color:#228b22"></span>        SearchResponse searchResponse = client.<span style="color:#658b00">search</span>(searchRequest, ElasticConfig.<span style="color:#658b00">COMMON_OPTIONS</span>);
+
+        <span style="color:#228b22">// 3、分析響應數據，封裝成需要的格式
+</span><span style="color:#228b22"></span>        result = buildSearchResponse(param, searchResponse);
+
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> result;
+}
+
+<span style="color:#8b008b;font-weight:bold">private</span> SearchRequest <span style="color:#008b45">buildSearchRequest</span>(SearchParam param) {
+    <span style="color:#228b22">// 構建DSL語句對象
+</span><span style="color:#228b22"></span>    SearchSourceBuilder sourceBuilder = <span style="color:#8b008b;font-weight:bold">new</span> SearchSourceBuilder();
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 模糊匹配，過濾（按照屬性，分類，品牌，價格區間，庫存）
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#228b22">// 1、構建bool - query
+</span><span style="color:#228b22"></span>    BoolQueryBuilder boolQueryBuilder = QueryBuilders.<span style="color:#658b00">boolQuery</span>();
+
+    <span style="color:#228b22">// 1.1、must【得分】
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 分詞匹配skuTitle
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getKeyword</span>())) {
+        boolQueryBuilder.<span style="color:#658b00">must</span>(QueryBuilders.<span style="color:#658b00">matchQuery</span>(<span style="color:#cd5555">&#34;skuTitle&#34;</span>, param.<span style="color:#658b00">getKeyword</span>()));
+    }
+
+    <span style="color:#228b22">// 1.2、filter【無得分】
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 三級分類
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getCatalog3Id</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        boolQueryBuilder.<span style="color:#658b00">filter</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;catalogId&#34;</span>, param.<span style="color:#658b00">getCatalog3Id</span>()));
+    }
+
+    <span style="color:#228b22">// 1.3、品牌
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!CollectionUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getBrandId</span>())) {
+        boolQueryBuilder.<span style="color:#658b00">filter</span>(QueryBuilders.<span style="color:#658b00">termsQuery</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>, param.<span style="color:#658b00">getBrandId</span>()));
+    }
+
+    <span style="color:#228b22">// 1.4、屬性
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!CollectionUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getAttrs</span>())) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (String attr : param.<span style="color:#658b00">getAttrs</span>()) {
+            BoolQueryBuilder boolQuery = QueryBuilders.<span style="color:#658b00">boolQuery</span>();
+            String[] s = attr.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
+            String attrId = s[0];
+            String[] attrValues = s[1].<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;:&#34;</span>);
+            <span style="color:#228b22">// must中的必須是同時滿足的，如果boolQuery不是內層的
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 那麼boolQuery會拼接多個must(attrs.attrId)，例如id = 6時，同時必須id = 7，沒有此attr
+</span><span style="color:#228b22"></span>            boolQuery.<span style="color:#658b00">must</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;attrs.attrId&#34;</span>, attrId));
+            boolQuery.<span style="color:#658b00">must</span>(QueryBuilders.<span style="color:#658b00">termsQuery</span>(<span style="color:#cd5555">&#34;attrs.attrValue&#34;</span>, attrValues));
+            <span style="color:#228b22">// 每一個屬性都要生成一個嵌入式查詢
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 商品必須包含每一個 傳入的屬性
+</span><span style="color:#228b22"></span>            NestedQueryBuilder nestedQuery = QueryBuilders.<span style="color:#658b00">nestedQuery</span>(<span style="color:#cd5555">&#34;attrs&#34;</span>, boolQuery, ScoreMode.<span style="color:#658b00">None</span>);
+            boolQueryBuilder.<span style="color:#658b00">filter</span>(nestedQuery);
+        }
+    }
+
+    <span style="color:#228b22">// 1.5、庫存
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getHasStock</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        boolQueryBuilder.<span style="color:#658b00">filter</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;hasStock&#34;</span>, param.<span style="color:#658b00">getHasStock</span>() == 1));
+    }
+
+    <span style="color:#228b22">// 1.6、價格區間 0_500  _500  500_
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getSkuPrice</span>())) {
+        RangeQueryBuilder rangeQuery = QueryBuilders.<span style="color:#658b00">rangeQuery</span>(<span style="color:#cd5555">&#34;skuPrice&#34;</span>);
+        String[] s = param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == 2) {
+            rangeQuery.<span style="color:#658b00">gte</span>(s[0]).<span style="color:#658b00">lte</span>(s[1]);
+        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == 1) {
+            <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">startsWith</span>(<span style="color:#cd5555">&#34;_&#34;</span>)) {
+                rangeQuery.<span style="color:#658b00">lte</span>(s[0]);
+            }
+            <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">endsWith</span>(<span style="color:#cd5555">&#34;_&#34;</span>)) {
+                rangeQuery.<span style="color:#658b00">gte</span>(s[0]);
+            }
+        }
+        boolQueryBuilder.<span style="color:#658b00">filter</span>(rangeQuery);
+    }
+
+    <span style="color:#228b22">// 1、END 封裝查詢條件
+</span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">query</span>(boolQueryBuilder);
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 排序，分頁，高亮
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#228b22">// 2.1、排序
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getSort</span>())) {
+        String[] s = param.<span style="color:#658b00">getSort</span>().<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
+        SortOrder order = s[1].<span style="color:#658b00">equalsIgnoreCase</span>(<span style="color:#cd5555">&#34;asc&#34;</span>) ? SortOrder.<span style="color:#658b00">ASC</span> : SortOrder.<span style="color:#658b00">DESC</span>;
+        sourceBuilder.<span style="color:#658b00">sort</span>(s[0], order);
+    }
+
+    <span style="color:#228b22">// 2.2、分頁
+</span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">from</span>((param.<span style="color:#658b00">getPageNum</span>() - 1) * EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span>);
+    sourceBuilder.<span style="color:#658b00">size</span>(EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span>);
+
+    <span style="color:#228b22">// 2.3、高亮
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getKeyword</span>())) {
+        HighlightBuilder highlightBuilder = <span style="color:#8b008b;font-weight:bold">new</span> HighlightBuilder();
+        highlightBuilder.<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;skuTitle&#34;</span>);
+        highlightBuilder.<span style="color:#658b00">preTags</span>(<span style="color:#cd5555">&#34;&lt;b style=&#39;color:red&#39;&gt;&#34;</span>);
+        highlightBuilder.<span style="color:#658b00">postTags</span>(<span style="color:#cd5555">&#34;&lt;/b&gt;&#34;</span>);
+        sourceBuilder.<span style="color:#658b00">highlighter</span>(highlightBuilder);
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 聚合分析【品牌、分類、分析所有可選的規格】
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#228b22">// 3.1、品牌聚合
+</span><span style="color:#228b22"></span>    TermsAggregationBuilder brand_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>).<span style="color:#658b00">size</span>(10);
+    <span style="color:#228b22">// 子聚合，獲得品牌name和圖片
+</span><span style="color:#228b22"></span>    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandName&#34;</span>).<span style="color:#658b00">size</span>(1));
+    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_img_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandImg&#34;</span>).<span style="color:#658b00">size</span>(1));
+    <span style="color:#228b22">// 構建DSL
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO 聚合品牌
+</span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">aggregation</span>(brand_agg);
+
+    <span style="color:#228b22">// 3.2、分類聚合
+</span><span style="color:#228b22"></span>    TermsAggregationBuilder catalog_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogId&#34;</span>).<span style="color:#658b00">size</span>(20);
+    <span style="color:#228b22">// 子聚合，獲得分類名
+</span><span style="color:#228b22"></span>    catalog_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogName&#34;</span>).<span style="color:#658b00">size</span>(1));
+    <span style="color:#228b22">// 構建DSL
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO 聚合分類
+</span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">aggregation</span>(catalog_agg);
+
+    <span style="color:#228b22">// 3.3、規格聚合【嵌入式】
+</span><span style="color:#228b22"></span>    NestedAggregationBuilder attr_agg = AggregationBuilders.<span style="color:#658b00">nested</span>(<span style="color:#cd5555">&#34;attr_agg&#34;</span>, <span style="color:#cd5555">&#34;attrs&#34;</span>);
+    <span style="color:#228b22">// 根據id分組
+</span><span style="color:#228b22"></span>    TermsAggregationBuilder attr_id_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_id_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrId&#34;</span>).<span style="color:#658b00">size</span>(10);
+    <span style="color:#228b22">// 子聚合=》在id分組內部，繼續按照 attr_name分組
+</span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrName&#34;</span>).<span style="color:#658b00">size</span>(1));
+    <span style="color:#228b22">// 子聚合=》在id分組內部，繼續按照 attr_value分組
+</span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_value_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrValue&#34;</span>).<span style="color:#658b00">size</span>(50));
+    <span style="color:#228b22">// 嵌入式聚合
+</span><span style="color:#228b22"></span>    attr_agg.<span style="color:#658b00">subAggregation</span>(attr_id_agg);
+    <span style="color:#228b22">// 構建DSL
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO 聚合屬性規格
+</span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">aggregation</span>(attr_agg);
+
+    SearchRequest searchRequest = <span style="color:#8b008b;font-weight:bold">new</span> SearchRequest(<span style="color:#8b008b;font-weight:bold">new</span> String[]{EsConstant.<span style="color:#658b00">PRODUCT_INDEX</span>}, sourceBuilder);
+
+    <span style="color:#228b22">// 打印DSL
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(sourceBuilder.<span style="color:#658b00">toString</span>());
+    <span style="color:#8b008b;font-weight:bold">return</span> searchRequest;
+}
+
+<span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 封裝檢索結果
+</span><span style="color:#228b22"> * 1、返回所有查詢到的商品
+</span><span style="color:#228b22"> * 2、當前所有商品涉及到的所有屬性信息
+</span><span style="color:#228b22"> * 3、當前所有商品涉及到的所有品牌信息
+</span><span style="color:#228b22"> * 4、當前所有商品涉及到的所有分類信息
+</span><span style="color:#228b22"> * 5、分頁信息   pageNum:當前頁碼  total:總記錄數    totalPages: 總頁碼
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">private</span> SearchResult <span style="color:#008b45">buildSearchResponse</span>(SearchParam param, SearchResponse searchResponse) {
+    SearchResult result = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult();
+    SearchHits hits = searchResponse.<span style="color:#658b00">getHits</span>();
+    <span style="color:#228b22">// 1、返回所有查詢到的商品
+</span><span style="color:#228b22"></span>    List&lt;SkuEsModel&gt; products = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">if</span> (!ArrayUtils.<span style="color:#658b00">isEmpty</span>(hits.<span style="color:#658b00">getHits</span>())) {
+        <span style="color:#8b008b;font-weight:bold">for</span> (SearchHit hit : hits.<span style="color:#658b00">getHits</span>()) {
+            String jsonStr = hit.<span style="color:#658b00">getSourceAsString</span>();
+            SkuEsModel model = JSON.<span style="color:#658b00">parseObject</span>(jsonStr, SkuEsModel.<span style="color:#658b00">class</span>);
+            <span style="color:#228b22">// 設置高亮信息
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getKeyword</span>())) {
+                HighlightField skuTitle = hit.<span style="color:#658b00">getHighlightFields</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuTitle&#34;</span>);
+                model.<span style="color:#658b00">setSkuTitle</span>(skuTitle.<span style="color:#658b00">getFragments</span>()[0].<span style="color:#658b00">string</span>());
+            }
+            products.<span style="color:#658b00">add</span>(model);
+        }
+    }
+    result.<span style="color:#658b00">setProducts</span>(products);
+
+    <span style="color:#228b22">// 2、當前所有商品涉及到的所有屬性信息
+</span><span style="color:#228b22"></span>    List&lt;SearchResult.<span style="color:#658b00">AttrVo</span>&gt; attrVos = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    ParsedNested attr_agg = searchResponse.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_agg&#34;</span>);
+    ParsedLongTerms attr_id_agg = attr_agg.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_id_agg&#34;</span>);
+    List&lt;? <span style="color:#8b008b;font-weight:bold">extends</span> Terms.<span style="color:#658b00">Bucket</span>&gt; attrBuckets = attr_id_agg.<span style="color:#658b00">getBuckets</span>();
+    <span style="color:#8b008b;font-weight:bold">for</span> (Terms.<span style="color:#658b00">Bucket</span> bucket : attrBuckets) {
+        SearchResult.<span style="color:#658b00">AttrVo</span> attrVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">AttrVo</span>();
+        <span style="color:#228b22">// 提取屬性ID
+</span><span style="color:#228b22"></span>        attrVo.<span style="color:#658b00">setAttrId</span>(bucket.<span style="color:#658b00">getKeyAsNumber</span>().<span style="color:#658b00">longValue</span>());
+        <span style="color:#228b22">// 提取屬性名字
+</span><span style="color:#228b22"></span>        ParsedStringTerms attr_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_name_agg&#34;</span>);
+        attrVo.<span style="color:#658b00">setAttrName</span>(attr_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+        <span style="color:#228b22">// 提取品牌圖片
+</span><span style="color:#228b22"></span>        ParsedStringTerms attr_value_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_value_agg&#34;</span>);
+        List&lt;String&gt; attrValues = attr_value_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
+            <span style="color:#8b008b;font-weight:bold">return</span> ((Terms.<span style="color:#658b00">Bucket</span>) item).<span style="color:#658b00">getKeyAsString</span>();
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+        attrVo.<span style="color:#658b00">setAttrValue</span>(attrValues);
+        attrVos.<span style="color:#658b00">add</span>(attrVo);
+    }
+    result.<span style="color:#658b00">setAttrs</span>(attrVos);
+
+    <span style="color:#228b22">// 3、當前所有商品涉及到的所有品牌信息
+</span><span style="color:#228b22"></span>    List&lt;SearchResult.<span style="color:#658b00">BrandVo</span>&gt; brandVos = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    ParsedLongTerms brand_agg = searchResponse.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brand_agg&#34;</span>);
+    List&lt;? <span style="color:#8b008b;font-weight:bold">extends</span> Terms.<span style="color:#658b00">Bucket</span>&gt; brandBuckets = brand_agg.<span style="color:#658b00">getBuckets</span>();
+    <span style="color:#8b008b;font-weight:bold">for</span> (Terms.<span style="color:#658b00">Bucket</span> bucket : brandBuckets) {
+        SearchResult.<span style="color:#658b00">BrandVo</span> brandVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">BrandVo</span>();
+        <span style="color:#228b22">// 提取品牌ID
+</span><span style="color:#228b22"></span>        brandVo.<span style="color:#658b00">setBrandId</span>(bucket.<span style="color:#658b00">getKeyAsNumber</span>().<span style="color:#658b00">longValue</span>());
+        <span style="color:#228b22">// 提取品牌名字
+</span><span style="color:#228b22"></span>        ParsedStringTerms brand_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brand_name_agg&#34;</span>);
+        brandVo.<span style="color:#658b00">setBrandName</span>(brand_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+        <span style="color:#228b22">// 提取品牌圖片
+</span><span style="color:#228b22"></span>        ParsedStringTerms brand_img_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brand_img_agg&#34;</span>);
+        brandVo.<span style="color:#658b00">setBrandImg</span>(brand_img_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+        brandVos.<span style="color:#658b00">add</span>(brandVo);
+    }
+    result.<span style="color:#658b00">setBrands</span>(brandVos);
+
+    <span style="color:#228b22">// 4、當前所有商品涉及到的所有分類信息
+</span><span style="color:#228b22"></span>    List&lt;SearchResult.<span style="color:#658b00">CatalogVo</span>&gt; catalogVos = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    ParsedLongTerms catalog_agg = searchResponse.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalog_agg&#34;</span>);
+    List&lt;? <span style="color:#8b008b;font-weight:bold">extends</span> Terms.<span style="color:#658b00">Bucket</span>&gt; catalogBuckets = catalog_agg.<span style="color:#658b00">getBuckets</span>();
+    <span style="color:#8b008b;font-weight:bold">for</span> (Terms.<span style="color:#658b00">Bucket</span> bucket : catalogBuckets) {
+        SearchResult.<span style="color:#658b00">CatalogVo</span> catalogVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">CatalogVo</span>();
+        <span style="color:#228b22">// 提取分類Id
+</span><span style="color:#228b22"></span>        catalogVo.<span style="color:#658b00">setCatalogId</span>(Long.<span style="color:#658b00">parseLong</span>(bucket.<span style="color:#658b00">getKeyAsString</span>()));
+        <span style="color:#228b22">// 提取分類名字
+</span><span style="color:#228b22"></span>        ParsedStringTerms catalog_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalog_name_agg&#34;</span>);
+        catalogVo.<span style="color:#658b00">setCatalogName</span>(catalog_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+        catalogVos.<span style="color:#658b00">add</span>(catalogVo);
+    }
+    result.<span style="color:#658b00">setCatalogs</span>(catalogVos);
+    <span style="color:#228b22">// 5、分頁信息   pageNum:當前頁碼 、total:總記錄數 、totalPages: 總頁碼
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">long</span> total = hits.<span style="color:#658b00">getTotalHits</span>().<span style="color:#658b00">value</span>;
+    <span style="color:#00688b;font-weight:bold">int</span> totalPages = (<span style="color:#00688b;font-weight:bold">int</span>) total % EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> == 0 ? (<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> :
+            ((<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> + 1);
+    result.<span style="color:#658b00">setPageNum</span>(param.<span style="color:#658b00">getPageNum</span>());
+    result.<span style="color:#658b00">setTotal</span>(total);
+    result.<span style="color:#658b00">setTotalPages</span>(totalPages);
+
+    <span style="color:#228b22">// 6、所有頁碼數
+</span><span style="color:#228b22"></span>    List&lt;Integer&gt; pageNavs = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 1; i &lt;= totalPages; i++) {
+        pageNavs.<span style="color:#658b00">add</span>(i);
+    }
+    result.<span style="color:#658b00">setPageNavs</span>(pageNavs);
+
+    <span style="color:#228b22">// 7、構建麵包屑導航功能
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getAttrs</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getAttrs</span>().<span style="color:#658b00">size</span>() &gt; 0) {
+        List&lt;SearchResult.<span style="color:#658b00">NavVo</span>&gt; collect = param.<span style="color:#658b00">getAttrs</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(attr -&gt; {
+            <span style="color:#228b22">//1、分析每一個attrs傳過來的參數值
+</span><span style="color:#228b22"></span>            SearchResult.<span style="color:#658b00">NavVo</span> navVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">NavVo</span>();
+            <span style="color:#228b22">// attrs=2_5寸:6寸
+</span><span style="color:#228b22"></span>            String[] s = attr.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
+            navVo.<span style="color:#658b00">setNavValue</span>(s[1]);
+            R r = productFeignService.<span style="color:#658b00">attrInfo</span>(Long.<span style="color:#658b00">parseLong</span>(s[0]));
+            <span style="color:#228b22">// 根據請求構造麵包屑 規格屬性Id集合，這個集合包含的屬性規格不显示【前端會遍歷每個參數显示】
+</span><span style="color:#228b22"></span>            result.<span style="color:#658b00">getAttrIds</span>().<span style="color:#658b00">add</span>(Long.<span style="color:#658b00">parseLong</span>(s[0]));
+            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+                AttrResponseVo data = r.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;attr&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;AttrResponseVo&gt;() {
+                });
+                <span style="color:#228b22">// 設置屬性名
+</span><span style="color:#228b22"></span>                navVo.<span style="color:#658b00">setNavName</span>(data.<span style="color:#658b00">getAttrName</span>());
+            } <span style="color:#8b008b;font-weight:bold">else</span> {
+                navVo.<span style="color:#658b00">setNavName</span>(s[0]);
+            }
+
+            <span style="color:#228b22">//2、取消了這個麵包屑以後，我們要跳轉到哪個地方，將請求的地址url裏面的當前置空
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">//拿到所有的查詢條件，去掉當前
+</span><span style="color:#228b22"></span>            String replace = replaceQueryString(param, attr, <span style="color:#cd5555">&#34;attrs&#34;</span>);
+            navVo.<span style="color:#658b00">setLink</span>(<span style="color:#cd5555">&#34;http://search.mall.com/list.html?&#34;</span> + replace);
+
+            <span style="color:#8b008b;font-weight:bold">return</span> navVo;
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+        result.<span style="color:#658b00">setNavs</span>(collect);
+    }
+
+    <span style="color:#228b22">// 品牌、分類
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getBrandId</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getBrandId</span>().<span style="color:#658b00">size</span>() &gt; 0) {
+        List&lt;SearchResult.<span style="color:#658b00">NavVo</span>&gt; navs = result.<span style="color:#658b00">getNavs</span>();
+        SearchResult.<span style="color:#658b00">NavVo</span> navVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">NavVo</span>();
+        navVo.<span style="color:#658b00">setNavName</span>(<span style="color:#cd5555">&#34;品牌&#34;</span>);
+        <span style="color:#228b22">// TODO 遠程查詢所有品牌
+</span><span style="color:#228b22"></span>        R r = productFeignService.<span style="color:#658b00">brandsInfo</span>(param.<span style="color:#658b00">getBrandId</span>());
+        <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+            List&lt;BrandVo&gt; brand = r.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;brand&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;BrandVo&gt;&gt;() {
+            });
+            StringBuffer sb = <span style="color:#8b008b;font-weight:bold">new</span> StringBuffer();
+            String replace = <span style="color:#cd5555">&#34;&#34;</span>;
+            <span style="color:#8b008b;font-weight:bold">for</span> (BrandVo brandVo : brand) {
+                sb.<span style="color:#658b00">append</span>(brandVo.<span style="color:#658b00">getName</span>() + <span style="color:#cd5555">&#34;;&#34;</span>);
+                replace = replaceQueryString(param, brandVo.<span style="color:#658b00">getBrandId</span>() + <span style="color:#cd5555">&#34;&#34;</span>, <span style="color:#cd5555">&#34;brandId&#34;</span>);
+            }
+            navVo.<span style="color:#658b00">setNavValue</span>(sb.<span style="color:#658b00">toString</span>());
+            navVo.<span style="color:#658b00">setLink</span>(<span style="color:#cd5555">&#34;http://search.mall.com/list.html?&#34;</span> + replace);
+        }
+        navs.<span style="color:#658b00">add</span>(navVo);
+    }
+
+    <span style="color:#228b22">// TODO 分類 麵包屑
+</span><span style="color:#228b22"></span>
+    <span style="color:#8b008b;font-weight:bold">return</span> result;
+}
+
+<span style="color:#8b008b;font-weight:bold">private</span> String <span style="color:#008b45">replaceQueryString</span>(SearchParam param, String value, String key) {
+    String encode = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        encode = URLEncoder.<span style="color:#658b00">encode</span>(value, <span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+        encode = encode.<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;+&#34;</span>, <span style="color:#cd5555">&#34;%20&#34;</span>);  <span style="color:#228b22">//瀏覽器對空格的編碼和Java不一樣，差異化處理
+</span><span style="color:#228b22"></span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (UnsupportedEncodingException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    }
+    <span style="color:#228b22">// 就是點了X之後，應該跳轉的地址
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 這裏要判斷一下，attrs是不是第一個參數，因為第一個參數 沒有&amp;符號
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO BUG，第一個參數不帶&amp;
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> param.<span style="color:#658b00">get_queryString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;&amp;&#34;</span> + key + <span style="color:#cd5555">&#34;=&#34;</span> + encode, <span style="color:#cd5555">&#34;&#34;</span>);
+}
+</code></pre></div><h3 id="麵包屑導航">麵包屑導航</h3>
+<ul>
+<li>學到新名詞 Breadcrumb，就是像這種東西啦</li>
+</ul>
+<p><img src="image-20220123211432913.png" alt="image-20220123211432913"></p>
+<ul>
+<li>確實就是源自於童話故事糖果屋，主角在前往森林的路上放置麵包屑找到回家的方向
+<ul>
+<li>但我記得不是被鳥吃掉了嗎?</li>
+</ul>
+</li>
+</ul>
+<h3 id="聚合問題">聚合問題</h3>
+<ul>
+<li>報錯 <code>fielddata is unsupported</code></li>
+</ul>
+<pre tabindex="0"><code>Can't load fielddata on [XXX] because fielddata is unsupported on fields of type [keyword]. Use doc values instead.
+</code></pre><ul>
+<li>因為當初mapping不想讓這些欄位被查到，做的設定</li>
+</ul>
+<p><img src="image-20220123003049183.png" alt="image-20220123003049183"></p>
+<ul>
+<li>doc_values 預設是true，當手動設為 false 時，無法基於該欄位排序、聚合、在腳本中訪問欄位值，所以報錯</li>
+<li>解法: 重構建mapping，可以用<code>POST _reindex</code>複製走舊的資料，重造mapping後再搬回去</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-30</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220131-gulimall-14-thread/">
+			下一篇<br>線程池與CompletableFuture異步編排
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220129-gulimall-12-redisson/">
+			上一篇<br>Redisson與SpringCache
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

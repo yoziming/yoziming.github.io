@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Listener監聽器、EL表達式、JSTL標籤庫</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-06">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Listener監聽器、EL表達式、JSTL標籤庫" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-06" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220106-agg-javaweb-06/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-06T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Listener監聽器、EL表達式、JSTL標籤庫"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-06"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#listener%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#listener監聽器-nav`)" id="listener監聽器-nav">
+									Listener監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#servletcontextlistener-%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#servletcontextlistener-監聽器-nav`)" id="servletcontextlistener-監聽器-nav">
+									ServletContextListener 監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#使用步驟-nav`)" id="使用步驟-nav">
+									使用步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#el%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#el表達式-nav`)" id="el表達式-nav">
+									EL表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bc%b8%e5%87%ba%e5%9f%9f%e7%89%a9%e4%bb%b6%e7%9a%84%e5%80%bc" onclick="onNavClick(`#輸出域物件的值-nav`)" id="輸出域物件的值-nav">
+									輸出域物件的值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%bc%b8%e5%87%babean%e7%9a%84%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#輸出bean的屬性-nav`)" id="輸出bean的屬性-nav">
+									輸出Bean的屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#empty-%e9%81%8b%e7%ae%97" onclick="onNavClick(`#empty-運算-nav`)" id="empty-運算-nav">
+									empty 運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96%e7%89%b9%e5%ae%9a%e5%9f%9f%e4%b8%ad%e7%9a%84%e5%80%bc" onclick="onNavClick(`#獲取特定域中的值-nav`)" id="獲取特定域中的值-nav">
+									獲取特定域中的值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pagecontext%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#pagecontext的使用-nav`)" id="pagecontext的使用-nav">
+									pageContext的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jstl%e6%a8%99%e7%b1%a4%e5%ba%ab" onclick="onNavClick(`#jstl標籤庫-nav`)" id="jstl標籤庫-nav">
+									JSTL標籤庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#listener%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#listener監聽器-nav`)" id="listener監聽器-nav">
+									Listener監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#servletcontextlistener-%e7%9b%a3%e8%81%bd%e5%99%a8" onclick="onNavClick(`#servletcontextlistener-監聽器-nav`)" id="servletcontextlistener-監聽器-nav">
+									ServletContextListener 監聽器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#使用步驟-nav`)" id="使用步驟-nav">
+									使用步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#el%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#el表達式-nav`)" id="el表達式-nav">
+									EL表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bc%b8%e5%87%ba%e5%9f%9f%e7%89%a9%e4%bb%b6%e7%9a%84%e5%80%bc" onclick="onNavClick(`#輸出域物件的值-nav`)" id="輸出域物件的值-nav">
+									輸出域物件的值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%bc%b8%e5%87%babean%e7%9a%84%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#輸出bean的屬性-nav`)" id="輸出bean的屬性-nav">
+									輸出Bean的屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#empty-%e9%81%8b%e7%ae%97" onclick="onNavClick(`#empty-運算-nav`)" id="empty-運算-nav">
+									empty 運算
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96%e7%89%b9%e5%ae%9a%e5%9f%9f%e4%b8%ad%e7%9a%84%e5%80%bc" onclick="onNavClick(`#獲取特定域中的值-nav`)" id="獲取特定域中的值-nav">
+									獲取特定域中的值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#pagecontext%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#pagecontext的使用-nav`)" id="pagecontext的使用-nav">
+									pageContext的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jstl%e6%a8%99%e7%b1%a4%e5%ba%ab" onclick="onNavClick(`#jstl標籤庫-nav`)" id="jstl標籤庫-nav">
+									JSTL標籤庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Listener監聽器、EL表達式、JSTL標籤庫
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-06
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-06 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="listener監聽器">Listener監聽器</h1>
+<ul>
+<li>是一個接口，用於監聽某種事物的變化</li>
+</ul>
+<h3 id="servletcontextlistener-監聽器">ServletContextListener 監聽器</h3>
+<ul>
+<li>ServletContextListener 它可以監聽 ServletContext 物件的創建和銷毀。</li>
+<li>ServletContext 物件在 web 工程啟動的時候創建，在 web 工程停止的時候銷毀。</li>
+<li>監聽到創建和銷毀之後都會分別調用 ServletContextListener 監聽器的方法回饋</li>
+<li>兩個方法分別是:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ServletContextListener</span> <span style="color:#8b008b;font-weight:bold">extends</span> EventListener {
+
+<span style="color:#228b22">// 在ServletContext 物件創建之後馬上調用，做初始化
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">contextInitialized</span>(ServletContextEvent sce);
+
+<span style="color:#228b22">// 在ServletContext 物件銷毀之後調用
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">contextDestroyed</span>(ServletContextEvent sce);
+</code></pre></div><h3 id="使用步驟">使用步驟</h3>
+<ol>
+<li>
+<p>編寫一個類去實現 ServletContextListener</p>
+</li>
+<li>
+<p>實現其兩個回檔方法</p>
+</li>
+<li>
+<p>到 web.xml 中去配置監聽器</p>
+</li>
+</ol>
+<h5 id="監聽器實現類">監聽器實現類</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyServletContextListenerImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> ServletContextListener {
+
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">contextInitialized</span>(ServletContextEvent sce) {
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;ServletContext 對象被創建了&#34;</span>);
+}
+
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">contextDestroyed</span>(ServletContextEvent sce) {
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;ServletContext 對象被銷毀了&#34;</span>);
+}
+
+}
+</code></pre></div><h5 id="webxml-中的配置">web.xml 中的配置</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!--配置監聽器--&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;listener&gt;</span>
+	<span style="color:#8b008b;font-weight:bold">&lt;listener-class&gt;</span>com.atguigu.listener.MyServletContextListenerImpl<span style="color:#8b008b;font-weight:bold">&lt;/listener-class&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/listener&gt;</span>
+</code></pre></div><hr>
+<h1 id="el表達式">EL表達式</h1>
+<blockquote>
+<p>Expression Language，這部分過眼了解就好不用詳細研究</p>
+</blockquote>
+<ul>
+<li>用於簡化JSP中的表達式語法(就是取代那些&lt;% &hellip;.)</li>
+<li>格式是：<code>${運算式}</code></li>
+<li>EL表達式在輸出 null 值的時候，輸出的是空串</li>
+<li>jsp 運算式腳本輸出 null 值的時候，輸出的是 null 字串</li>
+</ul>
+<h2 id="輸出域物件的值">輸出域物件的值</h2>
+<blockquote>
+<p>EL表達式最主要的功能</p>
+</blockquote>
+<ul>
+<li>用<code>${ key }</code>它會自動從範圍小到大搜索，找到就輸出</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;body&gt;
+&lt;%
+    //往四個域中都保存了相同的 key 的資料。
+    request.setAttribute(&quot;key&quot;, &quot;request&quot;);
+    session.setAttribute(&quot;key&quot;, &quot;session&quot;);
+    application.setAttribute(&quot;key&quot;, &quot;application&quot;);
+    pageContext.setAttribute(&quot;key&quot;, &quot;pageContext&quot;);
+
+%&gt;
+${ key }
+&lt;/body&gt;
+</code></pre><h2 id="輸出bean的屬性">輸出Bean的屬性</h2>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;body&gt;
+&lt;%
+    Person person = new Person();
+    person.setName(&quot;張三&quot;);
+    person.setPhones(new String[]{&quot;18610541354&quot;,&quot;18688886666&quot;,&quot;18699998888&quot;});
+
+    List&lt;String&gt; cities = new ArrayList&lt;String&gt;();
+    cities.add(&quot;北京&quot;);
+    cities.add(&quot;上海&quot;);
+    cities.add(&quot;深圳&quot;);
+    person.setCities(cities);
+
+    Map&lt;String,Object&gt; map = new HashMap&lt;&gt;();
+    map.put(&quot;key1&quot;,&quot;value1&quot;);
+    map.put(&quot;key2&quot;,&quot;value2&quot;);
+    map.put(&quot;key3&quot;,&quot;value3&quot;);
+    person.setMap(map);
+
+    pageContext.setAttribute(&quot;p&quot;, person);
+
+%&gt;
+
+輸出 Person：${ p }&lt;br/&gt;
+輸出 Person 的 name 屬性：${p.name} &lt;br&gt;
+輸出 Person 的 pnones 陣列屬性值：${p.phones[2]} &lt;br&gt;
+輸出 Person 的 cities 集合中的元素值：${p.cities} &lt;br&gt;
+輸出 Person 的 List 集合中個別元素值：${p.cities[2]} &lt;br&gt;
+輸出 Person 的 Map 集合: ${p.map} &lt;br&gt;
+輸出 Person 的 Map 集合中某個 key 的值: ${p.map.key3} &lt;br&gt;
+輸出 Person 的 age 屬性：${p.age} &lt;br&gt;
+
+&lt;/body&gt;
+</code></pre><h2 id="empty-運算">empty 運算</h2>
+<ul>
+<li>empty 運算可以判斷一個資料是否為空，如果為空，則輸出 true，不為空輸出 false</li>
+<li>以下幾種情況為空：
+<ul>
+<li>值為 null 值的時候，為空</li>
+<li>值為空串的時候，為空</li>
+<li>值是 Object 類型陣列，長度為零的時候</li>
+<li>list 集合，元素個數為零</li>
+<li>map 集合，元素個數為零</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;body&gt;
+&lt;%
+request.setAttribute(&quot;Str&quot;, &quot;&quot;);
+%&gt;
+
+${ empty Str }
+&lt;/body&gt;
+</code></pre><h2 id="獲取特定域中的值">獲取特定域中的值</h2>
+<ul>
+<li>pageScope &gt; pageContext 域</li>
+<li>requestScope &gt; Request 域</li>
+<li>sessionScope &gt; Session 域</li>
+<li>applicationScope &gt; ServletContext 域</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;body&gt;
+&lt;%
+    pageContext.setAttribute(&quot;key1&quot;, &quot;pageContext1&quot;);
+    pageContext.setAttribute(&quot;key2&quot;, &quot;pageContext2&quot;);
+    request.setAttribute(&quot;key2&quot;, &quot;request&quot;);
+    session.setAttribute(&quot;key2&quot;, &quot;session&quot;);
+    application.setAttribute(&quot;key2&quot;, &quot;application&quot;);
+%&gt;
+${ applicationScope.key2 }
+&lt;/body&gt;
+</code></pre><h2 id="pagecontext的使用">pageContext的使用</h2>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;body&gt;
+&lt;%-- 原本jsp中的用法
+request.getScheme() 它可以獲取請求的協議
+request.getServerName() 獲取請求的伺服器 ip 或功能變數名稱
+request.getServerPort() 獲取請求的伺服器埠號
+getContextPath() 獲取當前工程路徑
+request.getMethod() 獲取請求的方式（GET 或 POST）
+request.getRemoteHost() 獲取用戶端的 ip 地址
+session.getId() 獲取會話的唯一標識
+--%&gt;
+&lt;%
+    pageContext.setAttribute(&quot;req&quot;, request);
+%&gt;
+&lt;%=request.getScheme() %&gt; &lt;br&gt;
+
+1.協議： ${ req.scheme }&lt;br&gt;
+2.伺服器 ip：${ pageContext.request.serverName }&lt;br&gt;
+3.伺服器埠：${ pageContext.request.serverPort }&lt;br&gt;
+4.獲取工程路徑：${ pageContext.request.contextPath }&lt;br&gt;
+5.獲取請求方法：${ pageContext.request.method }&lt;br&gt;
+6.獲取用戶端 ip 地址：${ pageContext.request.remoteHost }&lt;br&gt;
+7.獲取會話的 id 編號：${ pageContext.session.id }&lt;br&gt;
+&lt;/body&gt;
+</code></pre><hr>
+<h1 id="jstl標籤庫">JSTL標籤庫</h1>
+<blockquote>
+<p>JSP Standard Tag Library，JSP 標準標籤庫</p>
+</blockquote>
+<ul>
+<li>是一個不斷完善的開放原始程式碼的 JSP 標簽庫，可以讓整個 jsp 頁面變得更佳簡潔</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>功能範圍</th>
+<th>URI</th>
+<th>首碼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>核心標籤庫</td>
+<td><a href="http://java.sun.com/jsp/jstl/core">http://java.sun.com/jsp/jstl/core</a></td>
+<td>c</td>
+</tr>
+<tr>
+<td>格式化</td>
+<td><a href="http://java.sun.com/jsp/jstl/fmt">http://java.sun.com/jsp/jstl/fmt</a></td>
+<td>fmt</td>
+</tr>
+<tr>
+<td>函數</td>
+<td><a href="http://java.sun.com/jsp/jstl/functions">http://java.sun.com/jsp/jstl/functions</a></td>
+<td>fn</td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用">使用</h2>
+<p>先導入 jstl 標籤庫的 jar 包</p>
+<pre tabindex="0"><code>taglibs-standard-impl-1.2.1.jar
+
+taglibs-standard-spec-1.2.1.jar
+</code></pre><p>第二步，使用 taglib 指令引入標籤庫</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+</code></pre><h2 id="範例">範例</h2>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%-- 原本的寫法
+ii.&lt;c:if /&gt;
+if 標籤用來做 if 判斷。
+test 屬性工作表示判斷的條件（使用 EL 運算式輸出）
+--%&gt;
+
+&lt;c:if test=&quot;${ 12 == 12 }&quot;&gt;
+    &lt;h1&gt;12 等於 12&lt;/h1&gt;
+&lt;/c:if&gt;
+</code></pre><ul>
+<li>反正來來去去就那些，看到這種<code>&lt;c:</code>開頭之類的就知道它是JSTL，大致也都能看懂，不懂再查也不遲</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-06</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220107-agg-javaweb-07/">
+			下一篇<br>檔案上傳與下載、書城項目優化
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220105-agg-javaweb-05/">
+			上一篇<br>JSP
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

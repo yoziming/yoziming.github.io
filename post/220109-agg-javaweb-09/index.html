@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Cookie與Session，書城訂單模組</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-09">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Cookie與Session，書城訂單模組" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-09" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220109-agg-javaweb-09/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-09T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cookie與Session，書城訂單模組"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-09"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cookie" onclick="onNavClick(`#cookie-nav`)" id="cookie-nav">
+									Cookie
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%a8%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#編碼問題-nav`)" id="編碼問題-nav">
+									編碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e8%b7%af%e5%be%91" onclick="onNavClick(`#設定路徑-nav`)" id="設定路徑-nav">
+									設定路徑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#session" onclick="onNavClick(`#session-nav`)" id="session-nav">
+									Session
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8-1" onclick="onNavClick(`#使用-1-nav`)" id="使用-1-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8session%e5%9f%9f%e5%ad%98%e6%94%be%e8%b3%87%e8%a8%8a" onclick="onNavClick(`#在session域存放資訊-nav`)" id="在session域存放資訊-nav">
+									在Session域存放資訊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%88%87cookie%e7%9a%84%e9%97%9c%e4%bf%82" onclick="onNavClick(`#與cookie的關係-nav`)" id="與cookie的關係-nav">
+									與Cookie的關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#書城項目-nav`)" id="書城項目-nav">
+									書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%87%ba%e5%85%a5" onclick="onNavClick(`#登出入-nav`)" id="登出入-nav">
+									登出入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%a9%97%e8%ad%89%e7%a2%bc" onclick="onNavClick(`#驗證碼-nav`)" id="驗證碼-nav">
+									驗證碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#訂單模組-nav`)" id="訂單模組-nav">
+									訂單模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e6%96%bc%e8%bd%89%e5%9d%80" onclick="onNavClick(`#關於轉址-nav`)" id="關於轉址-nav">
+									關於轉址
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e9%83%a8%e5%88%86" onclick="onNavClick(`#前端部分-nav`)" id="前端部分-nav">
+									前端部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#webxml" onclick="onNavClick(`#webxml-nav`)" id="webxml-nav">
+									web.xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e9%83%a8%e5%88%86" onclick="onNavClick(`#後端部分-nav`)" id="後端部分-nav">
+									後端部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sql%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#sql問題-nav`)" id="sql問題-nav">
+									SQL問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sql%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#sql語句-nav`)" id="sql語句-nav">
+									SQL語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#date%e9%a1%9e%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#date類問題-nav`)" id="date類問題-nav">
+									Date類問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%bb%9e%e6%93%8a%e4%ba%8b%e4%bb%b6" onclick="onNavClick(`#點擊事件-nav`)" id="點擊事件-nav">
+									點擊事件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#http503" onclick="onNavClick(`#http503-nav`)" id="http503-nav">
+									Http503
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cookie" onclick="onNavClick(`#cookie-nav`)" id="cookie-nav">
+									Cookie
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b7%a8%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#編碼問題-nav`)" id="編碼問題-nav">
+									編碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%ad%e5%ae%9a%e8%b7%af%e5%be%91" onclick="onNavClick(`#設定路徑-nav`)" id="設定路徑-nav">
+									設定路徑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#session" onclick="onNavClick(`#session-nav`)" id="session-nav">
+									Session
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8-1" onclick="onNavClick(`#使用-1-nav`)" id="使用-1-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8session%e5%9f%9f%e5%ad%98%e6%94%be%e8%b3%87%e8%a8%8a" onclick="onNavClick(`#在session域存放資訊-nav`)" id="在session域存放資訊-nav">
+									在Session域存放資訊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%88%87cookie%e7%9a%84%e9%97%9c%e4%bf%82" onclick="onNavClick(`#與cookie的關係-nav`)" id="與cookie的關係-nav">
+									與Cookie的關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#書城項目-nav`)" id="書城項目-nav">
+									書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%87%ba%e5%85%a5" onclick="onNavClick(`#登出入-nav`)" id="登出入-nav">
+									登出入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%a9%97%e8%ad%89%e7%a2%bc" onclick="onNavClick(`#驗證碼-nav`)" id="驗證碼-nav">
+									驗證碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%82%e5%96%ae%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#訂單模組-nav`)" id="訂單模組-nav">
+									訂單模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e6%96%bc%e8%bd%89%e5%9d%80" onclick="onNavClick(`#關於轉址-nav`)" id="關於轉址-nav">
+									關於轉址
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e9%83%a8%e5%88%86" onclick="onNavClick(`#前端部分-nav`)" id="前端部分-nav">
+									前端部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#webxml" onclick="onNavClick(`#webxml-nav`)" id="webxml-nav">
+									web.xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e9%83%a8%e5%88%86" onclick="onNavClick(`#後端部分-nav`)" id="後端部分-nav">
+									後端部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sql%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#sql問題-nav`)" id="sql問題-nav">
+									SQL問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#sql%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#sql語句-nav`)" id="sql語句-nav">
+									SQL語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#date%e9%a1%9e%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#date類問題-nav`)" id="date類問題-nav">
+									Date類問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%bb%9e%e6%93%8a%e4%ba%8b%e4%bb%b6" onclick="onNavClick(`#點擊事件-nav`)" id="點擊事件-nav">
+									點擊事件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#http503" onclick="onNavClick(`#http503-nav`)" id="http503-nav">
+									Http503
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Cookie與Session，書城訂單模組
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-09
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-09 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="cookie">Cookie</h1>
+<blockquote>
+<p>因為HTTP是無狀態(stateless)的，當我們想保存資訊就要用到Cookie</p>
+</blockquote>
+<ul>
+<li>伺服器通知客戶端保存鍵值對的技術
+<ul>
+<li>白話:叫用戶保存住某個值</li>
+</ul>
+</li>
+<li>應用舉例:記住用戶名</li>
+<li>由用戶的瀏覽器維護，視生命週期存在記憶體或硬碟中</li>
+<li>單個最多4 KB</li>
+</ul>
+<h2 id="使用">使用</h2>
+<blockquote>
+<p>很簡單就不多說了</p>
+</blockquote>
+<ul>
+<li>在Java中是Cookie類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doCookie</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+        IOException {
+    <span style="color:#228b22">// 設定編碼
+</span><span style="color:#228b22"></span>    request.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+    response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;text/html; charset=UTF-8&#34;</span>);
+    <span style="color:#228b22">// 在Java造Cookie類物件
+</span><span style="color:#228b22"></span>    Cookie cookie1 = <span style="color:#8b008b;font-weight:bold">new</span> Cookie(<span style="color:#cd5555">&#34;key1&#34;</span>, <span style="color:#cd5555">&#34;value1&#34;</span>);
+    <span style="color:#228b22">// 增，注意是response叫客戶端造cookie
+</span><span style="color:#228b22"></span>    response.<span style="color:#658b00">addCookie</span>(cookie1);
+    response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;cookie創建成功!&#34;</span>);
+
+    <span style="color:#228b22">// 取
+</span><span style="color:#228b22"></span>    Cookie[] cookies = request.<span style="color:#658b00">getCookies</span>();
+    <span style="color:#228b22">// 取來的是所有cookies構成的數組
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span> (Cookie cookie2 : cookies) {
+        response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(cookie2.<span style="color:#658b00">getName</span>() + <span style="color:#cd5555">&#34;=&#34;</span> + cookie2.<span style="color:#658b00">getValue</span>() + <span style="color:#cd5555">&#34;\n&#34;</span>);
+        <span style="color:#228b22">// 可以做些if判斷拿出想要的
+</span><span style="color:#228b22"></span>    }
+
+    <span style="color:#228b22">// 改
+</span><span style="color:#228b22"></span>    Cookie cookie3 = <span style="color:#8b008b;font-weight:bold">new</span> Cookie(<span style="color:#cd5555">&#34;key1&#34;</span>, <span style="color:#cd5555">&#34;value3&#34;</span>);
+    response.<span style="color:#658b00">addCookie</span>(cookie3); <span style="color:#228b22">// 用同樣的&#34;key1&#34;去覆蓋&#34;value1&#34;，變成&#34;value3&#34;
+</span><span style="color:#228b22"></span>
+    cookie3.<span style="color:#658b00">setValue</span>(<span style="color:#cd5555">&#34;value4&#34;</span>); <span style="color:#228b22">// 或是用setValue
+</span><span style="color:#228b22"></span>    response.<span style="color:#658b00">addCookie</span>(cookie3); <span style="color:#228b22">// 變成&#34;value4&#34;
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 控制生命，秒數
+</span><span style="color:#228b22"></span>    cookie3.<span style="color:#658b00">setMaxAge</span>(60);
+
+    <span style="color:#228b22">// 刪
+</span><span style="color:#228b22"></span>    cookie3.<span style="color:#658b00">setMaxAge</span>(0);
+
+    <span style="color:#228b22">// 生命跟隨瀏覽器
+</span><span style="color:#228b22"></span>    Cookie cookie5 = <span style="color:#8b008b;font-weight:bold">new</span> Cookie(<span style="color:#cd5555">&#34;key5&#34;</span>, <span style="color:#cd5555">&#34;value5&#34;</span>);
+    cookie5.<span style="color:#658b00">setMaxAge</span>(-1);
+    response.<span style="color:#658b00">addCookie</span>(cookie5);
+
+    <span style="color:#228b22">// 設定路徑
+</span><span style="color:#228b22"></span>    Cookie cookie6 = <span style="color:#8b008b;font-weight:bold">new</span> Cookie(<span style="color:#cd5555">&#34;key6&#34;</span>, <span style="color:#cd5555">&#34;value6&#34;</span>);
+    cookie6.<span style="color:#658b00">setPath</span>(<span style="color:#cd5555">&#34;/abc&#34;</span>);
+    cookie6.<span style="color:#658b00">setMaxAge</span>(-1);
+
+    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;http://localhost:8080/book_war_exploded/cookie.html&#34;</span>);
+
+}
+</code></pre></div><h3 id="編碼問題">編碼問題</h3>
+<ul>
+<li>由於是跟HTTP協議走的，value基本上只用英數字，不要用符號跟中文</li>
+<li>想要中文可以用BASE64編碼之類的</li>
+</ul>
+<h2 id="設定路徑">設定路徑</h2>
+<ul>
+<li>起到一個過濾的效果，Cookie預設的Path是工程路徑</li>
+<li>如果手動給一個Cookie指定Path，等於說用戶收到命令創建這個Cookie後，伺服器再想訪問這個Cookie，需要是符合這個路徑的請求，否則伺服器見不到該Cookie
+<ul>
+<li>類似說我在安親班造一個小孩，該小孩自帶的屬性是指定只有從某條路來的人可以訪問這個小孩
+<ul>
+<li>可以起到簡單的隔絕，防止接錯小孩</li>
+<li>也能省資源，不然每次訪問都有一堆小孩傳來傳去
+<ul>
+<li>因為Cookie的傳遞是附加在每個HTTP請求中</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="session">Session</h1>
+<ul>
+<li>Session就是會話，是用來維護伺服器與用戶端之間的關聯</li>
+<li>每一個用戶端有自己的一個Session</li>
+<li>Session由伺服器維護 (Cookie由客戶端的瀏覽器維護)</li>
+<li>應用舉例:保存用戶登入後的訊息</li>
+</ul>
+<h2 id="使用-1">使用</h2>
+<ul>
+<li>
+<p>在Java中Session是一個接口(HttpSession)</p>
+</li>
+<li>
+<p><code>getSession()</code>會判斷當前連線會話是否已經存在Session，若無則新造一個</p>
+</li>
+<li>
+<p>每一個Session都有自己唯一的ID</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 增，注意是request造
+</span><span style="color:#228b22"></span>HttpSession session = request.<span style="color:#658b00">getSession</span>();
+
+<span style="color:#228b22">// 判斷是否是新造的
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">boolean</span> aNew = session.<span style="color:#658b00">isNew</span>();
+
+<span style="color:#228b22">// 獲取id
+</span><span style="color:#228b22"></span>String id = session.<span style="color:#658b00">getId</span>();
+
+<span style="color:#228b22">// 生命週期
+</span><span style="color:#228b22"></span>session.<span style="color:#658b00">setMaxInactiveInterval</span>(60);
+
+<span style="color:#228b22">// 獲取預設的最大生命，此值由web容器決定，可能自己在web.xml改
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">int</span> maxInactiveInterval = session.<span style="color:#658b00">getMaxInactiveInterval</span>();
+
+<span style="color:#228b22">// 立刻殺死
+</span><span style="color:#228b22"></span>session.<span style="color:#658b00">invalidate</span>();
+</code></pre></div><h3 id="在session域存放資訊">在Session域存放資訊</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;key1&#34;</span>, <span style="color:#cd5555">&#34;value1&#34;</span>);
+request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(<span style="color:#cd5555">&#34;key1&#34;</span>);
+</code></pre></div><h2 id="與cookie的關係">與Cookie的關係</h2>
+<ul>
+<li>
+<p>我們說Session是用來維持伺服器與客戶端之間的關聯，既然事情涉及到兩端，那肯定就不只一邊的事</p>
+</li>
+<li>
+<p>已知Session由伺服器維護，存在於伺服器的記憶體中，我一個伺服器可能有無數的使用者，那怎樣知道某個Session連給哪個使用者?</p>
+</li>
+<li>
+<p>一個Session會話是由客戶端發起，最初是客戶端發來的請求，所以是<code>request.getSession()</code></p>
+</li>
+<li>
+<p>伺服器收到這個請求，會在伺服器的記憶體開闢一個Session的空間，這個空間有自己的<code>SessionID</code></p>
+</li>
+<li>
+<p>同時，伺服器會要求客戶端創造一個Cookie，此Cookie的KEY固定是<code>JSESSIONID</code>，值就是對應的<code>SessionID</code>，存在客戶端的瀏覽器</p>
+</li>
+<li>
+<p>前面說過Cookie會附加在每個HTTP請求，因此會話就成立了，只要用戶端存在該Cookie就可以錨定到伺服器中的指定Session，直到某一方過期為止</p>
+</li>
+</ul>
+<hr>
+<h1 id="書城項目">書城項目</h1>
+<h2 id="登出入">登出入</h2>
+<ul>
+<li>後端驗證登入成功同時將user物件保存到Session域，前端用sessionScope取出用戶資料</li>
+<li>登出就刪掉session，轉發到首頁</li>
+</ul>
+<h2 id="驗證碼">驗證碼</h2>
+<ul>
+<li>maven</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.github.penggle<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>kaptcha<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>2.3.2<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>在web.xml中可以設定</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;servlet&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>Kaptcha<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-class&gt;</span>com.google.code.kaptcha.servlet.KaptchaServlet<span style="color:#8b008b;font-weight:bold">&lt;/servlet-class&gt;</span>
+        <span style="color:#228b22">&lt;!-- 定義驗證碼樣式 --&gt;</span>
+        <span style="color:#228b22">&lt;!-- 是否有邊框 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.border<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#228b22">&lt;!-- 沒有邊框 no --&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>yes<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 字體顏色 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.font.color<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>red<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 圖片寬度 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.image.width<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>80<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 使用哪些字符生成驗證碼 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.char.string<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>12456890<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 圖片高度 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.image.height<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>40<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 字體大小 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.font.size<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>35<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>文字間隔<span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.char.space<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>3<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!--去掉干擾線com.google.code.kaptcha.impl.NoNoise--&gt;</span>
+        <span style="color:#228b22">&lt;!--加干擾線com.google.code.kaptcha.impl.DefaultNoise--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>干擾實現類<span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.noise.impl<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>
+                com.google.code.kaptcha.impl.NoNoise
+            <span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 幹擾線的顏色 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.noise.color<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>green<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>
+                圖片樣式：
+                水紋com.google.code.kaptcha.impl.WaterRipple
+                魚眼com.google.code.kaptcha.impl.FishEyeGimpy
+                陰影com.google.code.kaptcha.impl.ShadowGimpy
+            <span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.obscurificator.impl<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>
+                com.google.code.kaptcha.impl.ShadowGimpy
+            <span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 驗證碼字符個數 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.char.length<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>4<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#228b22">&lt;!-- 字體 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.textproducer.font.names<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>Aria<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>
+                session中存放驗證碼的key鍵
+            <span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.session.key<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>KAPTCHA_SESSION_KEY<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>
+                The date the kaptcha is generated is put into the
+                HttpSession. This is the key value for that item in the
+                session.
+            <span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>kaptcha.session.date<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>KAPTCHA_SESSION_DATE<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;/servlet&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet-mapping&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>Kaptcha<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/captcha.jpg<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/servlet-mapping&gt;</span>
+</code></pre></div><h3 id="前端">前端</h3>
+<p>圖片網址綁定上面的<code>&lt;url-pattern&gt;/captcha.jpg&lt;/url-pattern&gt;</code></p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp"> &lt;img id=&quot;code_img&quot; src=&quot;${pageScope.basePath}captcha.jpg&quot;&gt;
+ ...
+&lt;script type=&quot;text/javascript&quot;&gt;
+    // 頁面加載完成之後
+    $(function () {
+        // 綁定刷新驗證碼
+        $(&quot;#code_img&quot;).click(function () {
+            this.src = &quot;${pageScope.basePath}captcha.jpg?d=&quot; + new Date();
+        });
+</code></pre><ul>
+<li>點擊刷新功能，用時間當URL的變數，讓每次圖片都重新請求
+<ul>
+<li>防止URL相同，瀏覽器把圖片快取起來不顯示新的</li>
+</ul>
+</li>
+</ul>
+<h3 id="後端">後端</h3>
+<ul>
+<li>前面發的請求會同時把KEY存在Session中，取出值:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(KAPTCHA_SESSION_KEY);
+</code></pre></div><ul>
+<li>在servlet中驗證表單內容的方法中，當成功取出值就把此Session刪掉，這樣一來如果用戶多次提交表單，又來到這個servlet的這個方法，第二次去取值就取不到，就會因為驗證失敗而走不到資料庫那步</li>
+<li>如此就實現了以驗證碼阻止重複提交表單的問題</li>
+</ul>
+<hr>
+<h1 id="訂單模組">訂單模組</h1>
+<blockquote>
+<p>個人的踩坑紀錄</p>
+</blockquote>
+<h2 id="關於轉址">關於轉址</h2>
+<blockquote>
+<p>之前一直沒搞清楚url前面要不要寫/，這次好好釐清它</p>
+</blockquote>
+<h3 id="前端部分">前端部分</h3>
+<blockquote>
+<p>jsp或html</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">ContextPath是會根據部屬改變的，例如tomcat預設部屬的首頁為
+http://localhost:8080/book_war_exploded/
+
+這個url對應的實體資源就是webapp/資料夾下
+如果沒有指定，會自動拿根路徑的index作為首頁顯示
+
+對於前端來說，如果沒有指定過&lt;<span style="color:#8b008b;font-weight:bold">base</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;&#34;</span>&gt;
+
+&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;TestServlet&#34;</span>&gt;GOTEST&lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+    相當於當前網址+/TestServlet
+    可能包含工程路徑與網頁資源所在資料夾
+    這個頁面位於webapp/pages/
+    http://localhost:8080/book_war_exploded/pages/TestServlet
+
+&lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;/TestServlet&#34;</span>&gt;GOTEST2&lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+    相當於http://localhost:8080/TestServlet
+    即追本溯源到最頂，用這個的話切記注意部屬時設定的工程路徑
+
+&lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;../TestServlet&#34;</span>&gt;GOTEST3&lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+    IDE會認為你是想訪問一個檔案
+    但瀏覽器卻可以正確的拼接
+    http://localhost:8080/book_war_exploded/TestServlet
+&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+
+不管前端的js或後端，使用request.getContextPath()得到的就是工程路徑
+/book_war_exploded
+在前端用可以用js拚接出完整的路徑
+<span style="color:#a61717;background-color:#e3d2d2">&lt;</span>%
+    String basePath = request.getScheme()
+            + &#34;://&#34;
+            + request.getServerName()
+            + &#34;:&#34;
+            + request.getServerPort()
+            + request.getContextPath()
+            + &#34;/&#34;;
+    pageContext.setAttribute(&#34;basePath&#34;, basePath);
+%&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">base</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;&lt;%=basePath%&gt;&#34;</span>&gt;
+
+使用<span style="color:#a61717;background-color:#e3d2d2">&lt;</span>%=basePath%&gt;就等同於預設部屬的首頁，注意已經包含了最尾的/
+&lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;&lt;%=basePath%&gt;TestServlet&#34;</span>&gt;測試跳轉&lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+
+</code></pre></div><ul>
+<li>使用base統一管理，最好是不要+ &ldquo;/&ldquo;結尾，讓用法跟後端統一</li>
+<li>單獨用<code>/</code>要注意部屬時的設定</li>
+</ul>
+<h3 id="webxml">web.xml</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;servlet-mapping&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>Kaptcha<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/captcha.jpg<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+    = http://localhost:8080/book_war_exploded/captcha.jpg
+<span style="color:#8b008b;font-weight:bold">&lt;/servlet-mapping&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;servlet-mapping&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>TestServlet<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/TestServlet<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+    = http://localhost:8080/book_war_exploded/TestServlet
+<span style="color:#8b008b;font-weight:bold">&lt;/servlet-mapping&gt;</span>
+</code></pre></div><ul>
+<li>綁定 <code>&lt;url-pattern&gt;/&lt;/url-pattern&gt;</code>強制要以<code>/</code>開頭，否則直接報錯</li>
+</ul>
+<h3 id="後端部分">後端部分</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">在後端使用轉發
+response.<span style="color:#658b00">sendRedirect</span>(<span style="color:#cd5555">&#34;test.jsp&#34;</span>);
+request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;test.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+不以<span style="color:#a61717;background-color:#e3d2d2">`</span>/<span style="color:#a61717;background-color:#e3d2d2">`</span>開頭就會被認為是相對路徑<span style="color:#a61717;background-color:#e3d2d2">，</span>即當下的url/
+
+而通常webapp第一層只會放index<span style="color:#a61717;background-color:#e3d2d2">，</span>其他要訪問的頁面會分類在pages資料夾下<span style="color:#a61717;background-color:#e3d2d2">，</span>例如
+response.<span style="color:#658b00">sendRedirect</span>(<span style="color:#cd5555">&#34;pages/abc.jsp&#34;</span>);
+request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/abc.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+
+兩者區別在於
+    response.<span style="color:#658b00">sendRedirect是兩個請求</span><span style="color:#a61717;background-color:#e3d2d2">，</span>已經轉發了<span style="color:#a61717;background-color:#e3d2d2">，</span>網址會變化
+    request.<span style="color:#658b00">getRequestDispatcher網址不會變</span>
+
+如果如果在網址前加了/<span style="color:#a61717;background-color:#e3d2d2">，</span>寫成<span style="color:#cd5555">&#34;/url&#34;</span><span style="color:#a61717;background-color:#e3d2d2">，</span>
+對於response.<span style="color:#658b00">sendRedirect</span> 因為它是可以轉到外面去的<span style="color:#a61717;background-color:#e3d2d2">，</span>不寫齊全會出事<span style="color:#a61717;background-color:#e3d2d2">，</span>要手動加上request.<span style="color:#658b00">getContextPath</span>()
+http:<span style="color:#228b22">//localhost:8080/
+</span><span style="color:#228b22"></span>
+而request.<span style="color:#658b00">getRequestDispatcher加了</span>/比如(<span style="color:#cd5555">&#34;/pages/abc.jsp&#34;</span>)
+則表示Web資源的根路徑
+
+</code></pre></div><h3 id="小結">小結</h3>
+<ul>
+<li>
+<p>前端不以<code>/</code>開頭就會被認為是相對路徑，即當下的url</p>
+</li>
+<li>
+<p>後端都加上<code>/</code></p>
+<ul>
+<li>並且<code>response.sendRedirect</code>先以<code>request.getContextPath()</code>開頭</li>
+</ul>
+</li>
+<li>
+<p>為了方便統一，前端用base先拚出工程路徑(但不要包含最尾的/)，這樣整個專案就都是用/打頭</p>
+<ul>
+<li>web.xml不加/根本無法啟動，現在都用註解或框架也不太用管</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="sql問題">SQL問題</h2>
+<h3 id="sql語句">SQL語句</h3>
+<ul>
+<li>寫daoImpl的時候，忘記是從資料庫中取東西的時候才要加別名使其與pojo符合</li>
+<li>我竟然在<code>insert into</code>的地方寫別名還除錯了半天，有夠蠢</li>
+</ul>
+<h3 id="date類問題">Date類問題</h3>
+<pre tabindex="0"><code>cannot convert java.time.LocalDateTime to java.util.Date
+
+把mysql-connector-java8.0.26換成8.0.21版，問題消失
+因為26版會將datatime轉換成java.time.LocalDateTime
+而21版轉換成java.util.Date
+</code></pre><pre tabindex="0"><code>The server time zone value '����зǮɶ�' is unrecognized
+21版連mysql 8不指定時間又會出錯
+
+jdbc:mysql://localhost:3306/bookstore?useSSL=false&amp;serverTimezone=GMT%2B8&amp;characterEncoding=utf-8&amp;allowPublicKeyRetrieval=true&amp;rewriteBatchedStatements=true
+
+另外mysql預設時區要注意可能是UTC可以去資料庫看
+兩邊都設定+8，就是GMT%2B8就不會出現時差問題
+
+</code></pre><h2 id="點擊事件">點擊事件</h2>
+<ul>
+<li>用id綁定，結果只有第一個生效，測試時靈時不靈還找半天原因</li>
+<li>教訓:記住可能有多個物件時用<code>class</code>與<code>.</code>綁定</li>
+</ul>
+<h2 id="http503">Http503</h2>
+<ul>
+<li>具體報錯是<code>Servlet is currently unavailable</code></li>
+<li>原因在我複製一個jsp頁面，IDEA它JSTL導入怪怪的，寫了一個<code>&lt;c:if</code>它提示我沒導入，於是alt+enter修復，誰知道一修就壞了</li>
+<li>來回折騰很久，Maven引了又引搞了半天，確定有這兩個</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.taglibs<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>taglibs-standard-impl<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>1.2.5<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.taglibs<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>taglibs-standard-spec<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>1.2.5<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>最後發現index.jsp明明沒導入卻不報錯，很詭異
+<ul>
+<li>在最頂加上<code>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;</code>就解決了</li>
+</ul>
+</li>
+<li>教訓:不要輕易使用IDEA的複製跟移動文件功能，寧願造一個全新頁面然後全選複製貼上</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-09</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220110-agg-javaweb-10/">
+			下一篇<br>Filter過濾器、ThreadLocal
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220108-agg-javaweb-08/">
+			上一篇<br>書城項目:Maven管理依賴、圖書模塊
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

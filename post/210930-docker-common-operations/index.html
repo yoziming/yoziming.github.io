@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Docker常用指令與操作</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="忘記指令就回來看一下">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Docker常用指令與操作" />
+<meta property="og:description" content="忘記指令就回來看一下" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/210930-docker-common-operations/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-09-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-09-30T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker常用指令與操作"/>
+<meta name="twitter:description" content="忘記指令就回來看一下"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#docker常用操作-nav`)" id="docker常用操作-nav">
+									Docker常用操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e9%81%8b%e8%a1%8c%e5%89%8d" onclick="onNavClick(`#容器運行前-nav`)" id="容器運行前-nav">
+									容器運行前
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e9%81%8b%e8%a1%8c%e4%b8%ad" onclick="onNavClick(`#容器運行中-nav`)" id="容器運行中-nav">
+									容器運行中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e5%85%a7" onclick="onNavClick(`#容器內-nav`)" id="容器內-nav">
+									容器內
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e8%a3%bd%e6%aa%94%e6%a1%88" onclick="onNavClick(`#複製檔案-nav`)" id="複製檔案-nav">
+									複製檔案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#docker-desktop" onclick="onNavClick(`#docker-desktop-nav`)" id="docker-desktop-nav">
+									docker-desktop
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8e%9b%e8%bc%89%e7%9b%b8%e9%97%9c" onclick="onNavClick(`#掛載相關-nav`)" id="掛載相關-nav">
+									掛載相關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bb%ba%e8%ad%b0%e4%bd%9c%e6%b3%95" onclick="onNavClick(`#建議作法-nav`)" id="建議作法-nav">
+									建議作法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#docker%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#docker常用操作-nav`)" id="docker常用操作-nav">
+									Docker常用操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e9%81%8b%e8%a1%8c%e5%89%8d" onclick="onNavClick(`#容器運行前-nav`)" id="容器運行前-nav">
+									容器運行前
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e9%81%8b%e8%a1%8c%e4%b8%ad" onclick="onNavClick(`#容器運行中-nav`)" id="容器運行中-nav">
+									容器運行中
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e5%85%a7" onclick="onNavClick(`#容器內-nav`)" id="容器內-nav">
+									容器內
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e8%a3%bd%e6%aa%94%e6%a1%88" onclick="onNavClick(`#複製檔案-nav`)" id="複製檔案-nav">
+									複製檔案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#docker-desktop" onclick="onNavClick(`#docker-desktop-nav`)" id="docker-desktop-nav">
+									docker-desktop
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8e%9b%e8%bc%89%e7%9b%b8%e9%97%9c" onclick="onNavClick(`#掛載相關-nav`)" id="掛載相關-nav">
+									掛載相關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bb%ba%e8%ad%b0%e4%bd%9c%e6%b3%95" onclick="onNavClick(`#建議作法-nav`)" id="建議作法-nav">
+									建議作法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/docker.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    Docker常用指令與操作
+                    
+                    <div class="post-subtitle">
+                        忘記指令就回來看一下
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-09-30 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/docker">docker</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="docker常用操作">Docker常用操作</h1>
+<blockquote>
+<p>官方 <a href="https://docs.docker.com/engine/reference/run/">https://docs.docker.com/engine/reference/run/</a></p>
+</blockquote>
+<h2 id="容器運行前">容器運行前</h2>
+<ul>
+<li>抓映像</li>
+</ul>
+<pre tabindex="0"><code>docker pull xxx
+</code></pre><h2 id="容器運行中">容器運行中</h2>
+<ul>
+<li>檢視運行中的容器</li>
+</ul>
+<pre tabindex="0"><code>docker ps
+</code></pre><ul>
+<li>停止容器
+<ul>
+<li>啟動換成 <code>start</code></li>
+<li>重啟換成 <code>restart</code></li>
+<li>強殺換成 <code>kill</code></li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>docker stop 容器名或ID
+</code></pre><ul>
+<li>批次全部重啟
+<ul>
+<li>這個在windows docker也有效，特別適合自己練習專案用</li>
+<li><code>awk '{ print $1}'</code>那種在windows就不行</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>docker restart $(docker ps -a -q)
+</code></pre><ul>
+<li>刪除容器</li>
+</ul>
+<pre tabindex="0"><code>docker rm -f 容器名或ID
+</code></pre><ul>
+<li>檢視運行狀態(CPU、記憶體、I/O占用等等)</li>
+</ul>
+<pre tabindex="0"><code>docker stats -a
+</code></pre><ul>
+<li>顯示運行日誌</li>
+</ul>
+<pre tabindex="0"><code>docker logs 容器名或ID
+</code></pre><ul>
+<li>查看詳情</li>
+</ul>
+<pre tabindex="0"><code>docker inspect 容器名或ID
+</code></pre><ul>
+<li>更新運行參數</li>
+</ul>
+<pre tabindex="0"><code>docker update --restart=always 容器名或ID
+</code></pre><ul>
+<li>進入 Container
+<ul>
+<li><code>-i</code> ：即使沒有附加也保持STDIN 打開</li>
+<li><code>-t</code> ：分配一個偽終端</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>docker exec -it  &lt;container_id&gt;  /bin/bash
+</code></pre><h3 id="容器內">容器內</h3>
+<ul>
+<li>
+<p>就是進到<code>/bin/sh</code>之下，有個<code>$</code>符號的狀態</p>
+</li>
+<li>
+<p><code>locale</code> 顯示container內的編碼</p>
+</li>
+<li>
+<p><code>locale -a</code> 顯示container可用的編碼</p>
+<ul>
+<li>通常會選用<code>C.UTF-8</code>，但是沒特別設定過的就會是Linux預設<code>POSIX</code></li>
+<li>修改方法: <a href="https://ubuntuqa.com/zh-tw/article/9876.html">https://ubuntuqa.com/zh-tw/article/9876.html</a></li>
+</ul>
+</li>
+<li>
+<p><code>ls</code> 秀出當前目錄內檔案與資料夾</p>
+</li>
+<li>
+<p><code>cd</code> 前往某資料夾</p>
+</li>
+</ul>
+<h2 id="複製檔案">複製檔案</h2>
+<ul>
+<li>從Host丟進容器</li>
+</ul>
+<pre tabindex="0"><code>docker cp /path1宿主路徑 容器名或ID:/path2容器路徑
+</code></pre><ul>
+<li>從容器中搬檔案出來</li>
+</ul>
+<pre tabindex="0"><code>docker cp 容器名或ID:/path/to/folder /path2宿主路徑/
+</code></pre><ul>
+<li>注意操作就如同Linux 系統的 <code>cp -a</code>，路徑可以是檔案也可以是資料夾，結尾加不加<code>/</code>會決定是要放到<code>XX</code>還是<code>XX之下</code></li>
+</ul>
+<h1 id="docker-desktop">docker-desktop</h1>
+<p>UI中的Volumes實際路徑，可以用瀏覽器訪問</p>
+<pre tabindex="0"><code>\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\
+</code></pre><p>而在WSL2中的/mnt/wsl只是暫時的，如果要連接</p>
+<p>在windows的cmd中執行</p>
+<pre tabindex="0"><code>net use h: \\wsl$\docker-desktop-data
+</code></pre><p>在WSL2 Ubuntu中執行</p>
+<pre tabindex="0"><code>sudo mkdir /mnt/wsl2
+
+sudo mount -t drvfs h: /mnt/wsl2
+</code></pre><h2 id="掛載相關">掛載相關</h2>
+<ul>
+<li>範例: 掛載到window下的某個路徑</li>
+</ul>
+<pre tabindex="0"><code>docker run -d -p 8082:80 --name nginx -v G:/docker/nginx:/usr/share/nginx -v
+</code></pre><ul>
+<li>
+<p>但是這樣效率低，有時候還會因為windows跟linux編碼問題(例如檔頭、換行、空白權限之類的)出錯</p>
+</li>
+<li>
+<p>參考: <a href="https://lufor129.medium.com/docker-%E4%B8%89-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9Cvolume-net-5f323965486">https://lufor129.medium.com/docker-%E4%B8%89-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9Cvolume-net-5f323965486</a></p>
+</li>
+</ul>
+<h3 id="建議作法">建議作法</h3>
+<ul>
+<li>用WSL2 Ubuntu當橋樑，開個terminal進到WSL虛擬機，再用linux下指令，這樣操作就都跟最常見的範例一樣</li>
+<li>要存取對應的檔案也很簡單，現在WSL2都支援直接GUI操作了(但要用win11)</li>
+<li>退一步可以用圖形化操作介面(X server)之類，也是非常快速便捷</li>
+<li>還有一招是VS code的remote插件，也很好用</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-09-30</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211001-docker-mysql/">
+			下一篇<br>Docker啟用Mysql
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/210929-docker-minio/">
+			上一篇<br>Docker啟用MinIO
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

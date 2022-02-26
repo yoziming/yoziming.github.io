@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>逆向生成前端頁面、JSR303、雲儲存圖片</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-04">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="逆向生成前端頁面、JSR303、雲儲存圖片" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-04" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220121-gulimall-04-jsr303/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-21T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-21T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="逆向生成前端頁面、JSR303、雲儲存圖片"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-04"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%86%e5%90%91%e7%94%9f%e6%88%90%e5%89%8d%e7%ab%af%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#逆向生成前端頁面-nav`)" id="逆向生成前端頁面-nav">
+									逆向生成前端頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b0%a1%e5%96%ae%e4%bf%ae%e9%a3%be" onclick="onNavClick(`#簡單修飾-nav`)" id="簡單修飾-nav">
+									簡單修飾
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a1%af%e7%a4%ba%e7%8b%80%e6%85%8b%e6%8f%9b%e6%88%90%e9%96%8b%e9%97%9c" onclick="onNavClick(`#顯示狀態換成開關-nav`)" id="顯示狀態換成開關-nav">
+									顯示狀態換成開關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%b2%e5%84%b2%e5%ad%98%e5%9c%96%e7%89%87" onclick="onNavClick(`#雲儲存圖片-nav`)" id="雲儲存圖片-nav">
+									雲儲存圖片
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#leancloud" onclick="onNavClick(`#leancloud-nav`)" id="leancloud-nav">
+									LeanCloud
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#minio" onclick="onNavClick(`#minio-nav`)" id="minio-nav">
+									minio
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#後端設定-nav`)" id="後端設定-nav">
+									後端設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#前端設定-nav`)" id="前端設定-nav">
+									前端設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jsr303%e9%a9%97%e8%ad%89" onclick="onNavClick(`#jsr303驗證-nav`)" id="jsr303驗證-nav">
+									JSR303驗證
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%a9%ba%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#空檢查-nav`)" id="空檢查-nav">
+									空檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#booelan%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#booelan檢查-nav`)" id="booelan檢查-nav">
+									Booelan檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%95%b7%e5%ba%a6%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#長度檢查-nav`)" id="長度檢查-nav">
+									長度檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%97%a5%e6%9c%9f%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#日期檢查-nav`)" id="日期檢查-nav">
+									日期檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e5%80%bc%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#數值檢查-nav`)" id="數值檢查-nav">
+									數值檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e7%b5%84%e6%aa%a2%e9%a9%97" onclick="onNavClick(`#分組檢驗-nav`)" id="分組檢驗-nav">
+									分組檢驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e6%aa%a2%e9%a9%97" onclick="onNavClick(`#自定義檢驗-nav`)" id="自定義檢驗-nav">
+									自定義檢驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%86%e5%90%91%e7%94%9f%e6%88%90%e5%89%8d%e7%ab%af%e9%a0%81%e9%9d%a2" onclick="onNavClick(`#逆向生成前端頁面-nav`)" id="逆向生成前端頁面-nav">
+									逆向生成前端頁面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b0%a1%e5%96%ae%e4%bf%ae%e9%a3%be" onclick="onNavClick(`#簡單修飾-nav`)" id="簡單修飾-nav">
+									簡單修飾
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a1%af%e7%a4%ba%e7%8b%80%e6%85%8b%e6%8f%9b%e6%88%90%e9%96%8b%e9%97%9c" onclick="onNavClick(`#顯示狀態換成開關-nav`)" id="顯示狀態換成開關-nav">
+									顯示狀態換成開關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%b2%e5%84%b2%e5%ad%98%e5%9c%96%e7%89%87" onclick="onNavClick(`#雲儲存圖片-nav`)" id="雲儲存圖片-nav">
+									雲儲存圖片
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#leancloud" onclick="onNavClick(`#leancloud-nav`)" id="leancloud-nav">
+									LeanCloud
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#minio" onclick="onNavClick(`#minio-nav`)" id="minio-nav">
+									minio
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#後端設定-nav`)" id="後端設定-nav">
+									後端設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#前端設定-nav`)" id="前端設定-nav">
+									前端設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jsr303%e9%a9%97%e8%ad%89" onclick="onNavClick(`#jsr303驗證-nav`)" id="jsr303驗證-nav">
+									JSR303驗證
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%a9%ba%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#空檢查-nav`)" id="空檢查-nav">
+									空檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#booelan%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#booelan檢查-nav`)" id="booelan檢查-nav">
+									Booelan檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%95%b7%e5%ba%a6%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#長度檢查-nav`)" id="長度檢查-nav">
+									長度檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%97%a5%e6%9c%9f%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#日期檢查-nav`)" id="日期檢查-nav">
+									日期檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b8%e5%80%bc%e6%aa%a2%e6%9f%a5" onclick="onNavClick(`#數值檢查-nav`)" id="數值檢查-nav">
+									數值檢查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e4%bd%9c" onclick="onNavClick(`#實作-nav`)" id="實作-nav">
+									實作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e7%b5%84%e6%aa%a2%e9%a9%97" onclick="onNavClick(`#分組檢驗-nav`)" id="分組檢驗-nav">
+									分組檢驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e6%aa%a2%e9%a9%97" onclick="onNavClick(`#自定義檢驗-nav`)" id="自定義檢驗-nav">
+									自定義檢驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    逆向生成前端頁面、JSR303、雲儲存圖片
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-04
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-21 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="逆向生成前端頁面">逆向生成前端頁面</h1>
+<ul>
+<li>首先一樣造出側邊欄</li>
+</ul>
+<p><img src="image-20220113170616658.png" alt="image-20220113170616658"></p>
+<ul>
+<li>找到當初生成器產的那些，好樣的原來當初都一併造了，通通複製過去</li>
+</ul>
+<p><img src="image-20220113171203038.png" alt="image-20220113171203038"></p>
+<ul>
+<li>另外去前端把權限驗證先暫時關了，全部返回true</li>
+</ul>
+<p><img src="image-20220113171522372.png" alt="image-20220113171522372"></p>
+<ul>
+<li>查看效果，什麼新增修改基本的CRUD人家全做好了，哭阿</li>
+</ul>
+<p><img src="image-20220113172213165.png" alt="image-20220113172213165"></p>
+<h2 id="簡單修飾">簡單修飾</h2>
+<h3 id="顯示狀態換成開關">顯示狀態換成開關</h3>
+<ul>
+<li>去餓了嗎找模板
+<ul>
+<li><code>:active-value</code>，<code>:</code>是v-bind縮寫</li>
+<li>相當於把<code>showStatus</code>的值在1跟0切換，而<code>showStatus</code>本就是pojo的屬性，所以直接傳給後端API就完事</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue">      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span>
+        <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;showStatus&#34;</span>
+        <span style="color:#658b00">header</span><span style="color:#8b008b;font-weight:bold">-align</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">center</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+        <span style="color:#658b00">align</span>=<span style="color:#cd5555">&#34;center&#34;</span>
+        <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;顯示狀態&#34;</span>
+      &gt;
+        &lt;<span style="color:#8b008b;font-weight:bold">template</span> <span style="color:#658b00">slot</span><span style="color:#8b008b;font-weight:bold">-scope</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">scope</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>&gt;
+          &lt;<span style="color:#8b008b;font-weight:bold">el-switch</span>
+            <span style="color:#658b00">v</span><span style="color:#8b008b;font-weight:bold">-model</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">scope.row.showStatus</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+            <span style="color:#658b00">active</span><span style="color:#8b008b;font-weight:bold">-color</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;#</span><span style="color:#658b00">13ce66</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+            <span style="color:#658b00">inactive</span><span style="color:#8b008b;font-weight:bold">-color</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;#</span><span style="color:#658b00">ff4949</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+            <span style="color:#8b008b;font-weight:bold">:active-value</span><span style="color:#cd5555">=&#34;1&#34;</span>
+            <span style="color:#8b008b;font-weight:bold">:inactive-value</span><span style="color:#cd5555">=&#34;0&#34;</span>
+            <span style="color:#8b008b;font-weight:bold">@change</span><span style="color:#cd5555">=&#34;updateBrandStatus(scope.row)&#34;</span>
+          &gt;&lt;<span style="color:#a61717;background-color:#e3d2d2">/el-switch&gt;</span>
+        &lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+      &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-table-column&gt;</span>
+</code></pre></div><ul>
+<li>下面綁定一個監聽<code>@change</code>的方法，調用後端API更新</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    updateBrandStatus(data) {
+      console.log(<span style="color:#cd5555">&#34;最新信息&#34;</span>, data);
+      <span style="color:#8b008b;font-weight:bold">let</span> { brandId, showStatus } = data;
+      <span style="color:#228b22">//發送請求修改狀態
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/brand/update/status&#34;</span>),
+        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData({ brandId, showStatus }, <span style="color:#8b008b;font-weight:bold">false</span>),
+      }).then(({ data }) =&gt; {
+        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+          message: <span style="color:#cd5555">&#34;狀態更新成功&#34;</span>,
+        });
+      });
+    },
+</code></pre></div><ul>
+<li>後端手動造一個API去更新</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 切換顯示狀態
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/update/status&#34;</span>)
+    <span style="color:#228b22">//@RequiresPermissions(&#34;product:brand:update&#34;)
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">updateStatus</span>(<span style="color:#707a7c">@RequestBody</span> BrandEntity brand) {
+        brandService.<span style="color:#658b00">updateById</span>(brand);
+
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+    }
+</code></pre></div><ul>
+<li>另外，新增或修改頁面也要換</li>
+</ul>
+<p><img src="image-20220113173948538.png" alt="image-20220113173948538"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue">      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;是否顯示&#34;</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;showStatus&#34;</span>&gt;
+        &lt;<span style="color:#8b008b;font-weight:bold">el-switch</span>
+          <span style="color:#658b00">v</span><span style="color:#8b008b;font-weight:bold">-model</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">dataForm.showStatus</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+          <span style="color:#658b00">active</span><span style="color:#8b008b;font-weight:bold">-color</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;#</span><span style="color:#658b00">13ce66</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+          <span style="color:#658b00">inactive</span><span style="color:#8b008b;font-weight:bold">-color</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;#</span><span style="color:#658b00">ff4949</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>
+          <span style="color:#8b008b;font-weight:bold">:active-value</span><span style="color:#cd5555">=&#34;1&#34;</span>
+          <span style="color:#8b008b;font-weight:bold">:inactive-value</span><span style="color:#cd5555">=&#34;0&#34;</span>
+        &gt;&lt;<span style="color:#a61717;background-color:#e3d2d2">/el-switch&gt;</span>
+      &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-form-item&gt;</span>
+</code></pre></div><ul>
+<li>並且下面預設值要改成1，我是覺得乾脆刪掉這欄，既然外面都有簡便的開關了，修改頁面想修改的不動，新增的預設不顯示就好了</li>
+</ul>
+<p><img src="image-20220113175701866.png" alt="image-20220113175701866"></p>
+<ul>
+<li>順手修改標籤寬度，否則本來字都擠在一起</li>
+</ul>
+<p><img src="image-20220113174340117.png" alt="image-20220113174340117"></p>
+<hr>
+<h1 id="雲儲存圖片">雲儲存圖片</h1>
+<ul>
+<li>課程用阿里雲OSS，我先用LeanCloud試試看，不行就docker拉一個minio</li>
+</ul>
+<h2 id="leancloud">LeanCloud</h2>
+<ul>
+<li>
+<p>參考官方 <a href="https://leancloud.cn/docs/sdk_setup-java.html#hash1620893804">https://leancloud.cn/docs/sdk_setup-java.html#hash1620893804</a></p>
+</li>
+<li>
+<p>先引依賴</p>
+</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;cn.leancloud&lt;/groupId&gt;
+    &lt;artifactId&gt;storage-core&lt;/artifactId&gt;
+    &lt;version&gt;8.2.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>初始化，也挺簡單的</li>
+</ul>
+<p><img src="image-20220113212506453.png" alt="image-20220113212506453"></p>
+<ul>
+<li>上傳
+<ul>
+<li>他這邊是用戶上傳給雲端，後台只做簽名驗證，自己做翻半天文檔還是不太會，先跳過</li>
+<li>//TODO</li>
+</ul>
+</li>
+<li>好吧，不太行，換用minio</li>
+</ul>
+<h2 id="minio">minio</h2>
+<blockquote>
+<p>參考 <a href="https://juejin.cn/post/6844903971677536264">https://juejin.cn/post/6844903971677536264</a></p>
+</blockquote>
+<ul>
+<li>docker</li>
+</ul>
+<pre tabindex="0"><code>docker run -d --name minio -e &quot;MINIO_ROOT_USER=root&quot; -e &quot;MINIO_ROOT_PASSWORD=root1234&quot; -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address &quot;:9001&quot; 
+</code></pre><ul>
+<li>他有2個阜，9000是server用的，9001是管理UI入口</li>
+<li>替代方案的上傳圖片流程是:</li>
+<li>前端後台用戶上傳圖片 -&gt; API (HTTP檔案流) -&gt; 網關重寫 -&gt; 到服務中心找nacos -&gt; 負載均衡到third-party模組 -&gt; MinioController接收POST請求 -&gt; 上傳圖片到minio並返回圖片網址給前端</li>
+</ul>
+<h3 id="後端設定">後端設定</h3>
+<ul>
+<li>
+<p>建立一個新子模組third-party</p>
+<ul>
+<li>我才發現如果取包名用third-party，IDEA不認，有<code>-</code>的不能是包名</li>
+</ul>
+</li>
+<li>
+<p>引依賴</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>io.minio<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>minio<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>3.0.10<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>由於common模組依賴有載入JDBC但這邊沒要用，可以暫時用啟動類的排除載入，在<code>@SpringBootApplication(exclude =</code></li>
+<li>ThirdPartyApplication.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@EnableDiscoveryClient</span>
+<span style="color:#707a7c">@SpringBootApplication</span>(exclude = {DataSourceAutoConfiguration.<span style="color:#658b00">class</span>})
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ThirdPartyApplication</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        SpringApplication.<span style="color:#658b00">run</span>(ThirdPartyApplication.<span style="color:#658b00">class</span>, args);
+    }
+}
+</code></pre></div><ul>
+<li>application.yml</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#8b008b;font-weight:bold">spring</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">application</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">name</span>:<span style="color:#bbb"> </span>third-party<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">cloud</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">nacos</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">discovery</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">server-addr</span>:<span style="color:#bbb"> </span>localhost:8848<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">config</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">server-addr</span>:<span style="color:#bbb"> </span>localhost:8848<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#228b22"># 開啟文件上傳</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">servlet</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">multipart</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">enabled</span>:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">true</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#8b008b;font-weight:bold">max-file-size</span>:<span style="color:#bbb"> </span>10MB<span style="color:#bbb"> </span><span style="color:#228b22">#限制文件上傳大小為10MB</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22"># MinIO對象存儲相關配置</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">minio</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">endpoint</span>:<span style="color:#bbb"> </span>http://localhost:9000<span style="color:#bbb"> </span><span style="color:#228b22">#MinIO服務所在地址</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">bucketName</span>:<span style="color:#bbb"> </span>mall<span style="color:#bbb"> </span><span style="color:#228b22">#存儲桶名稱</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">accessKey</span>:<span style="color:#bbb"> </span>root<span style="color:#bbb"> </span><span style="color:#228b22">#訪問的key</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">secretKey</span>:<span style="color:#bbb"> </span>root1234<span style="color:#bbb"> </span><span style="color:#228b22">#訪問的秘鑰</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>造一個MinioController</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Api</span>(tags = <span style="color:#cd5555">&#34;MinioController&#34;</span>, description = <span style="color:#cd5555">&#34;MinIO存儲管理&#34;</span>)
+<span style="color:#707a7c">@Controller</span>
+<span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/minio&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MinioController</span> {
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> Logger LOGGER = LoggerFactory.<span style="color:#658b00">getLogger</span>(MinioController.<span style="color:#658b00">class</span>);
+    <span style="color:#707a7c">@Value</span>(<span style="color:#cd5555">&#34;${minio.endpoint}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> String ENDPOINT;
+    <span style="color:#707a7c">@Value</span>(<span style="color:#cd5555">&#34;${minio.bucketName}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> String BUCKET_NAME;
+    <span style="color:#707a7c">@Value</span>(<span style="color:#cd5555">&#34;${minio.accessKey}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> String ACCESS_KEY;
+    <span style="color:#707a7c">@Value</span>(<span style="color:#cd5555">&#34;${minio.secretKey}&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> String SECRET_KEY;
+
+    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;文件上傳&#34;</span>)
+    <span style="color:#707a7c">@RequestMapping</span>(value = <span style="color:#cd5555">&#34;/upload&#34;</span>, method = RequestMethod.<span style="color:#658b00">POST</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">upload</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;file&#34;</span>) MultipartFile file) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#228b22">// 創建一個MinIO的Java客戶端
+</span><span style="color:#228b22"></span>            MinioClient minioClient = <span style="color:#8b008b;font-weight:bold">new</span> MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
+            <span style="color:#00688b;font-weight:bold">boolean</span> isExist = minioClient.<span style="color:#658b00">bucketExists</span>(BUCKET_NAME);
+            <span style="color:#8b008b;font-weight:bold">if</span> (isExist) {
+                LOGGER.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;存儲桶已經存在！&#34;</span>);
+            } <span style="color:#8b008b;font-weight:bold">else</span> {
+                <span style="color:#228b22">// 創建存儲桶
+</span><span style="color:#228b22"></span>                minioClient.<span style="color:#658b00">makeBucket</span>(BUCKET_NAME);
+            }
+            String filename = file.<span style="color:#658b00">getOriginalFilename</span>();
+            SimpleDateFormat sdf = <span style="color:#8b008b;font-weight:bold">new</span> SimpleDateFormat(<span style="color:#cd5555">&#34;yyyyMMddHHmmssZ&#34;</span>);
+            <span style="color:#228b22">// 設置存儲對象名稱
+</span><span style="color:#228b22"></span>            String objectName = sdf.<span style="color:#658b00">format</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date()) + filename;
+            <span style="color:#228b22">// 使用putObject上傳一個文件到存儲桶中
+</span><span style="color:#228b22"></span>            minioClient.<span style="color:#658b00">putObject</span>(BUCKET_NAME, objectName, file.<span style="color:#658b00">getInputStream</span>(), file.<span style="color:#658b00">getContentType</span>());
+            String objectUrl = minioClient.<span style="color:#658b00">getObjectUrl</span>(BUCKET_NAME, objectName);
+            LOGGER.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;文件上傳成功!&#34;</span>);
+            MinioUploadDto minioUploadDto = <span style="color:#8b008b;font-weight:bold">new</span> MinioUploadDto();
+            minioUploadDto.<span style="color:#658b00">setName</span>(filename);
+            minioUploadDto.<span style="color:#658b00">setUrl</span>(objectUrl);
+            <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;data&#34;</span>, minioUploadDto);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            LOGGER.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;上傳發生錯誤: {}！&#34;</span>, e.<span style="color:#658b00">getMessage</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>();
+    }
+
+    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;文件刪除&#34;</span>)
+    <span style="color:#707a7c">@RequestMapping</span>(value = <span style="color:#cd5555">&#34;/delete&#34;</span>, method = RequestMethod.<span style="color:#658b00">POST</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">delete</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;objectName&#34;</span>) String objectName) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            MinioClient minioClient = <span style="color:#8b008b;font-weight:bold">new</span> MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
+            minioClient.<span style="color:#658b00">removeObject</span>(BUCKET_NAME, objectName);
+            <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>();
+    }
+}
+</code></pre></div><ul>
+<li>為了跨域的設定: GlobalCorsConfig.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">GlobalCorsConfig</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 允許跨域調用的過濾器
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> CorsFilter <span style="color:#008b45">corsFilter</span>() {
+        CorsConfiguration config = <span style="color:#8b008b;font-weight:bold">new</span> CorsConfiguration();
+        <span style="color:#228b22">//允許所有域名進行跨域調用
+</span><span style="color:#228b22"></span>        config.<span style="color:#658b00">addAllowedOrigin</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        <span style="color:#228b22">//允許跨越發送cookie
+</span><span style="color:#228b22"></span>        config.<span style="color:#658b00">setAllowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        <span style="color:#228b22">//放行全部原始頭信息
+</span><span style="color:#228b22"></span>        config.<span style="color:#658b00">addAllowedHeader</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        <span style="color:#228b22">//允許所有請求方法跨域調用
+</span><span style="color:#228b22"></span>        config.<span style="color:#658b00">addAllowedMethod</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+        UrlBasedCorsConfigurationSource source = <span style="color:#8b008b;font-weight:bold">new</span> UrlBasedCorsConfigurationSource();
+        source.<span style="color:#658b00">registerCorsConfiguration</span>(<span style="color:#cd5555">&#34;/**&#34;</span>, config);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsFilter(source);
+    }
+}
+</code></pre></div><ul>
+<li>和一個用來簡單放結果的DTO</li>
+</ul>
+<p><img src="image-20220116225231853.png" alt="image-20220116225231853"></p>
+<h3 id="前端設定">前端設定</h3>
+<ul>
+<li>教學的OSS方法是做不到了，只能讓圖片流經後端再上傳</li>
+</ul>
+<p><img src="image-20220113181458111.png" alt="image-20220113181458111"></p>
+<ul>
+<li>
+<p>前端登入後台，一登入就跳回登入畫面，看LOG顯示&quot;遇到Token失效，请重新登录&quot;，刪掉cookie再登就OK了</p>
+<ul>
+<li>我發現是minio導致的，因為人人後台預設是 http://localhost:8001/#/login</li>
+<li>minio後台預設是 http://localhost:9001/login</li>
+<li>同樣是localhost他們的cookie打架了，暫時用2個瀏覽器分別開吧</li>
+</ul>
+</li>
+<li>
+<p>魔改一下singleUpload.vue</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue">&lt;<span style="color:#8b008b;font-weight:bold">template</span>&gt; 
+  &lt;<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">el-upload</span> <span style="color:#8b008b;font-weight:bold">:action</span><span style="color:#cd5555">=&#34;useOss?ossUploadUrl:minioUploadUrl&#34;</span> <span style="color:#8b008b;font-weight:bold">:data</span><span style="color:#cd5555">=&#34;useOss?dataObj:null&#34;</span> <span style="color:#658b00">list</span><span style="color:#8b008b;font-weight:bold">-type</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">picture</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span> <span style="color:#8b008b;font-weight:bold">:multiple</span><span style="color:#cd5555">=&#34;false&#34;</span> <span style="color:#8b008b;font-weight:bold">:show-file-list</span><span style="color:#cd5555">=&#34;showFileList&#34;</span> <span style="color:#8b008b;font-weight:bold">:file-list</span><span style="color:#cd5555">=&#34;fileList&#34;</span> <span style="color:#8b008b;font-weight:bold">:before-upload</span><span style="color:#cd5555">=&#34;beforeUpload&#34;</span> <span style="color:#8b008b;font-weight:bold">:on-remove</span><span style="color:#cd5555">=&#34;handleRemove&#34;</span> <span style="color:#8b008b;font-weight:bold">:on-success</span><span style="color:#cd5555">=&#34;handleUploadSuccess&#34;</span> <span style="color:#8b008b;font-weight:bold">:on-preview</span><span style="color:#cd5555">=&#34;handlePreview&#34;</span>&gt;
+      &lt;<span style="color:#8b008b;font-weight:bold">el-button</span> <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;small&#34;</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span>&gt;點擊上傳&lt;<span style="color:#a61717;background-color:#e3d2d2">/el-button&gt;</span>
+      &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">slot</span>=<span style="color:#cd5555">&#34;tip&#34;</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;el-upload__tip&#34;</span>&gt;只能上傳jpg/png文件<span style="color:#a61717;background-color:#e3d2d2">，</span>且不超過10MB&lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+    &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-upload&gt;</span>
+    &lt;<span style="color:#8b008b;font-weight:bold">el-dialog</span> <span style="color:#8b008b;font-weight:bold">:visible.sync</span><span style="color:#cd5555">=&#34;dialogVisible&#34;</span>&gt;
+      &lt;<span style="color:#8b008b;font-weight:bold">img</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;100%&#34;</span> <span style="color:#8b008b;font-weight:bold">:src</span><span style="color:#cd5555">=&#34;fileList[0].url&#34;</span> <span style="color:#658b00">alt</span>=<span style="color:#cd5555">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-dialog&gt;</span>
+  &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+<span style="color:#228b22">// import { policy } from &#34;./policy&#34;;
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+  name: <span style="color:#cd5555">&#34;singleUpload&#34;</span>,
+  props: {
+    value: <span style="color:#658b00">String</span>,
+  },
+  computed: {
+    imageUrl() {
+      <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.value;
+    },
+    imageName() {
+      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.value != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; <span style="color:#8b008b;font-weight:bold">this</span>.value !== <span style="color:#cd5555">&#34;&#34;</span>) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.value.substr(<span style="color:#8b008b;font-weight:bold">this</span>.value.lastIndexOf(<span style="color:#cd5555">&#34;/&#34;</span>) + <span style="color:#b452cd">1</span>);
+      } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+      }
+    },
+    fileList() {
+      <span style="color:#8b008b;font-weight:bold">return</span> [
+        {
+          name: <span style="color:#8b008b;font-weight:bold">this</span>.imageName,
+          url: <span style="color:#8b008b;font-weight:bold">this</span>.imageUrl,
+        },
+      ];
+    },
+    showFileList: {
+      get: <span style="color:#8b008b;font-weight:bold">function</span> () {
+        <span style="color:#8b008b;font-weight:bold">return</span> (
+          <span style="color:#8b008b;font-weight:bold">this</span>.value !== <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; <span style="color:#8b008b;font-weight:bold">this</span>.value !== <span style="color:#cd5555">&#34;&#34;</span> &amp;&amp; <span style="color:#8b008b;font-weight:bold">this</span>.value !== <span style="color:#8b008b;font-weight:bold">undefined</span>
+        );
+      },
+      set: <span style="color:#8b008b;font-weight:bold">function</span> (newValue) {},
+    },
+  },
+  data() {
+    <span style="color:#8b008b;font-weight:bold">return</span> {
+      dataObj: {
+        policy: <span style="color:#cd5555">&#34;&#34;</span>,
+        signature: <span style="color:#cd5555">&#34;&#34;</span>,
+        key: <span style="color:#cd5555">&#34;&#34;</span>,
+        ossaccessKeyId: <span style="color:#cd5555">&#34;&#34;</span>,
+        dir: <span style="color:#cd5555">&#34;&#34;</span>,
+        host: <span style="color:#cd5555">&#34;&#34;</span>,
+        <span style="color:#228b22">// callback:&#39;&#39;,
+</span><span style="color:#228b22"></span>      },
+      dialogVisible: <span style="color:#8b008b;font-weight:bold">false</span>,
+      useOss: <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#228b22">//使用oss-&gt;true;使用MinIO-&gt;false
+</span><span style="color:#228b22"></span>      ossUploadUrl: <span style="color:#cd5555">&#34;http://macro-oss.oss-cn-shenzhen.aliyuncs.com&#34;</span>,
+      minioUploadUrl: <span style="color:#cd5555">&#34;http://localhost:88/api/third-party/minio/upload&#34;</span>,
+    };
+  },
+  methods: {
+    emitInput(val) {
+      <span style="color:#8b008b;font-weight:bold">this</span>.$emit(<span style="color:#cd5555">&#34;input&#34;</span>, val);
+    },
+    handleRemove(file, fileList) {
+      <span style="color:#8b008b;font-weight:bold">this</span>.emitInput(<span style="color:#cd5555">&#34;&#34;</span>);
+    },
+    handlePreview(file) {
+      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
+    },
+    beforeUpload(file) {
+      <span style="color:#8b008b;font-weight:bold">let</span> _self = <span style="color:#8b008b;font-weight:bold">this</span>;
+      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.useOss) {
+        <span style="color:#228b22">//不使用oss不需要獲取策略
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+      }
+      <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Promise</span>((resolve, reject) =&gt; {
+        policy()
+          .then((response) =&gt; {
+            _self.dataObj.policy = response.data.policy;
+            _self.dataObj.signature = response.data.signature;
+            _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
+            _self.dataObj.key = response.data.dir + <span style="color:#cd5555">&#34;/${filename}&#34;</span>;
+            _self.dataObj.dir = response.data.dir;
+            _self.dataObj.host = response.data.host;
+            <span style="color:#228b22">// _self.dataObj.callback = response.data.callback;
+</span><span style="color:#228b22"></span>            resolve(<span style="color:#8b008b;font-weight:bold">true</span>);
+          })
+          .<span style="color:#8b008b;font-weight:bold">catch</span>((err) =&gt; {
+            console.log(err);
+            reject(<span style="color:#8b008b;font-weight:bold">false</span>);
+          });
+      });
+    },
+    handleUploadSuccess(res, file) {
+      <span style="color:#8b008b;font-weight:bold">this</span>.showFileList = <span style="color:#8b008b;font-weight:bold">true</span>;
+      <span style="color:#8b008b;font-weight:bold">this</span>.fileList.pop();
+      <span style="color:#8b008b;font-weight:bold">let</span> url = <span style="color:#8b008b;font-weight:bold">this</span>.dataObj.host + <span style="color:#cd5555">&#34;/&#34;</span> + <span style="color:#8b008b;font-weight:bold">this</span>.dataObj.dir + <span style="color:#cd5555">&#34;/&#34;</span> + file.name;
+      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.useOss) {
+        <span style="color:#228b22">//不使用oss直接獲取圖片路徑
+</span><span style="color:#228b22"></span>        url = res.data.url;
+      }
+      <span style="color:#8b008b;font-weight:bold">this</span>.fileList.push({ name: file.name, url: url });
+      <span style="color:#8b008b;font-weight:bold">this</span>.emitInput(<span style="color:#8b008b;font-weight:bold">this</span>.fileList[<span style="color:#b452cd">0</span>].url);
+    },
+  },
+};
+&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">style</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">style</span>&gt;
+</code></pre></div><ul>
+<li>回到網關增加一個指派規則 (其實是自欺欺人，因為要固定連到localhost:9000才能上傳跟訪問圖片，當作練習吧)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>upload_route<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://third-party<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- Path=/api/third-party/**<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- RewritePath=/api/third-party/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>完成</li>
+</ul>
+<p><img src="image-20220116232610958.png" alt="image-20220116232610958"></p>
+<hr>
+<h1 id="jsr303驗證">JSR303驗證</h1>
+<blockquote>
+<p>防止使用者亂輸入資料也能上傳到資料庫</p>
+</blockquote>
+<ul>
+<li>前端有簡單驗證過輸入限制，但還要防有人直接自訂HTTP請求發送</li>
+<li>規範叫JSR303 Bean Validation，就是說想把參數賦給Bean要先過這關檢驗，官方參考實現是hibernate Validator驗證框架，Spring也有提供良好支援
+<ul>
+<li>PS.與Hibernate ORM沒有關係</li>
+</ul>
+</li>
+<li>常用的限制規則如下</li>
+</ul>
+<h4 id="空檢查">空檢查</h4>
+<ul>
+<li>@Null 驗證物件是否為null</li>
+<li>@NotNull 驗證物件是否不為null, 無法查檢長度為0的字串</li>
+<li>@NotBlank 檢查約束字串是不是Null還有被Trim的長度是否大於0,只對字串,且會去掉前後空格.</li>
+<li>@NotEmpty 檢查約束元素是否為NULL或者是EMPTY.</li>
+</ul>
+<h4 id="booelan檢查">Booelan檢查</h4>
+<ul>
+<li>@AssertTrue 驗證 Boolean 物件是否為 true</li>
+<li>@AssertFalse 驗證 Boolean 物件是否為 false</li>
+</ul>
+<h4 id="長度檢查">長度檢查</h4>
+<ul>
+<li>@Size(min=, max=) 驗證物件(Array,Collection,Map,String)長度是否在給定的範圍之內</li>
+<li>@Length(min=, max=) Validates that the annotated string is between min and max included.</li>
+</ul>
+<h4 id="日期檢查">日期檢查</h4>
+<ul>
+<li>@Past 驗證 Date 和 Calendar 物件是否在當前時間之前,驗證成立的話被註釋的元素一定是一個過去的日期</li>
+<li>@Future 驗證 Date 和 Calendar 物件是否在當前時間之後 ,驗證成立的話被註釋的元素一定是一個將來的日期</li>
+<li>@Pattern 驗證 String 物件是否符合正則表示式的規則,被註釋的元素符合制定的正則表示式,regexp:正則表示式 flags: 指定 Pattern.Flag 的陣列,表示正則表示式的相關選項。</li>
+</ul>
+<h4 id="數值檢查">數值檢查</h4>
+<p>建議使用在Stirng,Integer型別,不建議使用在int型別上,因為表單值為空串時無法轉換為int,但可以轉換為Stirng為&quot;&quot;,Integer為null</p>
+<ul>
+<li>@Min 驗證 Number 和 String 物件是否大等於指定的值</li>
+<li>@Max 驗證 Number 和 String 物件是否小等於指定的值</li>
+</ul>
+<h2 id="實作">實作</h2>
+<ul>
+<li>
+<p>先引依賴<code>spring-boot-starter-validation</code></p>
+</li>
+<li>
+<p>在POJO註解想要驗證的規則</p>
+</li>
+</ul>
+<p><img src="image-20220114093244914.png" alt="image-20220114093244914"></p>
+<ul>
+<li>在Controller的方法參數前加上<code>@Valid</code></li>
+</ul>
+<p><img src="image-20220114093329999.png" alt="image-20220114093329999"></p>
+<ul>
+<li>已經可以驗證了，但還能加上統一的異常管理並且返回驗證的資訊
+<ul>
+<li><code>@RestControllerAdvice = @ControllerAdvice + @ResponseBody</code></li>
+<li>意思是負責抓Controller的異常，並且用JSON格式返回</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Slf4j</span> <span style="color:#228b22">// 印在日誌
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@RestControllerAdvice</span>(basePackages = <span style="color:#cd5555">&#34;yozi.mall.product.controller&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ExceptionControllerAdvice</span> {
+
+    <span style="color:#707a7c">@ExceptionHandler</span>(MethodArgumentNotValidException.<span style="color:#658b00">class</span>) <span style="color:#228b22">// 針對哪類異常
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">handleVaildException</span>(MethodArgumentNotValidException e) {
+        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;資料驗證異常&#34;</span>, e.<span style="color:#658b00">getMessage</span>(), e.<span style="color:#658b00">getClass</span>()); <span style="color:#228b22">// 印在日誌
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 從異常中獲取資料
+</span><span style="color:#228b22"></span>        BindingResult bindingResult = e.<span style="color:#658b00">getBindingResult</span>();
+        <span style="color:#228b22">// 裝在map中返回給前端看
+</span><span style="color:#228b22"></span>        HashMap&lt;String, String&gt; errorMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+        bindingResult.<span style="color:#658b00">getFieldErrors</span>().<span style="color:#658b00">forEach</span>(fieldError -&gt; errorMap.<span style="color:#658b00">put</span>(fieldError.<span style="color:#658b00">getField</span>(),
+                fieldError.<span style="color:#658b00">getDefaultMessage</span>()));
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(400, <span style="color:#cd5555">&#34;資料驗證異常&#34;</span>).<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;data&#34;</span>, errorMap);
+    }
+}
+</code></pre></div><ul>
+<li>返回的結果範例:</li>
+</ul>
+<p><img src="image-20220114093950966.png" alt="image-20220114093950966"></p>
+<ul>
+<li>統一封裝錯誤碼，將業務代碼集中成一個枚舉類，放在<code>.common.exception</code>包下</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * @Description: 錯誤狀態碼枚舉
+</span><span style="color:#228b22"> * 錯誤碼和錯誤信息定義類
+</span><span style="color:#228b22"> * 1. 錯誤碼定義規則為5位數
+</span><span style="color:#228b22"> * 2. 前兩位表示業務場景，最後三位表示錯誤碼。例如：100001。10:通用 001:系統未知異常
+</span><span style="color:#228b22"> * 3. 維護錯誤碼后需要維護錯誤描述，將他們定義為枚舉形式
+</span><span style="color:#228b22"> * 錯誤碼列表：
+</span><span style="color:#228b22"> * 10: 通用
+</span><span style="color:#228b22"> * 001：參數格式校驗
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">enum</span> BizCodeEnum {
+    UNKNOWN_EXCEPTION(10000, <span style="color:#cd5555">&#34;系統未知異常&#34;</span>),
+    VALID_EXCEPTION(10001, <span style="color:#cd5555">&#34;參數格式校驗失敗&#34;</span>),
+</code></pre></div><p><img src="image-20220114100211320.png" alt="image-20220114100211320"></p>
+<h3 id="分組檢驗">分組檢驗</h3>
+<ul>
+<li>在POJO檢驗的註解上綁定一個接口(接口內容可以為空，起到一個標籤作用)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 品牌id
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Null</span>(message = <span style="color:#cd5555">&#34;新增不能指定Id&#34;</span>,groups = {AddGroup.<span style="color:#658b00">class</span>})
+<span style="color:#707a7c">@NotNull</span>(message = <span style="color:#cd5555">&#34;修改必須指定品牌id&#34;</span>,groups = {UpdateGroup.<span style="color:#658b00">class</span>})
+<span style="color:#707a7c">@TableId</span>
+<span style="color:#8b008b;font-weight:bold">private</span> Long brandId;
+</code></pre></div><ul>
+<li>把Controller方法參數前本來的<code>@Valid</code>換成<code>@Validated</code>
+<ul>
+<li><code>@Valid</code>為JSR303規範的，<code>@Validated</code>是由spring提供的強化版</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 標記使用修改分組
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">update</span>(<span style="color:#707a7c">@Validated</span>(UpdateGroup.<span style="color:#658b00">class</span>) <span style="color:#707a7c">@RequestBody</span> BrandEntity brand){
+	brandService.<span style="color:#658b00">updateById</span>(brand);
+      <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+  }
+</code></pre></div><ul>
+<li>但是這樣很坑，一旦啟用分組，則POJO下面每一個屬性的檢驗規則都要分到組，否則就不生效</li>
+</ul>
+<h3 id="自定義檢驗">自定義檢驗</h3>
+<blockquote>
+<p>我覺得新手學這個太超綱了，先跳過</p>
+</blockquote>
+<ul>
+<li>如果正則式還不能滿足，可以自訂，相當於自訂一個註解類</li>
+<li>參考 <a href="https://www.bilibili.com/video/BV1np4y1C7Yf?p=69&amp;spm_id_from=pageDriver">https://www.bilibili.com/video/BV1np4y1C7Yf?p=69&amp;spm_id_from=pageDriver</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-21</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220121-npm-sass-webpack/">
+			下一篇<br>node版本對應、NVS快速切換
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220120-gulimall-03-gateway/">
+			上一篇<br>後台:商品分類、網關轉發微服務、跨域
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

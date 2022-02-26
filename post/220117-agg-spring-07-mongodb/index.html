@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>MongoDB</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Spring筆記-07">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="MongoDB" />
+<meta property="og:description" content="尚硅谷Spring筆記-07" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220117-agg-spring-07-mongodb/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-17T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MongoDB"/>
+<meta name="twitter:description" content="尚硅谷Spring筆記-07"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mongodb" onclick="onNavClick(`#mongodb-nav`)" id="mongodb-nav">
+									MongoDB
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#前置-nav`)" id="前置-nav">
+									前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ba%ab%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#庫操作-nav`)" id="庫操作-nav">
+									庫操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e5%90%8d%e9%99%90%e5%88%b6" onclick="onNavClick(`#命名限制-nav`)" id="命名限制-nav">
+									命名限制
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e5%b0%8d%e6%87%89" onclick="onNavClick(`#名詞對應-nav`)" id="名詞對應-nav">
+									名詞對應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%86%e5%90%88%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#集合操作-nav`)" id="集合操作-nav">
+									集合操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%87%e6%aa%94%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#文檔操作-nav`)" id="文檔操作-nav">
+									文檔操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%9c%e5%90%88%e7%af%84%e4%be%8b" onclick="onNavClick(`#綜合範例-nav`)" id="綜合範例-nav">
+									綜合範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5java" onclick="onNavClick(`#連接java-nav`)" id="連接java-nav">
+									連接Java
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mongotemplate" onclick="onNavClick(`#mongotemplate-nav`)" id="mongotemplate-nav">
+									MongoTemplate
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a2%9e" onclick="onNavClick(`#增-nav`)" id="增-nav">
+									增
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5" onclick="onNavClick(`#查-nav`)" id="查-nav">
+									查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ad%a3%e5%89%87%e6%9f%a5" onclick="onNavClick(`#正則查-nav`)" id="正則查-nav">
+									正則查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%9f%a5" onclick="onNavClick(`#分頁查-nav`)" id="分頁查-nav">
+									分頁查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9" onclick="onNavClick(`#改-nav`)" id="改-nav">
+									改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa" onclick="onNavClick(`#刪-nav`)" id="刪-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mongorepository" onclick="onNavClick(`#mongorepository-nav`)" id="mongorepository-nav">
+									MongoRepository
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9f%a5-1" onclick="onNavClick(`#查-1-nav`)" id="查-1-nav">
+									查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%9f%a5-1" onclick="onNavClick(`#分頁查-1-nav`)" id="分頁查-1-nav">
+									分頁查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9-1" onclick="onNavClick(`#改-1-nav`)" id="改-1-nav">
+									改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa-1" onclick="onNavClick(`#刪-1-nav`)" id="刪-1-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e6%96%b9%e6%b3%95" onclick="onNavClick(`#自訂方法-nav`)" id="自訂方法-nav">
+									自訂方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mongodb" onclick="onNavClick(`#mongodb-nav`)" id="mongodb-nav">
+									MongoDB
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#前置-nav`)" id="前置-nav">
+									前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ba%ab%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#庫操作-nav`)" id="庫操作-nav">
+									庫操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e5%90%8d%e9%99%90%e5%88%b6" onclick="onNavClick(`#命名限制-nav`)" id="命名限制-nav">
+									命名限制
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8d%e8%a9%9e%e5%b0%8d%e6%87%89" onclick="onNavClick(`#名詞對應-nav`)" id="名詞對應-nav">
+									名詞對應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9b%86%e5%90%88%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#集合操作-nav`)" id="集合操作-nav">
+									集合操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%87%e6%aa%94%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#文檔操作-nav`)" id="文檔操作-nav">
+									文檔操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%9c%e5%90%88%e7%af%84%e4%be%8b" onclick="onNavClick(`#綜合範例-nav`)" id="綜合範例-nav">
+									綜合範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5java" onclick="onNavClick(`#連接java-nav`)" id="連接java-nav">
+									連接Java
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mongotemplate" onclick="onNavClick(`#mongotemplate-nav`)" id="mongotemplate-nav">
+									MongoTemplate
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a2%9e" onclick="onNavClick(`#增-nav`)" id="增-nav">
+									增
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5" onclick="onNavClick(`#查-nav`)" id="查-nav">
+									查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ad%a3%e5%89%87%e6%9f%a5" onclick="onNavClick(`#正則查-nav`)" id="正則查-nav">
+									正則查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%9f%a5" onclick="onNavClick(`#分頁查-nav`)" id="分頁查-nav">
+									分頁查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9" onclick="onNavClick(`#改-nav`)" id="改-nav">
+									改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa" onclick="onNavClick(`#刪-nav`)" id="刪-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mongorepository" onclick="onNavClick(`#mongorepository-nav`)" id="mongorepository-nav">
+									MongoRepository
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%9f%a5-1" onclick="onNavClick(`#查-1-nav`)" id="查-1-nav">
+									查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%9f%a5-1" onclick="onNavClick(`#分頁查-1-nav`)" id="分頁查-1-nav">
+									分頁查
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%94%b9-1" onclick="onNavClick(`#改-1-nav`)" id="改-1-nav">
+									改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%aa-1" onclick="onNavClick(`#刪-1-nav`)" id="刪-1-nav">
+									刪
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e6%96%b9%e6%b3%95" onclick="onNavClick(`#自訂方法-nav`)" id="自訂方法-nav">
+									自訂方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mongodb.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    MongoDB
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Spring筆記-07
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-17 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/spring%E7%B7%9A%E4%B8%8A%E8%AA%B2">Spring線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/nosql">nosql</a>
+                                &nbsp;
+                            
+                                <a href="/tags/docker">docker</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="mongodb">MongoDB</h1>
+<blockquote>
+<p>茫狗DB</p>
+</blockquote>
+<ul>
+<li>屬於NoSQL，非關聯式</li>
+<li>以JSON的格式儲存資料</li>
+<li>強處:高併發讀寫、巨量資料、擴展好</li>
+<li>弱點:交易</li>
+</ul>
+<h2 id="前置">前置</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#228b22"># 拉取鏡像</span>
+docker pull mongo:latest
+
+<span style="color:#228b22"># 創建和啓動容器</span>
+docker run --name mymongo -p 27017:27017 -d mongo
+
+<span style="color:#228b22"># 進入容器</span>
+docker <span style="color:#658b00">exec</span> -it mymongo /bin/bash
+
+<span style="color:#228b22"># 使用MongoDB客户端進行操作</span>
+mongo
+</code></pre></div><h2 id="庫操作">庫操作</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">//<span style="color:#bbb"> </span>Help查看命令提示<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.help()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">切換</span>/<span style="color:#a61717;background-color:#e3d2d2">創建資料庫</span>(<span style="color:#a61717;background-color:#e3d2d2">如果不存在就創建</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>test<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查詢所有資料庫</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>dbs<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">刪除當前使用資料庫</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.dropDatabase()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查看當前使用的資料庫</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">或</span><span style="color:#bbb"> </span>db.getName()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">顯示當前</span>db狀態<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.stats()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">當前</span>db版本<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">version</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查看當前</span>db的鏈接機器地址<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.getMongo()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>剛建立的db在show看不到，直到其中存了實際的資料才算數</li>
+</ul>
+<h3 id="命名限制">命名限制</h3>
+<ul>
+<li>不能是空字符串<code>&quot;&quot;</code></li>
+<li>不得含有<code>' '</code>(空格)、<code>.</code>、<code>$</code>、<code>/</code>、<code>\</code>和<code>\0</code> (空字符)</li>
+<li>避免用<code>_</code>下畫線開頭</li>
+<li>應全部小寫</li>
+<li>最多64字節</li>
+</ul>
+<h2 id="名詞對應">名詞對應</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">SQL</th>
+<th style="text-align:left">Mongo</th>
+<th style="text-align:left">解釋/説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">table</td>
+<td style="text-align:left">collection</td>
+<td style="text-align:left">表/集合</td>
+</tr>
+<tr>
+<td style="text-align:left">row</td>
+<td style="text-align:left">document</td>
+<td style="text-align:left">行/文檔，即一筆資料(如:張三&hellip;)</td>
+</tr>
+<tr>
+<td style="text-align:left">column</td>
+<td style="text-align:left">field</td>
+<td style="text-align:left">字段/域，欄位(如:姓名)</td>
+</tr>
+<tr>
+<td style="text-align:left">index</td>
+<td style="text-align:left">index</td>
+<td style="text-align:left">索引</td>
+</tr>
+<tr>
+<td style="text-align:left">join</td>
+<td style="text-align:left">embedded</td>
+<td style="text-align:left">表連接，MongoDB叫嵌入但略有不同</td>
+</tr>
+<tr>
+<td style="text-align:left">primary key</td>
+<td style="text-align:left">_id</td>
+<td style="text-align:left">主鍵，MongoDB自動將_id當主鍵，沒指定就自動創</td>
+</tr>
+</tbody>
+</table>
+<h2 id="集合操作">集合操作</h2>
+<blockquote>
+<p>相當於操作&quot;表&quot;</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">創建集合</span>(options為可選項<span style="color:#a61717;background-color:#e3d2d2">，可指定大小等等</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.createCollection(name,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">options</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">看</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>collections<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">刪</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.collection.<span style="color:#8b008b;font-weight:bold">drop</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>避免用<code>system.</code>開頭，那是系統保留的集合</li>
+<li>區分大小寫，spring中集合通常對應Java的實體類的集合，故以大寫開頭</li>
+</ul>
+<h2 id="文檔操作">文檔操作</h2>
+<blockquote>
+<p>相當於操作&quot;一筆資料&quot;</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">增</span><span style="color:#bbb"> </span>(<span style="color:#a61717;background-color:#e3d2d2">如果有指定</span>_id則為更新或用insertOne)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.<span style="color:#8b008b;font-weight:bold">insert</span>(document)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">增</span>-<span style="color:#a61717;background-color:#e3d2d2">更新</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.insertOne<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.find(query,<span style="color:#bbb"> </span>projection)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">漂亮查</span>(<span style="color:#a61717;background-color:#e3d2d2">易讀</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.find().pretty()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">改</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.<span style="color:#8b008b;font-weight:bold">update</span>()<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">刪</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.COLLECTION_NAME.remove()<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>區分大小寫</li>
+<li>鍵值對有序</li>
+<li>KEY不可重複</li>
+</ul>
+<h2 id="綜合範例">綜合範例</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">use<span style="color:#bbb"> </span>testdb<span style="color:#bbb"> </span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">切換到測試庫</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">創建資料</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.<span style="color:#8b008b;font-weight:bold">insert</span>(<span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#cd5555">&#34;Tom&#34;</span>,age:<span style="color:#b452cd">21</span>,adult:<span style="color:#8b008b;font-weight:bold">true</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.<span style="color:#8b008b;font-weight:bold">insert</span>(<span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#cd5555">&#34;John&#34;</span>,age:<span style="color:#b452cd">26</span>,adult:<span style="color:#8b008b;font-weight:bold">true</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.<span style="color:#8b008b;font-weight:bold">insert</span>(<span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#cd5555">&#34;Mary&#34;</span>,age:<span style="color:#b452cd">5</span>,adult:<span style="color:#8b008b;font-weight:bold">false</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.<span style="color:#8b008b;font-weight:bold">insert</span>(<span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#cd5555">&#34;Tim&#34;</span>,age:<span style="color:#b452cd">32</span>,adult:<span style="color:#8b008b;font-weight:bold">true</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.find()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">結果會類似這樣</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#34;_id&#34;</span><span style="color:#bbb"> </span>:<span style="color:#bbb"> </span>ObjectId(<span style="color:#cd5555">&#34;61da9528280ffa000f93a5b3&#34;</span>),<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;name&#34;</span><span style="color:#bbb"> </span>:<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;Tom&#34;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;age&#34;</span><span style="color:#bbb"> </span>:<span style="color:#bbb"> </span><span style="color:#b452cd">21</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#34;adult&#34;</span><span style="color:#bbb"> </span>:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">true</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">}</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>ObjectId</code>是基於時間、機器、PID等等遞增創造，總之在一台機器上不會重複</li>
+<li>key可以不用包引號，字串單引號跟雙引號沒差，但為了統一最好都用雙引號</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">db.<span style="color:#8b008b;font-weight:bold">user</span>.find(<span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#cd5555">&#34;Tom&#34;</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">只想顯示某些欄位</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>name,<span style="color:#bbb"> </span>age<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>age<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">21</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.find(<span style="color:#a61717;background-color:#e3d2d2">{</span>age:<span style="color:#b452cd">21</span><span style="color:#a61717;background-color:#e3d2d2">}</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span>name:<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span>age:<span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">排序，</span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">為升序，</span>-<span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">為降序</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>age<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.find().sort(<span style="color:#a61717;background-color:#e3d2d2">{</span>age:<span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>age<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">21</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">26</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">32</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.find(<span style="color:#a61717;background-color:#e3d2d2">{</span>age:<span style="color:#a61717;background-color:#e3d2d2">{$</span><span style="color:#8b008b;font-weight:bold">in</span>:[<span style="color:#b452cd">21</span>,<span style="color:#b452cd">26</span>,<span style="color:#b452cd">32</span>]<span style="color:#a61717;background-color:#e3d2d2">}}</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>//<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>age<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#b452cd">20</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>db.<span style="color:#8b008b;font-weight:bold">user</span>.find(<span style="color:#a61717;background-color:#e3d2d2">{</span>age:<span style="color:#a61717;background-color:#e3d2d2">{$</span>gt:<span style="color:#b452cd">20</span><span style="color:#a61717;background-color:#e3d2d2">}}</span>).<span style="color:#8b008b;font-weight:bold">count</span>()<span style="color:#bbb">
+</span></code></pre></div><hr>
+<h1 id="連接java">連接Java</h1>
+<ul>
+<li>新建一個spring initializr模組</li>
+</ul>
+<p><img src="image-20220109164217073.png" alt="image-20220109164217073"></p>
+<ul>
+<li>到<code>application.properties</code>新增連線</li>
+</ul>
+<pre tabindex="0"><code>spring.data.mongodb.uri=mongodb://localhost:27017/test
+</code></pre><ul>
+<li>建立一個測試用的User類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#707a7c">@Document</span>(<span style="color:#cd5555">&#34;User&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> {
+
+    <span style="color:#707a7c">@Id</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String id;
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer age;
+    <span style="color:#8b008b;font-weight:bold">private</span> DateTime createDate;
+}
+</code></pre></div><ul>
+<li><code>@id</code>表示主鍵</li>
+</ul>
+<h2 id="mongotemplate">MongoTemplate</h2>
+<ul>
+<li>
+<p>使用Spring提供的MongoTemplate類執行CRUD</p>
+<ul>
+<li>優勢在於靈活</li>
+</ul>
+</li>
+<li>
+<p>直接引用類，造一個操作用的模板</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
+<span style="color:#8b008b;font-weight:bold">private</span> MongoTemplate mongoTemplate;
+</code></pre></div><h3 id="增">增</h3>
+<ul>
+<li>返回的是完整的物件訊息</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() {
+    User user = <span style="color:#8b008b;font-weight:bold">new</span> User();
+    user.<span style="color:#658b00">setId</span>(<span style="color:#cd5555">&#34;01&#34;</span>);
+    user.<span style="color:#658b00">setName</span>(<span style="color:#cd5555">&#34;Tom&#34;</span>);
+    user.<span style="color:#658b00">setAge</span>(20);
+    user.<span style="color:#658b00">setCreateDate</span>(<span style="color:#8b008b;font-weight:bold">new</span> DateTime());
+    User insert = mongoTemplate.<span style="color:#658b00">insert</span>(user);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(insert);
+}
+</code></pre></div><h3 id="查">查</h3>
+<ul>
+<li>需要指定返回的<code>.class</code></li>
+<li>id要用<code>&quot;&quot;</code>包住</li>
+<li>注意query導的包<code>org.springframework.data.mongodb.core.query</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test2</span>() {
+    <span style="color:#228b22">// 查全部
+</span><span style="color:#228b22"></span>    List&lt;User&gt; all = mongoTemplate.<span style="color:#658b00">findAll</span>(User.<span style="color:#658b00">class</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(all);
+
+    <span style="color:#228b22">// id查
+</span><span style="color:#228b22"></span>    User byId01 = mongoTemplate.<span style="color:#658b00">findById</span>(<span style="color:#cd5555">&#34;01&#34;</span>, User.<span style="color:#658b00">class</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(byId01);
+
+    <span style="color:#228b22">// 條件查
+</span><span style="color:#228b22"></span>    Query query = <span style="color:#8b008b;font-weight:bold">new</span> Query(Criteria.<span style="color:#658b00">where</span>(<span style="color:#cd5555">&#34;name&#34;</span>).<span style="color:#658b00">is</span>(<span style="color:#cd5555">&#34;Tom&#34;</span>).<span style="color:#658b00">and</span>(<span style="color:#cd5555">&#34;age&#34;</span>).<span style="color:#658b00">is</span>(20));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(mongoTemplate.<span style="color:#658b00">find</span>(query, User.<span style="color:#658b00">class</span>));
+}
+</code></pre></div><h4 id="正則查">正則查</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test3</span>() {
+    <span style="color:#228b22">// 查name包含&#34;om&#34;的
+</span><span style="color:#228b22"></span>    String name = <span style="color:#cd5555">&#34;om&#34;</span>;
+    <span style="color:#228b22">// 先寫正則式
+</span><span style="color:#228b22"></span>    String regex = String.<span style="color:#658b00">format</span>(<span style="color:#cd5555">&#34;%s%s%s&#34;</span>, <span style="color:#cd5555">&#34;^.*&#34;</span>, name, <span style="color:#cd5555">&#34;.*$&#34;</span>);
+    <span style="color:#228b22">// 引入pattern物件，選特性例如忽略大小寫,Pattern.CASE_INSENSITIVE
+</span><span style="color:#228b22"></span>    Pattern pattern = Pattern.<span style="color:#658b00">compile</span>(regex,Pattern.<span style="color:#658b00">CASE_INSENSITIVE</span>);
+    Query query = <span style="color:#8b008b;font-weight:bold">new</span> Query(Criteria.<span style="color:#658b00">where</span>(<span style="color:#cd5555">&#34;name&#34;</span>).<span style="color:#658b00">regex</span>(pattern));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(mongoTemplate.<span style="color:#658b00">find</span>(query, User.<span style="color:#658b00">class</span>));
+}
+</code></pre></div><h4 id="分頁查">分頁查</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test4</span>() {
+    <span style="color:#228b22">// 設定當前頁與一頁幾筆
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = 1;
+    <span style="color:#00688b;font-weight:bold">int</span> pageSize = 3;
+    <span style="color:#228b22">// 查總筆數
+</span><span style="color:#228b22"></span>    Query query = <span style="color:#8b008b;font-weight:bold">new</span> Query(); <span style="color:#228b22">// 無條件
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(mongoTemplate.<span style="color:#658b00">count</span>(query, User.<span style="color:#658b00">class</span>));
+    <span style="color:#228b22">// 分頁查，還是那個熟悉的公式
+</span><span style="color:#228b22"></span>    List&lt;User&gt; userList = mongoTemplate.<span style="color:#658b00">find</span>(query.<span style="color:#658b00">skip</span>((pageNo - 1) * pageSize).<span style="color:#658b00">limit</span>(pageSize), User.<span style="color:#658b00">class</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userList);
+}
+</code></pre></div><h3 id="改">改</h3>
+<blockquote>
+<p>先查再改</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateUser</span>() {
+    Query query = <span style="color:#8b008b;font-weight:bold">new</span> Query(Criteria.<span style="color:#658b00">where</span>(<span style="color:#cd5555">&#34;_id&#34;</span>).<span style="color:#658b00">is</span>(<span style="color:#cd5555">&#34;01&#34;</span>));
+    Update update = <span style="color:#8b008b;font-weight:bold">new</span> Update();
+    update.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;age&#34;</span>, 20);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(mongoTemplate.<span style="color:#658b00">upsert</span>(query, update, User.<span style="color:#658b00">class</span>));
+}
+</code></pre></div><h3 id="刪">刪</h3>
+<blockquote>
+<p>也是要先查再刪</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">deleteUser</span>() {
+    Query query = <span style="color:#8b008b;font-weight:bold">new</span> Query(Criteria.<span style="color:#658b00">where</span>(<span style="color:#cd5555">&#34;_id&#34;</span>).<span style="color:#658b00">is</span>(<span style="color:#cd5555">&#34;01&#34;</span>));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(mongoTemplate.<span style="color:#658b00">remove</span>(query, User.<span style="color:#658b00">class</span>));
+}
+</code></pre></div><hr>
+<h2 id="mongorepository">MongoRepository</h2>
+<ul>
+<li>SpringData提供的<code>MongoRepository</code>類也能CRUD
+<ul>
+<li>優勢在於簡單</li>
+</ul>
+</li>
+<li>首先造一個接口繼承MongoRepository，然後創建實例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">UserRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> MongoRepository&lt;User,String &gt; {}
+
+<span style="color:#707a7c">@Autowired</span>
+<span style="color:#8b008b;font-weight:bold">private</span> UserRepository userRepo;
+</code></pre></div><h3 id="查-1">查</h3>
+<blockquote>
+<p>insert一樣就不多說</p>
+</blockquote>
+<ul>
+<li>條件查變成用Example類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 查全部
+</span><span style="color:#228b22"></span>List&lt;User&gt; all = userRepo.<span style="color:#658b00">findAll</span>();
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(all);
+
+<span style="color:#228b22">// 查id
+</span><span style="color:#228b22"></span>User byId01 = userRepo.<span style="color:#658b00">findById</span>(<span style="color:#cd5555">&#34;001&#34;</span>).<span style="color:#658b00">get</span>();
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(byId01);
+
+<span style="color:#228b22">// 條件查
+</span><span style="color:#228b22"></span>User user = <span style="color:#8b008b;font-weight:bold">new</span> User();
+user.<span style="color:#658b00">setAge</span>(10);
+Example&lt;User&gt; userExample = Example.<span style="color:#658b00">of</span>(user);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userRepo.<span style="color:#658b00">findAll</span>(userExample));
+
+<span style="color:#228b22">// 模糊查，用ExampleMatcher
+</span><span style="color:#228b22"></span>ExampleMatcher em = ExampleMatcher.<span style="color:#658b00">matching</span>().<span style="color:#658b00">withStringMatcher</span>(ExampleMatcher.<span style="color:#658b00">StringMatcher</span>.<span style="color:#658b00">CONTAINING</span>);
+User user = <span style="color:#8b008b;font-weight:bold">new</span> User();
+user.<span style="color:#658b00">setName</span>(<span style="color:#cd5555">&#34;om&#34;</span>);
+Example&lt;User&gt; userExample = Example.<span style="color:#658b00">of</span>(user, em);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(userRepo.<span style="color:#658b00">findAll</span>(userExample));
+</code></pre></div><h4 id="分頁查-1">分頁查</h4>
+<ul>
+<li>注意0是第一頁</li>
+<li>返回的是一個Page物件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test4</span>() {
+    <span style="color:#228b22">// 設定當前頁與一頁幾筆，注意0是第一頁
+</span><span style="color:#228b22"></span>    PageRequest pageRequest = PageRequest.<span style="color:#658b00">of</span>(0, 3);
+    <span style="color:#228b22">// 分頁查
+</span><span style="color:#228b22"></span>    Page&lt;User&gt; all = userRepo.<span style="color:#658b00">findAll</span>(pageRequest);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;TotalPage = &#34;</span> + all.<span style="color:#658b00">getTotalPages</span>());
+    List&lt;User&gt; content = all.<span style="color:#658b00">getContent</span>();
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;content = &#34;</span> + content);
+}
+</code></pre></div><h3 id="改-1">改</h3>
+<blockquote>
+<p>先查再改</p>
+</blockquote>
+<ul>
+<li>save方法，如果_id已存在就會修改覆蓋，否則是新增
+<ul>
+<li>mongo官方的<code>save</code>操作也是這樣，但是新版已經被廢棄，被<code>insertOne()</code>取代</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">//修改
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateUser</span>() {
+    User id01 = userRepo.<span style="color:#658b00">findById</span>(<span style="color:#cd5555">&#34;01&#34;</span>).<span style="color:#658b00">get</span>();
+    id01.<span style="color:#658b00">setName</span>(<span style="color:#cd5555">&#34;9999&#34;</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;userRepo.save(id01) = &#34;</span> + userRepo.<span style="color:#658b00">save</span>(id01));
+}
+</code></pre></div><h3 id="刪-1">刪</h3>
+<ul>
+<li>沒有返回值，就不聲不響地刪除掉</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">deleteUser</span>() {
+    userRepo.<span style="color:#658b00">deleteById</span>(<span style="color:#cd5555">&#34;001&#34;</span>);
+}
+</code></pre></div><h3 id="自訂方法">自訂方法</h3>
+<ul>
+<li>還記得一開始繼承MongoRepository的接口嗎，Spring Data在這邊提供強力支援</li>
+<li>只要符合規範，接口內定義的方法就會自動被實現，無須手動創造</li>
+</ul>
+<p><img src="image-20220110161257673.png" alt="image-20220110161257673"></p>
+<p><img src="image-20220110161303622.png" alt="image-20220110161303622"></p>
+<ul>
+<li>簡單來說就是以find、read、get開頭，符合bean中的屬性並以駝峰相連，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Repository</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">HospitalRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> MongoRepository&lt;Hospital, String&gt; {
+    Hospital <span style="color:#008b45">getHospitalByHoscode</span>(String hoscode);
+}
+</code></pre></div><ul>
+<li>也就是說當想操作bean的時候，直接在service層用xxxRepository.硬寫對應的方法，IDEA會報紅然後直接alt+enter快速產生，完成</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-17</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220118-agg-spring-08/">
+			下一篇<br>醫院管理API &amp; 服務註冊與發現
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220116-agg-spring-06/">
+			上一篇<br>字典檔模組、Spring Cache&#43;Redis、Nginx
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

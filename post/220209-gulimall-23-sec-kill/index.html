@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>秒殺優惠模組、Cron表達式</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-23">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="秒殺優惠模組、Cron表達式" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-23" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220209-gulimall-23-sec-kill/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-09T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="秒殺優惠模組、Cron表達式"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-23"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%92%e6%ae%ba%e5%84%aa%e6%83%a0%e6%b4%bb%e5%8b%95" onclick="onNavClick(`#秒殺優惠活動-nav`)" id="秒殺優惠活動-nav">
+									秒殺優惠活動
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#流程-nav`)" id="流程-nav">
+									流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c" onclick="onNavClick(`#網關-nav`)" id="網關-nav">
+									網關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%92%e6%ae%ba%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#秒殺模組-nav`)" id="秒殺模組-nav">
+									秒殺模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cron%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#cron表達式-nav`)" id="cron表達式-nav">
+									Cron表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring%e4%b8%ad%e7%9a%84cron" onclick="onNavClick(`#spring中的cron-nav`)" id="spring中的cron-nav">
+									Spring中的cron
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring%e7%9a%84%e7%95%b0%e6%ad%a5%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#spring的異步任務-nav`)" id="spring的異步任務-nav">
+									Spring的異步任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e6%9e%b6%e7%a7%92%e6%ae%ba%e5%95%86%e5%93%81" onclick="onNavClick(`#上架秒殺商品-nav`)" id="上架秒殺商品-nav">
+									上架秒殺商品
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e6%99%82%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#定時任務-nav`)" id="定時任務-nav">
+									定時任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e6%9e%b6%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#上架服務-nav`)" id="上架服務-nav">
+									上架服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%88%90%e5%8a%9f%e4%b8%8a%e6%9e%b6" onclick="onNavClick(`#成功上架-nav`)" id="成功上架-nav">
+									成功上架
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%bc%e9%a6%96%e9%a0%81%e5%b1%95%e7%a4%ba" onclick="onNavClick(`#於首頁展示-nav`)" id="於首頁展示-nav">
+									於首頁展示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a4%e6%96%b7%e5%95%86%e5%93%81%e6%98%af%e5%90%a6%e6%ad%a3%e5%9c%a8%e6%b4%bb%e5%8b%95" onclick="onNavClick(`#判斷商品是否正在活動-nav`)" id="判斷商品是否正在活動-nav">
+									判斷商品是否正在活動
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e5%89%8d%e7%ab%af" onclick="onNavClick(`#修改前端-nav`)" id="修改前端-nav">
+									修改前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%b7%e8%a1%8c%e7%a7%92%e6%ae%ba" onclick="onNavClick(`#執行秒殺-nav`)" id="執行秒殺-nav">
+									執行秒殺
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b6%88%e8%b2%bb%e6%b6%88%e6%81%af" onclick="onNavClick(`#消費消息-nav`)" id="消費消息-nav">
+									消費消息
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%81%e5%ae%9a%e7%a7%92%e6%ae%ba%e9%9a%8a%e5%88%97" onclick="onNavClick(`#綁定秒殺隊列-nav`)" id="綁定秒殺隊列-nav">
+									綁定秒殺隊列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%a3%e8%81%bd%e7%a7%92%e6%ae%ba%e9%9a%8a%e5%88%97" onclick="onNavClick(`#監聽秒殺隊列-nav`)" id="監聽秒殺隊列-nav">
+									監聽秒殺隊列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e7%a7%92%e6%ae%ba%e8%a8%82%e5%96%ae" onclick="onNavClick(`#創建秒殺訂單-nav`)" id="創建秒殺訂單-nav">
+									創建秒殺訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e7%bf%92%e6%b6%88%e6%81%af%e9%9a%8a%e5%88%97%e7%94%a8%e6%b3%95" onclick="onNavClick(`#複習消息隊列用法-nav`)" id="複習消息隊列用法-nav">
+									複習消息隊列用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%92%e6%ae%ba%e5%84%aa%e6%83%a0%e6%b4%bb%e5%8b%95" onclick="onNavClick(`#秒殺優惠活動-nav`)" id="秒殺優惠活動-nav">
+									秒殺優惠活動
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e7%a8%8b" onclick="onNavClick(`#流程-nav`)" id="流程-nav">
+									流程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c" onclick="onNavClick(`#網關-nav`)" id="網關-nav">
+									網關
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%92%e6%ae%ba%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#秒殺模組-nav`)" id="秒殺模組-nav">
+									秒殺模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cron%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#cron表達式-nav`)" id="cron表達式-nav">
+									Cron表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring%e4%b8%ad%e7%9a%84cron" onclick="onNavClick(`#spring中的cron-nav`)" id="spring中的cron-nav">
+									Spring中的cron
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring%e7%9a%84%e7%95%b0%e6%ad%a5%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#spring的異步任務-nav`)" id="spring的異步任務-nav">
+									Spring的異步任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e6%9e%b6%e7%a7%92%e6%ae%ba%e5%95%86%e5%93%81" onclick="onNavClick(`#上架秒殺商品-nav`)" id="上架秒殺商品-nav">
+									上架秒殺商品
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e6%99%82%e4%bb%bb%e5%8b%99" onclick="onNavClick(`#定時任務-nav`)" id="定時任務-nav">
+									定時任務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e6%9e%b6%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#上架服務-nav`)" id="上架服務-nav">
+									上架服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%88%90%e5%8a%9f%e4%b8%8a%e6%9e%b6" onclick="onNavClick(`#成功上架-nav`)" id="成功上架-nav">
+									成功上架
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%bc%e9%a6%96%e9%a0%81%e5%b1%95%e7%a4%ba" onclick="onNavClick(`#於首頁展示-nav`)" id="於首頁展示-nav">
+									於首頁展示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a4%e6%96%b7%e5%95%86%e5%93%81%e6%98%af%e5%90%a6%e6%ad%a3%e5%9c%a8%e6%b4%bb%e5%8b%95" onclick="onNavClick(`#判斷商品是否正在活動-nav`)" id="判斷商品是否正在活動-nav">
+									判斷商品是否正在活動
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9%e5%89%8d%e7%ab%af" onclick="onNavClick(`#修改前端-nav`)" id="修改前端-nav">
+									修改前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%b7%e8%a1%8c%e7%a7%92%e6%ae%ba" onclick="onNavClick(`#執行秒殺-nav`)" id="執行秒殺-nav">
+									執行秒殺
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b6%88%e8%b2%bb%e6%b6%88%e6%81%af" onclick="onNavClick(`#消費消息-nav`)" id="消費消息-nav">
+									消費消息
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%81%e5%ae%9a%e7%a7%92%e6%ae%ba%e9%9a%8a%e5%88%97" onclick="onNavClick(`#綁定秒殺隊列-nav`)" id="綁定秒殺隊列-nav">
+									綁定秒殺隊列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%a3%e8%81%bd%e7%a7%92%e6%ae%ba%e9%9a%8a%e5%88%97" onclick="onNavClick(`#監聽秒殺隊列-nav`)" id="監聽秒殺隊列-nav">
+									監聽秒殺隊列
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%ba%e7%a7%92%e6%ae%ba%e8%a8%82%e5%96%ae" onclick="onNavClick(`#創建秒殺訂單-nav`)" id="創建秒殺訂單-nav">
+									創建秒殺訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a4%87%e7%bf%92%e6%b6%88%e6%81%af%e9%9a%8a%e5%88%97%e7%94%a8%e6%b3%95" onclick="onNavClick(`#複習消息隊列用法-nav`)" id="複習消息隊列用法-nav">
+									複習消息隊列用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    秒殺優惠模組、Cron表達式
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-23
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-09 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="秒殺優惠活動">秒殺優惠活動</h1>
+<h2 id="流程">流程</h2>
+<p><img src="image-20220206174238826.png" alt="image-20220206174238826"></p>
+<ul>
+<li>秒殺分兩部分，一是營運人員後台系統新增秒殺場次到DB，然後關聯商品到場次中</li>
+<li>後台系統新增場次隸屬於Coupon優惠模組之下</li>
+</ul>
+<p><img src="image-20220206140702854.png" alt="image-20220206140702854"></p>
+<ul>
+<li>這邊把活動的訊息封裝到資料庫，大部分生成器都做好了，只有少數搜尋條件等等要調整，就不一一列出</li>
+</ul>
+<h2 id="網關">網關</h2>
+<ul>
+<li>
+<p>注意，後台是網址帶有<code>/api/</code>，請求來自<code>renren-fast-admin</code>的(例如營運人員上架商品、促銷活動)，再重寫URL轉發給其他模組</p>
+</li>
+<li>
+<p>用戶訪問商城網站，是來自nginx轉發的，斷言是<code>Host=cart.mall.com</code></p>
+</li>
+<li>
+<p>application.yml</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>coupon_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://coupon<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Path=/api/coupon/**<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- RewritePath=/api/(?&lt;segment&gt;.*),/$\{segment}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#8b008b;font-weight:bold">id</span>:<span style="color:#bbb"> </span>mall_seckill_route<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">uri</span>:<span style="color:#bbb"> </span>lb://seckill<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">predicates</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- Host=seckill.mall.com<span style="color:#bbb">
+</span></code></pre></div><h1 id="秒殺模組">秒殺模組</h1>
+<ul>
+<li>這邊負責實際業務邏輯的執行，秒殺有瞬間高併發的特點，必須要做限流＋異步＋緩存 + 頁面靜態化+ 獨立部署，還需要處理定時任務等等</li>
+<li>定時任務將最近三天的場次 + 關聯商品上傳到redis中
+<ul>
+<li>高併發用redis</li>
+</ul>
+</li>
+</ul>
+<h2 id="cron表達式">Cron表達式</h2>
+<ul>
+<li>用來定義定時任務的週期</li>
+<li>由6個空格分開7個域</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">域</th>
+<th style="text-align:center">是否必填</th>
+<th style="text-align:center">值以及範圍</th>
+<th style="text-align:center">通配符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">秒</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">0-59</td>
+<td style="text-align:center">, - * /</td>
+</tr>
+<tr>
+<td style="text-align:center">分</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">0-59</td>
+<td style="text-align:center">, - * /</td>
+</tr>
+<tr>
+<td style="text-align:center">時</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">0-23</td>
+<td style="text-align:center">, - * /</td>
+</tr>
+<tr>
+<td style="text-align:center">日</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">1-31</td>
+<td style="text-align:center">, - * ? / L W</td>
+</tr>
+<tr>
+<td style="text-align:center">月</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">1-12 或 JAN-DEC</td>
+<td style="text-align:center">, - * /</td>
+</tr>
+<tr>
+<td style="text-align:center">周</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">1-7 或 SUN-SAT</td>
+<td style="text-align:center">, - * ? / L #</td>
+</tr>
+<tr>
+<td style="text-align:center">年</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">1970-2099</td>
+<td style="text-align:center">, - * /</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>最低單位是秒，第七位的年可以省略</li>
+<li><code>-</code>表示之間，在秒的域寫<code>1-3</code>表示<code>1,2,3</code>秒都要執行一次</li>
+<li><code>/</code>表示間隔週期，在秒的域寫<code>5/10</code>表示從第5秒開始，每10秒執行一次</li>
+<li><code>*</code>表示每，<code>?</code>表示不指定(例如要在每月的8號觸發一個操作，但不關心是周幾 <code>0 0 0 8 * ?</code>)</li>
+<li>大致懂就好，其他不用太關心，很多線上工具可以生成
+<ul>
+<li>例如 <a href="https://www.bejson.com/othertools/cron/">https://www.bejson.com/othertools/cron/</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="spring中的cron">Spring中的cron</h3>
+<ul>
+<li>在類上啟用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Component</span>
+<span style="color:#707a7c">@EnableScheduling</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HelloScheduled</span> {
+</code></pre></div><ul>
+<li>在方法使用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Scheduled</span>(cron = <span style="color:#cd5555">&#34;*/5 * * ? * 4&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">hello</span>() {
+</code></pre></div><ul>
+<li>設定在<code>spring.task.scheduling</code></li>
+</ul>
+<h4 id="坑">坑</h4>
+<ul>
+<li>
+<p>在Spring中表達式是6位組成，不允許第七位的年份</p>
+</li>
+<li>
+<p>在周幾的的位置，1-7代表周一到周日</p>
+</li>
+<li>
+<p>預設會阻塞，解法:</p>
+<ul>
+<li>把業務提交到線程池，並且設定線程池大小，然而某些版本有bug</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {  },execute);
+
+<span style="color:#228b22">// application.properties
+</span><span style="color:#228b22"></span>spring.<span style="color:#658b00">task</span>.<span style="color:#658b00">scheduling</span>.<span style="color:#658b00">pool</span>.<span style="color:#658b00">size</span>: 5
+</code></pre></div><ul>
+<li>使用Spring的異步任務</li>
+</ul>
+<h2 id="spring的異步任務">Spring的異步任務</h2>
+<ul>
+<li>在類上啟用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@EnableAsync</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HelloScheduled</span> {
+</code></pre></div><ul>
+<li>在方法使用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Async</span>
+<span style="color:#707a7c">@Scheduled</span>(cron = <span style="color:#cd5555">&#34;*/5 * * ? * 4&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">hello</span>() {
+    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;hello...&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(3);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    }
+</code></pre></div><ul>
+<li>設定在<code>spring.task.execution</code>，例如:</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># application.properties
+spring.task.execution.pool.core-size=10
+spring.task.execution.pool.max-size=50
+</code></pre><h3 id="上架秒殺商品">上架秒殺商品</h3>
+<h4 id="定時任務">定時任務</h4>
+<ul>
+<li>於可用性考量，可能有多台機器被下了排程任務，所以需要用一個分布式鎖來防止重複上架</li>
+<li>測試環境下每5秒掃描一次</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Service</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SeckillScheduled</span> {
+
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> SeckillService seckillService;
+
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> RedissonClient redissonClient;
+
+    <span style="color:#228b22">// 秒殺商品上架功能的鎖
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">final</span> String upload_lock = <span style="color:#cd5555">&#34;seckill:upload:lock&#34;</span>;
+    
+    <span style="color:#707a7c">@Scheduled</span>(cron = <span style="color:#cd5555">&#34;*/5 * * * * ? &#34;</span>)
+    <span style="color:#228b22">// @Scheduled(cron = &#34;0 0 3 * * ? &#34;)
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">uploadSeckillSkuLatest3Days</span>() {
+        <span style="color:#228b22">// 重複上架先不處理
+</span><span style="color:#228b22"></span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;上架秒殺的商品...&#34;</span>);
+
+        <span style="color:#228b22">// 分佈式鎖
+</span><span style="color:#228b22"></span>        RLock lock = redissonClient.<span style="color:#658b00">getLock</span>(upload_lock);
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#228b22">// 加鎖
+</span><span style="color:#228b22"></span>            lock.<span style="color:#658b00">lock</span>(10, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+            seckillService.<span style="color:#658b00">uploadSeckillSkuLatest3Days</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        } <span style="color:#8b008b;font-weight:bold">finally</span> {
+            lock.<span style="color:#658b00">unlock</span>();
+        }
+    }
+}
+</code></pre></div><h4 id="上架服務">上架服務</h4>
+<ul>
+<li>SeckillServiceImpl.java
+<ul>
+<li>遠程調用coupon模組查詢出最近三天的所有活動(查SQL，比對當前時間與活動設定的時間)，返回<code>List&lt;SeckillSessionWithSkusVo&gt;</code></li>
+<li>裡面包含了活動場次，以及關聯的商品sku訊息</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">uploadSeckillSkuLatest3Days</span>() {
+
+    <span style="color:#228b22">// 掃描最近三天的商品需要參加秒殺的活動
+</span><span style="color:#228b22"></span>    R lates3DaySession = couponFeignService.<span style="color:#658b00">getLates3DaySession</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (lates3DaySession.<span style="color:#658b00">getCode</span>() == 0) {
+        <span style="color:#228b22">// 上架商品
+</span><span style="color:#228b22"></span>        List&lt;SeckillSessionWithSkusVo&gt; sessionData = lates3DaySession.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>,
+                <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SeckillSessionWithSkusVo&gt;&gt;() {
+                });
+        <span style="color:#228b22">// 緩存到Redis
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 緩存活動信息
+</span><span style="color:#228b22"></span>        saveSessionInfos(sessionData);
+        <span style="color:#228b22">// 緩存活動的關聯商品信息
+</span><span style="color:#228b22"></span>        saveSessionSkuInfo(sessionData);
+    }
+}
+</code></pre></div><h5 id="緩存活動信息">緩存活動信息</h5>
+<ul>
+<li>緩存活動信息至redis(redis中的List類型)
+<ul>
+<li>緩存活動場次信息，每一個場次存儲的類型都是List，多場次就是多條List類型
+<ul>
+<li>用<code>redisTemplate.opsForList().leftPushAll(key, skuIds);</code>插入</li>
+</ul>
+</li>
+<li>redis中每個場次的開始時間和結束時間不同，用<code>seckill:sessions:start_end</code>作為key(start和end都轉換為Long時間戳易於比較，帶年月日)</li>
+<li>將場次<code>sessionId+skuId</code>拼接成String，所有商品ID塞進<code>List&lt;String&gt;</code>作為value</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">final</span> String SESSION__CACHE_PREFIX = <span style="color:#cd5555">&#34;seckill:sessions:&#34;</span>;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">final</span> String SECKILL_CHARE_PREFIX = <span style="color:#cd5555">&#34;seckill:skus&#34;</span>;
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">final</span> String SKU_STOCK_SEMAPHORE = <span style="color:#cd5555">&#34;seckill:stock:&#34;</span>;    <span style="color:#228b22">//+商品隨機碼
+</span><span style="color:#228b22"></span>
+<span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 緩存秒殺活動信息
+</span><span style="color:#228b22"> * @param sessions
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveSessionInfos</span>(List&lt;SeckillSessionWithSkusVo&gt; sessions) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (!CollectionUtils.<span style="color:#658b00">isEmpty</span>(sessions))
+        sessions.<span style="color:#658b00">stream</span>().<span style="color:#658b00">forEach</span>(session -&gt; {
+
+            <span style="color:#228b22">// 獲取當前活動的開始和結束時間的時間戳
+</span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">long</span> startTime = session.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>();
+            <span style="color:#00688b;font-weight:bold">long</span> endTime = session.<span style="color:#658b00">getEndTime</span>().<span style="color:#658b00">getTime</span>();
+
+            <span style="color:#228b22">// 存入到Redis中的key
+</span><span style="color:#228b22"></span>            String key = SESSION__CACHE_PREFIX + startTime + <span style="color:#cd5555">&#34;_&#34;</span> + endTime;
+
+            <span style="color:#228b22">// 判斷Redis中是否有該信息，如果沒有才進行添加
+</span><span style="color:#228b22"></span>            Boolean hasKey = redisTemplate.<span style="color:#658b00">hasKey</span>(key);
+            <span style="color:#228b22">// 緩存活動信息
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (!hasKey) {
+                <span style="color:#228b22">// 獲取到活動中所有商品的skuId
+</span><span style="color:#228b22"></span>                List&lt;String&gt; skuIds = session.<span style="color:#658b00">getRelationSkus</span>().<span style="color:#658b00">stream</span>()
+                        .<span style="color:#658b00">map</span>(item -&gt; item.<span style="color:#658b00">getPromotionSessionId</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + item.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>()).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+                redisTemplate.<span style="color:#658b00">opsForList</span>().<span style="color:#658b00">leftPushAll</span>(key, skuIds);
+            }
+        });
+}
+</code></pre></div><h5 id="緩存商品信息">緩存商品信息</h5>
+<ul>
+<li>緩存商品信息至redis中的hash類型</li>
+<li>redis的key為<code>seckill:skus</code></li>
+<li>hash-key: <code>session_id</code>(活動id)</li>
+<li>hash-value: SecKillSkuRelationTo包裝成的json串
+<ul>
+<li>SecKillSkuRelationTo的組成:</li>
+<li>sku的詳細信息(skuInfoEntity 名字、圖片)</li>
+<li>sku的秒殺信息(SeckillSkuRelation + 當前商品秒殺的開始、結束時間)</li>
+<li>隨機碼randomCode(防有心人作弊搶票，沒有隨機碼的請求被打回)</li>
+<li>分佈式信號量(使用信號量做限流，就是之前的數人關門者，只允許多少訪問請求能夠去到DB查庫存)
+<ul>
+<li>使用redisson實現，redis.getSemaphore(商品隨機碼);</li>
+<li>信號量其實就是秒殺活動設定的商品量，我就只要賣這麼多件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 緩存秒殺活動所關聯的商品信息
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveSessionSkuInfo</span>(List&lt;SeckillSessionWithSkusVo&gt; sessions) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (!CollectionUtils.<span style="color:#658b00">isEmpty</span>(sessions))
+        sessions.<span style="color:#658b00">stream</span>().<span style="color:#658b00">forEach</span>(session -&gt; {
+            <span style="color:#228b22">// 準備hash操作，綁定hash
+</span><span style="color:#228b22"></span>            BoundHashOperations&lt;String, Object, Object&gt; operations =
+                    redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
+            session.<span style="color:#658b00">getRelationSkus</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">forEach</span>(seckillSkuVo -&gt; {
+                <span style="color:#228b22">// 生成隨機碼
+</span><span style="color:#228b22"></span>                String token = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;-&#34;</span>, <span style="color:#cd5555">&#34;&#34;</span>);
+                String redisKey =
+                        seckillSkuVo.<span style="color:#658b00">getPromotionSessionId</span>().<span style="color:#658b00">toString</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + seckillSkuVo.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>();
+                <span style="color:#8b008b;font-weight:bold">if</span> (!operations.<span style="color:#658b00">hasKey</span>(redisKey)) {
+
+                    <span style="color:#228b22">// 緩存商品信息
+</span><span style="color:#228b22"></span>                    SeckillSkuRedisTo redisTo = <span style="color:#8b008b;font-weight:bold">new</span> SeckillSkuRedisTo();
+                    Long skuId = seckillSkuVo.<span style="color:#658b00">getSkuId</span>();
+                    <span style="color:#228b22">// 先查詢sku的基本信息，調用遠程服務
+</span><span style="color:#228b22"></span>                    R info = productFeignService.<span style="color:#658b00">getInfo</span>(skuId);
+                    <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == 0) {
+                        SkuInfoVo skuInfo = info.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;skuInfo&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SkuInfoVo&gt;() {
+                        });
+                        redisTo.<span style="color:#658b00">setSkuInfo</span>(skuInfo);
+                    }
+
+                    <span style="color:#228b22">// sku的秒殺信息
+</span><span style="color:#228b22"></span>                    BeanUtils.<span style="color:#658b00">copyProperties</span>(seckillSkuVo, redisTo);
+
+                    <span style="color:#228b22">// 設置當前商品的秒殺時間信息
+</span><span style="color:#228b22"></span>                    redisTo.<span style="color:#658b00">setStartTime</span>(session.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>());
+                    redisTo.<span style="color:#658b00">setEndTime</span>(session.<span style="color:#658b00">getEndTime</span>().<span style="color:#658b00">getTime</span>());
+
+                    <span style="color:#228b22">// 設置商品的隨機碼（防止惡意攻擊）
+</span><span style="color:#228b22"></span>                    redisTo.<span style="color:#658b00">setRandomCode</span>(token);
+
+                    <span style="color:#228b22">// 序列化json格式存入Redis中
+</span><span style="color:#228b22"></span>                    String seckillValue = JSON.<span style="color:#658b00">toJSONString</span>(redisTo);
+                    operations.<span style="color:#658b00">put</span>(seckillSkuVo.<span style="color:#658b00">getPromotionSessionId</span>().<span style="color:#658b00">toString</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + seckillSkuVo.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>(), seckillValue);
+
+                    <span style="color:#228b22">// 如果當前這個場次的商品庫存信息已經上架就不需要上架
+</span><span style="color:#228b22"></span>                    <span style="color:#228b22">// 使用庫存作為分佈式Redisson信號量（限流）
+</span><span style="color:#228b22"></span>                    <span style="color:#228b22">// 使用庫存作為分佈式信號量，信號量名字就是UUID隨機產生的token
+</span><span style="color:#228b22"></span>                    RSemaphore semaphore = redissonClient.<span style="color:#658b00">getSemaphore</span>(SKU_STOCK_SEMAPHORE + token);
+                    <span style="color:#228b22">// 商品可以秒殺的數量作為信號量
+</span><span style="color:#228b22"></span>                    semaphore.<span style="color:#658b00">trySetPermits</span>(seckillSkuVo.<span style="color:#658b00">getSeckillCount</span>());
+                }
+            });
+        });
+}
+</code></pre></div><h4 id="成功上架">成功上架</h4>
+<ul>
+<li>Redis中會有三條數據</li>
+</ul>
+<p><img src="image-20220206215906395.png" alt="image-20220206215906395"></p>
+<h2 id="於首頁展示">於首頁展示</h2>
+<ul>
+<li>當初商品首頁下面那排</li>
+</ul>
+<p><img src="image-20220206221751622.png" alt="image-20220206221751622"></p>
+<ul>
+<li>SeckillController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 當前時間可以參與秒殺的商品信息
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/getCurrentSeckillSkus&#34;</span>)
+<span style="color:#707a7c">@ResponseBody</span>
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">getCurrentSeckillSkus</span>() {
+    <span style="color:#228b22">// 獲取到當前可以參加秒殺商品的信息
+</span><span style="color:#228b22"></span>    List&lt;SeckillSkuRedisTo&gt; vos = seckillService.<span style="color:#658b00">getCurrentSeckillSkus</span>();
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">setData</span>(vos);
+}
+</code></pre></div><ul>
+<li>SeckillServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> List&lt;SeckillSkuRedisTo&gt; <span style="color:#008b45">getCurrentSeckillSkus</span>() {
+    <span style="color:#228b22">// 確定當前屬於哪個秒殺場次
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">long</span> currentTime = System.<span style="color:#658b00">currentTimeMillis</span>();
+    <span style="color:#228b22">// 從Redis中查詢到所有key以seckill:sessions開頭的所有數據
+</span><span style="color:#228b22"></span>    Set&lt;String&gt; keys = redisTemplate.<span style="color:#658b00">keys</span>(SESSION__CACHE_PREFIX + <span style="color:#cd5555">&#34;*&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">for</span> (String key : keys) {
+        <span style="color:#228b22">// seckill:sessions:1594396764000_1594453242000
+</span><span style="color:#228b22"></span>        String replace = key.<span style="color:#658b00">replace</span>(SESSION__CACHE_PREFIX, <span style="color:#cd5555">&#34;&#34;</span>);
+        String[] s = replace.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
+        <span style="color:#228b22">// 獲取存入Redis商品的開始時間
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> startTime = Long.<span style="color:#658b00">parseLong</span>(s[0]);
+        <span style="color:#228b22">// 獲取存入Redis商品的結束時間
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> endTime = Long.<span style="color:#658b00">parseLong</span>(s[1]);
+
+        <span style="color:#228b22">// 判斷是否是當前秒殺場次
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (currentTime &gt;= startTime &amp;&amp; currentTime &lt;= endTime) {
+            <span style="color:#228b22">// 獲取這個秒殺場次需要的所有商品信息
+</span><span style="color:#228b22"></span>            List&lt;String&gt; range = redisTemplate.<span style="color:#658b00">opsForList</span>().<span style="color:#658b00">range</span>(key, -100, 100);
+            BoundHashOperations&lt;String, String, String&gt; hasOps =
+                    redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
+            <span style="color:#8b008b;font-weight:bold">assert</span> range != <span style="color:#8b008b;font-weight:bold">null</span>;
+            List&lt;String&gt; listValue = hasOps.<span style="color:#658b00">multiGet</span>(range);
+            <span style="color:#8b008b;font-weight:bold">if</span> (listValue != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; listValue.<span style="color:#658b00">size</span>() &gt;= 0) {
+
+                List&lt;SeckillSkuRedisTo&gt; collect = listValue.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
+                    String items = (String) item;
+                    SeckillSkuRedisTo redisTo = JSON.<span style="color:#658b00">parseObject</span>(items, SeckillSkuRedisTo.<span style="color:#658b00">class</span>);
+                    <span style="color:#228b22">// redisTo.setRandomCode(null);若當前秒殺ㄏ開始，需要Ban掉隨機碼
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">return</span> redisTo;
+                }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+                <span style="color:#8b008b;font-weight:bold">return</span> collect;
+            }
+            <span style="color:#8b008b;font-weight:bold">break</span>;
+        }
+    }
+</code></pre></div><h2 id="判斷商品是否正在活動">判斷商品是否正在活動</h2>
+<ul>
+<li>這是在商品詳情頁(Product下的item.html)展示的，參與秒殺活動的用戶其實就是點進商品詳情</li>
+<li>只要判斷時間正確，本來下訂單的按鈕就會變成&quot;參與搶購&quot;</li>
+<li>SeckillController.java
+<ul>
+<li>被Product模組feign遠程調用</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 根據skuId查詢商品是否參加秒殺活動
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/sku/seckill/{skuId}&#34;</span>)
+<span style="color:#707a7c">@ResponseBody</span>
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">getSkuSeckilInfo</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId) {
+    SeckillSkuRedisTo to = seckillService.<span style="color:#658b00">getSkuSeckilInfo</span>(skuId);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">setData</span>(to);
+}
+</code></pre></div><ul>
+<li>SeckillServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 根據skuId查詢商品是否參加秒殺活動
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> SeckillSkuRedisTo <span style="color:#008b45">getSkuSeckilInfo</span>(Long skuId) {
+
+    <span style="color:#228b22">// 找到所有需要秒殺的商品的key信息---seckill:skus
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, String, String&gt; hashOps = redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
+    <span style="color:#228b22">// 拿到所有的key
+</span><span style="color:#228b22"></span>    Set&lt;String&gt; keys = hashOps.<span style="color:#658b00">keys</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (keys != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; keys.<span style="color:#658b00">size</span>() &gt; 0) {
+        <span style="color:#228b22">// 正則表達式進行匹配
+</span><span style="color:#228b22"></span>        String reg = <span style="color:#cd5555">&#34;\\d-&#34;</span> + skuId;
+        <span style="color:#8b008b;font-weight:bold">for</span> (String key : keys) {
+            <span style="color:#228b22">// 如果匹配上了
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (Pattern.<span style="color:#658b00">matches</span>(reg, key)) {
+                <span style="color:#228b22">// 從Redis中取出商品數據
+</span><span style="color:#228b22"></span>                String redisValue = hashOps.<span style="color:#658b00">get</span>(key);
+                <span style="color:#228b22">// 進行序列化
+</span><span style="color:#228b22"></span>                SeckillSkuRedisTo redisTo = JSON.<span style="color:#658b00">parseObject</span>(redisValue, SeckillSkuRedisTo.<span style="color:#658b00">class</span>);
+
+                Long currentTime = System.<span style="color:#658b00">currentTimeMillis</span>();
+                Long startTime = redisTo.<span style="color:#658b00">getStartTime</span>();
+                Long endTime = redisTo.<span style="color:#658b00">getEndTime</span>();
+                <span style="color:#228b22">// 如果當前時間大於等於秒殺活動開始時間並且要小於活動結束時間
+</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (currentTime &gt;= startTime &amp;&amp; currentTime &lt;= endTime) {
+                    <span style="color:#8b008b;font-weight:bold">return</span> redisTo;
+                }
+                redisTo.<span style="color:#658b00">setRandomCode</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+                <span style="color:#8b008b;font-weight:bold">return</span> redisTo;
+            }
+        }
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+}
+</code></pre></div><ul>
+<li>SkuInfoServiceImpl.java
+<ul>
+<li>修改當初Product模組的返回商品詳情方法</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 商品詳情
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> SkuItemVo <span style="color:#008b45">item</span>(Long skuId) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+
+<span style="color:#228b22">/*
+</span><span style="color:#228b22">省略
+</span><span style="color:#228b22">*/</span>
+    <span style="color:#228b22">//  查詢當前sku是否參與秒殺活動
+</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; seckillFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+        <span style="color:#228b22">// 遠程調用查詢當前sku是否參與秒殺優惠活動
+</span><span style="color:#228b22"></span>        R skuSeckilInfo = seckillFeignService.<span style="color:#658b00">getSkuSeckilInfo</span>(skuId);
+        <span style="color:#8b008b;font-weight:bold">if</span> (skuSeckilInfo.<span style="color:#658b00">getCode</span>() == 0) {
+            <span style="color:#228b22">// 查詢成功
+</span><span style="color:#228b22"></span>            SeckillSkuVo seckilInfoData = skuSeckilInfo.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SeckillSkuVo&gt;() {
+            });
+            skuItemVo.<span style="color:#658b00">setSeckillSkuVo</span>(seckilInfoData);
+
+            <span style="color:#8b008b;font-weight:bold">if</span> (seckilInfoData != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                <span style="color:#00688b;font-weight:bold">long</span> currentTime = System.<span style="color:#658b00">currentTimeMillis</span>();
+                <span style="color:#8b008b;font-weight:bold">if</span> (currentTime &gt; seckilInfoData.<span style="color:#658b00">getEndTime</span>()) {
+                    skuItemVo.<span style="color:#658b00">setSeckillSkuVo</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+                }
+            }
+        }
+    }, executor);
+
+    <span style="color:#228b22">// 等到所有任務都完成
+</span><span style="color:#228b22"></span>    CompletableFuture.<span style="color:#658b00">allOf</span>(saleAttrFuture, descFuture, baseAttrFuture, imageFuture).<span style="color:#658b00">get</span>();
+    <span style="color:#8b008b;font-weight:bold">return</span> skuItemVo;
+}
+</code></pre></div><h3 id="修改前端">修改前端</h3>
+<ul>
+<li>item.html</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">                    &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;box-btns-two&#34;</span> <span style="color:#658b00">th:if</span>=<span style="color:#cd5555">&#34;${item.seckillSkuVo == null }&#34;</span>&gt;
+                        &lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;addToCart&#34;</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;#&#34;</span> <span style="color:#658b00">th:attr</span>=<span style="color:#cd5555">&#34;skuId=${item.info.skuId}&#34;</span>&gt;
+                            加入購物車
+                        &lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+                    &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+                    &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;box-btns-two&#34;</span>
+                         <span style="color:#658b00">th:if</span>=<span style="color:#cd5555">&#34;${item.seckillSkuVo != null &amp;&amp; (#dates.createNow().getTime() &gt;= item.seckillSkuVo.startTime &amp;&amp; #dates.createNow().getTime() &lt;= item.seckillSkuVo.endTime)}&#34;</span>&gt;
+                        &lt;<span style="color:#8b008b;font-weight:bold">a</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;seckill&#34;</span> <span style="color:#658b00">href</span>=<span style="color:#cd5555">&#34;&#34;</span>
+                           <span style="color:#658b00">th:attr</span>=<span style="color:#cd5555">&#34;skuId=${item.info.skuId},sessionId=${item.seckillSkuVo.promotionSessionId},code=${item.seckillSkuVo.randomCode}&#34;</span>&gt;
+                            立即搶購
+                        &lt;/<span style="color:#8b008b;font-weight:bold">a</span>&gt;
+                    &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+</code></pre></div><ul>
+<li>發起搶購請求</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    $(<span style="color:#cd5555">&#34;.seckill&#34;</span>).click(<span style="color:#8b008b;font-weight:bold">function</span> () {
+        <span style="color:#8b008b;font-weight:bold">var</span> isLogin = [[${session.loginUser != <span style="color:#8b008b;font-weight:bold">null</span>}]];     <span style="color:#228b22">//true
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (isLogin) {
+            <span style="color:#8b008b;font-weight:bold">var</span> killId = $(<span style="color:#8b008b;font-weight:bold">this</span>).attr(<span style="color:#cd5555">&#34;sessionid&#34;</span>) + <span style="color:#cd5555">&#34;-&#34;</span> + $(<span style="color:#8b008b;font-weight:bold">this</span>).attr(<span style="color:#cd5555">&#34;skuid&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">var</span> code = $(<span style="color:#8b008b;font-weight:bold">this</span>).attr(<span style="color:#cd5555">&#34;code&#34;</span>);
+            <span style="color:#8b008b;font-weight:bold">var</span> num = $(<span style="color:#cd5555">&#34;#productNum&#34;</span>).val();
+            location.href = <span style="color:#cd5555">&#34;http://seckill.mall.com/kill?killId=&#34;</span> + killId + <span style="color:#cd5555">&#34;&amp;key=&#34;</span> + code + <span style="color:#cd5555">&#34;&amp;num=&#34;</span> + num;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            alert(<span style="color:#cd5555">&#34;秒殺請先登入&#34;</span>);
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    });
+</code></pre></div><h2 id="執行秒殺">執行秒殺</h2>
+<ul>
+<li>有兩種實現方法，第一是購物車法，秒殺其實只是優惠價格不同，其他都照舊沿用
+<ul>
+<li>優點是簡單、業務邏輯與數據模型統一</li>
+<li>缺點是可能導致各系統流量都很大(購物車服務、商品服務、訂單服務&hellip;)</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220207071508854.png" alt="image-20220207071508854"></p>
+<ul>
+<li>第二種是消息隊列法(此處採用)
+<ul>
+<li>在定時任務上架活動時，提早將庫存鎖定。例如DB一次性鎖定400</li>
+<li>然後秒殺直接將用户、訂單號、商品發送給mq，直接給用戶返回秒殺成功，進入地址確認、支付確認頁</li>
+<li>創建訂單異步執行，由訂單服務監聽隊列</li>
+</ul>
+</li>
+<li>優點是可以扛超高併發，用戶體驗較好(用戶不用管塞車，進到隊列就完事了非常快)</li>
+</ul>
+<p><img src="image-20220207071530443.png" alt="image-20220207071530443"></p>
+<ul>
+<li>SeckillController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 商品進行秒殺(秒殺開始)
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/kill&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">seckill</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;killId&#34;</span>) String killId,
+                      <span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;key&#34;</span>) String key,
+                      <span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;num&#34;</span>) Integer num,
+                      Model model) {
+
+    String orderSn = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#228b22">//1、判斷是否登錄
+</span><span style="color:#228b22"></span>        orderSn = seckillService.<span style="color:#658b00">kill</span>(killId, key, num);
+        model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;orderSn&#34;</span>, orderSn);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;success&#34;</span>;
+}
+</code></pre></div><ul>
+<li>SeckillServiceImpl.java
+<ul>
+<li>驗證請求、寫進隊列</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 當前商品進行秒殺（秒殺開始）
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">kill</span>(String killId, String key, Integer num) <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
+
+    <span style="color:#00688b;font-weight:bold">long</span> s1 = System.<span style="color:#658b00">currentTimeMillis</span>();
+    <span style="color:#228b22">// 獲取當前用戶的信息
+</span><span style="color:#228b22"></span>    MemberResponseTo user = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
+
+    <span style="color:#228b22">// 獲取當前秒殺商品的詳細信息從Redis中獲取
+</span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, String, String&gt; hashOps = redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
+    String skuInfoValue = hashOps.<span style="color:#658b00">get</span>(killId);
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isEmpty</span>(skuInfoValue)) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+    }
+    <span style="color:#228b22">// 合法性效驗
+</span><span style="color:#228b22"></span>    SeckillSkuRedisTo redisTo = JSON.<span style="color:#658b00">parseObject</span>(skuInfoValue, SeckillSkuRedisTo.<span style="color:#658b00">class</span>);
+    Long startTime = redisTo.<span style="color:#658b00">getStartTime</span>();
+    Long endTime = redisTo.<span style="color:#658b00">getEndTime</span>();
+    <span style="color:#00688b;font-weight:bold">long</span> currentTime = System.<span style="color:#658b00">currentTimeMillis</span>();
+    <span style="color:#228b22">// 判斷當前這個秒殺請求是否在活動時間區間內(效驗時間的合法性)
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (currentTime &gt;= startTime &amp;&amp; currentTime &lt;= endTime) {
+
+        <span style="color:#228b22">// 效驗隨機碼和商品id
+</span><span style="color:#228b22"></span>        String randomCode = redisTo.<span style="color:#658b00">getRandomCode</span>();
+        String skuId = redisTo.<span style="color:#658b00">getPromotionSessionId</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + redisTo.<span style="color:#658b00">getSkuId</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (randomCode.<span style="color:#658b00">equals</span>(key) &amp;&amp; killId.<span style="color:#658b00">equals</span>(skuId)) {
+            <span style="color:#228b22">// 驗證購物數量是否合理和庫存量是否充足
+</span><span style="color:#228b22"></span>            Integer seckillLimit = redisTo.<span style="color:#658b00">getSeckillLimit</span>();
+
+            <span style="color:#228b22">// 獲取信號量
+</span><span style="color:#228b22"></span>            String seckillCount = redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">get</span>(SKU_STOCK_SEMAPHORE + randomCode);
+            Integer count = Integer.<span style="color:#658b00">valueOf</span>(seckillCount);
+            <span style="color:#228b22">// 判斷信號量是否大於0,並且買的數量不能超過庫存
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count &gt; 0 &amp;&amp; num &lt;= seckillLimit &amp;&amp; count &gt; num) {
+                <span style="color:#228b22">// 驗證這個人是否已經買過了，如果秒殺成功，就去redis佔位，靠setIfAbsent(userId-sessionId-skuId
+</span><span style="color:#228b22"></span>                <span style="color:#228b22">// SETNX 原子性處理
+</span><span style="color:#228b22"></span>                String redisKey = user.<span style="color:#658b00">getId</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + skuId;
+                <span style="color:#228b22">// 設置自動過期(活動結束時間-當前時間)
+</span><span style="color:#228b22"></span>                Long ttl = endTime - currentTime;
+                Boolean aBoolean = redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">setIfAbsent</span>(redisKey, num.<span style="color:#658b00">toString</span>(), ttl,
+                        TimeUnit.<span style="color:#658b00">MILLISECONDS</span>);
+                <span style="color:#8b008b;font-weight:bold">if</span> (aBoolean) {
+                    <span style="color:#228b22">// 佔位成功說明沒買過，要消費掉信號量，用try
+</span><span style="color:#228b22"></span>                    RSemaphore semaphore = redissonClient.<span style="color:#658b00">getSemaphore</span>(SKU_STOCK_SEMAPHORE + randomCode);
+                    <span style="color:#00688b;font-weight:bold">boolean</span> semaphoreCount = semaphore.<span style="color:#658b00">tryAcquire</span>(num, 100, TimeUnit.<span style="color:#658b00">MILLISECONDS</span>);
+                    <span style="color:#228b22">// 保證Redis中還有商品庫存
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (semaphoreCount) {
+                        <span style="color:#228b22">// 創建訂單號和訂單信息發送給MQ
+</span><span style="color:#228b22"></span>                        <span style="color:#228b22">// 秒殺成功 快速下單 發送消息到 MQ 整個操作時間在 10ms 左右
+</span><span style="color:#228b22"></span>                        String timeId = IdWorker.<span style="color:#658b00">getTimeId</span>();
+                        SeckillOrderTo orderTo = <span style="color:#8b008b;font-weight:bold">new</span> SeckillOrderTo();
+                        orderTo.<span style="color:#658b00">setOrderSn</span>(timeId);
+                        orderTo.<span style="color:#658b00">setMemberId</span>(user.<span style="color:#658b00">getId</span>());
+                        orderTo.<span style="color:#658b00">setNum</span>(num);
+                        orderTo.<span style="color:#658b00">setPromotionSessionId</span>(redisTo.<span style="color:#658b00">getPromotionSessionId</span>());
+                        orderTo.<span style="color:#658b00">setSkuId</span>(redisTo.<span style="color:#658b00">getSkuId</span>());
+                        orderTo.<span style="color:#658b00">setSeckillPrice</span>(redisTo.<span style="color:#658b00">getSeckillPrice</span>());
+                        rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.seckill.order&#34;</span>, orderTo);
+                        <span style="color:#00688b;font-weight:bold">long</span> s2 = System.<span style="color:#658b00">currentTimeMillis</span>();
+                        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;耗時...&#34;</span> + (s2 - s1));
+                        <span style="color:#8b008b;font-weight:bold">return</span> timeId;
+                    }
+                }
+            }
+        }
+    }
+    <span style="color:#00688b;font-weight:bold">long</span> s3 = System.<span style="color:#658b00">currentTimeMillis</span>();
+    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;耗時...&#34;</span> + (s3 - s1));
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+}
+</code></pre></div><h2 id="消費消息">消費消息</h2>
+<ul>
+<li>在訂單模組，一樣三步驟: 綁定、監聽、消費</li>
+</ul>
+<p><img src="image-20220207072215386.png" alt="image-20220207072215386"></p>
+<h3 id="綁定秒殺隊列">綁定秒殺隊列</h3>
+<ul>
+<li>MyMQConfig.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 商品秒殺隊列
+</span><span style="color:#228b22"> * 作用：削峰，創建訂單
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Bean</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderSecKillOrderQueue</span>() {
+    Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.seckill.order.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+    <span style="color:#8b008b;font-weight:bold">return</span> queue;
+}
+
+<span style="color:#707a7c">@Bean</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderSecKillOrderQueueBinding</span>() {
+    <span style="color:#228b22">//String destination, DestinationType destinationType, String exchange, String routingKey,
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 			Map&lt;String, Object&gt; arguments
+</span><span style="color:#228b22"></span>    Binding binding = <span style="color:#8b008b;font-weight:bold">new</span> Binding(
+            <span style="color:#cd5555">&#34;order.seckill.order.queue&#34;</span>,
+            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
+            <span style="color:#cd5555">&#34;order.seckill.order&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">null</span>);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> binding;
+}
+</code></pre></div><h3 id="監聽秒殺隊列">監聽秒殺隊列</h3>
+<ul>
+<li>OrderSeckillListener.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Component</span>
+<span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;order.seckill.order.queue&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderSeckillListener</span> {
+
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> OrderService orderService;
+
+    <span style="color:#707a7c">@RabbitHandler</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">listener</span>(SeckillOrderTo orderTo, Channel channel, Message message) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;準備創建秒殺單的詳細信息...&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            orderService.<span style="color:#658b00">createSeckillOrder</span>(orderTo);
+            channel.<span style="color:#658b00">basicAck</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">false</span>);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            channel.<span style="color:#658b00">basicReject</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">true</span>);
+        }
+    }
+}
+</code></pre></div><h3 id="創建秒殺訂單">創建秒殺訂單</h3>
+<ul>
+<li>OrderServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 創建秒殺單
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param orderTo
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createSeckillOrder</span>(SeckillOrderTo orderTo) {
+
+    <span style="color:#228b22">// 保存訂單信息
+</span><span style="color:#228b22"></span>    OrderEntity orderEntity = <span style="color:#8b008b;font-weight:bold">new</span> OrderEntity();
+    orderEntity.<span style="color:#658b00">setOrderSn</span>(orderTo.<span style="color:#658b00">getOrderSn</span>());
+    orderEntity.<span style="color:#658b00">setMemberId</span>(orderTo.<span style="color:#658b00">getMemberId</span>());
+    orderEntity.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+    BigDecimal totalPrice = orderTo.<span style="color:#658b00">getSeckillPrice</span>().<span style="color:#658b00">multiply</span>(BigDecimal.<span style="color:#658b00">valueOf</span>(orderTo.<span style="color:#658b00">getNum</span>()));
+    orderEntity.<span style="color:#658b00">setPayAmount</span>(totalPrice);
+    orderEntity.<span style="color:#658b00">setStatus</span>(OrderStatusEnum.<span style="color:#658b00">CREATE_NEW</span>.<span style="color:#658b00">getCode</span>());
+
+    <span style="color:#228b22">// 保存訂單
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">save</span>(orderEntity);
+
+    <span style="color:#228b22">// 保存訂單項信息
+</span><span style="color:#228b22"></span>    OrderItemEntity orderItem = <span style="color:#8b008b;font-weight:bold">new</span> OrderItemEntity();
+    orderItem.<span style="color:#658b00">setOrderSn</span>(orderTo.<span style="color:#658b00">getOrderSn</span>());
+    orderItem.<span style="color:#658b00">setRealAmount</span>(totalPrice);
+
+    orderItem.<span style="color:#658b00">setSkuQuantity</span>(orderTo.<span style="color:#658b00">getNum</span>());
+
+    <span style="color:#228b22">// 保存商品的spu信息
+</span><span style="color:#228b22"></span>    R spuInfo = productFeignService.<span style="color:#658b00">getSpuInfoBySkuId</span>(orderTo.<span style="color:#658b00">getSkuId</span>());
+    SpuInfoTo spuInfoData = spuInfo.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SpuInfoTo&gt;() {
+    });
+    orderItem.<span style="color:#658b00">setSpuId</span>(spuInfoData.<span style="color:#658b00">getId</span>());
+    orderItem.<span style="color:#658b00">setSpuName</span>(spuInfoData.<span style="color:#658b00">getSpuName</span>());
+    orderItem.<span style="color:#658b00">setSpuBrand</span>(spuInfoData.<span style="color:#658b00">getBrandName</span>());
+    orderItem.<span style="color:#658b00">setCategoryId</span>(spuInfoData.<span style="color:#658b00">getCatalogId</span>());
+
+    <span style="color:#228b22">// 保存訂單項數據
+</span><span style="color:#228b22"></span>    orderItemService.<span style="color:#658b00">save</span>(orderItem);
+}
+</code></pre></div><h1 id="小結">小結</h1>
+<ul>
+<li>往Redis存List</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">redisTemplate.<span style="color:#658b00">opsForList</span>().<span style="color:#658b00">leftPushAll</span>(key, skuIds);
+</code></pre></div><ul>
+<li>往Redis存Hash
+<ul>
+<li>這玩意乍看還有點繞，第一個是key是在redis中去查它本身的，後面的key跟value才是Hash主體</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">BoundHashOperations&lt;String, Object, Object&gt; operations =
+                    redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
+</code></pre></div><ul>
+<li>給信號量命名、設定數量</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 使用庫存作為分佈式信號量，信號量名字就是UUID隨機產生的token
+</span><span style="color:#228b22"></span>RSemaphore semaphore = redissonClient.<span style="color:#658b00">getSemaphore</span>(SKU_STOCK_SEMAPHORE + token);
+<span style="color:#228b22">// 商品可以秒殺的數量作為信號量
+</span><span style="color:#228b22"></span>semaphore.<span style="color:#658b00">trySetPermits</span>(seckillSkuVo.<span style="color:#658b00">getSeckillCount</span>());
+</code></pre></div><ul>
+<li>消費信號量</li>
+</ul>
+<pre tabindex="0"><code>semaphore.tryAcquire
+</code></pre><h2 id="複習消息隊列用法">複習消息隊列用法</h2>
+<ul>
+<li>引包<code>spring-boot-starter-amqp</code></li>
+<li>設定MQ地址、手動確認</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># MQ
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.virtual-host=/
+
+# 使用手動確認模式，關閉自動確認，防止消息丟失
+spring.rabbitmq.listener.simple.acknowledge-mode=manual
+</code></pre><ul>
+<li>使用JSON格式</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyRabbitConfig</span> {
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> MessageConverter <span style="color:#008b45">messageConverter</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Jackson2JsonMessageConverter();
+    }
+</code></pre></div><ul>
+<li>
+<p>發訊息 <code>rabbitTemplate.convertAndSend()</code></p>
+</li>
+<li>
+<p>創建、綁定隊列</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Bean</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderSecKillOrderQueue</span>() {
+    Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.seckill.order.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+    <span style="color:#8b008b;font-weight:bold">return</span> queue;
+}
+
+<span style="color:#707a7c">@Bean</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderSecKillOrderQueueBinding</span>() {
+<span style="color:#228b22">//...
+</span></code></pre></div><ul>
+<li>監聽，要先在啟動類註解<code>@EnableRabbit</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Component</span>
+<span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;order.seckill.order.queue&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderSeckillListener</span> {
+    <span style="color:#707a7c">@RabbitHandler</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">listener</span>(SeckillOrderTo orderTo, Channel channel, Message message) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        <span style="color:#228b22">// 業務邏輯...
+</span></code></pre></div><ul>
+<li>手動消費訊息 <code>basicAck</code></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-09</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220209-javaweb-book-market/">
+			下一篇<br>柚子書城
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220208-idea-file-scpoe/">
+			上一篇<br>IntelliJ IDEA File scope
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

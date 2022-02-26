@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>JDK8新特性:Lambda表達式、StreamAPI、Optional類</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaSE筆記-30">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="JDK8新特性:Lambda表達式、StreamAPI、Optional類" />
+<meta property="og:description" content="尚硅谷JavaSE筆記-30" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211215-agg-ja-30/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-15T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JDK8新特性:Lambda表達式、StreamAPI、Optional類"/>
+<meta name="twitter:description" content="尚硅谷JavaSE筆記-30"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lambda%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#lambda表達式-nav`)" id="lambda表達式-nav">
+									Lambda表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#結構-nav`)" id="結構-nav">
+									結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b8%e5%bc%8f%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#函數式接口-nav`)" id="函數式接口-nav">
+									函數式接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e5%bc%95%e7%94%a8" onclick="onNavClick(`#方法引用-nav`)" id="方法引用-nav">
+									方法引用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#stream-api" onclick="onNavClick(`#stream-api-nav`)" id="stream-api-nav">
+									Stream API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#stream%e7%9a%84%e6%93%8d%e4%bd%9c%e4%b8%89%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#stream的操作三步驟-nav`)" id="stream的操作三步驟-nav">
+									Stream的操作三步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%bastream" onclick="onNavClick(`#創建stream-nav`)" id="創建stream-nav">
+									創建Stream
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e9%96%93%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#中間操作-nav`)" id="中間操作-nav">
+									中間操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%82%e7%ab%af%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#終端操作-nav`)" id="終端操作-nav">
+									終端操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#optional%e9%a1%9e" onclick="onNavClick(`#optional類-nav`)" id="optional類-nav">
+									Optional類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lambda%e8%a1%a8%e9%81%94%e5%bc%8f" onclick="onNavClick(`#lambda表達式-nav`)" id="lambda表達式-nav">
+									Lambda表達式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#結構-nav`)" id="結構-nav">
+									結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b8%e5%bc%8f%e6%8e%a5%e5%8f%a3" onclick="onNavClick(`#函數式接口-nav`)" id="函數式接口-nav">
+									函數式接口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e5%bc%95%e7%94%a8" onclick="onNavClick(`#方法引用-nav`)" id="方法引用-nav">
+									方法引用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#stream-api" onclick="onNavClick(`#stream-api-nav`)" id="stream-api-nav">
+									Stream API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#stream%e7%9a%84%e6%93%8d%e4%bd%9c%e4%b8%89%e6%ad%a5%e9%a9%9f" onclick="onNavClick(`#stream的操作三步驟-nav`)" id="stream的操作三步驟-nav">
+									Stream的操作三步驟
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%b5%e5%bb%bastream" onclick="onNavClick(`#創建stream-nav`)" id="創建stream-nav">
+									創建Stream
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e9%96%93%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#中間操作-nav`)" id="中間操作-nav">
+									中間操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b5%82%e7%ab%af%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#終端操作-nav`)" id="終端操作-nav">
+									終端操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#optional%e9%a1%9e" onclick="onNavClick(`#optional類-nav`)" id="optional類-nav">
+									Optional類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    JDK8新特性:Lambda表達式、StreamAPI、Optional類
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaSE筆記-30
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-15 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javase%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaSE線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="lambda表達式">Lambda表達式</h1>
+<blockquote>
+<p>可以簡略表達接口的匿名函數部份</p>
+</blockquote>
+<ul>
+<li>用於<code>函數式接口</code>，即只有一個抽象方法的接口
+<ul>
+<li>因為當你使用這個接口就必定要實現這個唯一的方法，所以很多東西可以省略</li>
+</ul>
+</li>
+</ul>
+<h3 id="結構">結構</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 舉例
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; com = (o1, o2) -&gt; o1.<span style="color:#658b00">compareTo</span>(o2);
+</code></pre></div><ul>
+<li><code>-&gt;</code>:Lambda符號、箭頭符號</li>
+<li>左邊:Lambda形參列表，就是接口中抽象方法的形參列表
+<ul>
+<li>參數類型可以省略(類型推斷)</li>
+<li>如果只有一個參數，可以省略<code>()</code>括號</li>
+</ul>
+</li>
+<li>右邊:Lambda體，就是重寫的方法體，應該用<code>{}</code>大括號包裹
+<ul>
+<li>如果只有一行語句，可以省略<code>{}</code>大括號
+<ul>
+<li>如果省略<code>{}</code>大括號也必須省略<code>return</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="應用">應用</h3>
+<blockquote>
+<p>其實不用特別去記，IDEA寫出來他就會提示自動修改了</p>
+</blockquote>
+<h5 id="一">一.</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 無參無返回
+</span><span style="color:#228b22"></span>Runnable r1 = <span style="color:#8b008b;font-weight:bold">new</span> Runnable() {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;hello&#34;</span>);
+    }
+};
+<span style="color:#228b22">// Lambda省略後
+</span><span style="color:#228b22"></span>Runnable r1 = () -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;hello&#34;</span>);
+</code></pre></div><h5 id="二">二.</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 方法有一個形參，無返回
+</span><span style="color:#228b22"></span>Consumer&lt;String&gt; stringConsumer = <span style="color:#8b008b;font-weight:bold">new</span> Consumer&lt;String&gt;() {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">accept</span>(String s) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(s);
+    }
+};
+<span style="color:#228b22">// Lambda省略後，左邊參數類型跟括號省掉了
+</span><span style="color:#228b22"></span>Consumer&lt;String&gt; stringConsumer = s -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(s);
+</code></pre></div><h5 id="三">三.</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 方法有兩個以上形參與一行返回值
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; integerComparator = <span style="color:#8b008b;font-weight:bold">new</span> Comparator&lt;Integer&gt;() {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">compare</span>(Integer o1, Integer o2) {
+        <span style="color:#8b008b;font-weight:bold">return</span> o1.<span style="color:#658b00">compareTo</span>(o2);
+    }
+};
+<span style="color:#228b22">// Lambda省略後，左邊參數類型、右邊大括號跟return都省略
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; integerComparator = (o1, o2) -&gt; o1.<span style="color:#658b00">compareTo</span>(o2);
+
+<span style="color:#228b22">// 還能繼續省，變成方法引用 ::
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; integerComparator = Integer::compareTo;
+</code></pre></div><h5 id="四">四.</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 方法有兩個以上形參與多行返回值
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; integerComparator = <span style="color:#8b008b;font-weight:bold">new</span> Comparator&lt;Integer&gt;() {
+	<span style="color:#707a7c">@Override</span>
+	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">compare</span>(Integer o1, Integer o2) {
+		System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(o1);
+		System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(o2);
+		<span style="color:#8b008b;font-weight:bold">return</span> o1.<span style="color:#658b00">compareTo</span>(o2);
+	}
+};
+
+<span style="color:#228b22">// Lambda省略後，
+</span><span style="color:#228b22"></span>Comparator&lt;Integer&gt; integerComparator = (o1, o2) -&gt; {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(o1);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(o2);
+    <span style="color:#8b008b;font-weight:bold">return</span> o1.<span style="color:#658b00">compareTo</span>(o2);
+};
+</code></pre></div><h3 id="函數式接口">函數式接口</h3>
+<blockquote>
+<p>Functional，函數式</p>
+</blockquote>
+<ul>
+<li>只有一個抽象方法的接口</li>
+<li>為了將<code>函數</code>作為<code>物件</code>看待，實現<code>函數導向(OOF)</code>所新增的特性</li>
+<li>Lambda表達式的本質就是做為函數式接口的實例</li>
+<li>使用<code>@FunctionalInterface</code>註解，可以協助檢查</li>
+<li>在<code>java.util.function</code>下定義了許多種類</li>
+</ul>
+<p><img src="image-20211211232916008.png" alt="image-20211211232916008"></p>
+<p><img src="image-20211211232946042.png" alt="image-20211211232946042"></p>
+<ul>
+<li>做為補充知識有印象即可，看到用這些寫的Lambda表達式不要嚇一跳</li>
+</ul>
+<h3 id="方法引用">方法引用</h3>
+<blockquote>
+<p>Method References，方法引用</p>
+</blockquote>
+<ul>
+<li>
+<p>當Lambda體(-&gt;右邊)的操作已經有實現的方法了，可以用方法引用</p>
+</li>
+<li>
+<p>前提:接口的抽象方法參數列表與返回值類型，和方法引用的參數列表與返回值類型一致</p>
+<ul>
+<li>白話:箭頭左右的參數列表與返回值類型都相同</li>
+</ul>
+</li>
+<li>
+<p>格式:使用<code>::</code>將類或物件與方法名隔開，有三種主要格式:</p>
+<ul>
+<li><code>物件::實例方法名</code></li>
+<li><code>類::靜態方法名</code></li>
+<li><code>類::實例方法名</code>，比較難看，將第一個參數看作調用者</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20211211234710127.png" alt="image-20211211234710127"></p>
+<p><img src="image-20211211234736067.png" alt="image-20211211234736067"></p>
+<h5 id="構造器引用">構造器引用</h5>
+<ul>
+<li>格式:<code>類名::new</code></li>
+</ul>
+<p><img src="image-20211212104054885.png" alt="image-20211212104054885"></p>
+<h5 id="數組引用">數組引用</h5>
+<ul>
+<li>格式:<code>數組類型::new</code></li>
+</ul>
+<p><img src="image-20211212104116442.png" alt="image-20211212104116442"></p>
+<ul>
+<li>個人心得:也沒省多少，可讀性卻很差，還是少用吧
+<ul>
+<li>做為知識點，別人這樣寫時能看懂即可</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="stream-api">Stream API</h1>
+<blockquote>
+<p>Collection集合是用來儲存數據；Stream是用來計算數據</p>
+<p>有SQL語句使用經驗這邊就非常好理解</p>
+</blockquote>
+<ul>
+<li>用於計算資料庫(例如:<code>Mysql、Oracle、MongDB、Radis</code>等)數據</li>
+<li>位於<code>java.util.stream</code></li>
+<li>Stream本身不儲存數據</li>
+<li>Stream不改變源物件，而是返回一個持有結果的新<code>Stream</code></li>
+<li>Stream的操作是延遲的，需要結果時才執行</li>
+</ul>
+<h3 id="stream的操作三步驟">Stream的操作三步驟</h3>
+<ol>
+<li>創建Stream:一個數據源(例如集合、數組)獲取一個流</li>
+<li>中間操作:準備進行各種計算的流水線</li>
+<li>終端操作:表示確定要計算了，執行中間操作的計算並得出結果，之後不再被使用</li>
+</ol>
+<h3 id="創建stream">創建Stream</h3>
+<ul>
+<li>
+<p><code>Collection接口</code>的方法</p>
+<ul>
+<li>
+<p><code>default Stream&lt;E&gt; stream()</code>:返回一個順序流</p>
+</li>
+<li>
+<p><code>default Stream&lt;E&gt; parallelStream()</code>:返回一個並行流</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Arrays數組</code>的靜態方法</p>
+<ul>
+<li><code>static &lt;T&gt; Stream&lt;T&gt; stream(T[] array)</code>:返回一個流</li>
+</ul>
+</li>
+<li>
+<p><code>Stream</code>本身的<code>of()</code>方法</p>
+<ul>
+<li><code>public static&lt;T&gt; Stream&lt;T&gt; of(T... values)</code>:返回一個流</li>
+</ul>
+</li>
+<li>
+<p><code>Stream</code>本身的靜態方法，無限流</p>
+<ul>
+<li><code>public static&lt;T&gt; Stream&lt;T&gt; iterate(final T seed, final UnaryOperator&lt;T&gt; f)</code>:疊代</li>
+<li><code>public static&lt;T&gt; Stream&lt;T&gt; generate(Supplier&lt;T&gt; s)</code>:生成</li>
+</ul>
+</li>
+</ul>
+<h5 id="範例">範例</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// Collection
+</span><span style="color:#228b22"></span>List&lt;Employee&gt; list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+Stream&lt;Employee&gt; stream1 = list.<span style="color:#658b00">stream</span>();
+Stream&lt;Employee&gt; stream2 = list.<span style="color:#658b00">parallelStream</span>();
+
+<span style="color:#228b22">// Arrays.stream
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">int</span>[] arr = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[]{1, 2, 3, 4, 5};
+IntStream stream3 = Arrays.<span style="color:#658b00">stream</span>(arr);
+
+<span style="color:#228b22">// Stream.of方法
+</span><span style="color:#228b22"></span>Stream&lt;Integer&gt; integerStream = Stream.<span style="color:#658b00">of</span>(1, 2, 3, 4, 5);
+
+<span style="color:#228b22">// 無限流，常用於造出某些條件的數組
+</span><span style="color:#228b22">// 疊代遍歷前10個偶數
+</span><span style="color:#228b22"></span>Stream.<span style="color:#658b00">iterate</span>(0, t -&gt; t + 2).<span style="color:#658b00">limit</span>(10).<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+<span style="color:#228b22">// 生成10個隨機數
+</span><span style="color:#228b22"></span>Stream.<span style="color:#658b00">generate</span>(Math::random).<span style="color:#658b00">limit</span>(10).<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+</code></pre></div><h3 id="中間操作">中間操作</h3>
+<blockquote>
+<p>Lazy Evaluation惰性求值、惰性計算，也稱為call-by-need，</p>
+<p>即真正要用的時候才計算，優勢:省空間複雜度</p>
+</blockquote>
+<h5 id="篩選與切片">篩選與切片</h5>
+<p><img src="image-20211212113247759.png" alt="image-20211212113247759"></p>
+<h5 id="映射從key找value">映射(從key找value)</h5>
+<blockquote>
+<p>最常用的操作</p>
+</blockquote>
+<p><img src="image-20211212113303468.png" alt="image-20211212113303468"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// map範例
+</span><span style="color:#228b22"></span>Employee e1 = <span style="color:#8b008b;font-weight:bold">new</span> Employee(<span style="color:#cd5555">&#34;張三&#34;</span>, 40, <span style="color:#8b008b;font-weight:bold">new</span> MyDate(1990, 6, 8));
+Employee e2 = <span style="color:#8b008b;font-weight:bold">new</span> Employee(<span style="color:#cd5555">&#34;李四端&#34;</span>, 42, <span style="color:#8b008b;font-weight:bold">new</span> MyDate(1990, 10, 6));
+Employee e3 = <span style="color:#8b008b;font-weight:bold">new</span> Employee(<span style="color:#cd5555">&#34;王武&#34;</span>, 50, <span style="color:#8b008b;font-weight:bold">new</span> MyDate(1990, 12, 2));
+Employee e4 = <span style="color:#8b008b;font-weight:bold">new</span> Employee(<span style="color:#cd5555">&#34;孫六七&#34;</span>, 46, <span style="color:#8b008b;font-weight:bold">new</span> MyDate(1990, 3, 1));
+
+List&lt;Employee&gt; list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+list.<span style="color:#658b00">add</span>(e1);
+list.<span style="color:#658b00">add</span>(e2);
+list.<span style="color:#658b00">add</span>(e3);
+list.<span style="color:#658b00">add</span>(e4);
+
+<span style="color:#228b22">// 用map取出employee中的name做為新的stringStream
+</span><span style="color:#228b22"></span>Stream&lt;String&gt; stringStream = list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(employee -&gt; employee.<span style="color:#658b00">getName</span>());
+stringStream.<span style="color:#658b00">filter</span>(s -&gt; s.<span style="color:#658b00">length</span>() &gt;= 3).<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+</code></pre></div><ul>
+<li><code>flatMap</code>:把流中每個元素拆開裝到一個新的流，而不是在流中插入&quot;<code>做為一個元素的一整個流</code>&quot;
+<ul>
+<li>就像講集合的時候，兩個數組合併，<code>add</code>跟<code>addAll</code>方法的區別</li>
+</ul>
+</li>
+</ul>
+<h5 id="排序">排序</h5>
+<blockquote>
+<p>老樣的，自訂類需要先實現Comparable</p>
+</blockquote>
+<p><img src="image-20211212113317282.png" alt="image-20211212113317282"></p>
+<h3 id="終端操作">終端操作</h3>
+<blockquote>
+<p>使排定的中間操作真正開始計算並產生結果</p>
+</blockquote>
+<ul>
+<li>結果可以不是任何流的值，甚至可以是<code>void</code></li>
+<li>流被終端操作後就不能再次使用</li>
+</ul>
+<h5 id="匹配與查找">匹配與查找</h5>
+<p><img src="image-20211212125325425.png" alt="image-20211212125325425"></p>
+<p><img src="image-20211212125341344.png" alt="image-20211212125341344"></p>
+<ul>
+<li>注意<code>noneMatch</code>返回的為&quot;是否沒有&quot;</li>
+<li><code>findXXX</code>方法返回的是<code>Optional類</code>，這個後面講</li>
+<li><code>count</code>方法返回的是<code>long</code>，操作資料庫絕大部分數字都是<code>long</code></li>
+<li><code>max</code>跟<code>min</code>方法需要比較，老樣的</li>
+<li>內部疊代:直接<code>stream1.foreach</code></li>
+</ul>
+<h5 id="歸約">歸約</h5>
+<p><img src="image-20211212125413192.png" alt="image-20211212125413192"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例1
+</span><span style="color:#228b22"></span>List&lt;Integer&gt; arr2 = Arrays.<span style="color:#658b00">asList</span>(1, 2, 3, 4, 5);
+<span style="color:#228b22">// iden=初始值
+</span><span style="color:#228b22"></span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(arr2.<span style="color:#658b00">stream</span>().<span style="color:#658b00">reduce</span>(0, (Integer a, Integer b) -&gt; {
+    <span style="color:#8b008b;font-weight:bold">return</span> Integer.<span style="color:#658b00">sum</span>(a, b); <span style="color:#228b22">// 故意把方法引用拆開看BinaryOperator接口
+</span><span style="color:#228b22"></span>}));
+
+
+<span style="color:#228b22">// map-reduce，例如求員工的年齡總和
+</span><span style="color:#228b22"></span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(employee -&gt; employee.<span style="color:#658b00">getAge</span>()).<span style="color:#658b00">reduce</span>(Integer::sum));
+</code></pre></div><ul>
+<li><code>map-reduce</code>為常用的操作，聞名於google的歸檔操作
+<ul>
+<li>有點像投開票，各地遵守同樣的開票規則負責統計自己的票箱，再回報給中選會，中選會統整起來就是全國開票結果</li>
+<li>廣泛應用於雲端的分散式運算技術，例如<code>Hadoop</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="收集">收集</h5>
+<blockquote>
+<p>把Stream流轉回Collection集合</p>
+</blockquote>
+<p><img src="image-20211212125437801.png" alt="image-20211212125437801"></p>
+<ul>
+<li>Stream是用來計算，本身是沒有儲存功能的，所以可能需要轉回集合</li>
+<li>Collectors工具類提供了許多靜態方法，例如:</li>
+</ul>
+<p><img src="image-20211212133009730.png" alt="image-20211212133009730"></p>
+<p><img src="image-20211212133131990.png" alt="image-20211212133131990"></p>
+<h1 id="optional類">Optional類</h1>
+<blockquote>
+<p>為了解決null空指針而生</p>
+</blockquote>
+<ul>
+<li>傳統避免空指針，寫一堆判斷<code>if (xx != null) {...</code></li>
+<li>就是套一層包裝</li>
+</ul>
+<p><img src="image-20211212134624354.png" alt="image-20211212134624354"></p>
+<ul>
+<li>最常用的:
+<ul>
+<li><code>Optional.ofNullable(T t)</code>:用來裝物件並且可以是<code>null</code></li>
+<li><code>T orElse(T other)</code>:如果是<code>null</code>，則返回備胎(可以做一個預設值)</li>
+</ul>
+</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>Lambda表達式:將函數作為物件</li>
+<li>Stream API:用來計算資料庫數據</li>
+<li>Optional類:避免空指針異常</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-15</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211216-agg-mysql-01/">
+			下一篇<br>MySQL簡介、環境配置、編碼與GUI
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211214-agg-ja-29/">
+			上一篇<br>反射Reflection、動態代理
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

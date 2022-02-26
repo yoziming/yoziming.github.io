@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>異常處理:try-catch、finally與throws</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaSE筆記-16">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="異常處理:try-catch、finally與throws" />
+<meta property="og:description" content="尚硅谷JavaSE筆記-16" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211201-agg-ja-16/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="異常處理:try-catch、finally與throws"/>
+<meta name="twitter:description" content="尚硅谷JavaSE筆記-16"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e5%b8%b8%e7%9a%84%e5%88%86%e9%a1%9e" onclick="onNavClick(`#異常的分類-nav`)" id="異常的分類-nav">
+									異常的分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#error" onclick="onNavClick(`#error-nav`)" id="error-nav">
+									Error
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exception" onclick="onNavClick(`#exception-nav`)" id="exception-nav">
+									Exception
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e5%b8%b8%e8%99%95%e7%90%86" onclick="onNavClick(`#異常處理-nav`)" id="異常處理-nav">
+									異常處理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#try-catch" onclick="onNavClick(`#try-catch-nav`)" id="try-catch-nav">
+									try-catch
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#try-catch-finally" onclick="onNavClick(`#try-catch-finally-nav`)" id="try-catch-finally-nav">
+									try-catch-finally
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#throws%e7%95%b0%e5%b8%b8%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#throws異常類型-nav`)" id="throws異常類型-nav">
+									throws&#43;異常類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%89%8b%e5%8b%95%e6%8b%8b%e5%87%ba%e7%95%b0%e5%b8%b8" onclick="onNavClick(`#手動拋出異常-nav`)" id="手動拋出異常-nav">
+									手動拋出異常
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e7%95%b0%e5%b8%b8%e9%a1%9e" onclick="onNavClick(`#自定義異常類-nav`)" id="自定義異常類-nav">
+									自定義異常類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%a1%88%e4%be%8b%e6%af%94%e5%96%bb" onclick="onNavClick(`#案例比喻-nav`)" id="案例比喻-nav">
+									案例比喻
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e5%b8%b8%e7%9a%84%e5%88%86%e9%a1%9e" onclick="onNavClick(`#異常的分類-nav`)" id="異常的分類-nav">
+									異常的分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#error" onclick="onNavClick(`#error-nav`)" id="error-nav">
+									Error
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exception" onclick="onNavClick(`#exception-nav`)" id="exception-nav">
+									Exception
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%95%b0%e5%b8%b8%e8%99%95%e7%90%86" onclick="onNavClick(`#異常處理-nav`)" id="異常處理-nav">
+									異常處理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#try-catch" onclick="onNavClick(`#try-catch-nav`)" id="try-catch-nav">
+									try-catch
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#try-catch-finally" onclick="onNavClick(`#try-catch-finally-nav`)" id="try-catch-finally-nav">
+									try-catch-finally
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#throws%e7%95%b0%e5%b8%b8%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#throws異常類型-nav`)" id="throws異常類型-nav">
+									throws&#43;異常類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%89%8b%e5%8b%95%e6%8b%8b%e5%87%ba%e7%95%b0%e5%b8%b8" onclick="onNavClick(`#手動拋出異常-nav`)" id="手動拋出異常-nav">
+									手動拋出異常
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e7%95%b0%e5%b8%b8%e9%a1%9e" onclick="onNavClick(`#自定義異常類-nav`)" id="自定義異常類-nav">
+									自定義異常類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%a1%88%e4%be%8b%e6%af%94%e5%96%bb" onclick="onNavClick(`#案例比喻-nav`)" id="案例比喻-nav">
+									案例比喻
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    異常處理:try-catch、finally與throws
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaSE筆記-16
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-01 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javase%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaSE線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="異常的分類">異常的分類</h1>
+<p>在Java中，程序執行中的異常分為<code>Exception</code>與<code>Error</code>，他們都繼承自<code>Throwable</code></p>
+<p>(語法錯誤跟邏輯錯誤那不叫異常)</p>
+<h3 id="error">Error</h3>
+<ul>
+<li>
+<p>錯誤，JVM系統內部錯誤虛擬機無法解決的問題、資源耗盡等嚴重情況，比如:</p>
+<ul>
+<li>
+<p>無限迴圈產生堆疊溢位(<code>Stack Overflow</code>)</p>
+</li>
+<li>
+<p>寫錯分配導致記憶體不足(<code>Out-Of-Memory</code>)，</p>
+</li>
+</ul>
+</li>
+<li>
+<p>解決方法就是把它寫對</p>
+</li>
+</ul>
+<h3 id="exception">Exception</h3>
+<ul>
+<li>
+<p>例外，發生了出乎預料的事，又依&quot;受不受檢&quot;分成</p>
+</li>
+<li>
+<p><code>Checked Exception</code>:又稱編譯時異常，通常在原始碼中必須顯式地catch並且處理，比如:</p>
+<ul>
+<li>
+<p><code>IOException</code>、讀取文件不存在</p>
+</li>
+<li>
+<p><code>ClassNotFoundException</code></p>
+</li>
+<li>
+<p>這部分在compile time就會檢查</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Unchecked Exception</code>:又稱<code>RuntimeException</code>，運行時異常，比如:</p>
+<ul>
+<li><code>NullPointerException</code>，空指針訪問</li>
+<li><code>ArrayIndexOutOfBoundsException</code>，數組角標越界</li>
+<li><code>ClassCastException</code>，類型轉換異常</li>
+<li><code>NumberFormatException</code>，數字類型不合</li>
+<li><code>InputMismatchException</code>，輸入數據不符合，例如<code>scan int</code>結果來了字串</li>
+<li><code>ArithmeticException</code>，算法異常，例如把某數除以0</li>
+<li>通常是透過撰寫相應程式以避免的邏輯錯誤, 可以根據當下的情境來判斷是不是要<code>catch</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="異常處理">異常處理</h1>
+<p>代碼執行時，一旦出現異常，就會在異常處生成一個對應異常類的物件，並將其拋出，拋出後的代碼就不再執行</p>
+<h3 id="try-catch">try-catch</h3>
+<ul>
+<li>
+<p>格式:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> {
+    <span style="color:#00688b;font-weight:bold">int</span> num = Integer.<span style="color:#658b00">parseInt</span>(str);
+} <span style="color:#8b008b;font-weight:bold">catch</span> (NumberFormatException e) {
+    e.<span style="color:#658b00">printStackTrace</span>(); <span style="color:#228b22">// 印出異常
+</span><span style="color:#228b22"></span>} <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+    <span style="color:#228b22">// something
+</span><span style="color:#228b22"></span>}
+</code></pre></div></li>
+<li>
+<p>使用<code>try{...}</code>將可能有異常的代碼段包起來，當運行中異常發生時，走到哪停在哪，且生成一個異常的物件</p>
+</li>
+<li>
+<p>使用<code>catch</code>預測可能生成的異常物件類，當有對應的就進入處理(類似於switch-case結構)</p>
+</li>
+<li>
+<p><code>catch</code>想抓的異常類型，如果有子父類關係，必須從小到大，否則報錯</p>
+</li>
+<li>
+<p>在<code>try</code>結構中聲明的變量，只能在<code>try</code>中使用，出了<code>try</code>就不能再被調用</p>
+</li>
+</ul>
+<h3 id="try-catch-finally">try-catch-finally</h3>
+<ul>
+<li>
+<p>格式:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@org.junit.Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() {
+    <span style="color:#00688b;font-weight:bold">int</span> n = method();
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(n);
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">method</span>() {
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#00688b;font-weight:bold">int</span>[] arr = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[3];
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(arr[5]);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;異常發生之後的語句&#34;</span>); <span style="color:#228b22">// 不會執行
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> 1;
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (ArrayIndexOutOfBoundsException e) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;抓到對應的異常類&#34;</span>); <span style="color:#228b22">// 先執行
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> 2;
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;必執行&#34;</span>); <span style="color:#228b22">// 後執行
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> 3; <span style="color:#228b22">// 最後真正返回的值
+</span><span style="color:#228b22"></span>    }
+}
+</code></pre></div></li>
+<li>
+<p><code>finally</code><strong>不是必要</strong>的</p>
+</li>
+<li>
+<p>當使用<code>finally</code>時，只要真的有異常，則其中的語句必定會被執行，即使前面的異常處理有<code>return</code>、<code>throw new</code>之類也不管，總之<code>finally</code>就是要墊底走一趟</p>
+</li>
+<li>
+<p>像是資料庫連接、IO輸出入、網路socket等資源，JVM不能自動回收的，我們需要手動寫資源釋放，就會把這塊放在<code>finally</code>中</p>
+</li>
+<li>
+<p><code>try-catch-finally</code>可以嵌套使用，例如我要關掉資料庫的連接，上面<code>try</code>區包了一個連接用的物件conn，出了try區想在<code>finally</code>區寫&quot;<code>conn.close()</code>&ldquo;卻編譯報錯不給用，只好再用一個<code>try-catch</code>把<code>finally</code>包起來。舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">FileInputStream file = <span style="color:#8b008b;font-weight:bold">null</span>;
+<span style="color:#8b008b;font-weight:bold">try</span> {
+    <span style="color:#228b22">// 操作...
+</span><span style="color:#228b22"></span>} <span style="color:#8b008b;font-weight:bold">catch</span> (FileNotFoundException e) {
+} <span style="color:#8b008b;font-weight:bold">finally</span> {
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#8b008b;font-weight:bold">if</span> (file != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            file.<span style="color:#658b00">close</span>();
+        }
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+    }
+}
+</code></pre></div></li>
+</ul>
+<h3 id="throws異常類型">throws+異常類型</h3>
+<ul>
+<li>
+<p>格式:聲明在方法之後，指明這個方法執行時，可能會拋出的異常類型，舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">register</span>(<span style="color:#00688b;font-weight:bold">int</span> id) <span style="color:#8b008b;font-weight:bold">throws</span> Exception,RuntimeException{}
+</code></pre></div></li>
+<li>
+<p>拋出的異常類型可以是複數</p>
+</li>
+<li>
+<p>體會:只是將異常拋給方法的調用者，適合用在方法有層層遞進關係的程式碼中，達成一個集中處理提高可讀性。但拋到最後總要有個接鍋俠去try-catch真正解決問題</p>
+</li>
+<li>
+<p>如果父類的方法沒有拋出，則子類重寫的方法也不能拋出，只能在原地try-catch</p>
+</li>
+<li>
+<p>子類重寫的方法，拋出的異常類型不能比父類本來拋出的類型還大(兒子犯的錯，要老爸罩得住)</p>
+</li>
+</ul>
+<h1 id="手動拋出異常">手動拋出異常</h1>
+<ul>
+<li>
+<p>想要手動的把某些狀況讓JVM當作是異常來處理，使用關鍵字**<code>throw new 異常類</code>**，注意沒有s</p>
+</li>
+<li>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        Student s1 = <span style="color:#8b008b;font-weight:bold">new</span> Student();
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            s1.<span style="color:#658b00">register</span>(-5);
+            <span style="color:#228b22">// 當異常發生時，不希望以下的代碼被執行，所以在方法手動拋出
+</span><span style="color:#228b22"></span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;生成成功，ID為&#34;</span> + s1.<span style="color:#658b00">id</span>);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+<span style="color:#228b22">//            e.printStackTrace();
+</span><span style="color:#228b22"></span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(e.<span style="color:#658b00">getMessage</span>());
+        }
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Student</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> id;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">register</span>(<span style="color:#00688b;font-weight:bold">int</span> id) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        <span style="color:#8b008b;font-weight:bold">if</span> (id &gt; 0) {
+            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">id</span> = id;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> Exception(<span style="color:#cd5555">&#34;數據非法!&#34;</span>); <span style="color:#228b22">// 這邊手動拋
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 或使用throw new RuntimeException(&#34;數據非法!&#34;);
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 就不需要上面方法處的thorws，但就只是單純報錯停下而無處理
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div></li>
+</ul>
+<h3 id="自定義異常類">自定義異常類</h3>
+<p>舉例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyException</span> <span style="color:#8b008b;font-weight:bold">extends</span> RuntimeException {
+    <span style="color:#228b22">// 身分證號
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">long</span> serialVersionUID = -70348971907457669L;
+
+    <span style="color:#228b22">// 構造器
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">MyException</span>() {
+
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">MyException</span>(String msg) {
+        <span style="color:#8b008b;font-weight:bold">super</span>(msg);
+    }
+}
+</code></pre></div><h1 id="小結">小結</h1>
+<ul>
+<li><code>throw</code>:通常跟<code>new</code>一起聲明在方法體內，表示在此<strong>必定</strong>拋出一個異常類的物件，只要執行到這就拋異常並且撒手不幹了，必須有誰來處理</li>
+<li><code>throws</code>:是<strong>方法能夠拋出異常的聲明</strong>，表明調用此方法時<strong>可能</strong>拋出的異常種類(可以是複數)，誰調用此方法就必須考慮可能發生異常，自己看著辦吧</li>
+<li>兩者都是消極的異常處理，只是<strong>拋出</strong>或<strong>表明可能拋出</strong>異常，真正處理終究是需要一個try-catch去處置</li>
+</ul>
+<h3 id="案例比喻">案例比喻</h3>
+<ul>
+<li>
+<p>當&quot;小朋友衝到馬路上&quot;時，<code>throw</code>一個異常，停止當前方法</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">照顧小朋友</span>() <span style="color:#8b008b;font-weight:bold">throws</span> KidsException {
+	<span style="color:#8b008b;font-weight:bold">if</span> (小朋友衝到馬路上=<span style="color:#8b008b;font-weight:bold">true</span>) {
+		<span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> KidsException(<span style="color:#cd5555">&#34;出事了阿北&#34;</span>); <span style="color:#228b22">// 手動拋出異常
+</span><span style="color:#228b22"></span>	} <span style="color:#8b008b;font-weight:bold">else</span> {
+      <span style="color:#228b22">// 安全，繼續做別的事
+</span><span style="color:#228b22"></span>	}
+}
+<span style="color:#228b22">// KidsException是一個自訂的異常類，繼承自Exception
+</span><span style="color:#228b22">// 如果是RuntimeException通常不會顯式的用try-catch處理
+</span><span style="color:#228b22">// 運行時異常也不會被要求在方法聲明時顯式的throws
+</span></code></pre></div></li>
+<li>
+<p><code>throws</code>是用來修飾&quot;照顧小朋友&quot;這個方法，表示預期某些異常可能發生</p>
+</li>
+<li>
+<p>完整的處裡流程:我執行照顧小朋友方法，若發生了異常我就將其<code>catch</code>起來，呼叫父母處理，實際解決異常</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> {
+	我.<span style="color:#658b00">照顧小朋友</span>();   <span style="color:#228b22">// 此方法用throws修飾了，表示我預期某些異常可能發生
+</span><span style="color:#228b22"></span>} <span style="color:#8b008b;font-weight:bold">catch</span> (KidsException e) {
+	e.<span style="color:#658b00">printStackTrace</span>();
+	我.<span style="color:#658b00">呼叫父母</span>(); <span style="color:#228b22">// 實際解決異常
+</span><span style="color:#228b22"></span>}
+</code></pre></div></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211201-blog-one-key-update/">
+			下一篇<br>利用bat一鍵更新HugoBlog
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211130-agg-ja-15/">
+			上一篇<br>抽象abstract、接口interface、內部類
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

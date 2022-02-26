@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>服務註冊nacos、feign、Gateway</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-02">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="服務註冊nacos、feign、Gateway" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-02" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220119-gulimall-02-nacos/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-19T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="服務註冊nacos、feign、Gateway"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-02"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#springcloud%e8%87%aa%e7%94%b1%e9%85%8d" onclick="onNavClick(`#springcloud自由配-nav`)" id="springcloud自由配-nav">
+									SpringCloud自由配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%88%e6%9c%ac%e9%9c%80%e6%b1%82%e9%97%9c%e4%bf%82" onclick="onNavClick(`#版本需求關係-nav`)" id="版本需求關係-nav">
+									版本需求關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#nacos%e8%a8%bb%e5%86%8a" onclick="onNavClick(`#nacos註冊-nav`)" id="nacos註冊-nav">
+									Nacos註冊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#註冊服務-nav`)" id="註冊服務-nav">
+									註冊服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#feign%e9%81%a0%e7%a8%8b%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#feign遠程調用-nav`)" id="feign遠程調用-nav">
+									feign遠程調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#nacos%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83" onclick="onNavClick(`#nacos配置中心-nav`)" id="nacos配置中心-nav">
+									Nacos配置中心
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%87%90%e6%b8%85%e9%85%8d%e7%bd%ae%e6%aa%94" onclick="onNavClick(`#釐清配置檔-nav`)" id="釐清配置檔-nav">
+									釐清配置檔
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#yml-%e8%88%87-properties" onclick="onNavClick(`#yml-與-properties-nav`)" id="yml-與-properties-nav">
+									.yml 與 .properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bootstrap%e8%88%87application" onclick="onNavClick(`#bootstrap與application-nav`)" id="bootstrap與application-nav">
+									bootstrap與application
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#測試配置-nav`)" id="測試配置-nav">
+									測試配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%85%8d%e7%bd%ae%e5%88%86%e7%b5%84" onclick="onNavClick(`#配置分組-nav`)" id="配置分組-nav">
+									配置分組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#namespace" onclick="onNavClick(`#namespace-nav`)" id="namespace-nav">
+									namespace
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#group" onclick="onNavClick(`#group-nav`)" id="group-nav">
+									group
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8b%86%e5%88%86%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#拆分配置-nav`)" id="拆分配置-nav">
+									拆分配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-cloud-gateway" onclick="onNavClick(`#spring-cloud-gateway-nav`)" id="spring-cloud-gateway-nav">
+									Spring Cloud Gateway
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#springcloud%e8%87%aa%e7%94%b1%e9%85%8d" onclick="onNavClick(`#springcloud自由配-nav`)" id="springcloud自由配-nav">
+									SpringCloud自由配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%88%e6%9c%ac%e9%9c%80%e6%b1%82%e9%97%9c%e4%bf%82" onclick="onNavClick(`#版本需求關係-nav`)" id="版本需求關係-nav">
+									版本需求關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#nacos%e8%a8%bb%e5%86%8a" onclick="onNavClick(`#nacos註冊-nav`)" id="nacos註冊-nav">
+									Nacos註冊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e5%86%8a%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#註冊服務-nav`)" id="註冊服務-nav">
+									註冊服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#feign%e9%81%a0%e7%a8%8b%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#feign遠程調用-nav`)" id="feign遠程調用-nav">
+									feign遠程調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#nacos%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83" onclick="onNavClick(`#nacos配置中心-nav`)" id="nacos配置中心-nav">
+									Nacos配置中心
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%87%90%e6%b8%85%e9%85%8d%e7%bd%ae%e6%aa%94" onclick="onNavClick(`#釐清配置檔-nav`)" id="釐清配置檔-nav">
+									釐清配置檔
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#yml-%e8%88%87-properties" onclick="onNavClick(`#yml-與-properties-nav`)" id="yml-與-properties-nav">
+									.yml 與 .properties
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bootstrap%e8%88%87application" onclick="onNavClick(`#bootstrap與application-nav`)" id="bootstrap與application-nav">
+									bootstrap與application
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#測試配置-nav`)" id="測試配置-nav">
+									測試配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%85%8d%e7%bd%ae%e5%88%86%e7%b5%84" onclick="onNavClick(`#配置分組-nav`)" id="配置分組-nav">
+									配置分組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#namespace" onclick="onNavClick(`#namespace-nav`)" id="namespace-nav">
+									namespace
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#group" onclick="onNavClick(`#group-nav`)" id="group-nav">
+									group
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8b%86%e5%88%86%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#拆分配置-nav`)" id="拆分配置-nav">
+									拆分配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-cloud-gateway" onclick="onNavClick(`#spring-cloud-gateway-nav`)" id="spring-cloud-gateway-nav">
+									Spring Cloud Gateway
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/nacos.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    服務註冊nacos、feign、Gateway
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-02
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-19 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/microservice">microservice</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="springcloud自由配">SpringCloud自由配</h1>
+<p>結合SpringCloud Alibaba最終的技術搭配方案</p>
+<ul>
+<li>SpringCloud Alibaba - Nacos: 註冊中心 (服務發現/註冊)</li>
+<li>SpringCloud Alibaba- Nacos: 配置中心 (動態配置管理)</li>
+<li>SpringCloud Ribbon: 負載均衡</li>
+<li>SpringCloud Feign: 聲明式HTTP客户端(調用遠程服務)</li>
+<li>SpringCloud Alibaba - Sentinel: 服務容錯(限流、降級、熔斷)</li>
+<li>SpringCloud Gateway: API 網關 (webflux 編程模式)</li>
+<li>SpringCloud Sleuth: 調用鏈監控</li>
+<li>SpringCloud Alibaba - Seata: 原Fescar, 即分佈式事務解決方案</li>
+</ul>
+<h2 id="版本需求關係">版本需求關係</h2>
+<blockquote>
+<p>SpringCloud 版本配不上，開都開不起來</p>
+</blockquote>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E">https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E</a></p>
+<p><img src="image-20220111233854464.png" alt="image-20220111233854464"></p>
+<p><img src="image-20220111233841630.png" alt="image-20220111233841630"></p>
+<h2 id="nacos註冊">Nacos註冊</h2>
+<blockquote>
+<p><a href="https://nacos.io/zh-cn/docs/quick-start-spring-cloud.html">https://nacos.io/zh-cn/docs/quick-start-spring-cloud.html</a></p>
+</blockquote>
+<ul>
+<li>導依賴</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+    &lt;version&gt;2.2.6.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>docker啟動nacos
+<ul>
+<li><code>--env</code> 配置環境</li>
+<li><code>MODE=standalong</code> 單節點</li>
+<li><code>--name nacos</code> 映象名稱為nacos</li>
+<li><code>-d</code> 背景啟動</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code># 拉映像
+docker pull nacos/nacos-server
+
+# 啟動容器
+docker run --env MODE=standalone --name nacos -d -p 8848:8848 -e JVM_XMS=256m -e JVM_XMX=256m -e JVM_XMN=256m -e JVM_MMS=256m nacos/nacos-server
+</code></pre><ul>
+<li>這東西不限制會吃超多記憶體</li>
+<li>預設網址為<code>localhost:8848/nacos</code>，帳號密碼都是<code>nacos</code></li>
+</ul>
+<h3 id="註冊服務">註冊服務</h3>
+<p>在應用的 <code>/resource /application.properties</code> 中配置 Nacos Server地址</p>
+<pre tabindex="0"><code class="language-PROPER" data-lang="PROPER">spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+</code></pre><ul>
+<li>使用<code>@EnableDiscoveryClient</code> 開啓服務註冊發現功能</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#707a7c">@SpringBootApplication</span>
+ <span style="color:#707a7c">@EnableDiscoveryClient</span>
+ <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ProviderApplication</span> {
+
+ 	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+ 		SpringApplication.<span style="color:#658b00">run</span>(ProviderApplication.<span style="color:#658b00">class</span>, args);
+ 	}
+ }
+</code></pre></div><ul>
+<li>啓動服務、觀察 nacos 服務列表是否已經註冊上服務，注意每一個服務都該有名字，可以在<code>applicaion.propertes</code>設定</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">spring.application.name= service provider
+server.port=8000
+</code></pre><ul>
+<li>註冊更多的服務上去，測試使用 feign</li>
+</ul>
+<h2 id="feign遠程調用">feign遠程調用</h2>
+<blockquote>
+<p><a href="https://spring.io/projects/spring-cloud-openfeign#learn">https://spring.io/projects/spring-cloud-openfeign#learn</a></p>
+</blockquote>
+<ul>
+<li>導依賴</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+    &lt;version&gt;2.2.6.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>自己造一個feign包(類似於中介看板)，可以放在common模組</li>
+<li>在feign包中建立接口，舉例:這邊想讓人遠程調用coupon的方法，就叫<code>CouponFeignService</code>，使用<code>@FeignClient(&quot;服務名&quot;)</code>註解，並且在接口中貼上要被遠程調用的方法與&quot;完整的&quot;請求路徑，</li>
+</ul>
+<p><img src="image-20220112002438920.png" alt="image-20220112002438920"></p>
+<ul>
+<li>要執行遠程調用的執行類，則在上面註解<code>@EnableFeignClients</code>
+<ul>
+<li><code>basePackages</code>是剛剛建立接口所在的包名</li>
+<li>表示&quot;我要遠程調用這些本不屬於我方法&quot;</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>@EnableFeignClients(basePackages = &quot;yozi.mall.member.feign&quot;)
+</code></pre><p><img src="image-20220112002758588.png" alt="image-20220112002758588"></p>
+<ul>
+<li>最後製造接口的實例就能調用了，例如在其下的某Controller:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
+CouponFeignService couponFeignService;
+
+<span style="color:#228b22">// Member模組中調用copon模組，查看該會員名下的所有優惠券
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/coupons&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">test</span>(){
+    MemberEntity memberEntity = <span style="color:#8b008b;font-weight:bold">new</span> MemberEntity();
+    memberEntity.<span style="color:#658b00">setNickname</span>(<span style="color:#cd5555">&#34;李四&#34;</span>);
+    R r = couponFeignService.<span style="color:#658b00">memberCoupon</span>();
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;member&#34;</span>,memberEntity).<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;coupons&#34;</span>,r.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;coupons&#34;</span>));
+
+}
+</code></pre></div><h3 id="小結">小結</h3>
+<ul>
+<li>要被調用的方法，寫全URL放到接口中；</li>
+<li>要發起call的人用<code>@EnableFeignClients(basePackages=</code>掃描接口並創造實例</li>
+</ul>
+<h2 id="nacos配置中心">Nacos配置中心</h2>
+<ul>
+<li>先引依賴</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>在 <code>bootstrap.properties</code> 中配置 Nacos server 的地址和應用名</li>
+</ul>
+<pre tabindex="0"><code>spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+
+spring.application.name=example
+</code></pre><p><img src="image-20220112105509480.png" alt="image-20220112105509480"></p>
+<h3 id="釐清配置檔">釐清配置檔</h3>
+<blockquote>
+<p>學到這不禁疑惑，查了一下</p>
+</blockquote>
+<h4 id="yml-與-properties">.yml 與 .properties</h4>
+<ul>
+<li><code>.properties</code>編碼要手動設定成UTF-8，且無序(底層是Hashtable)</li>
+<li><code>.yml</code>例如一個URI匹配規則同時滿足兩個路由，預設會使用後面那個</li>
+<li>如果同時存在，覆蓋優先級為位置最大</li>
+</ul>
+<pre tabindex="0"><code>config/application-default.properties
+	&gt; config/application-default.yml
+		 &gt; application-default.properties
+		 	&gt; application-default.yml
+		 		&gt; config/application.properties
+		 			&gt; config/application.yml
+		 				&gt; application.properties
+		 					 &gt; application.yml
+</code></pre><ul>
+<li>實務上通常沒人會這樣搞，可以認為兩者一樣，yal簡潔好讀，prop複製單行快</li>
+<li>有個插件ConvertYamlAndProperties按右鍵就能轉換，適合強迫症患者</li>
+</ul>
+<h4 id="bootstrap與application">bootstrap與application</h4>
+<ul>
+<li>
+<p>bootstrap先載入，application後載入</p>
+</li>
+<li>
+<p>有一段乍看難懂的解釋這樣說:</p>
+</li>
+</ul>
+<pre tabindex="0"><code>bootstrap.yml 用於應用程式上下文的引導階段
+bootstrap.yml 由父Spring ApplicationContext載入
+父ApplicationContext 被載入到使用 application.yml 的之前
+</code></pre><ul>
+<li>bootstrap可以理解成系統級別的一些引數配置，這些引數一般是不會變動的</li>
+<li>application可以用來定義應用級別的，如果搭配 spring-cloud-config 使用application裡面定義的檔案可以實現動態替換</li>
+</ul>
+<h3 id="測試配置">測試配置</h3>
+<blockquote>
+<p>線上更新配置，功能類似spring-cloud-config但更簡單</p>
+</blockquote>
+<ul>
+<li>例如我在MemberController中測試一個方法，獲取user.name，同時在<code>application.properties</code>註冊值是Tom</li>
+</ul>
+<p><img src="image-20220112111647375.png" alt="image-20220112111647375"></p>
+<p><img src="image-20220112111850242.png" alt="image-20220112111850242"></p>
+<ul>
+<li>
+<p>訪問結果與想像的一樣</p>
+</li>
+<li>
+<p>現在來到nacos控制頁面</p>
+</li>
+</ul>
+<p><img src="image-20220112110837733.png" alt="image-20220112110837733"></p>
+<p><img src="image-20220112111942655.png" alt="image-20220112111942655"></p>
+<ul>
+<li>結果更新成功，就不演示了。配置中心的設定優先級高</li>
+<li>重點在於用<code>@RefreshScope</code>註解controller，並且Data ID要正確，預設值就是服務名，Data ID可以在Spring Boot啟動資訊處看到</li>
+</ul>
+<p><img src="image-20220112112212488.png" alt="image-20220112112212488"></p>
+<ul>
+<li>自己測試了一下優先級，如果2者同時存在，TomBootstrap先載入，然後結果被TomApplication覆蓋</li>
+</ul>
+<p><img src="image-20220112113945968.png" alt="image-20220112113945968"></p>
+<ul>
+<li>再加上Configuration的話，最後贏家是TomConfiguration</li>
+</ul>
+<p><img src="image-20220112114046601.png" alt="image-20220112114046601"></p>
+<h3 id="配置分組">配置分組</h3>
+<h4 id="namespace">namespace</h4>
+<ul>
+<li>命名空間預設值是<code>public</code>，通常用來隔離區分開發、測試、生產環境
+<ul>
+<li>必須在bootstrap.yml中指定</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220112114326469.png" alt="image-20220112114326469"></p>
+<p><img src="image-20220112114519130.png" alt="image-20220112114519130"></p>
+<h4 id="group">group</h4>
+<ul>
+<li>預設值是<code>DEFAULT_GROUP</code>，同樣必須在bootstrap.yml中指定</li>
+<li>也可以分組，例如區分微服務模組，具體分法還是看公司規定怎用</li>
+</ul>
+<h4 id="拆分配置">拆分配置</h4>
+<ul>
+<li>例如在Bootstrap中設定載入多份配置檔
+<ul>
+<li>當本地存在檔案，就預設讀取本地</li>
+<li>設定<code>refresh=true</code>，如果線上有就優先用nacos配置，達成一個線上部屬、統一管理的效果</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220112120953419.png" alt="image-20220112120953419"></p>
+<hr>
+<h1 id="spring-cloud-gateway">Spring Cloud Gateway</h1>
+<blockquote>
+<p>Gateway 台:閘道器、陸:網關</p>
+</blockquote>
+<ul>
+<li>用來管理請求API，例如誰要去哪、轉發、安全策略、防刷、流量、監控日誌等等</li>
+<li>核心觀念
+<ul>
+<li>路由: 基礎單位，有一個ID、目的URL、一組斷言和一組Filter組成</li>
+<li>斷言: 匹配http request中的資訊比如請求頭和引數，</li>
+<li>過濾器: 就是老朋友Filter，用來修飾請求和響應</li>
+</ul>
+</li>
+<li>官方經典說明圖</li>
+</ul>
+<p><img src="4330.png" alt="4330"></p>
+<h2 id="使用">使用</h2>
+<ul>
+<li>首先引依賴，注意這邊不能引common，因為那邊有<code>spring-boot-starter-web</code>那些會跟gateway衝突
+<ul>
+<li>可以在執行類用<code>@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})</code>的方式排除掉</li>
+<li>但我這邊其實是模組分類不太正確，建大一點再看看怎改吧</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-gateway&lt;/artifactId&gt;
+        &lt;version&gt;2.2.6.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><ul>
+<li>bootstrap.properties
+<ul>
+<li>改port成80，8080留給nginx反向代理用</li>
+<li>bootstrap放不太會改動的，如服務名等等</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>spring.application.name=gateway
+server.port=80
+spring.cloud.nacos.discovery.server-addr=localhost:8848
+spring.cloud.nacos.config.server-addr=localhost:8848
+</code></pre><ul>
+<li>application.yml裡面就可以設定轉發規則、log等等
+<ul>
+<li>yaml中 <code>-</code> 表示數組，每個route有自己的ID</li>
+<li>uri表示要轉去的地方</li>
+<li>predicates是斷言的規則，符合條件的就抓去
+<ul>
+<li>這裡可以用正則式</li>
+<li>可以參考 <a href="https://openhome.cc/Gossip/Spring/Gateway.html">https://openhome.cc/Gossip/Spring/Gateway.html</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test_route
+          uri: https://google.com
+          predicates:
+            - Query=url,goo
+</code></pre><ul>
+<li>啟動服務，預設會跑在 Netty 上，輸入http://localhost:80/abc?url=goo看被轉走了</li>
+<li>這部分基礎先只講了一點，馬上要先做一個後台管理的前端部分，緊跟的應用上發現需求才會再回來講網關</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-19</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220120-gulimall-03-gateway/">
+			下一篇<br>後台:商品分類、網關轉發微服務、跨域
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220118-gulimall-01/">
+			上一篇<br>項目簡介 &amp; 環境搭建
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Maven微服務多模組管理</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="每隔一段時間就發現以前maven用的不對">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Maven微服務多模組管理" />
+<meta property="og:description" content="每隔一段時間就發現以前maven用的不對" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220209-maven-parent-module/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-08T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Maven微服務多模組管理"/>
+<meta name="twitter:description" content="每隔一段時間就發現以前maven用的不對"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#maven%e5%a4%9a%e6%a8%a1%e7%b5%84%e7%ae%a1%e7%90%86" onclick="onNavClick(`#maven多模組管理-nav`)" id="maven多模組管理-nav">
+									Maven多模組管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e9%a0%85%e7%9b%ae%e7%9a%84%e4%bd%9c%e7%94%a8" onclick="onNavClick(`#父項目的作用-nav`)" id="父項目的作用-nav">
+									父項目的作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-boot-dependencies" onclick="onNavClick(`#spring-boot-dependencies-nav`)" id="spring-boot-dependencies-nav">
+									spring-boot-dependencies
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96dependencies" onclick="onNavClick(`#其他dependencies-nav`)" id="其他dependencies-nav">
+									其他dependencies
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#import-scope%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#import-scope的使用-nav`)" id="import-scope的使用-nav">
+									import scope的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#parent%e8%88%87modules" onclick="onNavClick(`#parent與modules-nav`)" id="parent與modules-nav">
+									parent與modules
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e7%b6%93%e9%a9%97" onclick="onNavClick(`#其他經驗-nav`)" id="其他經驗-nav">
+									其他經驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%95%b4%e7%af%84%e4%be%8b" onclick="onNavClick(`#完整範例-nav`)" id="完整範例-nav">
+									完整範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#父項目-nav`)" id="父項目-nav">
+									父項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#common%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#common模組-nav`)" id="common模組-nav">
+									Common模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#其他模組-nav`)" id="其他模組-nav">
+									其他模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#maven%e5%a4%9a%e6%a8%a1%e7%b5%84%e7%ae%a1%e7%90%86" onclick="onNavClick(`#maven多模組管理-nav`)" id="maven多模組管理-nav">
+									Maven多模組管理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e9%a0%85%e7%9b%ae%e7%9a%84%e4%bd%9c%e7%94%a8" onclick="onNavClick(`#父項目的作用-nav`)" id="父項目的作用-nav">
+									父項目的作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-boot-dependencies" onclick="onNavClick(`#spring-boot-dependencies-nav`)" id="spring-boot-dependencies-nav">
+									spring-boot-dependencies
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96dependencies" onclick="onNavClick(`#其他dependencies-nav`)" id="其他dependencies-nav">
+									其他dependencies
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#import-scope%e7%9a%84%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#import-scope的使用-nav`)" id="import-scope的使用-nav">
+									import scope的使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#parent%e8%88%87modules" onclick="onNavClick(`#parent與modules-nav`)" id="parent與modules-nav">
+									parent與modules
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e7%b6%93%e9%a9%97" onclick="onNavClick(`#其他經驗-nav`)" id="其他經驗-nav">
+									其他經驗
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%95%b4%e7%af%84%e4%be%8b" onclick="onNavClick(`#完整範例-nav`)" id="完整範例-nav">
+									完整範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#父項目-nav`)" id="父項目-nav">
+									父項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#common%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#common模組-nav`)" id="common模組-nav">
+									Common模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#其他模組-nav`)" id="其他模組-nav">
+									其他模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/idea.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    Maven微服務多模組管理
+                    
+                    <div class="post-subtitle">
+                        每隔一段時間就發現以前maven用的不對
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-08 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/ide">IDE</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="maven多模組管理">Maven多模組管理</h1>
+<ul>
+<li>groupId、artifactId、version稱為gav，三個必要項組成座標</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;project&gt;</span>
+...
+<span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>實際項目<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>模塊<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>版本<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;type&gt;</span>依賴類型<span style="color:#8b008b;font-weight:bold">&lt;/type&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;scope&gt;</span>依賴範圍<span style="color:#8b008b;font-weight:bold">&lt;/scope&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;optional&gt;</span>依賴是否可選<span style="color:#8b008b;font-weight:bold">&lt;/optional&gt;</span>
+　　　　 <span style="color:#1e889b">&lt;!—主要用於排除傳遞性依賴--&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;exclusions&gt;</span>
+　　　　     <span style="color:#8b008b;font-weight:bold">&lt;exclusion&gt;</span>
+　　　　　　　    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>…<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+　　　　　　　　　 <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>…<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+　　　　　　　<span style="color:#8b008b;font-weight:bold">&lt;/exclusion&gt;</span>
+　　　　 <span style="color:#8b008b;font-weight:bold">&lt;/exclusions&gt;</span>
+　　<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+...
+<span style="color:#8b008b;font-weight:bold">&lt;/project&gt;</span>
+
+</code></pre></div><p><img src="xml.jpg" alt="xml"></p>
+<ul>
+<li>
+<p>compile，預設的依賴範圍，表示依賴需要參與當前項目的編譯，後續的測試、運行週期也參與其中，是比較強的依賴。</p>
+</li>
+<li>
+<p>test，表示依賴僅僅參與測試相關的工作，包括測試代碼的編譯和運行。比較典型的如 junit。</p>
+</li>
+<li>
+<p>runntime，表示依賴無需參與到項目的編譯，不過後期的測試和運行需要其參與其中。</p>
+</li>
+<li>
+<p>provided，表示打包的時候可以不用包進去，別的容器會提供。和 compile 相當，但是在打包階段做了排除的動作。</p>
+</li>
+<li>
+<p>system，從參與程度上來説，和 provided 類似，但不通過 Maven 倉庫解析，可能會造成構建的不可移植，要謹慎使用。</p>
+</li>
+</ul>
+<blockquote>
+<p>部分引用自 沉默王二 鏈接：https://juejin.cn/post/7033652977973854244</p>
+</blockquote>
+<h2 id="父項目的作用">父項目的作用</h2>
+<ul>
+<li>父項目繼承spring框架
+<ul>
+<li>繼承spring-boot-starter-parent同時也會繼承properties例如java.version、UTF-8，就不用自己指定</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220208111808177.png" alt="image-20220208111808177"></p>
+<ul>
+<li>只在父項目定義版本號
+<ul>
+<li>在父項目dependencyManagement列出版本號但在父項目自己不用，子模組繼承後，顯式聲明某依賴(但不寫版本號)就可以獲取父項目的版本號</li>
+<li>好比你爸列了一個購物清單，沙發=黑色真皮、桌巾=紅色，但你爸沒有真的去買</li>
+<li>去購物的是你，如果有買到沙發，你自己沒特別想要的款式那就是預設黑色真皮沙發</li>
+<li>你爸的購物清單可以很長，沒有說全都要買，他只負責列出來，只出一張嘴</li>
+<li>你自己有特殊想法那也可以指定版本，不過最好不要這樣很容易亂。統一交給你爸管理</li>
+</ul>
+</li>
+<li>父項目讓子模塊之間可以相互引用</li>
+</ul>
+<h2 id="spring-boot-dependencies">spring-boot-dependencies</h2>
+<ul>
+<li>
+<p>spring-boot-starter-parent 又繼承自 spring-boot-dependencies</p>
+</li>
+<li>
+<p>而 spring-boot-dependencies 沒有 <code>parent</code>， 它是頂級<code>pom</code>，其中 <code>&lt;properties&gt;</code> 內定義了很多常見項目的版本號，舉例:</p>
+</li>
+</ul>
+<pre tabindex="0"><code>spring-boot-test
+spring-boot-starter-web
+mysql-connector-java
+各種jdbc
+java web常用依賴
+commons-lang3.version
+org.apache.httpcomponents
+javax.servlet
+org.projectlombok
+</code></pre><ul>
+<li>所以spring-boot很多時候都不用再寫版本號，因為常用的幾乎都可以往上找</li>
+</ul>
+<h2 id="其他dependencies">其他dependencies</h2>
+<ul>
+<li>只要引用或繼承了XXX-dependencies，就相當於把相關的版本號選擇都交給了它來處理，有這種BOM可以優先選用，能省下很多版本衝突的困擾，尤其是spring cloud這種要求配套的</li>
+</ul>
+<p><img src="image-20220208141428388.png" alt="image-20220208141428388"></p>
+<ul>
+<li>spring-cloud-dependencies</li>
+</ul>
+<pre tabindex="0"><code>spring-cloud-kubernetes.version
+spring-cloud-security.version
+spring-cloud-openfeign.version
+spring-cloud-sleuth.version
+spring-cloud-gateway.version
+</code></pre><ul>
+<li>spring-cloud-alibaba-dependencies</li>
+</ul>
+<blockquote>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E">https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E</a></p>
+</blockquote>
+<pre tabindex="0"><code>Sentinel Version	
+Nacos Version	
+RocketMQ Version	
+Dubbo Version	
+Seata Version
+</code></pre><ul>
+<li>pluginManagement也是用來聲明版本號，與dependencyManagement用法類似</li>
+</ul>
+<h2 id="import-scope的使用">import scope的使用</h2>
+<ul>
+<li>
+<p>import scope只能用在 dependencyManagement 裏面，import 也因此是最危險的，因為 import 會把依賴直接展開，而不是用間接傳遞的方式在新應用中體現，</p>
+</li>
+<li>
+<p>它會覆蓋 parent 和 dependency（因為尋根路徑最短，鏈接器會最先被鏈接上），而且無法被 exclude 排除</p>
+</li>
+<li>
+<p>比喻就是import scope相當於不管族譜，在半路上認一個野爹</p>
+</li>
+</ul>
+<h2 id="parent與modules">parent與modules</h2>
+<ul>
+<li>聚合與繼承是獨立的兩件事，只是因為常一起使用所以容易混淆，實際上分開用也完全OK</li>
+</ul>
+<pre tabindex="0"><code>  &lt;modules&gt;
+    &lt;module&gt;my-project&lt;/module&gt;
+    &lt;module&gt;another-project&lt;/module&gt;
+  &lt;/modules&gt;
+</code></pre><ul>
+<li>
+<p>modules: 我是班長，我管理旗下的這些班兵，建構(Maven指令)我也會一起建構我的班兵；但其實班兵不知道自己的班長是誰</p>
+</li>
+<li>
+<p>parent: 我爹是誰，我繼承我爹的特性跟依賴，我爹在dependencyManagement説過版本號是多少，如果我不指定那就用我爹説的版本</p>
+</li>
+</ul>
+<h2 id="其他經驗">其他經驗</h2>
+<ul>
+<li>我在common模組依賴了spring-boot-starter-test，其他模組依賴common，啟動卻報錯，是因為<code>&lt;scope&gt;test&lt;/scope&gt;</code>，編譯時傳遞不過去</li>
+</ul>
+<pre tabindex="0"><code>        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+</code></pre><ul>
+<li>有些依賴它就是要properties，我猜他是依賴寫的有問題(裡面某部分有用${}獲取版本)，例如elasticsearch</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;properties&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;elasticsearch.version&gt;</span>7.16.2<span style="color:#8b008b;font-weight:bold">&lt;/elasticsearch.version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/properties&gt;</span>
+</code></pre></div><ul>
+<li>習慣mybatisplus的工具類(例如idworker、判斷空數組等等)，在common模組引用了<code>mybatis-plus-boot-starter</code>，但是某個模組又沒有實際要連DataSource，可以在啟動類排除</li>
+</ul>
+<pre tabindex="0"><code>@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+</code></pre><h1 id="完整範例">完整範例</h1>
+<h2 id="父項目">父項目</h2>
+<ul>
+<li>繼承spring-boot-starter-parent</li>
+<li><code>&lt;packaging&gt;</code>是<code>pom</code></li>
+<li><code>&lt;dependencyManagement&gt;</code>管理依賴版本，主要重點是<code>spring-cloud-dependencies</code>與<code>spring-cloud-alibaba-dependencies</code></li>
+<li>關於<code>&lt;properties&gt;</code>寫版本號，其實我覺得有點多餘，因為我所有版本號都只會寫在父項目，根本就在同一頁，那直接看dependencyManagement不就好了。但就有些坑(例如ES)一定要properties版本號，沒辦法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;project</span> <span style="color:#658b00">xmlns=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span style="color:#658b00">xmlns:xsi=</span><span style="color:#cd5555">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span style="color:#658b00">xsi:schemaLocation=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;modelVersion&gt;</span>4.0.0<span style="color:#8b008b;font-weight:bold">&lt;/modelVersion&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;parent&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>2.3.2.RELEASE<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;relativePath/&gt;</span> <span style="color:#228b22">&lt;!-- lookup parent from repository --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/parent&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mall-parent<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>mall父聚合模組，管理依賴版本<span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;packaging&gt;</span>pom<span style="color:#8b008b;font-weight:bold">&lt;/packaging&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;modules&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>auth-server<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>cart<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>common<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>coupon<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>gateway<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>member<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>order<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>product<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>renren-fast<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>search<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>seckill<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>third-party<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;module&gt;</span>ware<span style="color:#8b008b;font-weight:bold">&lt;/module&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/modules&gt;</span>
+
+    <span style="color:#228b22">&lt;!--版本控制--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;properties&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;elasticsearch.version&gt;</span>7.16.2<span style="color:#8b008b;font-weight:bold">&lt;/elasticsearch.version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/properties&gt;</span>
+
+    <span style="color:#228b22">&lt;!--依賴版本管理--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;dependencyManagement&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-dependencies<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>Hoxton.SR9<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;type&gt;</span>pom<span style="color:#8b008b;font-weight:bold">&lt;/type&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;scope&gt;</span>import<span style="color:#8b008b;font-weight:bold">&lt;/scope&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-alibaba-dependencies<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>2.2.6.RELEASE<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;type&gt;</span>pom<span style="color:#8b008b;font-weight:bold">&lt;/type&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;scope&gt;</span>import<span style="color:#8b008b;font-weight:bold">&lt;/scope&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.httpcomponents<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>httpclient<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>${httpclient.version}<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>2.2.6.RELEASE<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.redisson<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>redisson<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>3.16.8<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.elasticsearch.client<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>elasticsearch-rest-high-level-client<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>${elasticsearch.version}<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>io.minio<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>minio<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>3.0.10<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#228b22">&lt;!--工具類--&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>fastjson<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>1.2.79<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>cn.hutool<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>hutool-all<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>5.7.20<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.baomidou<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>3.5.0<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependencies&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencyManagement&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/project&gt;</span>
+
+</code></pre></div><h3 id="common模組">Common模組</h3>
+<ul>
+<li>繼承父項目</li>
+<li><code>&lt;groupId&gt;</code>會警告黃標籤說有繼承重複了，但我看一些源碼幾乎都有留著，所以還是留著吧，強迫症把IDEA這個項目警告關掉</li>
+<li>不要用<code>&lt;name&gt;</code>標籤，容易混淆</li>
+<li>在<code>&lt;dependencies&gt;</code>引用全項目都會用到的依賴，我主要分成4類
+<ul>
+<li>JavaWeb相關</li>
+<li>spring-cloud相關</li>
+<li>Database相關</li>
+<li>工具類: 例如lombok、糊塗</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;project</span> <span style="color:#658b00">xmlns=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0&#34;</span>
+         <span style="color:#658b00">xmlns:xsi=</span><span style="color:#cd5555">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span style="color:#658b00">xsi:schemaLocation=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;modelVersion&gt;</span>4.0.0<span style="color:#8b008b;font-weight:bold">&lt;/modelVersion&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;parent&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mall-parent<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/parent&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>common<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>通用工具類模組<span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+        <span style="color:#228b22">&lt;!--JavaWeb相關--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.httpcomponents<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>httpcore<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.httpcomponents<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>httpclient<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>javax.servlet<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>javax.servlet-api<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.commons<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>commons-lang3<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+
+        <span style="color:#228b22">&lt;!--spring-cloud相關--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#228b22">&lt;!-- 可視化zipkin已經包含鏈路追蹤sleuth --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-zipkin<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#228b22">&lt;!--spring-cloud-alibaba--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-config<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-sentinel<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+
+        <span style="color:#228b22">&lt;!--Database相關--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-validation<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>mysql<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mysql-connector-java<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.baomidou<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+
+        <span style="color:#228b22">&lt;!--工具類--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.projectlombok<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>lombok<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>cn.hutool<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>hutool-all<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>com.alibaba<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>fastjson<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencies&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;build&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;plugins&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;plugin&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/plugin&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/plugins&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/build&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/project&gt;</span>
+</code></pre></div><h3 id="其他模組">其他模組</h3>
+<ul>
+<li>繼承父項目</li>
+<li>依賴common</li>
+<li>並且有自己用的其他包</li>
+<li><code>spring-boot-maven-plugin</code>是為了讓maven打包spring boot執行用的插件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;project</span> <span style="color:#658b00">xmlns=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span style="color:#658b00">xmlns:xsi=</span><span style="color:#cd5555">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span style="color:#658b00">xsi:schemaLocation=</span><span style="color:#cd5555">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;modelVersion&gt;</span>4.0.0<span style="color:#8b008b;font-weight:bold">&lt;/modelVersion&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;parent&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>mall-parent<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/parent&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>product<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;description&gt;</span>商品<span style="color:#8b008b;font-weight:bold">&lt;/description&gt;</span>
+
+    <span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>yoziming.mall<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>common<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;scope&gt;</span>test<span style="color:#8b008b;font-weight:bold">&lt;/scope&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-amqp<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.session<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-session-data-redis<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-thymeleaf<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.redisson<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>redisson<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencies&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;build&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;plugins&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;plugin&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/plugin&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/plugins&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/build&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/project&gt;</span>
+
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-08</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220208-leetcode-easy-66/">
+			下一篇<br>LeetCode Easy: 66
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220208-gulimall-22-pay/">
+			上一篇<br>串接第三方支付
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

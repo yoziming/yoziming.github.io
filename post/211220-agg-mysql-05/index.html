@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>子查詢Subquery</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL筆記-05">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="子查詢Subquery" />
+<meta property="og:description" content="尚硅谷MySQL筆記-05" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211220-agg-mysql-05/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-20T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="子查詢Subquery"/>
+<meta name="twitter:description" content="尚硅谷MySQL筆記-05"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e6%9f%a5%e8%a9%a2subquery" onclick="onNavClick(`#子查詢subquery-nav`)" id="子查詢subquery-nav">
+									子查詢Subquery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e8%a1%8c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#單行子查詢-nav`)" id="單行子查詢-nav">
+									單行子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%8c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#多行子查詢-nav`)" id="多行子查詢-nav">
+									多行子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%b8%e9%97%9c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#相關子查詢-nav`)" id="相關子查詢-nav">
+									相關子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8from%e4%b8%ad%e8%81%b2%e6%98%8e%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#在from中聲明子查詢-nav`)" id="在from中聲明子查詢-nav">
+									在FROM中聲明子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8order-by%e4%b8%ad%e8%81%b2%e6%98%8e%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#在order-by中聲明子查詢-nav`)" id="在order-by中聲明子查詢-nav">
+									在ORDER BY中聲明子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exist%e8%88%87not-exist" onclick="onNavClick(`#exist與not-exist-nav`)" id="exist與not-exist-nav">
+									EXIST與NOT EXIST
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%88%e7%8e%87%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#效率問題-nav`)" id="效率問題-nav">
+									效率問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e5%be%8c%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#課後練習-nav`)" id="課後練習-nav">
+									課後練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ad%90%e6%9f%a5%e8%a9%a2subquery" onclick="onNavClick(`#子查詢subquery-nav`)" id="子查詢subquery-nav">
+									子查詢Subquery
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a1%9e" onclick="onNavClick(`#分類-nav`)" id="分類-nav">
+									分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%96%ae%e8%a1%8c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#單行子查詢-nav`)" id="單行子查詢-nav">
+									單行子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%8c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#多行子查詢-nav`)" id="多行子查詢-nav">
+									多行子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%b8%e9%97%9c%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#相關子查詢-nav`)" id="相關子查詢-nav">
+									相關子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8from%e4%b8%ad%e8%81%b2%e6%98%8e%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#在from中聲明子查詢-nav`)" id="在from中聲明子查詢-nav">
+									在FROM中聲明子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8order-by%e4%b8%ad%e8%81%b2%e6%98%8e%e5%ad%90%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#在order-by中聲明子查詢-nav`)" id="在order-by中聲明子查詢-nav">
+									在ORDER BY中聲明子查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exist%e8%88%87not-exist" onclick="onNavClick(`#exist與not-exist-nav`)" id="exist與not-exist-nav">
+									EXIST與NOT EXIST
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%95%88%e7%8e%87%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#效率問題-nav`)" id="效率問題-nav">
+									效率問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%b2%e5%be%8c%e7%b7%b4%e7%bf%92" onclick="onNavClick(`#課後練習-nav`)" id="課後練習-nav">
+									課後練習
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    子查詢Subquery
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL筆記-05
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-20 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/mysql%E7%B7%9A%E4%B8%8A%E8%AA%B2">MySQL線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="子查詢subquery">子查詢Subquery</h1>
+<blockquote>
+<p>查中有查，以某查完的結果作為比較項目來查</p>
+</blockquote>
+<ul>
+<li>用一對<code>()</code>括號包起來</li>
+<li>子查詢在主查詢之前先執行了一次</li>
+<li>子查詢放在比較條件的右側</li>
+<li>多行操作就對應多行子查詢</li>
+</ul>
+<h2 id="分類">分類</h2>
+<ul>
+<li>
+<p>依照內查詢返回的條目數:</p>
+<ul>
+<li>單行:返回一條結果</li>
+<li>多行:返回多行結果</li>
+</ul>
+</li>
+<li>
+<p>依照內查詢是否被執行多次:</p>
+<ul>
+<li>
+<p>相關:查詢工資是否大於其部門平均(每個人部門不同，都要查各自的)</p>
+</li>
+<li>
+<p>不相關:查詢工資是否大於2000(每個人固定跟2000比較)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="單行子查詢">單行子查詢</h3>
+<ul>
+<li>內查詢返回一條結果，外查詢跟這條結果比較</li>
+<li>比較符:<code>=</code>等於、大小於等於、不等於</li>
+<li>舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 查詢薪水比&#34;員工ID143號的薪水&#34;還多的
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary,<span style="color:#bbb"> </span>job_id,<span style="color:#bbb"> </span>employee_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">143</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 返回&#34;job_id與141號員工相同&#34;且&#34;salary比143號員工多的&#34;
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary,<span style="color:#bbb"> </span>job_id,<span style="color:#bbb"> </span>employee_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">143</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">141</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查詢工資最少的
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>last_name,job_id,salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary=(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">min</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查詢管理人與部門ID跟編號141相同的
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employee_id,manager_id,department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>manager_id=(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id=<span style="color:#bbb"> </span><span style="color:#b452cd">141</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>department_id=(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>=<span style="color:#b452cd">141</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb"> </span>!=<span style="color:#b452cd">141</span>;<span style="color:#bbb">  </span><span style="color:#228b22">-- 注意排除自己本身
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 返回每個部門的最低工資，條件限制&#34;比部門編號50的最低薪資&#34;還高
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id,<span style="color:#8b008b;font-weight:bold">min</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">min</span>(salary)&gt;(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">min</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id=<span style="color:#b452cd">50</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>HAVING</code>、<code>CASE</code>也都可以使用</li>
+<li>如果子查詢結果為<code>null</code>，那不返回任何東西 (與null比較必為null)</li>
+</ul>
+<h3 id="多行子查詢">多行子查詢</h3>
+<ul>
+<li>也稱為集合比較子查詢</li>
+<li>內查詢返回多行結果</li>
+<li>使用多行比較操作符，因為返回很多條所以沒得等於，不然要等於哪個?</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>含義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IN</td>
+<td>等於列表中的<strong>任意一個</strong></td>
+</tr>
+<tr>
+<td>ANY</td>
+<td>需要和單行比較操作符一起使用，和子查詢返回的<strong>某一個</strong>值比較</td>
+</tr>
+<tr>
+<td>ALL</td>
+<td>需要和單行比較操作符一起使用，和子查詢返回的<strong>所有</strong>值比較</td>
+</tr>
+<tr>
+<td>SOME</td>
+<td>實際上是ANY的別名，作用相同，一般常使用ANY</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>舉例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 返回其它job_id中比job_id為IT_PROG任一工資低的員工的員工號、job_id 以及salary**
+</span><span style="color:#228b22">-- 其實相當於&lt; IT_PROG中工資的max
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employee_id,job_id,salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">any</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;IT_PROG&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>!=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;IT_PROG&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/* 同理，任一改成所有，即是any改成all
+</span><span style="color:#228b22">則相當於&lt; IT_PROG中工資的min
+</span><span style="color:#228b22">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查詢平均工資最低的部門id
+</span><span style="color:#228b22">-- 方法1
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">GROUP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">HAVING</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AVG</span>(salary)<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">MIN</span>(avg_sal)<span style="color:#bbb">
+</span><span style="color:#bbb">			</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">				</span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AVG</span>(salary)<span style="color:#bbb"> </span>avg_sal<span style="color:#bbb">
+</span><span style="color:#bbb">				</span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">				</span><span style="color:#8b008b;font-weight:bold">GROUP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">BY</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">				</span>)<span style="color:#bbb"> </span>dept_avg_sal<span style="color:#bbb">
+</span><span style="color:#bbb">			</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 方法2
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)&lt;=<span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>如果子查詢結果中包含<code>null</code>，那不返回任何東西
+<ul>
+<li>在子查詢中加入<code>is not null</code>可以避免</li>
+</ul>
+</li>
+</ul>
+<h3 id="相關子查詢">相關子查詢</h3>
+<ul>
+<li>內查詢被執行多次，比如:查詢員工工資是否大於該員工的部門平均
+<ul>
+<li>每個員工部門可能不同，要先查出他的部門平均，再來比較</li>
+</ul>
+</li>
+</ul>
+<h4 id="在from中聲明子查詢">在FROM中聲明子查詢</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 查詢員工工資是否大於該員工的部門平均
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb">         </span><span style="color:#8b008b;font-weight:bold">natural</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">join</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb"> </span>avg_sal<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>t_dept_avg<span style="color:#bbb"> </span><span style="color:#228b22">-- 將查詢結果作為一張暫時表，必須起別名
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e.salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span>t_dept_avg.avg_sal;<span style="color:#bbb">
+</span></code></pre></div><h4 id="在order-by中聲明子查詢">在ORDER BY中聲明子查詢</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 依照department_name來排序員工
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">order</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">             </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_name<span style="color:#bbb">
+</span><span style="color:#bbb">             </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb">             </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>d.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">         </span>);<span style="color:#bbb">
+</span></code></pre></div><ul>
+<li>除了<code>GROUP BY</code>與<code>LIMIT</code>之外，其他地方都可以聲明子查詢</li>
+</ul>
+<h4 id="exist與not-exist">EXIST與NOT EXIST</h4>
+<blockquote>
+<p>返回是否存在</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- 查詢沒有員工的部門
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id,<span style="color:#bbb"> </span>d.department_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span>(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>d.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>);<span style="color:#bbb">
+</span></code></pre></div><h3 id="效率問題">效率問題</h3>
+<ul>
+<li>多表連接(比如自連接)效率比子查詢高</li>
+<li>能自連接就自連接</li>
+</ul>
+<h1 id="課後練習">課後練習</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">#<span style="color:#b452cd">1</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢和</span>Zlotkey相同部門的員工姓名和工資<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>e.last_name,<span style="color:#bbb"> </span>e.salary,<span style="color:#bbb"> </span>e.department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Zlotkey&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">2</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢工資比公司平均工資高的員工的員工號，姓名和工資。</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>e.employee_id,<span style="color:#bbb"> </span>e.last_name,<span style="color:#bbb"> </span>e.salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">3</span>.<span style="color:#a61717;background-color:#e3d2d2">選擇工資大於所有</span>JOB_ID<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;SA_MAN&#39;</span><span style="color:#a61717;background-color:#e3d2d2">的員工的工資的員工的</span>last_name,<span style="color:#bbb"> </span>job_id,<span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>last_name,<span style="color:#bbb"> </span>job_id,<span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;SA_MAN&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">4</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢和姓名中包含字母</span>u的員工在相同部門的員工的員工號和姓名<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employee_id,<span style="color:#bbb"> </span>last_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">distinct</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%u%&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">5</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢在部門的</span>location_id為1700的部門工作的員工的員工號<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employee_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>location_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#b452cd">1700</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">6</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢管理者是</span>King的員工姓名和工資<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e1,<span style="color:#bbb">
+</span><span style="color:#bbb">     </span>employees<span style="color:#bbb"> </span>e2<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e1.manager_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>e2.employee_id<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>e2.last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;King&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">7</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢工資最低的員工資訊</span>:<span style="color:#bbb"> </span>last_name,<span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">min</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">8</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢平均工資最低的部門資訊</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*,<span style="color:#bbb"> </span>(<span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">AVG</span>(salary)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FROM</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>departments.department_id)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employees.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>employees.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>employees.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">10</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢平均工資最高的</span><span style="color:#bbb"> </span>job<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">資訊</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>jobs<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>employees.job_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>jobs.job_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>jobs.job_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>));<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">11</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢平均工資高於公司平均工資的部門有哪些</span>?<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">is</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">null</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb"> </span>&gt;=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">13</span>.<span style="color:#a61717;background-color:#e3d2d2">各個部門中</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">最高工資中最低的那個部門的</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">最低工資是多少</span>?<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">min</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">max</span>(salary)<span style="color:#bbb"> </span>&lt;=<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">max</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">14</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢平均工資最高的部門的</span><span style="color:#bbb"> </span>manager<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">的詳細資訊</span>:<span style="color:#bbb"> </span>last_name,<span style="color:#bbb"> </span>department_id,<span style="color:#bbb"> </span>email,<span style="color:#bbb"> </span>salary<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>employee_id=<span style="color:#8b008b;font-weight:bold">any</span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">distinct</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb"> </span><span style="color:#228b22">-- distinct很關鍵，因為平均工資最高的部門的manager可能是複數同一個
+</span><span style="color:#228b22"></span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>department_id=(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#228b22">-- 平均工資最高的部門
+</span><span style="color:#228b22"></span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">having</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)&gt;=<span style="color:#8b008b;font-weight:bold">all</span>(<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#8b008b;font-weight:bold">group</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span>department_id<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">15</span>.<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">查詢部門的部門號，其中不包括</span>job_id是<span style="color:#cd5555">&#34;ST_CLERK&#34;</span><span style="color:#a61717;background-color:#e3d2d2">的部門號</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">not</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">exists</span>(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>departments.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>employees.department_id<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#8b008b;font-weight:bold">and</span><span style="color:#bbb"> </span>job_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;ST_CLERK&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">16</span>.<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">選擇所有沒有管理者的員工的</span>last_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">is</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">null</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">17</span><span style="color:#a61717;background-color:#e3d2d2">．查詢員工號、姓名、雇用時間、工資，其中員工的管理者為</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;De Haan&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">in</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>manager_id<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>last_name<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;De Haan&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">18</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢各部門中工資比本部門平均工資高的員工的員工號</span>,<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">姓名和工資（相關子查詢）</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>salary<span style="color:#bbb"> </span>&gt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">avg</span>(salary)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e2<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e1.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>e2.department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">19</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢每個部門下的部門人數大於</span><span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">的部門名稱（相關子查詢）</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#b452cd">5</span><span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>employees<span style="color:#bbb"> </span>e<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>e.department_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>d.department_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>#<span style="color:#b452cd">20</span>.<span style="color:#a61717;background-color:#e3d2d2">查詢每個國家下的部門個數大於</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">的國家編號（相關子查詢）</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>locations;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span>*<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>locations<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#b452cd">2</span><span style="color:#bbb"> </span>&lt;<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">count</span>(*)<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">from</span><span style="color:#bbb"> </span>departments<span style="color:#bbb"> </span>d<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#8b008b;font-weight:bold">where</span><span style="color:#bbb"> </span>d.location_id<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>locations.location_id<span style="color:#bbb">
+</span><span style="color:#bbb"></span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-20</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211221-agg-mysql-06/">
+			下一篇<br>資料庫的具體結構、創建與管理
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211219-agg-mysql-04/">
+			上一篇<br>常用函數:數值/字串/時間/流程控制...等
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

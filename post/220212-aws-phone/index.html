@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>初識AWS與帳號驗證的趣事</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="收不到簡訊驗證只好找客服，結果電話打來是個印度人">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="初識AWS與帳號驗證的趣事" />
+<meta property="og:description" content="收不到簡訊驗證只好找客服，結果電話打來是個印度人" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220212-aws-phone/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-12T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-12T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="初識AWS與帳號驗證的趣事"/>
+<meta name="twitter:description" content="收不到簡訊驗證只好找客服，結果電話打來是個印度人"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%b3%e8%ab%8baws%e5%b8%b3%e8%99%9f" onclick="onNavClick(`#申請aws帳號-nav`)" id="申請aws帳號-nav">
+									申請AWS帳號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e8%ab%96" onclick="onNavClick(`#結論-nav`)" id="結論-nav">
+									結論
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e8%ad%98aws" onclick="onNavClick(`#初識aws-nav`)" id="初識aws-nav">
+									初識AWS
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#ec2" onclick="onNavClick(`#ec2-nav`)" id="ec2-nav">
+									EC2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#iam" onclick="onNavClick(`#iam-nav`)" id="iam-nav">
+									IAM
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#s3" onclick="onNavClick(`#s3-nav`)" id="s3-nav">
+									S3
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#api-gateway" onclick="onNavClick(`#api-gateway-nav`)" id="api-gateway-nav">
+									API Gateway
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%b3%e8%ab%8baws%e5%b8%b3%e8%99%9f" onclick="onNavClick(`#申請aws帳號-nav`)" id="申請aws帳號-nav">
+									申請AWS帳號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b5%90%e8%ab%96" onclick="onNavClick(`#結論-nav`)" id="結論-nav">
+									結論
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e8%ad%98aws" onclick="onNavClick(`#初識aws-nav`)" id="初識aws-nav">
+									初識AWS
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#ec2" onclick="onNavClick(`#ec2-nav`)" id="ec2-nav">
+									EC2
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#iam" onclick="onNavClick(`#iam-nav`)" id="iam-nav">
+									IAM
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#s3" onclick="onNavClick(`#s3-nav`)" id="s3-nav">
+									S3
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#api-gateway" onclick="onNavClick(`#api-gateway-nav`)" id="api-gateway-nav">
+									API Gateway
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/cloud.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    初識AWS與帳號驗證的趣事
+                    
+                    <div class="post-subtitle">
+                        收不到簡訊驗證只好找客服，結果電話打來是個印度人
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-12 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/cloud">cloud</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="申請aws帳號">申請AWS帳號</h1>
+<ul>
+<li>是這樣的，我的手機門號是台灣之星，註冊後的驗證始終收不到簡訊驗證碼
+<ul>
+<li>題外話，國際電話手機格式 +886 912345678，<code>+886</code>就是<code>0</code></li>
+</ul>
+</li>
+<li>估狗發現別人也有同樣問題，有說更換語言的，有說換APN的，但我試過都沒用</li>
+<li>只好找客服，AWS有線上客服(跳出一個小即時通那樣)，我就填說帳號啟用有問題，收不到驗證碼，我的電話號是多少之類(英文)</li>
+<li>結果隔一會顯示有專人來處理了，是直接打電話過來，嚇我一跳</li>
+<li>重點是她客服那邊的口音超重(好像是個印度小妹)，通話音質又差，我自己英文也是好幾年沒用，整個溝通真的是困難到爆炸</li>
+<li>雞同鴨講半天，最後只好說咱們用文字溝通吧</li>
+<li>後來終於弄懂她的意思是，你需要在電話中用語音說出你的用戶名稱、email帳號、電話，他們公司服務部門才能確認跟處理後續</li>
+<li>好久沒講英文突然真不習慣，像是塵封多年的老機器突然重新開機，搞定後說要5小時工作時間，看看後續如何</li>
+</ul>
+<h3 id="結論">結論</h3>
+<ul>
+<li>如果找AWS客服，最好提前做下心理準備要用英語溝通</li>
+<li>效率還是不錯的，兩個小時後就收到回信了</li>
+</ul>
+<pre tabindex="0"><code>Hello again,
+
+Great news! Our service team has manually bypassed the phone verification step for you, so all you need to do is refresh your console and Select a Support Plan.
+
+1) Validate your credit/debit card ✓ DONE
+2) Validate your phone number - ✓ DONE
+3) Select your Support Plan - (Pending) You will be able to do this once step 4 is finished.
+
+AWS Support has some great online documentation and video tutorials to help our customers starting on AWS with Free Tier that may be able to help a first-time user launch resources with confidence.
+</code></pre><ul>
+<li>客服手動幫我調整成驗證成功狀態</li>
+<li>登入後就可以開始免費試用一年，AWS還是挺佛心的</li>
+<li>但是注意超過試用會被收錢，提前把信用卡改了(改成錯誤的日期)、或新增假卡刪除原本的之類&hellip;很多方法自己估狗，總之留個心眼</li>
+</ul>
+<h1 id="初識aws">初識AWS</h1>
+<h2 id="ec2">EC2</h2>
+<ul>
+<li>最常用的服務，即運行雲端虛擬機，免費試用一年的額度是每月720小時、30G容量</li>
+<li>要建立機器蠻簡單的，一路順著點就好，但要注意右上角選對所在的區域</li>
+<li>建立成功後會得到一個<code>xxx.pem</code>，就是用來連線到主機的key</li>
+<li>使用ssh連線主機的私有ip，例如</li>
+</ul>
+<pre tabindex="0"><code>ssh -i &quot;javamall.pem&quot; ubuntu@ec2-16-163-107-88.ap-east-1.compute.amazonaws.com
+</code></pre><ul>
+<li>
+<p>之後就可以操作下載docker、運行服務等等</p>
+</li>
+<li>
+<p>但有一個問題是，免費仔的公有IP跟DNS是不固定的，每次啟動都會隨機分配一個</p>
+</li>
+<li>
+<p>也就是說免費仔只能啟動一台機器(多台運行額度時數會相加)，然後永遠不關機，這樣才能有一個相對穩定對外的IP來給別人訪問</p>
+</li>
+</ul>
+<h2 id="iam">IAM</h2>
+<blockquote>
+<p>Identity and Access Management (IAM)</p>
+</blockquote>
+<ul>
+<li>顧名思義，管理權限的地方</li>
+<li>分成群組、使用者、角色、政策</li>
+<li>使用者(user)跟想像的差不多，可以看做是某個&quot;人&quot;的帳號，因為一個AWS帳號很可能是屬於整個公司，所以有Group跟User非常合理</li>
+<li>角色(role)乍看不太明白，其實就是具體去幹某件事的身分，例如操作某個S3(資料庫)的角色</li>
+<li>需要先建立政策(Policiy)給要操作的服務指定規則(例如可以新增檔案、不能刪除)，然後綁定到role上，該role就可以去執行操作了</li>
+</ul>
+<h2 id="s3">S3</h2>
+<blockquote>
+<p><em>Amazon</em> Simple Storage Service (<em>Amazon S3</em>)</p>
+</blockquote>
+<ul>
+<li>存檔案的，但是用起來挺麻煩，一樣要先造<strong>Buckets</strong></li>
+<li>想上傳到S3目前學到兩種辦法，一是建立一個role，綁定的政策就是操作某個S3 Buckets，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#8b008b;font-weight:bold">&#34;Version&#34;</span>: <span style="color:#cd5555">&#34;2012-10-17&#34;</span>,
+    <span style="color:#8b008b;font-weight:bold">&#34;Statement&#34;</span>: [
+        {
+            <span style="color:#8b008b;font-weight:bold">&#34;Sid&#34;</span>: <span style="color:#cd5555">&#34;VisualEditor0&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Effect&#34;</span>: <span style="color:#cd5555">&#34;Allow&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Action&#34;</span>: [
+                <span style="color:#cd5555">&#34;s3:PutAccountPublicAccessBlock&#34;</span>,
+                <span style="color:#cd5555">&#34;s3:GetAccountPublicAccessBlock&#34;</span>,
+                <span style="color:#cd5555">&#34;s3:ListJobs&#34;</span>,
+                <span style="color:#cd5555">&#34;s3:CreateJob&#34;</span>,
+                <span style="color:#cd5555">&#34;s3:HeadBucket&#34;</span>
+            ],
+            <span style="color:#8b008b;font-weight:bold">&#34;Resource&#34;</span>: <span style="color:#cd5555">&#34;*&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Condition&#34;</span>: {
+                <span style="color:#8b008b;font-weight:bold">&#34;IpAddress&#34;</span>: {
+                    <span style="color:#8b008b;font-weight:bold">&#34;aws:SourceIp&#34;</span>: <span style="color:#cd5555">&#34;IP.IP.IP.0/24&#34;</span>
+                }
+            }
+        },
+        {
+            <span style="color:#8b008b;font-weight:bold">&#34;Sid&#34;</span>: <span style="color:#cd5555">&#34;VisualEditor1&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Effect&#34;</span>: <span style="color:#cd5555">&#34;Allow&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Action&#34;</span>: <span style="color:#cd5555">&#34;s3:*&#34;</span>,
+            <span style="color:#8b008b;font-weight:bold">&#34;Resource&#34;</span>: [
+                <span style="color:#cd5555">&#34;arn:aws:s3:::BUCKET_NAME&#34;</span>,
+                <span style="color:#cd5555">&#34;arn:aws:s3:::*/*&#34;</span>,
+                <span style="color:#cd5555">&#34;arn:aws:s3:*:*:job/*&#34;</span>
+            ],
+            <span style="color:#8b008b;font-weight:bold">&#34;Condition&#34;</span>: {
+                <span style="color:#8b008b;font-weight:bold">&#34;IpAddress&#34;</span>: {
+                    <span style="color:#8b008b;font-weight:bold">&#34;aws:SourceIp&#34;</span>: <span style="color:#cd5555">&#34;IP.IP.IP.0/24&#34;</span>
+                }
+            }
+        }
+    ]
+}
+</code></pre></div><ul>
+<li>之後就能取得<code>access_key</code>、<code>secret_key</code>，用起來就跟一般資料庫一樣，用SKD上傳</li>
+<li>另一個方法是透過API Gateway的方式，參考: <a href="https://ithelp.ithome.com.tw/articles/10277760?sc=iThelpR">https://ithelp.ithome.com.tw/articles/10277760?sc=iThelpR</a></li>
+<li>簡單來說就是設定成&quot;符合這個網址&quot;就能上傳的樣式</li>
+</ul>
+<h3 id="api-gateway">API Gateway</h3>
+<ul>
+<li>網關中心，可以設定依照某規則的網址就有權限等等</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-12</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220213-gulimall-25/">
+			下一篇<br>微服務商城之高可用集群篇
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220211-javaweb-heroku/">
+			上一篇<br>用Heroku部署Tomcat網站
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

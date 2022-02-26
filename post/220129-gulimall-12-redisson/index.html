@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Redisson與SpringCache</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-12">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Redisson與SpringCache" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-12" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220129-gulimall-12-redisson/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-29T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redisson與SpringCache"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-12"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#redisson" onclick="onNavClick(`#redisson-nav`)" id="redisson-nav">
+									Redisson
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%bd%ae%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#前置設定-nav`)" id="前置設定-nav">
+									前置設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lock-%e5%9f%ba%e6%9c%ac%e9%8e%96" onclick="onNavClick(`#lock-基本鎖-nav`)" id="lock-基本鎖-nav">
+									Lock 基本鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#readwritelock-%e8%ae%80%e5%af%ab%e9%8e%96" onclick="onNavClick(`#readwritelock-讀寫鎖-nav`)" id="readwritelock-讀寫鎖-nav">
+									ReadWriteLock 讀寫鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#semaphore-%e4%bf%a1%e8%99%9f%e9%87%8f" onclick="onNavClick(`#semaphore-信號量-nav`)" id="semaphore-信號量-nav">
+									Semaphore 信號量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#countdownlatch-%e9%96%89%e9%8e%96" onclick="onNavClick(`#countdownlatch-閉鎖-nav`)" id="countdownlatch-閉鎖-nav">
+									CountDownLatch 閉鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a5%97%e7%94%a8%e8%87%b3%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#套用至項目-nav`)" id="套用至項目-nav">
+									套用至項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%a9%e5%ad%98%e4%b8%80%e8%87%b4%e6%80%a7%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#緩存一致性問題-nav`)" id="緩存一致性問題-nav">
+									緩存一致性問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%ba%e8%be%a6%e6%b3%95" onclick="onNavClick(`#解決辦法-nav`)" id="解決辦法-nav">
+									解決辦法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-cache" onclick="onNavClick(`#spring-cache-nav`)" id="spring-cache-nav">
+									Spring Cache
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3" onclick="onNavClick(`#註解-nav`)" id="註解-nav">
+									註解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cacheable" onclick="onNavClick(`#cacheable-nav`)" id="cacheable-nav">
+									@Cacheable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cacheevict" onclick="onNavClick(`#cacheevict-nav`)" id="cacheevict-nav">
+									@CacheEvict
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cacheput" onclick="onNavClick(`#cacheput-nav`)" id="cacheput-nav">
+									@CachePut
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#caching" onclick="onNavClick(`#caching-nav`)" id="caching-nav">
+									@Caching
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#redisson" onclick="onNavClick(`#redisson-nav`)" id="redisson-nav">
+									Redisson
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%bd%ae%e8%a8%ad%e5%ae%9a" onclick="onNavClick(`#前置設定-nav`)" id="前置設定-nav">
+									前置設定
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lock-%e5%9f%ba%e6%9c%ac%e9%8e%96" onclick="onNavClick(`#lock-基本鎖-nav`)" id="lock-基本鎖-nav">
+									Lock 基本鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#readwritelock-%e8%ae%80%e5%af%ab%e9%8e%96" onclick="onNavClick(`#readwritelock-讀寫鎖-nav`)" id="readwritelock-讀寫鎖-nav">
+									ReadWriteLock 讀寫鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#semaphore-%e4%bf%a1%e8%99%9f%e9%87%8f" onclick="onNavClick(`#semaphore-信號量-nav`)" id="semaphore-信號量-nav">
+									Semaphore 信號量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#countdownlatch-%e9%96%89%e9%8e%96" onclick="onNavClick(`#countdownlatch-閉鎖-nav`)" id="countdownlatch-閉鎖-nav">
+									CountDownLatch 閉鎖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a5%97%e7%94%a8%e8%87%b3%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#套用至項目-nav`)" id="套用至項目-nav">
+									套用至項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b7%a9%e5%ad%98%e4%b8%80%e8%87%b4%e6%80%a7%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#緩存一致性問題-nav`)" id="緩存一致性問題-nav">
+									緩存一致性問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%ba%e8%be%a6%e6%b3%95" onclick="onNavClick(`#解決辦法-nav`)" id="解決辦法-nav">
+									解決辦法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#spring-cache" onclick="onNavClick(`#spring-cache-nav`)" id="spring-cache-nav">
+									Spring Cache
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3" onclick="onNavClick(`#註解-nav`)" id="註解-nav">
+									註解
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#cacheable" onclick="onNavClick(`#cacheable-nav`)" id="cacheable-nav">
+									@Cacheable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cacheevict" onclick="onNavClick(`#cacheevict-nav`)" id="cacheevict-nav">
+									@CacheEvict
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cacheput" onclick="onNavClick(`#cacheput-nav`)" id="cacheput-nav">
+									@CachePut
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#caching" onclick="onNavClick(`#caching-nav`)" id="caching-nav">
+									@Caching
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/redis.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    Redisson與SpringCache
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-12
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-29 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/nosql">nosql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="redisson">Redisson</h1>
+<ul>
+<li>
+<p>Java操作Redis的框架，主要用他的分布式鎖的功能</p>
+</li>
+<li>
+<p>加鎖的方法與邏輯幾乎都跟<code>java.util.concurrent</code>包下的一樣</p>
+<ul>
+<li>JUC包: <code>ReentrantLock</code>那些，如果沒印象了看下面個種鎖的範例就會回想起來</li>
+</ul>
+</li>
+</ul>
+<h2 id="前置設定">前置設定</h2>
+<blockquote>
+<p><a href="https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95">https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95</a></p>
+</blockquote>
+<ul>
+<li>引包</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+   <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.redisson<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+   <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>redisson<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+   <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>3.16.8<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>  
+</code></pre></div><ul>
+<li>造config類
+<ul>
+<li>注意<code>import org.redisson.config.Config</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RedissonConfig</span> {
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 所有對Redisson的使用都是通過RedissonClient
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @return
+</span><span style="color:#228b22">     * @throws IOException
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Bean</span>(destroyMethod = <span style="color:#cd5555">&#34;shutdown&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> RedissonClient <span style="color:#008b45">redisson</span>() <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        <span style="color:#228b22">// 創建配置
+</span><span style="color:#228b22"></span>        Config config = <span style="color:#8b008b;font-weight:bold">new</span> Config();
+        config.<span style="color:#658b00">useSingleServer</span>().<span style="color:#658b00">setAddress</span>(<span style="color:#cd5555">&#34;redis://localhost:6379&#34;</span>);
+
+        <span style="color:#228b22">// 根據Config創建出RedissonClient實例
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// Redis url should start with redis:// or rediss://
+</span><span style="color:#228b22"></span>        RedissonClient redissonClient = Redisson.<span style="color:#658b00">create</span>(config);
+        <span style="color:#8b008b;font-weight:bold">return</span> redissonClient;
+    }
+}
+</code></pre></div><ul>
+<li>注入RedissonClient，開始造鎖</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
+RedissonClient redisson;
+</code></pre></div><h2 id="lock-基本鎖">Lock 基本鎖</h2>
+<ul>
+<li>只要鎖的名字(例如: <code>&quot;myLock&quot;</code>)一樣，就是同一把鎖</li>
+<li>預設為阻塞式等待，過期時間沒指定是30s</li>
+<li>自動續期，如果業務超長，運行期間自動鎖上新的30s
+<ul>
+<li>如果手動指定了過期時間就不會自動續期，除非再使用看門狗</li>
+<li>但何必搞那麼多，讓他預設30秒自動續就挺好</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">RLock lock = redisson.<span style="color:#658b00">getLock</span>(<span style="color:#cd5555">&#34;myLock&#34;</span>)
+<span style="color:#228b22">// 設定10秒
+</span><span style="color:#228b22"></span>lock.<span style="color:#658b00">lock</span>(10, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+</code></pre></div><h2 id="readwritelock-讀寫鎖">ReadWriteLock 讀寫鎖</h2>
+<ul>
+<li>
+<p>用來保證一定能讀到最新資料</p>
+</li>
+<li>
+<p>一個讀寫鎖下包含一個讀鎖與一個寫鎖(好像廢話)</p>
+<ul>
+<li>
+<p>讀讀: 無限制</p>
+</li>
+<li>
+<p>寫寫: 阻塞，排隊</p>
+</li>
+<li>
+<p>寫讀: 修改期間(有人拿走了寫鎖)，讀也被鎖住，保證不會有人讀到髒資料</p>
+</li>
+<li>
+<p>讀寫: 有人拿走了讀鎖，寫也被鎖住</p>
+</li>
+</ul>
+</li>
+<li>
+<p>總之<strong>讀</strong>無所謂，<strong>寫</strong>是互斥鎖，只要涉及寫就阻塞</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/write&#34;</span>)
+<span style="color:#707a7c">@ResponseBody</span>
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">writeValue</span>() {
+    String s = <span style="color:#cd5555">&#34;&#34;</span>;
+    RReadWriteLock readWriteLock = redisson.<span style="color:#658b00">getReadWriteLock</span>(<span style="color:#cd5555">&#34;rw-lock&#34;</span>);
+    RLock rLock = readWriteLock.<span style="color:#658b00">writeLock</span>();
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#228b22">// 改資料加寫鎖，讀數據加讀鎖
+</span><span style="color:#228b22"></span>        rLock.<span style="color:#658b00">lock</span>();
+        s = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>();
+        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
+        ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;writeValue&#34;</span>,s);
+        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(10);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        rLock.<span style="color:#658b00">unlock</span>();
+    }
+
+    <span style="color:#8b008b;font-weight:bold">return</span> s;
+}
+
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/read&#34;</span>)
+<span style="color:#707a7c">@ResponseBody</span>
+<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">readValue</span>() {
+    String s = <span style="color:#cd5555">&#34;&#34;</span>;
+    RReadWriteLock readWriteLock = redisson.<span style="color:#658b00">getReadWriteLock</span>(<span style="color:#cd5555">&#34;rw-lock&#34;</span>);
+    <span style="color:#228b22">// 加讀鎖
+</span><span style="color:#228b22"></span>    RLock rLock = readWriteLock.<span style="color:#658b00">readLock</span>();
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        rLock.<span style="color:#658b00">lock</span>();
+        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
+        s = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;writeValue&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">try</span> { TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(10); } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) { e.<span style="color:#658b00">printStackTrace</span>(); }
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        rLock.<span style="color:#658b00">unlock</span>();
+    }
+
+    <span style="color:#8b008b;font-weight:bold">return</span> s;
+}
+</code></pre></div><h2 id="semaphore-信號量">Semaphore 信號量</h2>
+<ul>
+<li>
+<p>同時只能有幾人來操作的鎖，類似管道，用來限流</p>
+</li>
+<li>
+<p>令牌桶算法，用<code>getSemaphore()</code>方法獲取指定令牌實例</p>
+<ul>
+<li>要先在redis指定令牌名稱與有幾個，例如: <code>(&quot;park&quot;,3)</code></li>
+</ul>
+</li>
+<li>
+<p>用<code>acquire()</code>獲取一個信號，這是阻塞的</p>
+<ul>
+<li>也可以用<code>tryAcquire()</code>，反正帶try開頭就是非阻塞的</li>
+</ul>
+</li>
+<li>
+<p>用<code>release()</code>釋放信號</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 車庫3車位，讓人停車
+</span><span style="color:#228b22">     * 信號量也可以做分散式限流
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/park&#34;</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">park</span>() <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
+
+        RSemaphore park = redisson.<span style="color:#658b00">getSemaphore</span>(<span style="color:#cd5555">&#34;park&#34;</span>);
+        park.<span style="color:#658b00">acquire</span>();     <span style="color:#228b22">// 獲取一個信號、獲取一個值,占一個車位
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">boolean</span> flag = park.<span style="color:#658b00">tryAcquire</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (flag) {
+            <span style="color:#228b22">// 執行業務
+</span><span style="color:#228b22"></span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;error&#34;</span>;
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;ok=&gt;&#34;</span> + flag;
+    }
+
+    <span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/go&#34;</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">go</span>() {
+        RSemaphore park = redisson.<span style="color:#658b00">getSemaphore</span>(<span style="color:#cd5555">&#34;park&#34;</span>);
+        park.<span style="color:#658b00">release</span>();     <span style="color:#228b22">// 釋放一個車位
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;ok&#34;</span>;
+    }
+
+</code></pre></div><h2 id="countdownlatch-閉鎖">CountDownLatch 閉鎖</h2>
+<ul>
+<li>限制幹了幾次之後就不幹了</li>
+<li>先用<code>getCountDownLatch()</code>獲取看門的實例</li>
+<li>用<code>trySetCount()</code>方法設定倒數的次數，<code>await()</code>開始倒數</li>
+<li>執行業務邏輯後，用<code>countDown()</code>方法使計數-1</li>
+<li>計數到0，就鎖死</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 放假、鎖門
+</span><span style="color:#228b22">     * 5個人次走完，才可以鎖大門
+</span><span style="color:#228b22">     * 分散式閉鎖
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/lockDoor&#34;</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">lockDoor</span>() <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
+
+        RCountDownLatch door = redisson.<span style="color:#658b00">getCountDownLatch</span>(<span style="color:#cd5555">&#34;door&#34;</span>);
+        door.<span style="color:#658b00">trySetCount</span>(5);
+        door.<span style="color:#658b00">await</span>();       <span style="color:#228b22">// 等待閉鎖完成
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;放假了...&#34;</span>;
+    }
+
+    <span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/gogogo/{id}&#34;</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">gogogo</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;id&#34;</span>) Long id) {
+        RCountDownLatch door = redisson.<span style="color:#658b00">getCountDownLatch</span>(<span style="color:#cd5555">&#34;door&#34;</span>);
+        door.<span style="color:#658b00">countDown</span>();       <span style="color:#228b22">// 計數-1
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> id + <span style="color:#cd5555">&#34;的人都走了...&#34;</span>;
+    }
+
+}
+
+</code></pre></div><h2 id="套用至項目">套用至項目</h2>
+<ul>
+<li>回到之前的CategoryServiceImpl.java，透過redisson可以簡化非常多</li>
+<li>注意鎖的命名表示精細度，比如具體想鎖1號商品的鎖就該是&quot;item-01-lock&quot;，而非&quot;item-lock&quot;
+<ul>
+<li>&ldquo;item-lock&quot;就該是用於所有item的集合的鎖</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// Redisson分布式鎖
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonWithRedisson</span>() {
+    <span style="color:#228b22">// 搶鎖
+</span><span style="color:#228b22"></span>    RLock lock = redisson.<span style="color:#658b00">getLock</span>(<span style="color:#cd5555">&#34;CatalogJson-lock&#34;</span>);
+    <span style="color:#228b22">// 搶到了，開始執行業務
+</span><span style="color:#228b22"></span>    lock.<span style="color:#658b00">lock</span>();
+    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; result;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        result = getCatalogJsonFromDb();
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        lock.<span style="color:#658b00">unlock</span>();
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> result;
+}
+</code></pre></div><h2 id="緩存一致性問題">緩存一致性問題</h2>
+<ul>
+<li>當我們想讓緩存與DB中的資料一樣，可以採用:
+<ul>
+<li>雙寫: 更新DB的操作同時也更新緩存</li>
+<li>失效: 更新DB的操作同時把緩存清空，等下去別人請求的時候更新緩存</li>
+</ul>
+</li>
+<li>然而高併發之下就可能有問題，比如下圖範例:</li>
+</ul>
+<p><img src="image-20220122162940491.png" alt="image-20220122162940491"></p>
+<p><img src="image-20220122163014851.png" alt="image-20220122163014851"></p>
+<h3 id="解決辦法">解決辦法</h3>
+<ul>
+<li>併發本身不多就不考慮這麼多，機率太低，只要都給緩存設定過期時間，最終總會更新的</li>
+<li>放到緩存的東西，本來就是讀多寫少才適合，要求即時、高一致性就乾脆去讀DB。頂多用個讀寫鎖，過度設計增加系統複雜性不可取</li>
+<li>高級可以用Cannl輔助，Canal類似一個MySQL的從庫，他會追蹤主庫，並偽裝自己成一個DB，所以可以透過它來更新緩存
+<ul>
+<li>熟悉的&quot;加一層&quot;操作</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220122163722148.png" alt="image-20220122163722148"></p>
+<ul>
+<li>顯然，自己給方法設定緩存、設定過期&hellip;這些幹的事情都挺重複的，於是乎Spring又又又封裝好了，Spring Cache因應而生</li>
+</ul>
+<h1 id="spring-cache">Spring Cache</h1>
+<blockquote>
+<p>Cache發音同現金那個Cash</p>
+</blockquote>
+<ul>
+<li>用註解就能完成緩存操作，之前在尚醫通項目有稍微學過
+<ul>
+<li><a href="https://yoziming.github.io/post/220116-agg-spring-06/#spring-cache">https://yoziming.github.io/post/220116-agg-spring-06/#spring-cache</a></li>
+</ul>
+</li>
+<li>核心: Spring已經把幾種常用的緩存類跟他們的AutoConfiguration封裝好了，只要在想使用緩存的方法上註解就能自動調用</li>
+</ul>
+<p><img src="image-20220122193127853.png" alt="image-20220122193127853"></p>
+<ul>
+<li>CacheManager接口，顧名思義就是用來管理Cache的</li>
+<li>例如: ConcurrentMapCacheManager就是管理ConcurrentMapCache
+<ul>
+<li>ConcurrentMapCache本身也是接口，封裝了操作底層ConcurrentMap做成的Cache的各種方法</li>
+<li>同理RedissonSpringCache底層就是存到Redis的Cache</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用">使用</h2>
+<ul>
+<li>首先引包</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-cache<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>2.6.3<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>application.properties 指定要使用的cache類型</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">spring.cache.type=redis
+
+# 存活時間，毫秒為單位，預設是-1即永久
+spring.cache.redis.time-to-live=60000
+# 如果指定了前綴就用我們指定的前綴，也可以不要前綴
+#spring.cache.redis.key-prefix=CACHE_
+#spring.cache.redis.use-key-prefix=false
+# 是否緩存空值，用來防止緩存穿透
+spring.cache.redis.cache-null-values=true
+</code></pre><ul>
+<li>造Config類(沒有就會用預設的)
+<ul>
+<li>通常會在類修改緩存的value編碼方式(預設是二進位但一般都改成JSON)與日期格式的支援等等</li>
+<li>Config類 &gt; application.properties，如果在properties設定了全域存活時間，在Config類就需要判斷優先級
+<ul>
+<li>就是下面那堆<code>if XXX !=null</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#707a7c">@EnableCaching</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CustomCacheConfig</span> {
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> RedisCacheConfiguration <span style="color:#008b45">redisCacheConfiguration</span>(CacheProperties cacheProperties) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.<span style="color:#658b00">defaultCacheConfig</span>();
+        <span style="color:#228b22">// config = config.entryTtl();
+</span><span style="color:#228b22"></span>        config =
+                config.<span style="color:#658b00">serializeKeysWith</span>(RedisSerializationContext.<span style="color:#658b00">SerializationPair</span>.<span style="color:#658b00">fromSerializer</span>(<span style="color:#8b008b;font-weight:bold">new</span> StringRedisSerializer()));
+        config =
+                config.<span style="color:#658b00">serializeValuesWith</span>(RedisSerializationContext.<span style="color:#658b00">SerializationPair</span>.<span style="color:#658b00">fromSerializer</span>(<span style="color:#8b008b;font-weight:bold">new</span> GenericJackson2JsonRedisSerializer()));
+
+        CacheProperties.<span style="color:#658b00">Redis</span> redisProperties = cacheProperties.<span style="color:#658b00">getRedis</span>();
+        
+        <span style="color:#228b22">// 讓application.properties文件中的配置生效
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (redisProperties.<span style="color:#658b00">getTimeToLive</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            config = config.<span style="color:#658b00">entryTtl</span>(redisProperties.<span style="color:#658b00">getTimeToLive</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">if</span> (redisProperties.<span style="color:#658b00">getKeyPrefix</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            config = config.<span style="color:#658b00">prefixKeysWith</span>(redisProperties.<span style="color:#658b00">getKeyPrefix</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">if</span> (!redisProperties.<span style="color:#658b00">isCacheNullValues</span>()) {
+            config = config.<span style="color:#658b00">disableCachingNullValues</span>();
+        }
+        <span style="color:#8b008b;font-weight:bold">if</span> (!redisProperties.<span style="color:#658b00">isUseKeyPrefix</span>()) {
+            config = config.<span style="color:#658b00">disableKeyPrefix</span>();
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> config;
+    }
+</code></pre></div><h3 id="註解">註解</h3>
+<h4 id="cacheable"><code>@Cacheable</code></h4>
+<ul>
+<li>
+<p>將方法的結果緩存起來，如果請求時已經有快取，就略過方法直接調用快取給結果，有以下參數:</p>
+<ul>
+<li>
+<p><code>value</code>: 緩存的別名(不是存在redis的名而是在java這邊標示的)，通常把別名當成&quot;分類&quot;來用</p>
+</li>
+<li>
+<p><code>cacheNames</code>: 同上，二選一即可</p>
+</li>
+<li>
+<p><code>sync</code>: 開啟本地鎖，預設為false</p>
+</li>
+<li>
+<p><code>key</code>: 可選，預設生成的是<code>緩存的別名::SimpleKey[]</code></p>
+<ul>
+<li>最好設定成方法名<code>key = &quot;#root.method.name&quot;</code>
+<ul>
+<li><code>前綴::</code>是在redis中會歸類成資料夾方便整理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220122222206658.png" alt="image-20220122222206658"></p>
+<ul>
+<li>
+<p>緩存的value值，為了好看好通用，一般會轉成JSON來存</p>
+</li>
+<li>
+<p>例如:</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Cacheable</span>(cacheNames = <span style="color:#cd5555">&#34;category&#34;</span>, key = <span style="color:#cd5555">&#34;#root.method.name&#34;</span>)
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">getLevel1Catalog</span>() {
+<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">list</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;CategoryEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;parent_cid&#34;</span>, 0));
+}
+</code></pre></div><h4 id="cacheevict"><code>@CacheEvict</code></h4>
+<ul>
+<li>
+<p>清空指定快取，通常用於更新或刪除例如前面提過的失效模式，有以下參數:</p>
+<ul>
+<li>
+<p><code>allEntries</code>: 清空該別名的所有快取，預設為false</p>
+</li>
+<li>
+<p><code>beforeInvocation</code>: 在方法執行前就清空，預設為false</p>
+</li>
+</ul>
+</li>
+<li>
+<p>也可以指定刪除某key例如:</p>
+<ul>
+<li>注意<code>key = &quot;'getLevel1Catalog'&quot;</code>，字符串還要用單引號包住</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/** 
+</span><span style="color:#228b22"> * 級聯更新所有關聯的資料，更新了表，所以刪除快取
+</span><span style="color:#228b22"> * @param category
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@CacheEvict</span>(cacheNames = <span style="color:#cd5555">&#34;category&#34;</span>, key = <span style="color:#cd5555">&#34;&#39;getLevel1Catalog&#39;&#34;</span>)
+<span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateCascade</span>(CategoryEntity category) {
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(category);
+    categoryBrandRelationService.<span style="color:#658b00">updateCategory</span>(category.<span style="color:#658b00">getCatId</span>(), category.<span style="color:#658b00">getName</span>());
+}
+</code></pre></div><h4 id="cacheput"><code>@CachePut</code></h4>
+<ul>
+<li>
+<p>無論如何都會執行方法並更新到快取中，可以用於雙寫模式</p>
+</li>
+<li>
+<p>區別在於<code>@Cacheable</code>是如果緩存中有資料，方法就不會被執行</p>
+</li>
+</ul>
+<h4 id="caching"><code>@Caching</code></h4>
+<ul>
+<li>若一行寫不下，可以這個聚合多行@Cachxxx註解</li>
+</ul>
+<h2 id="小結">小結</h2>
+<ul>
+<li>
+<p>Spring Cache很方便，但對於之前提過的問題</p>
+<ul>
+<li>
+<p>緩存穿透: 有人狂查null。可以設定開啟存null，解決</p>
+</li>
+<li>
+<p>緩存雪崩: 大量key同時過期。只能靠過期時間，不太行</p>
+</li>
+<li>
+<p>緩存擊穿: 一個熱點key被大併發訪問。本地鎖也算能應付</p>
+</li>
+</ul>
+</li>
+<li>
+<p>常規資料: 讀多寫少、一致性要求不高、併發量不大的離譜，Spring Cache完全可以勝任</p>
+</li>
+<li>
+<p>特殊情況那就特殊設計</p>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-29</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220130-gulimall-13/">
+			下一篇<br>用ElasticSearch實現商品搜索
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/">
+			上一篇<br>Redis緩存與分佈式鎖
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>檔案上傳與下載、書城項目優化</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-07">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="檔案上傳與下載、書城項目優化" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-07" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220107-agg-javaweb-07/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-07T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="檔案上傳與下載、書城項目優化"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-07"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%94%e6%a1%88%e4%b8%8a%e5%82%b3" onclick="onNavClick(`#檔案上傳-nav`)" id="檔案上傳-nav">
+									檔案上傳
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#commons-fileupload" onclick="onNavClick(`#commons-fileupload-nav`)" id="commons-fileupload-nav">
+									commons-fileupload
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e8%bc%89%e6%aa%94%e6%a1%88" onclick="onNavClick(`#下載檔案-nav`)" id="下載檔案-nav">
+									下載檔案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%82%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#亂碼問題-nav`)" id="亂碼問題-nav">
+									亂碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#書城項目-nav`)" id="書城項目-nav">
+									書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#html%e8%bd%89%e6%8f%9bjsp" onclick="onNavClick(`#html轉換jsp-nav`)" id="html轉換jsp-nav">
+									html轉換jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e5%8f%96%e7%9b%b8%e5%90%8c%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#抽取相同項目-nav`)" id="抽取相同項目-nav">
+									抽取相同項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#headjsp" onclick="onNavClick(`#headjsp-nav`)" id="headjsp-nav">
+									head.jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#footerjsp" onclick="onNavClick(`#footerjsp-nav`)" id="footerjsp-nav">
+									footer.jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%a9%97%e8%ad%89%e8%a1%a8%e5%96%ae%e4%b8%a6%e9%9f%bf%e6%87%89" onclick="onNavClick(`#驗證表單並響應-nav`)" id="驗證表單並響應-nav">
+									驗證表單並響應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jsp%e6%96%b9%e9%9d%a2" onclick="onNavClick(`#jsp方面-nav`)" id="jsp方面-nav">
+									jsp方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet%e6%96%b9%e9%9d%a2" onclick="onNavClick(`#servlet方面-nav`)" id="servlet方面-nav">
+									servlet方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%88%e4%bd%b5servlet" onclick="onNavClick(`#合併servlet-nav`)" id="合併servlet-nav">
+									合併Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jsp%e6%96%b9%e9%9d%a2-1" onclick="onNavClick(`#jsp方面-1-nav`)" id="jsp方面-1-nav">
+									jsp方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet%e6%96%b9%e9%9d%a2-1" onclick="onNavClick(`#servlet方面-1-nav`)" id="servlet方面-1-nav">
+									servlet方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%b9%e9%80%b2" onclick="onNavClick(`#改進-nav`)" id="改進-nav">
+									改進
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%94%e6%a1%88%e4%b8%8a%e5%82%b3" onclick="onNavClick(`#檔案上傳-nav`)" id="檔案上傳-nav">
+									檔案上傳
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#commons-fileupload" onclick="onNavClick(`#commons-fileupload-nav`)" id="commons-fileupload-nav">
+									commons-fileupload
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95" onclick="onNavClick(`#方法-nav`)" id="方法-nav">
+									方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e8%bc%89%e6%aa%94%e6%a1%88" onclick="onNavClick(`#下載檔案-nav`)" id="下載檔案-nav">
+									下載檔案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%82%e7%a2%bc%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#亂碼問題-nav`)" id="亂碼問題-nav">
+									亂碼問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b8%e5%9f%8e%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#書城項目-nav`)" id="書城項目-nav">
+									書城項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#html%e8%bd%89%e6%8f%9bjsp" onclick="onNavClick(`#html轉換jsp-nav`)" id="html轉換jsp-nav">
+									html轉換jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%bd%e5%8f%96%e7%9b%b8%e5%90%8c%e9%a0%85%e7%9b%ae" onclick="onNavClick(`#抽取相同項目-nav`)" id="抽取相同項目-nav">
+									抽取相同項目
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#headjsp" onclick="onNavClick(`#headjsp-nav`)" id="headjsp-nav">
+									head.jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#footerjsp" onclick="onNavClick(`#footerjsp-nav`)" id="footerjsp-nav">
+									footer.jsp
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%a9%97%e8%ad%89%e8%a1%a8%e5%96%ae%e4%b8%a6%e9%9f%bf%e6%87%89" onclick="onNavClick(`#驗證表單並響應-nav`)" id="驗證表單並響應-nav">
+									驗證表單並響應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jsp%e6%96%b9%e9%9d%a2" onclick="onNavClick(`#jsp方面-nav`)" id="jsp方面-nav">
+									jsp方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet%e6%96%b9%e9%9d%a2" onclick="onNavClick(`#servlet方面-nav`)" id="servlet方面-nav">
+									servlet方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%88%e4%bd%b5servlet" onclick="onNavClick(`#合併servlet-nav`)" id="合併servlet-nav">
+									合併Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jsp%e6%96%b9%e9%9d%a2-1" onclick="onNavClick(`#jsp方面-1-nav`)" id="jsp方面-1-nav">
+									jsp方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servlet%e6%96%b9%e9%9d%a2-1" onclick="onNavClick(`#servlet方面-1-nav`)" id="servlet方面-1-nav">
+									servlet方面
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%94%b9%e9%80%b2" onclick="onNavClick(`#改進-nav`)" id="改進-nav">
+									改進
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    檔案上傳與下載、書城項目優化
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-07
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-07 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="檔案上傳">檔案上傳</h1>
+<blockquote>
+<p>讓用戶從前端上傳一個檔案給伺服器</p>
+</blockquote>
+<ul>
+<li>
+<p>要有一個 <code>form</code> 標籤，<code>method=post</code> 請求</p>
+<ul>
+<li>因為<code>get</code>有長度限制</li>
+</ul>
+</li>
+<li>
+<p><code>form</code>標籤的 <code>encType</code> 屬性值必須為 <code>multipart/form-data</code> 值</p>
+</li>
+<li>
+<p>在 <code>form</code> 標籤中使用 <code>input type=file</code> 添加上傳的檔</p>
+</li>
+<li>
+<p>編寫伺服器代碼(Servlet 程式)接收，處理上傳的資料</p>
+</li>
+<li>
+<p><code>encType=multipart/form-data</code> 表示提交的資料以多段(每一個表單項一個資料段)的形式進行拼接，然後整個以二進位流的形式發送給伺服器</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#1e889b">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#8b008b;font-weight:bold">html</span> <span style="color:#658b00">lang</span>=<span style="color:#cd5555">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">meta</span> <span style="color:#658b00">charset</span>=<span style="color:#cd5555">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">title</span>&gt;Title&lt;/<span style="color:#8b008b;font-weight:bold">title</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">form</span> <span style="color:#658b00">action</span>=<span style="color:#cd5555">&#34;http://localhost:8080/book/uploadServlet&#34;</span> <span style="color:#658b00">method</span>=<span style="color:#cd5555">&#34;post&#34;</span>
+      <span style="color:#658b00">enctype</span>=<span style="color:#cd5555">&#34;multipart/form-data&#34;</span>&gt;
+    用戶名：&lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;text&#34;</span> <span style="color:#658b00">name</span>=<span style="color:#cd5555">&#34;username&#34;</span> /&gt; &lt;<span style="color:#8b008b;font-weight:bold">br</span>&gt;
+    頭像：&lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;file&#34;</span> <span style="color:#658b00">name</span>=<span style="color:#cd5555">&#34;photo&#34;</span> &gt; &lt;<span style="color:#8b008b;font-weight:bold">br</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;submit&#34;</span> <span style="color:#658b00">value</span>=<span style="color:#cd5555">&#34;上傳&#34;</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">form</span>&gt;
+
+&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">html</span>&gt;
+</code></pre></div><p><img src="image-20211229162149040.png" alt="image-20211229162149040"></p>
+<ul>
+<li>創一個<code>UploadServlet</code>用於接收，並且到<code>web.xml</code>綁定，就能用<code>doPost</code>接收這個二進位流</li>
+<li>顯然自己解析這個二進位流再拆開費力不討好，這邊用別人造好的輪子</li>
+</ul>
+<h2 id="commons-fileupload">commons-fileupload</h2>
+<ul>
+<li>導入:</li>
+</ul>
+<pre tabindex="0"><code>commons-fileupload-1.2.1.jar
+commons-io-1.4.jar
+</code></pre><ul>
+<li><code>ServletFileUpload</code> 類，用於解析上傳的資料。</li>
+<li><code>FileItem</code> 類，表示每一個表單項。</li>
+</ul>
+<h3 id="方法">方法</h3>
+<ul>
+<li><code>boolean ServletFileUpload.isMultipartContent(request)</code>判斷當前上傳的資料格式是否是多段的格式</li>
+<li><code>public List&lt;FileItem&gt; parseRequest(request)</code>解析上傳的數據</li>
+<li><code>boolean FileItem.isFormField()</code>判斷是否是普通的表單項
+<ul>
+<li>true 表示普通類型的表單項</li>
+<li>false 表示上傳的檔案類型</li>
+</ul>
+</li>
+<li><code>String FileItem.getFieldName()</code>獲取表單項的 name 屬性值</li>
+<li><code>String FileItem.getString()</code>獲取當前表單項的值</li>
+<li><code>String FileItem.getName()</code>獲取上傳的檔案名</li>
+<li><code>void FileItem.write(file)</code>將上傳的檔寫到 參數 file 所指向硬碟位置</li>
+</ul>
+<h3 id="範例">範例</h3>
+<ul>
+<li>檢查是否回多段資料</li>
+<li>使用工具類接收並解析成一個一個<code>FileItem</code></li>
+<li>寫到硬碟裡</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+		IOException {
+	System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;接收到有人來上傳&#34;</span>);
+	<span style="color:#228b22">// 先判斷使否為多段資料，確認是來上傳檔案的
+</span><span style="color:#228b22"></span>	<span style="color:#8b008b;font-weight:bold">if</span> (ServletFileUpload.<span style="color:#658b00">isMultipartContent</span>(request)){
+		<span style="color:#228b22">// 創建一個fileItemFactory工廠實現類
+</span><span style="color:#228b22"></span>		FileItemFactory fileItemFactory = <span style="color:#8b008b;font-weight:bold">new</span> DiskFileItemFactory();
+		<span style="color:#228b22">// 創建解析用的工具類
+</span><span style="color:#228b22"></span>		ServletFileUpload up = <span style="color:#8b008b;font-weight:bold">new</span> ServletFileUpload(fileItemFactory);
+
+		<span style="color:#8b008b;font-weight:bold">try</span> {
+			<span style="color:#228b22">// 拆分成一個一個的表單項目FileItem
+</span><span style="color:#228b22"></span>			List&lt;FileItem&gt; list = up.<span style="color:#658b00">parseRequest</span>(request);
+
+			<span style="color:#228b22">// 判斷是普通表單類還是上傳的檔案
+</span><span style="color:#228b22"></span>			<span style="color:#8b008b;font-weight:bold">for</span> (FileItem fileItem : list) {
+				<span style="color:#8b008b;font-weight:bold">if</span> (fileItem.<span style="color:#658b00">isFormField</span>()){
+					<span style="color:#228b22">// 是普通表單項
+</span><span style="color:#228b22"></span>					System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;表單name=&#34;</span>+fileItem.<span style="color:#658b00">getFieldName</span>());
+					<span style="color:#228b22">// 參數UTF-8避免亂碼
+</span><span style="color:#228b22"></span>					System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;值=&#34;</span>+fileItem.<span style="color:#658b00">getString</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>));
+				}<span style="color:#8b008b;font-weight:bold">else</span> {
+					<span style="color:#228b22">// 來到這是個檔案
+</span><span style="color:#228b22"></span>					System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;表單name=&#34;</span>+fileItem.<span style="color:#658b00">getFieldName</span>());
+					System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;檔案名稱=&#34;</span>+fileItem.<span style="color:#658b00">getName</span>());
+					<span style="color:#228b22">// 寫到硬碟裡
+</span><span style="color:#228b22"></span>					fileItem.<span style="color:#658b00">write</span>(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;D:\\&#34;</span>+fileItem.<span style="color:#658b00">getName</span>()));
+				}
+			}
+
+		} <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+			e.<span style="color:#658b00">printStackTrace</span>();
+		}
+	}
+}
+</code></pre></div><ul>
+<li>這還是有個問題，就是上傳的檔案名稱可能會有亂碼，因為在http的響應頭中只能是ASCII碼，解決方法後面一起說</li>
+</ul>
+<h1 id="下載檔案">下載檔案</h1>
+<blockquote>
+<p>讓用戶從伺服器下載一個檔案存到他的電腦</p>
+</blockquote>
+<ul>
+<li>核心是以<code>servletContext</code>作為中轉，流程大致如下:
+<ul>
+<li>伺服器端收到前台請求</li>
+<li>獲取檔案流(檔案必須包在伺服器中，在web工程目錄之下)</li>
+<li>接水管，用Context把檔案流輸出到response</li>
+<li>設定響應的類型與檔頭，包一包回傳給前台</li>
+</ul>
+</li>
+<li>範例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doGet</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+        <span style="color:#228b22">// 獲取要下載的檔案內容
+</span><span style="color:#228b22"></span>        ServletContext servletContext = getServletContext();
+
+        <span style="color:#228b22">// ****佔位區域**** 先埋伏筆
+</span><span style="color:#228b22"></span>
+        <span style="color:#228b22">// 將伺服器中指定的檔案讀到servletContext中
+</span><span style="color:#228b22"></span>        InputStream is = servletContext.<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;/static/img/1.jpg&#34;</span>);
+        <span style="color:#228b22">// 造一個準備返回給前端的輸出流
+</span><span style="color:#228b22"></span>        ServletOutputStream os = response.<span style="color:#658b00">getOutputStream</span>();
+
+        <span style="color:#228b22">// 透過工具類把流接過去
+</span><span style="color:#228b22"></span>        IOUtils.<span style="color:#658b00">copy</span>(is,os);
+
+        <span style="color:#228b22">/* 到這邊只要url訪問這個Servlet就會直接在瀏覽器頁面顯示圖片了
+</span><span style="color:#228b22">           就像有時候上網一個網址點過去，影片占滿了整個畫面下面有簡單的播放，右鍵能下載那種
+</span><span style="color:#228b22">
+</span><span style="color:#228b22">           現在後臺東西準備好了，接著要包一包送回給前端，說這裡面都是啥
+</span><span style="color:#228b22">           實際上這些語句要放在上面的佔位區
+</span><span style="color:#228b22">         */</span>
+
+        <span style="color:#228b22">// 指定要下載的檔案名
+</span><span style="color:#228b22"></span>        String downloadFileName=<span style="color:#cd5555">&#34;1.jpg&#34;</span>;
+        <span style="color:#228b22">// 指定要下載的檔案類型
+</span><span style="color:#228b22"></span>        String mimeType = servletContext.<span style="color:#658b00">getMimeType</span>(<span style="color:#cd5555">&#34;/file/&#34;</span> + downloadFileName);
+        <span style="color:#228b22">// 告訴前端這個響應的資料類型
+</span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setContentType</span>(mimeType);
+        <span style="color:#228b22">// 告訴前端這裡是要下載
+</span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Content-Disposition&#34;</span>,<span style="color:#cd5555">&#34;attachment;filename=&#34;</span>+downloadFileName);
+        <span style="color:#228b22">// Content-Disposition 處置，attachment 附件
+</span><span style="color:#228b22"></span>     }
+
+</code></pre></div><ul>
+<li>注意，這個範例是按著人想的順序寫的，實際上設定檔頭步驟這些要放在上面先執行，否則流一接通它就把資料一股腦送出去，才不管你是要下載還是要幹嘛
+<ul>
+<li>反正實際開發這些都是用框架做的，這邊了解就好</li>
+</ul>
+</li>
+</ul>
+<h1 id="亂碼問題">亂碼問題</h1>
+<ul>
+<li>因為http的響應頭中只能是ASCII碼，所以必須轉換</li>
+<li>比如剛剛的下載操作，我想指定別人載回去的檔案名稱有中文，可以這樣:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 把中文名進行 UTF-8 編碼操作
+</span><span style="color:#228b22"></span>String str = <span style="color:#cd5555">&#34;attachment; fileName=&#34;</span> + URLEncoder.<span style="color:#658b00">encode</span>(<span style="color:#cd5555">&#34;中文.jpg&#34;</span>, <span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+
+<span style="color:#228b22">// 然後把編碼後的字串設置到回應頭中
+</span><span style="color:#228b22"></span>response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Content-Disposition&#34;</span>, str);
+
+</code></pre></div><ul>
+<li>
+<p><code>URLEncoder.encode</code>就是編碼成<code>%e8%a4%87%e8%a3%bd%e4%b8%</code>的樣子</p>
+</li>
+<li>
+<p>瀏覽器會自己把他轉回去</p>
+<ul>
+<li>
+<p>老舊版本的火狐需要轉成<code>BASE64</code>編碼，可以這樣</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String ua = request.<span style="color:#658b00">getHeader</span>(<span style="color:#cd5555">&#34;User-Agent&#34;</span>);
+<span style="color:#228b22">// 從響應頭的User-Agent判斷對方是哪種瀏覽器
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (ua.<span style="color:#658b00">contains</span>(<span style="color:#cd5555">&#34;Firefox&#34;</span>)) {
+BASE64Encoder().<span style="color:#658b00">encode</span>()
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="書城項目">書城項目</h1>
+<h2 id="html轉換jsp">html轉換jsp</h2>
+<ul>
+<li>把靜態的html頁面全部轉為jsp，準備實現動態響應(比如跳出一個註冊成功的提示)</li>
+<li>點開檔案上面插入<code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;</code></li>
+<li>修改檔名</li>
+<li>IDEA用<code>ctrl + shift + r</code>批量搜尋取代</li>
+</ul>
+<p><img src="image-20211229201053758.png" alt="image-20211229201053758"></p>
+<h2 id="抽取相同項目">抽取相同項目</h2>
+<ul>
+<li>找出頁面中復用的地方(例如:歡迎訊息、footer之類)，用之前學的靜態包含取代，實現類似封裝的效果</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ include file=&quot;/pages/common/head.jsp&quot;%&gt;
+&lt;%@include file=&quot;/pages/common/footer.jsp&quot;%&gt;
+</code></pre><ul>
+<li>多行也可以用<code>ctrl + shift + r</code>批量搜尋取代</li>
+<li>範例:</li>
+</ul>
+<h3 id="headjsp">head.jsp</h3>
+<blockquote>
+<p>存放head標籤中共用的資訊，比如css、base、JS引用</p>
+</blockquote>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;%
+	// 用request拼接出工程目錄，移到哪都能動態獲取，從此天下任遨遊
+    String basePath = request.getScheme()
+            + &quot;://&quot;
+            + request.getServerName()
+            + &quot;:&quot;
+            + request.getServerPort()
+            + request.getContextPath()
+            + &quot;/&quot;;
+%&gt;
+&lt;base href=&quot;&lt;%=basePath%&gt;&quot;&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;static/css/style.css&quot; &gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;static/script/jquery-1.7.2.js&quot;&gt;&lt;/script&gt;
+</code></pre><h3 id="footerjsp">footer.jsp</h3>
+<blockquote>
+<p>放一些聯絡資訊啥的，很常見相信都能懂</p>
+</blockquote>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;div id=&quot;bottom&quot;&gt;
+		&lt;span&gt;
+			ABC.Copyright &amp;copy;2015
+		&lt;/span&gt;
+&lt;/div&gt;
+</code></pre><h2 id="驗證表單並響應">驗證表單並響應</h2>
+<ul>
+<li>用戶填了帳號密碼然後按登入，需要給他提示或回顯
+<ul>
+<li>回顯數值，比如常見密碼打錯，這時候剛剛填的帳號還是會存在表單格子裡，用戶只要重新輸入密碼</li>
+</ul>
+</li>
+</ul>
+<h3 id="jsp方面">jsp方面</h3>
+<ul>
+<li>在提示區塊顯示一個提示區塊，這個<code>errorMsg</code>從servlet獲取
+<ul>
+<li>如果找不到(=null)，就顯示歡迎或指示之類的訊息</li>
+<li>如果找到了代表這個<code>request</code>真的有異常，就顯示異常訊息</li>
+</ul>
+</li>
+<li>回顯數值，設定表單的預設值<code>value=要從servlet拿的參數</code>，如果<code>null</code>就沒東西(表示第一次來)，如果輸錯密碼就顯示剛剛的帳號</li>
+<li>前面學的EL表達式就是用在這邊，否則用<code>&lt;%</code>還要判端一堆<code>if null</code></li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!--異常提示--&gt;
+&lt;span class=&quot;errorMsg&quot;&gt;
+   ${ empty requestScope.msg ? &quot;請輸入用戶名和密碼&quot;:requestScope.msg }
+&lt;/span&gt;
+
+&lt;!--回顯數值--&gt;
+&lt;label&gt;用戶名稱：&lt;/label&gt;
+&lt;input class=&quot;itxt&quot; type=&quot;text&quot; placeholder=&quot;請輸入用戶名&quot;
+      autocomplete=&quot;off&quot; tabindex=&quot;1&quot; name=&quot;username&quot;
+      value=&quot;${requestScope.username}&quot; /&gt;
+</code></pre><h3 id="servlet方面">servlet方面</h3>
+<ul>
+<li>用<code>setAttribute()</code>方法保存request的參數值</li>
+<li>如果需要回顯，就把原來的值再扔回去，注意回顯語句要在跳轉之前</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 接收參數
+</span><span style="color:#228b22"></span>String username=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+String password=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+<span style="color:#228b22">// 跟資料庫驗證
+</span><span style="color:#228b22"></span>User loginUser = userService.<span style="color:#658b00">login</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(username, password, <span style="color:#8b008b;font-weight:bold">null</span>));
+<span style="color:#8b008b;font-weight:bold">if</span> (loginUser!=<span style="color:#8b008b;font-weight:bold">null</span>){
+    <span style="color:#228b22">// 成功
+</span><span style="color:#228b22"></span>    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login_success.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request,response);
+}<span style="color:#8b008b;font-weight:bold">else</span> {
+    <span style="color:#228b22">// 登入失敗
+</span><span style="color:#228b22"></span>    request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>,<span style="color:#cd5555">&#34;密碼錯誤!&#34;</span>);
+    request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;username&#34;</span>,username);
+    request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request,response);
+}
+
+</code></pre></div><h2 id="合併servlet">合併Servlet</h2>
+<ul>
+<li>先前把登入跟註冊拆開了，現在合成一個</li>
+<li>學習的重要知識點是先前講過html中的隱藏標籤</li>
+</ul>
+<h3 id="jsp方面-1">jsp方面</h3>
+<ul>
+<li>順便改用註解方式綁定Servlet，省得寫web.xml</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;form action=&quot;UserServlet&quot; method=&quot;post&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;login&quot; /&gt;
+&lt;/form&gt;
+
+&lt;form action=&quot;UserServlet&quot; method=&quot;post&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;action&quot; value=&quot;regist&quot;&gt;
+&lt;/form&gt;
+</code></pre><h3 id="servlet方面-1">servlet方面</h3>
+<ul>
+<li>判斷隱藏標籤action的值來得知是要幹啥業務</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@WebServlet</span>(name = <span style="color:#cd5555">&#34;UserServlet&#34;</span>, value = <span style="color:#cd5555">&#34;/UserServlet&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">UserServlet</span> <span style="color:#8b008b;font-weight:bold">extends</span> HttpServlet {
+    <span style="color:#8b008b;font-weight:bold">private</span> UserService userService = <span style="color:#8b008b;font-weight:bold">new</span> UserServiceImpl();
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doGet</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+        <span style="color:#228b22">// 判斷請求的隱藏標籤
+</span><span style="color:#228b22"></span>        String action=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;action&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;login&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(action)){
+            login(request,response);
+        }<span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;regist&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(action)){
+            regist(request,response);
+        }
+    }
+
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">login</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+        <span style="color:#228b22">// 接收參數
+</span><span style="color:#228b22"></span>        String username = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+        String password = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+        <span style="color:#228b22">// 跟資料庫驗證
+</span><span style="color:#228b22"></span>        User loginUser = userService.<span style="color:#658b00">login</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(username, password, <span style="color:#8b008b;font-weight:bold">null</span>));
+        <span style="color:#8b008b;font-weight:bold">if</span> (loginUser != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 成功
+</span><span style="color:#228b22"></span>            request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login_success.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#228b22">// 登入失敗
+</span><span style="color:#228b22"></span>            request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#cd5555">&#34;密碼錯誤!&#34;</span>);
+            request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;username&#34;</span>, username);
+            request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/login.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request, response);
+        }
+
+    }
+
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">regist</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+
+        <span style="color:#228b22">// 接收參數值
+</span><span style="color:#228b22"></span>        String username=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+        String password=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+        String email=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;email&#34;</span>);
+        String code=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;code&#34;</span>);
+
+        <span style="color:#228b22">// 檢查驗證碼
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;abcde&#34;</span>.<span style="color:#658b00">equalsIgnoreCase</span>(code)){
+
+            <span style="color:#228b22">// 檢查名稱是否已存在
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (userService.<span style="color:#658b00">existsUsername</span>(username)){
+                <span style="color:#228b22">// 返回提示並回寫
+</span><span style="color:#228b22"></span>                request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#cd5555">&#34;用戶名已存在！&#34;</span>);
+                request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;username&#34;</span>, username);
+                request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;email&#34;</span>, email);
+                request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/regist.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request,response);
+
+
+            }<span style="color:#8b008b;font-weight:bold">else</span> {
+                <span style="color:#228b22">// 註冊
+</span><span style="color:#228b22"></span>                User user = <span style="color:#8b008b;font-weight:bold">new</span> User(username, password, email);
+                userService.<span style="color:#658b00">registUser</span>(user);
+                <span style="color:#228b22">// 跳轉到註冊成功頁面
+</span><span style="color:#228b22"></span>                request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/regist_success.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request,response);
+
+            }
+
+            <span style="color:#228b22">// 檢查驗證碼失敗
+</span><span style="color:#228b22"></span>        }<span style="color:#8b008b;font-weight:bold">else</span>{
+            <span style="color:#228b22">// 註冊失敗，重新註冊
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 把回顯資訊，保存到Request域中
+</span><span style="color:#228b22"></span>            request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, <span style="color:#cd5555">&#34;驗證碼錯誤！&#34;</span>);
+            request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;username&#34;</span>, username);
+            request.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;email&#34;</span>, email);
+            request.<span style="color:#658b00">getRequestDispatcher</span>(<span style="color:#cd5555">&#34;/pages/user/regist.jsp&#34;</span>).<span style="color:#658b00">forward</span>(request,response);
+        }
+    }
+}
+</code></pre></div><h4 id="改進">改進</h4>
+<ul>
+<li>
+<p>用反射從action動態調用對應的方法，省去一個一個if</p>
+</li>
+<li>
+<p>因為有各種各樣的Post請求，乾脆抽取出一個抽象的<code>BaseServlet</code>，其他<code>UserServlet</code>等等繼承這個base</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">abstract</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">BaseServlet</span> <span style="color:#8b008b;font-weight:bold">extends</span> HttpServlet {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doGet</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doPost</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
+            IOException {
+        <span style="color:#228b22">// 判斷請求的隱藏標籤
+</span><span style="color:#228b22"></span>        String action=request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;action&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#228b22">// 用反射找到方法
+</span><span style="color:#228b22"></span>            Method declaredMethod = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getClass</span>().<span style="color:#658b00">getDeclaredMethod</span>(action, HttpServletRequest.<span style="color:#658b00">class</span>,
+                    HttpServletResponse.<span style="color:#658b00">class</span>);
+            <span style="color:#228b22">// 調用方法
+</span><span style="color:#228b22"></span>            declaredMethod.<span style="color:#658b00">invoke</span>(<span style="color:#8b008b;font-weight:bold">this</span>,request,response);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+}
+</code></pre></div><ul>
+<li><code>this.getClass()</code>，當前這個類，誰調用就是哪個Servlet</li>
+<li><code>getDeclaredMethod</code>:抓出這個類有的方法，我現在就是要找出自己的某方法</li>
+<li>第一個參數action是方法名稱，比如自己寫的login</li>
+<li>後面的參數是&quot;該方法參數的類型&quot;，因為可能有很多同名(重載)的方法，但他們參數不一樣，為了確切找到那個要調用的方法，所以這邊明確告知&quot;那個方法的參數是用這些類型的&quot;，故加上.class
+<ul>
+<li>比喻:我叫老王開車，開車可能有多種意思，所以要確切指出是(開車,方向盤,油門)，喔原來是指&quot;手握方向盤、腳踩油門&quot;的那個開車</li>
+</ul>
+</li>
+<li>真正調用invoke方法時才傳入實參
+<ul>
+<li>第一個參數表示由誰調用這個找到的方法，this就是Servlet自己</li>
+</ul>
+</li>
+<li><code>UserServlet</code>繼承base之後，就不能再重寫<code>doPost</code>方法，而是只要寫出屬於自己業務的方法(比如login)</li>
+<li>前端的請求一樣是發給<code>UserServlet</code>，它繼承了base的<code>doPost</code>方法，注意這邊調用的時候<code>this</code>是指向<code>UserServlet</code>，不要搞混了
+<ul>
+<li>兒子繼承父親的方法，調用時的this當然還是兒子的</li>
+</ul>
+</li>
+<li>不得不說Java學到這裡才終於搞懂一點反射跟繼承的精隨</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>上傳的前端:</li>
+</ul>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;form action=&quot;UploadServlet&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+</code></pre><ul>
+<li>上傳的後端:使用工具類接收並解析成一個一個<code>FileItem</code></li>
+<li>下載:用<code>servletContext</code>做中轉，把流接起來</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-07</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220108-agg-javaweb-08/">
+			下一篇<br>書城項目:Maven管理依賴、圖書模塊
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220106-agg-javaweb-06/">
+			上一篇<br>Listener監聽器、EL表達式、JSTL標籤庫
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

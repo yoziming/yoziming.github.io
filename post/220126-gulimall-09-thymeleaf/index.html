@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>抽取關鍵字至ES、Thymeleaf模板引擎</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-09">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="抽取關鍵字至ES、Thymeleaf模板引擎" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-09" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220126-gulimall-09-thymeleaf/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-26T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="抽取關鍵字至ES、Thymeleaf模板引擎"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-09"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e4%b8%8a%e6%9e%b6" onclick="onNavClick(`#商品上架-nav`)" id="商品上架-nav">
+									商品上架
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#es%e9%83%a8%e5%88%86" onclick="onNavClick(`#es部分-nav`)" id="es部分-nav">
+									ES部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e4%b8%80%e5%80%8b5%e5%b0%8f%e6%99%82%e7%9a%84%e5%9d%91" onclick="onNavClick(`#記一個5小時的坑-nav`)" id="記一個5小時的坑-nav">
+									記一個5小時的坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#解法-nav`)" id="解法-nav">
+									解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#thymeleaf" onclick="onNavClick(`#thymeleaf-nav`)" id="thymeleaf-nav">
+									Thymeleaf
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%a6%96%e9%a0%81" onclick="onNavClick(`#首頁-nav`)" id="首頁-nav">
+									首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%88%86%e9%a1%9e%e8%a1%a8" onclick="onNavClick(`#商品分類表-nav`)" id="商品分類表-nav">
+									商品分類表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e4%b8%8a%e6%9e%b6" onclick="onNavClick(`#商品上架-nav`)" id="商品上架-nav">
+									商品上架
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#es%e9%83%a8%e5%88%86" onclick="onNavClick(`#es部分-nav`)" id="es部分-nav">
+									ES部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a8%98%e4%b8%80%e5%80%8b5%e5%b0%8f%e6%99%82%e7%9a%84%e5%9d%91" onclick="onNavClick(`#記一個5小時的坑-nav`)" id="記一個5小時的坑-nav">
+									記一個5小時的坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#解法-nav`)" id="解法-nav">
+									解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#thymeleaf" onclick="onNavClick(`#thymeleaf-nav`)" id="thymeleaf-nav">
+									Thymeleaf
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%a6%96%e9%a0%81" onclick="onNavClick(`#首頁-nav`)" id="首頁-nav">
+									首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%88%86%e9%a1%9e%e8%a1%a8" onclick="onNavClick(`#商品分類表-nav`)" id="商品分類表-nav">
+									商品分類表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    抽取關鍵字至ES、Thymeleaf模板引擎
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-09
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-26 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="商品上架">商品上架</h1>
+<ul>
+<li>上架，除了把狀態改成上架，為了商品能被快速搜索到，還要提取出關鍵訊息存到ES</li>
+<li>簡單來說就是把該商品的sku提取出來，存到ES的index中，當用戶搜索商品時，就可以依照分組動態產生篩選條件，依照得分呈現商品屬性</li>
+</ul>
+<p><img src="image-20220120002704220.png" alt="image-20220120002704220"></p>
+<ul>
+<li>很繁瑣，但是不難</li>
+<li>SpuInfoController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 上架
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/{spuId}/up&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">spuUp</span>(<span style="color:#707a7c">@PathVariable</span> Long spuId) {
+    spuInfoService.<span style="color:#658b00">up</span>(spuId);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+}
+</code></pre></div><ul>
+<li>SpuInfoServiceImpl.java
+<ul>
+<li>知識點:用stream把list轉map</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 商品上架
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">up</span>(Long spuId) {
+    <span style="color:#228b22">// 先從spuID查出對應的所有sku
+</span><span style="color:#228b22"></span>    List&lt;SkuInfoEntity&gt; skuInfoEntities = skuInfoService.<span style="color:#658b00">getSkusBySpuId</span>(spuId);
+
+    <span style="color:#228b22">// 先查出當前sku的所有可以被用來檢索的規格屬性
+</span><span style="color:#228b22"></span>    List&lt;ProductAttrValueEntity&gt; baseAttrs = productAttrValueService.<span style="color:#658b00">baseAttrListforspu</span>(spuId);
+    List&lt;Long&gt; attrIds = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(ProductAttrValueEntity::getAttrId).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    <span style="color:#228b22">// sku當初填值時就有一欄是&#34;是否能被檢索
+</span><span style="color:#228b22"></span>    List&lt;Long&gt; searchAttrIds = attrService.<span style="color:#658b00">selectSearchAttrs</span>(attrIds);
+    <span style="color:#228b22">// 轉換為Set集合
+</span><span style="color:#228b22"></span>    Set&lt;Long&gt; idSet = searchAttrIds.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toSet</span>());
+    <span style="color:#228b22">// 過濾留下能被檢索的Attrs
+</span><span style="color:#228b22"></span>    List&lt;SkuEsModel.<span style="color:#658b00">Attrs</span>&gt; attrsList = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; {
+        <span style="color:#8b008b;font-weight:bold">return</span> idSet.<span style="color:#658b00">contains</span>(item.<span style="color:#658b00">getAttrId</span>());
+    }).<span style="color:#658b00">map</span>(item -&gt; {
+        <span style="color:#228b22">// 封裝進SkuEsModel.Attrs
+</span><span style="color:#228b22"></span>        SkuEsModel.<span style="color:#658b00">Attrs</span> attrs = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel.<span style="color:#658b00">Attrs</span>();
+        BeanUtils.<span style="color:#658b00">copyProperties</span>(item, attrs);
+        <span style="color:#8b008b;font-weight:bold">return</span> attrs;
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+    <span style="color:#228b22">// 接著查是否有庫存，先把ID抽成list方便一次查完
+</span><span style="color:#228b22"></span>    List&lt;Long&gt; skuIdList = skuInfoEntities.<span style="color:#658b00">stream</span>()
+            .<span style="color:#658b00">map</span>(SkuInfoEntity::getSkuId)
+            .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    <span style="color:#228b22">// 發送遠程調用，庫存系統查詢是否有庫存
+</span><span style="color:#228b22"></span>    Map&lt;Long, Boolean&gt; stockMap = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
+        TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
+        };
+        <span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
+</span><span style="color:#228b22"></span>        stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
+                SkuHasStockTo::getHasStock));
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;庫存服務查詢異常：原因{}&#34;</span>, e);
+    }
+    Map&lt;Long, Boolean&gt; finalStockMap = stockMap;
+    <span style="color:#228b22">// 要傳去ES的商品訊息
+</span><span style="color:#228b22"></span>    List&lt;SkuEsModel&gt; collect = skuInfoEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(sku -&gt; {
+        <span style="color:#228b22">// 組裝需要的數據
+</span><span style="color:#228b22"></span>        SkuEsModel esModel = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel();
+        BeanUtils.<span style="color:#658b00">copyProperties</span>(sku, esModel);
+        <span style="color:#228b22">// 其他對不上，需要手動添加的
+</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setSkuPrice</span>(sku.<span style="color:#658b00">getPrice</span>());
+        esModel.<span style="color:#658b00">setSkuImg</span>(sku.<span style="color:#658b00">getSkuDefaultImg</span>());
+
+        <span style="color:#228b22">// 設置庫存信息，如果遠程調用失敗就先當作有
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (finalStockMap == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            esModel.<span style="color:#658b00">setHasStock</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            esModel.<span style="color:#658b00">setHasStock</span>(finalStockMap.<span style="color:#658b00">get</span>(sku.<span style="color:#658b00">getSkuId</span>()));
+        }
+        <span style="color:#228b22">// TODO 2、熱度評分。0
+</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setHotScore</span>(0L);
+        <span style="color:#228b22">// 查詢品牌和分類的名字信息
+</span><span style="color:#228b22"></span>        BrandEntity brandEntity = brandService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getBrandId</span>());
+        esModel.<span style="color:#658b00">setBrandName</span>(brandEntity.<span style="color:#658b00">getName</span>());
+        esModel.<span style="color:#658b00">setBrandId</span>(brandEntity.<span style="color:#658b00">getBrandId</span>());
+        esModel.<span style="color:#658b00">setBrandImg</span>(brandEntity.<span style="color:#658b00">getLogo</span>());
+
+        CategoryEntity categoryEntity = categoryService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getCatalogId</span>());
+        esModel.<span style="color:#658b00">setCatalogId</span>(categoryEntity.<span style="color:#658b00">getCatId</span>());
+        esModel.<span style="color:#658b00">setCatalogName</span>(categoryEntity.<span style="color:#658b00">getName</span>());
+
+        <span style="color:#228b22">// 設置子屬性，來自前面查的列表
+</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setAttrs</span>(attrsList);
+        <span style="color:#8b008b;font-weight:bold">return</span> esModel;
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+
+    <span style="color:#228b22">// 發到ES
+</span><span style="color:#228b22"></span>    R r = searchFeignService.<span style="color:#658b00">productStatusUp</span>(collect);
+
+    <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+        <span style="color:#228b22">// 遠程調用成功
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 修改當前spu的狀態
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">updateSpuStatus</span>(spuId, ProductConstant.<span style="color:#658b00">ProductStatusEnum</span>.<span style="color:#658b00">SPU_UP</span>.<span style="color:#658b00">getCode</span>());
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">//遠程調用失敗
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">//TODO 7、重複調用？接口冪等性:重試機制
+</span><span style="color:#228b22"></span>    }
+}
+</code></pre></div><ul>
+<li>用List查SQL的拼接寫法</li>
+</ul>
+<pre tabindex="0"><code>List&lt;Long&gt; selectSearchAttrs(@Param(&quot;attrIds&quot;) List&lt;Long&gt; attrIds)
+
+    &lt;select id=&quot;selectSearchAttrs&quot; resultType=&quot;java.lang.Long&quot;&gt;
+        SELECT attr_id FROM pms_attr WHERE attr_id IN
+        &lt;foreach collection=&quot;attrIds&quot; item=&quot;id&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+            #{id}
+        &lt;/foreach&gt;
+        AND search_type = 1
+    &lt;/select&gt;
+</code></pre><ul>
+<li>查庫存，WareSkuServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;SkuHasStockTo&gt; <span style="color:#008b45">getSkuHasStock</span>(List&lt;Long&gt; ids) {
+        List&lt;SkuHasStockTo&gt; collect = ids.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(e -&gt; {
+            Long count = baseMapper.<span style="color:#658b00">getStock</span>(e);
+            SkuHasStockTo to = <span style="color:#8b008b;font-weight:bold">new</span> SkuHasStockTo();
+            to.<span style="color:#658b00">setSkuId</span>(e);
+            to.<span style="color:#658b00">setHasStock</span>(count &gt; 0);
+            <span style="color:#8b008b;font-weight:bold">return</span> to;
+        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+        <span style="color:#8b008b;font-weight:bold">return</span> collect;
+    }
+</code></pre></div><ul>
+<li>查庫存SQL，要減去鎖定的庫存
+<ul>
+<li>當參數只有一個就不用@Param</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>Long getStock(Long e);
+
+&lt;select id=&quot;getStock&quot; resultType=&quot;java.lang.Long&quot;&gt;
+        SELECT SUM(stock - stock_locked)
+        FROM wms_ware_sku
+        WHERE sku_id = #{e}
+    &lt;/select&gt;
+</code></pre><h2 id="es部分">ES部分</h2>
+<ul>
+<li>為了傳遞資料給ES伺服，建立一個模型</li>
+</ul>
+<p><img src="image-20220120010456964.png" alt="image-20220120010456964"></p>
+<ul>
+<li>
+<p>搭一個子模組search</p>
+<ul>
+<li>一樣，引依賴、造config 參考前篇</li>
+</ul>
+</li>
+<li>
+<p>ElasticSaveController.java</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/** 
+</span><span style="color:#228b22"> * 上架商品 /search/save/product
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param skuEsModels
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/product&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">productStatusUp</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;SkuEsModel&gt; skuEsModels) {
+    <span style="color:#00688b;font-weight:bold">boolean</span> status = <span style="color:#8b008b;font-weight:bold">false</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        status = productSaveService.<span style="color:#658b00">productStatusUp</span>(skuEsModels);
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+        <span style="color:#228b22">// log.error(&#34;商品上架錯誤{}&#34;,e);
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+    }
+    <span style="color:#8b008b;font-weight:bold">if</span> (status) {
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+    }
+}
+</code></pre></div><ul>
+<li>ProductSaveServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">productStatusUp</span>(List&lt;SkuEsModel&gt; skuEsModels) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+    <span style="color:#228b22">// 1.在ES中建立索引，建立mapping（doc/json/product-mapping.json）
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 2.在ES中保存這些數據
+</span><span style="color:#228b22"></span>    BulkRequest bulkRequest = <span style="color:#8b008b;font-weight:bold">new</span> BulkRequest();
+    <span style="color:#8b008b;font-weight:bold">for</span> (SkuEsModel skuEsModel : skuEsModels) {
+        <span style="color:#228b22">// 構造保存請求
+</span><span style="color:#228b22"></span>        IndexRequest indexRequest = <span style="color:#8b008b;font-weight:bold">new</span> IndexRequest(EsConstant.<span style="color:#658b00">PRODUCT_INDEX</span>);
+        <span style="color:#228b22">// ES中的ID就是SKUID
+</span><span style="color:#228b22"></span>        indexRequest.<span style="color:#658b00">id</span>(skuEsModel.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>());
+        String jsonString = JSONUtil.<span style="color:#658b00">toJsonStr</span>(skuEsModel);
+        indexRequest.<span style="color:#658b00">source</span>(jsonString, XContentType.<span style="color:#658b00">JSON</span>);
+        <span style="color:#228b22">// 批量保存
+</span><span style="color:#228b22"></span>        bulkRequest.<span style="color:#658b00">add</span>(indexRequest);
+    }
+    BulkResponse bulk = esRestClient.<span style="color:#658b00">bulk</span>(bulkRequest, ElasticConfig.<span style="color:#658b00">COMMON_OPTIONS</span>);
+    <span style="color:#228b22">// TODO 如果批量錯誤
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">boolean</span> hasFailures = bulk.<span style="color:#658b00">hasFailures</span>();
+    <span style="color:#228b22">// 收集結果印到log
+</span><span style="color:#228b22"></span>    List&lt;String&gt; collect = Arrays.<span style="color:#658b00">asList</span>(bulk.<span style="color:#658b00">getItems</span>()).<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
+        <span style="color:#8b008b;font-weight:bold">return</span> item.<span style="color:#658b00">getId</span>();
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;商品上架完成：{}&#34;</span>, collect);
+    <span style="color:#8b008b;font-weight:bold">return</span> hasFailures;
+}
+</code></pre></div><ul>
+<li>註冊到feign等待調用</li>
+</ul>
+<h3 id="記一個5小時的坑">記一個5小時的坑</h3>
+<ul>
+<li>這邊用到feign遠程調用，由於查庫存想一次查一批，所以傳了一個List過去，沒想到竟然是個悲劇的開端</li>
+<li>因為傳遞時轉JSON會擦掉泛型，所以傳遞<code>List&lt;XXX&gt;</code>的時候，轉回來反序列化不注意就會出事</li>
+<li>我天真的以為用castvar去接就好，接了也沒報錯，還能sout出東西，乍看沒啥不對勁</li>
+<li>結果下面死活報錯</li>
+</ul>
+<pre tabindex="0"><code>java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to xxxx
+</code></pre><ul>
+<li>我就一直在找原因，原來強轉接到的List是假象，是**<code>LinkedHashMap</code>**假扮的，因為SpringMVC將Object轉json會變成key-value形式，而轉回來它也這麼覺得，所以是一個Map，害我試到懷疑人生，熬夜到天明，氣氣氣氣氣</li>
+</ul>
+<h4 id="解法">解法</h4>
+<ul>
+<li>老師在這邊對R封裝了一個方法
+<ul>
+<li>用的是<code>com.alibaba.fastjson</code>的包</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">setData</span>(Object data) {
+    put(<span style="color:#cd5555">&#34;data&#34;</span>, data);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>;
+}
+
+<span style="color:#228b22">// 利用fastjson進行反序列化
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(TypeReference&lt;T&gt; typeReference) {
+    Object data = get(<span style="color:#cd5555">&#34;data&#34;</span>);
+    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
+    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
+    <span style="color:#8b008b;font-weight:bold">return</span> t;
+}
+
+<span style="color:#228b22">// 利用fastjson進行反序列化
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(String key, TypeReference&lt;T&gt; typeReference) {
+    Object data = get(key);
+    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
+    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
+    <span style="color:#8b008b;font-weight:bold">return</span> t;
+}
+</code></pre></div><ul>
+<li>返回的時候把list裝進去了，WareSkuController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;SkuHasStockTo&gt; list = wareSkuService.<span style="color:#658b00">getSkuHasStock</span>(ids);
+
+<span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">setData</span>(list);
+</code></pre></div><ul>
+<li>最後接收的時候，用<code>TypeReference</code>去指定反序列化的List&lt;&gt;類型
+<ul>
+<li>後面的<code>() {}</code>因為它是一個匿名內部類，別漏了</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
+TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
+};
+<span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
+</span><span style="color:#228b22"></span>stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
+SkuHasStockTo::getHasStock));
+</code></pre></div><ul>
+<li>參考 <a href="https://www.1ju.org/article/jackson-linkedhashmap-cannot-be-cast">https://www.1ju.org/article/jackson-linkedhashmap-cannot-be-cast</a></li>
+</ul>
+<h1 id="thymeleaf">Thymeleaf</h1>
+<blockquote>
+<p>模板引擎 = 做模板填入資源內容，引擎幫我生成HTML頁面</p>
+</blockquote>
+<p>Thymeleaf是一個XML/HTML5模板引擎，能夠應用轉換於模板檔案，以顯示應用程式產生的資料，簡單來說只要照它的規則寫好模板與靜態資源，就能快速做出能看的HTML頁面</p>
+<ul>
+<li>有點回到Javaweb的感覺，thymeleaf就像JSP的強化版，它能做到動靜分離，但是不能前後分離
+<ul>
+<li>優勢在於簡單，直觀(html直接就能看，相較於JSP要有網路服務捧著)、渲染快</li>
+<li>不過現在幾乎都是前後端分離，這個技術比較少見了</li>
+</ul>
+</li>
+</ul>
+<h3 id="使用">使用</h3>
+<ul>
+<li>引依賴，版本號給父模組的spring-boot管</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>放入靜態資源，這個黃色圖標就是classpath
+<ul>
+<li>靜態檔案放 <code>/src/java/resources/static</code></li>
+<li>模板檔案放 <code>/src/java/resources/templates</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220120161915473.png" alt="image-20220120161915473"></p>
+<ul>
+<li>首頁預設會在這些地方找</li>
+</ul>
+<pre tabindex="0"><code>classpath:/META-INF/resources/index.html 
+classpath:/resources/index.html 
+classpath:/static/index.html 
+calsspath:/public/index.html 
+</code></pre><ul>
+<li>預設約定了Controller試圖跳轉中thymeleaf模板檔案的的字首</li>
+</ul>
+<pre tabindex="0"><code>spring.thymeleaf.prefix: /templates/ 
+spring.thymeleaf.suffix: .html 
+</code></pre><ul>
+<li>application.properties先把cache關掉</li>
+</ul>
+<pre tabindex="0"><code>spring.thymeleaf.cache=false
+</code></pre><ul>
+<li>若出現不明原因頁面顯示不出來，對模組右鍵添加依賴勾選thymeleaf</li>
+</ul>
+<h3 id="小結">小結</h3>
+<ul>
+<li>最上面引入 <code>xmlns:th=&quot;http://www.thymeleaf.org&quot;</code></li>
+<li>每個標籤都要有結束標籤不可省略</li>
+<li>在link標籤引用css標籤內要增加此屬性<code>th:href=&quot;@{/vendor/bootstrap/css/bootstrap.min.css}&quot;</code></li>
+<li>在src標籤引用javascript內要增加此屬性
+<code>th:src=&quot;@{/vendor/bootstrap/js/bootstrap.min.js}&quot;</code></li>
+<li>要告訴thymeleaf靜態資源在哪，可以在<code>application.properties</code>內指定</li>
+</ul>
+<pre tabindex="0"><code>spring.resources.static-locations=classpath:/static/
+</code></pre><ul>
+<li>以下開始分頁面製作</li>
+</ul>
+<h2 id="首頁">首頁</h2>
+<ul>
+<li>IndexController.java
+<ul>
+<li>前面說過Controller會自動給跳轉到模板的請求加上前後綴，所以想讓人訪問首頁只要簡單的送他一個getmapping就OK</li>
+<li>把模版頁面都放在templates之下方便統一管理，首頁也不例外</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = {<span style="color:#cd5555">&#34;/&#34;</span>, <span style="color:#cd5555">&#34;index.html&#34;</span>})
+<span style="color:#8b008b;font-weight:bold">private</span> String <span style="color:#008b45">indexPage</span>(Model model) {
+    <span style="color:#228b22">// 查出所有的一級分類
+</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; categoryEntities = categoryService.<span style="color:#658b00">getLevel1Catalog</span>();
+    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;categories&#34;</span>, categoryEntities);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;index&#34;</span>;
+}
+</code></pre></div><ul>
+<li>Model類，相當於這個頁面本身(感覺類似JSP的pagescope)
+<ul>
+<li>想要在訪問的同時獲取一些資源，並且用model.addAttribute存在裡面</li>
+</ul>
+</li>
+<li>在html裡面用<code>th:each</code>把它遍歷取出</li>
+</ul>
+<pre tabindex="0"><code>&lt;li th:each=&quot;category : ${categories}&quot;&gt;
+&lt;a href=&quot;#&quot; class=&quot;header_main_left_a&quot; th:attr=&quot;ctg-data = ${category.catId}&quot;&gt;&lt;b
+th:text=&quot;${category.name}&quot;&gt;家用電器&lt;/b&gt;&lt;/a&gt;
+&lt;/li&gt;
+</code></pre><h3 id="商品分類表">商品分類表</h3>
+<ul>
+<li>複雜的Vo，類中有類，沒辦法它前端API就這樣要求
+<ul>
+<li><code>@AllArgsConstructor</code> 請lombok造一個全參構造器</li>
+<li>然而重點是<code>@NoArgsConstructor</code>一定要補上，否則沒有空參構造器很多地方會出錯</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#707a7c">@AllArgsConstructor</span>
+<span style="color:#707a7c">@NoArgsConstructor</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Catalogs2Vo</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 一級父分類的id
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String catalog1Id;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 三級子分類
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Category3Vo&gt; catalog3List;
+    <span style="color:#8b008b;font-weight:bold">private</span> String id;
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 三級分類vo
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Data</span>
+    <span style="color:#707a7c">@AllArgsConstructor</span>
+    <span style="color:#707a7c">@NoArgsConstructor</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Category3Vo</span> {
+
+        <span style="color:#228b22">/**
+</span><span style="color:#228b22">         * 父分類、二級分類id
+</span><span style="color:#228b22">         */</span>
+        <span style="color:#8b008b;font-weight:bold">private</span> String catalog2Id;
+        <span style="color:#8b008b;font-weight:bold">private</span> String id;
+        <span style="color:#8b008b;font-weight:bold">private</span> String name;
+    }
+}
+</code></pre></div><ul>
+<li>IndexController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 獲取所有分類，且二、三級分類以封裝好
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/index/catalog.json&#34;</span>)
+<span style="color:#707a7c">@ResponseBody</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
+    <span style="color:#8b008b;font-weight:bold">return</span> categoryService.<span style="color:#658b00">getCatalogJson</span>();
+}
+</code></pre></div><ul>
+<li>CategoryServiceImpl.java
+<ul>
+<li>這個真的超繞，我覺得應該跟之前後台獲取分類的寫的treelist整合一下，不過肚子太餓就先算了，想來技術債就這這樣累積的吧</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取所有分類，且二、三級分類以封裝好
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
+    <span style="color:#228b22">// 性能優化：將數據庫的多次查詢變為一次
+</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; selectList = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+
+    <span style="color:#228b22">// 查出所有一級分類
+</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; level1Categories = getLevel1Catalog();
+
+    <span style="color:#228b22">// 封裝數據
+</span><span style="color:#228b22"></span>    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; parentCid =
+            level1Categories.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(k -&gt; k.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), v -&gt; {
+                <span style="color:#228b22">// 1、每一個的一級分類,查到這個一級分類的二級分類
+</span><span style="color:#228b22"></span>                List&lt;CategoryEntity&gt; categoryEntities = getParentCid(selectList, v.<span style="color:#658b00">getCatId</span>());
+
+                <span style="color:#228b22">// 2、封裝上面的結果
+</span><span style="color:#228b22"></span>                List&lt;Catalogs2Vo&gt; catalogs2Vos = <span style="color:#8b008b;font-weight:bold">null</span>;
+                <span style="color:#8b008b;font-weight:bold">if</span> (categoryEntities != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                    catalogs2Vos = categoryEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l2 -&gt; {
+                        Catalogs2Vo catalogs2Vo = <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo(v.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), <span style="color:#8b008b;font-weight:bold">null</span>,
+                                l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>()
+                                , l2.<span style="color:#658b00">getName</span>().<span style="color:#658b00">toString</span>());
+
+                        <span style="color:#228b22">// 1、找當前二級分類的三級分類封裝成vo
+</span><span style="color:#228b22"></span>                        List&lt;CategoryEntity&gt; level3Catelog = getParentCid(selectList, l2.<span style="color:#658b00">getCatId</span>());
+
+                        <span style="color:#8b008b;font-weight:bold">if</span> (level3Catelog != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                            List&lt;Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>&gt; category3Vos = level3Catelog.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l3 -&gt; {
+                                <span style="color:#228b22">//2、封裝成指定格式
+</span><span style="color:#228b22"></span>                                Catalogs2Vo.<span style="color:#658b00">Category3Vo</span> category3Vo =
+                                        <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>(l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
+                                                l3.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
+                                                l3.<span style="color:#658b00">getName</span>());
+
+                                <span style="color:#8b008b;font-weight:bold">return</span> category3Vo;
+                            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+                            catalogs2Vo.<span style="color:#658b00">setCatalog3List</span>(category3Vos);
+                        }
+                        <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vo;
+                    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+                }
+                <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vos;
+            }));
+    <span style="color:#8b008b;font-weight:bold">return</span> parentCid;
+}
+
+<span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">getParentCid</span>(List&lt;CategoryEntity&gt; selectList, Long parentCid) {
+    <span style="color:#8b008b;font-weight:bold">return</span> selectList.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; item.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(parentCid)).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+}
+</code></pre></div><ul>
+<li>前端頁面是一個JS，長這樣</li>
+</ul>
+<p><img src="image-20220120174709917.png" alt="image-20220120174709917"></p>
+<ul>
+<li>JS不想多研究了，總之成功實現跟隨選滑鼠指向的一級分類，顯示對應的下級
+<ul>
+<li>這玩意之後還會加到redis</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220120173519630.png" alt="image-20220120173519630"></p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-26</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220126-jvm-gc/">
+			下一篇<br>JVM模型與GC策略
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220125-wsl2-docker/">
+			上一篇<br>DockerDekstop掛載相關設定
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

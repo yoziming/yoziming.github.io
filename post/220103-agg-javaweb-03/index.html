@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>XML、Servlet</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaWeb筆記-03">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="XML、Servlet" />
+<meta property="og:description" content="尚硅谷JavaWeb筆記-03" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220103-agg-javaweb-03/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-03T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="XML、Servlet"/>
+<meta name="twitter:description" content="尚硅谷JavaWeb筆記-03"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#xml" onclick="onNavClick(`#xml-nav`)" id="xml-nav">
+									XML
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8java%e4%b8%ad%e8%a7%a3%e6%9e%90xml" onclick="onNavClick(`#在java中解析xml-nav`)" id="在java中解析xml-nav">
+									在Java中解析xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servlet" onclick="onNavClick(`#servlet-nav`)" id="servlet-nav">
+									Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#匹配規則-nav`)" id="匹配規則-nav">
+									匹配規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#post--get" onclick="onNavClick(`#post--get-nav`)" id="post--get-nav">
+									Post &amp; Get
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servletconfig%e9%a1%9e" onclick="onNavClick(`#servletconfig類-nav`)" id="servletconfig類-nav">
+									ServletConfig類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8" onclick="onNavClick(`#作用-nav`)" id="作用-nav">
+									作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-1" onclick="onNavClick(`#範例-1-nav`)" id="範例-1-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servletcontext" onclick="onNavClick(`#servletcontext-nav`)" id="servletcontext-nav">
+									ServletContext
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8-1" onclick="onNavClick(`#作用-1-nav`)" id="作用-1-nav">
+									作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-2" onclick="onNavClick(`#範例-2-nav`)" id="範例-2-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#xml" onclick="onNavClick(`#xml-nav`)" id="xml-nav">
+									XML
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%89%b9%e6%80%a7" onclick="onNavClick(`#特性-nav`)" id="特性-nav">
+									特性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b" onclick="onNavClick(`#範例-nav`)" id="範例-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9c%a8java%e4%b8%ad%e8%a7%a3%e6%9e%90xml" onclick="onNavClick(`#在java中解析xml-nav`)" id="在java中解析xml-nav">
+									在Java中解析xml
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servlet" onclick="onNavClick(`#servlet-nav`)" id="servlet-nav">
+									Servlet
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%af%a6%e7%8f%be" onclick="onNavClick(`#實現-nav`)" id="實現-nav">
+									實現
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8c%b9%e9%85%8d%e8%a6%8f%e5%89%87" onclick="onNavClick(`#匹配規則-nav`)" id="匹配規則-nav">
+									匹配規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e5%91%bd%e9%80%b1%e6%9c%9f" onclick="onNavClick(`#生命週期-nav`)" id="生命週期-nav">
+									生命週期
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#post--get" onclick="onNavClick(`#post--get-nav`)" id="post--get-nav">
+									Post &amp; Get
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#servletconfig%e9%a1%9e" onclick="onNavClick(`#servletconfig類-nav`)" id="servletconfig類-nav">
+									ServletConfig類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8" onclick="onNavClick(`#作用-nav`)" id="作用-nav">
+									作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-1" onclick="onNavClick(`#範例-1-nav`)" id="範例-1-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#servletcontext" onclick="onNavClick(`#servletcontext-nav`)" id="servletcontext-nav">
+									ServletContext
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%9c%e7%94%a8-1" onclick="onNavClick(`#作用-1-nav`)" id="作用-1-nav">
+									作用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%af%84%e4%be%8b-2" onclick="onNavClick(`#範例-2-nav`)" id="範例-2-nav">
+									範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/javaweb.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    XML、Servlet
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaWeb筆記-03
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-03 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="xml">XML</h1>
+<ul>
+<li>Extensible Markup Language 可延伸標記式語言</li>
+<li>常用於:
+<ul>
+<li>保存資料</li>
+<li>作為配置文件</li>
+<li>傳輸(但現在json為主)</li>
+</ul>
+</li>
+</ul>
+<h2 id="特性">特性</h2>
+<ul>
+<li>格式:<code>&lt;標籤名&gt;夾住的值&lt;/標籤名&gt;</code>
+<ul>
+<li>或單標籤內用空格分開屬性<code>&lt;book id=&quot;SN65421&quot; name=&quot;小王子&quot;/&gt;</code></li>
+</ul>
+</li>
+<li>標籤名不可以數字或符號開始</li>
+<li>標籤名不可包含空格</li>
+<li>所有標籤都必須關閉</li>
+<li>大小寫敏感</li>
+<li>必須正確嵌套，例如a元素在b元素中打開，也必須在b元素中關閉</li>
+<li>屬性值必須用<code>&quot;&quot;</code>引號包住</li>
+</ul>
+<h2 id="範例">範例</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#228b22">&lt;!-- xml 聲明 version 是版本的意思 encoding 是編碼 --&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;books&gt;</span> <span style="color:#228b22">&lt;!-- 這是 xml 注釋 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;book</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;SN123123413241&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span> <span style="color:#228b22">&lt;!-- book 標籤描述一本圖書 id 屬性描述 的是圖書 的編號 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;name&gt;</span>java 程式設計思想<span style="color:#8b008b;font-weight:bold">&lt;/name&gt;</span> <span style="color:#228b22">&lt;!-- name 標籤描述 的是圖書 的資訊 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;author&gt;</span>華仔<span style="color:#8b008b;font-weight:bold">&lt;/author&gt;</span> <span style="color:#228b22">&lt;!-- author 單詞是作者的意思 ，描述圖書作者 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;price&gt;</span>9.9<span style="color:#8b008b;font-weight:bold">&lt;/price&gt;</span> <span style="color:#228b22">&lt;!-- price 單詞是價格，描述的是圖書 的價格 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/book&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;book</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;SN12341235123&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span> <span style="color:#228b22">&lt;!-- book 標籤描述一本圖書 id 屬性描述 的是圖書 的編號 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;name&gt;</span>葵花寶典<span style="color:#8b008b;font-weight:bold">&lt;/name&gt;</span> <span style="color:#228b22">&lt;!-- name 標籤描述 的是圖書 的資訊 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;author&gt;</span>班長<span style="color:#8b008b;font-weight:bold">&lt;/author&gt;</span> <span style="color:#228b22">&lt;!-- author 單詞是作者的意思 ，描述圖書作者 --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;price&gt;</span>5.5<span style="color:#8b008b;font-weight:bold">&lt;/price&gt;</span><span style="color:#228b22">&lt;!-- price 單詞是價格，描述的是圖書 的價格 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/book&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;book</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;SN65421&#34;</span> <span style="color:#658b00">name=</span><span style="color:#cd5555">&#34;小王子&#34;</span><span style="color:#8b008b;font-weight:bold">/&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/books&gt;</span>
+</code></pre></div><h2 id="在java中解析xml">在Java中解析xml</h2>
+<ul>
+<li>利用<code>dom4j</code>，首先去下載jar包導入</li>
+<li>範例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 第一步，通過創建 SAXReader 對象。來讀取 xml 檔，獲取 Document 物件
+</span><span style="color:#228b22"></span>SAXReader reader = <span style="color:#8b008b;font-weight:bold">new</span> SAXReader();
+Document document = reader.<span style="color:#658b00">read</span>(<span style="color:#cd5555">&#34;src/books.xml&#34;</span>);
+<span style="color:#228b22">// 第二步，通過 Document 對象。拿到 XML 的根項目物件
+</span><span style="color:#228b22"></span>Element root = document.<span style="color:#658b00">getRootElement</span>();
+<span style="color:#228b22">// Element.elements(標籤名)它可以拿到當前元素下的指定的子元素的集合
+</span><span style="color:#228b22"></span>List&lt;Element&gt; books = root.<span style="color:#658b00">elements</span>(<span style="color:#cd5555">&#34;book&#34;</span>);
+ 第四小<span style="color:#a61717;background-color:#e3d2d2">，</span>遍歷每個 book 標籤對象<span style="color:#a61717;background-color:#e3d2d2">。</span>然後獲取到 book 標籤物件內的每一個元素<span style="color:#a61717;background-color:#e3d2d2">，</span>
+<span style="color:#8b008b;font-weight:bold">for</span> (Element book : books) {
+<span style="color:#228b22">// 拿到 book 下的 name 元素物件
+</span><span style="color:#228b22"></span>Element nameElement = book.<span style="color:#658b00">element</span>(<span style="color:#cd5555">&#34;name&#34;</span>);
+
+</code></pre></div><hr>
+<h1 id="servlet">Servlet</h1>
+<blockquote>
+<p>一種運行在server的java小程式，專門用來接收請求</p>
+</blockquote>
+<ul>
+<li>Servlet是JavaWeb三大組件之一
+<ul>
+<li>三大組件分別是Servlet 程式、Filter 篩檢程式、Listener 監聽器</li>
+</ul>
+</li>
+<li>我們都知道網路通訊的傳送流程是這樣:
+<ul>
+<li><code>client &gt; HTTP request &gt; server &gt; HTTP response &gt; client</code></li>
+</ul>
+</li>
+<li>Servlet的優點:
+<ul>
+<li>處理動態資源
+<ul>
+<li>讀了就完事再也不會變的叫靜態資源，例如一張背景圖片或影片</li>
+<li>讀取時要交互的叫動態資源，例如讀取資料庫中的某個值，每次結果可能都不一樣</li>
+</ul>
+</li>
+<li>多線程
+<ul>
+<li>每個reques經由同一個servlet由多個執行緒處理，對JVM來說servlet只需載入一次</li>
+</ul>
+</li>
+<li>Servlet屬於J2EE架構，可以輕鬆串接Java類庫的各種功能，達成擴展</li>
+</ul>
+</li>
+<li>加入Servlet就變成這樣:</li>
+<li><code>client &gt; web application(Apache) &gt; web container(Tomcat) &gt; servlet &gt; DB(處理資料邏輯)</code></li>
+</ul>
+<h2 id="實現">實現</h2>
+<ul>
+<li>Servlet是一個接口需要實現</li>
+<li>要實現service方法，此方法就是調用這個servlet時要做什麼反應</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">HelloServlet</span> <span style="color:#8b008b;font-weight:bold">implements</span> Servlet {
+
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">service</span>(ServletRequest servletRequest, ServletResponse servletResponse) <span style="color:#8b008b;font-weight:bold">throws</span>
+ServletException, IOException {
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Hello Servlet&#34;</span>);
+}
+}
+</code></pre></div><ul>
+<li>同時需要配置web.xml</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#1e889b">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;web-app</span> <span style="color:#658b00">xmlns=</span><span style="color:#cd5555">&#34;http://xmlns.jcp.org/xml/ns/javaee&#34;</span>
+         <span style="color:#658b00">xmlns:xsi=</span><span style="color:#cd5555">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span style="color:#658b00">xsi:schemaLocation=</span><span style="color:#cd5555">&#34;http://xmlns.jcp.org/xml/ns/javaee
+</span><span style="color:#cd5555">http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&#34;</span>
+         <span style="color:#658b00">version=</span><span style="color:#cd5555">&#34;4.0&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    <span style="color:#228b22">&lt;!-- servlet 標籤給 Tomcat 配置 Servlet 程式 --&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet&gt;</span>
+        <span style="color:#228b22">&lt;!--servlet-name 標籤 Servlet 程式起一個別名（一般是類名） --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>HelloServlet<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+        <span style="color:#228b22">&lt;!--servlet-class 是 Servlet 程式的全類名--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-class&gt;</span>com.atguigu.servlet.HelloServlet<span style="color:#8b008b;font-weight:bold">&lt;/servlet-class&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/servlet&gt;</span>
+    <span style="color:#228b22">&lt;!--servlet-mapping 標籤給 servlet 程式配置訪問位址--&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet-mapping&gt;</span>
+        <span style="color:#228b22">&lt;!--servlet-name 標籤的作用是告訴伺服器，我當前配置的位址給哪個 Servlet 程式使用--&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;servlet-name&gt;</span>HelloServlet<span style="color:#8b008b;font-weight:bold">&lt;/servlet-name&gt;</span>
+        <span style="color:#228b22">&lt;!--url-pattern 標籤配置訪問位址 &lt;br/&gt;
+</span><span style="color:#228b22">        / 斜杠在伺服器解析的時候，表示位址為：http://ip:port/工程路徑 &lt;br/&gt;
+</span><span style="color:#228b22">        /hello 表示位址為：http://ip:port/工程路徑/hello &lt;br/&gt;
+</span><span style="color:#228b22">        --&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;url-pattern&gt;</span>/hello<span style="color:#8b008b;font-weight:bold">&lt;/url-pattern&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/servlet-mapping&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/web-app&gt;</span>
+
+</code></pre></div><ul>
+<li>但一般都是透過繼承HttpServlet類來實現</li>
+<li>IDEA中直接右鍵new servlet就創造好了</li>
+</ul>
+<h3 id="匹配規則">匹配規則</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>字串規則</th>
+<th>範例</th>
+<th>可訪問的URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>精確</td>
+<td>以<code>/</code>開始，不能包含萬用字元<code>*</code>且必須完全匹配</td>
+<td>/myServlet</td>
+<td>/myServlet</td>
+</tr>
+<tr>
+<td>路徑</td>
+<td>以<code>/</code>開始，並以<code>/*</code>結尾</td>
+<td>/user/</td>
+<td>/user/之下都可以</td>
+</tr>
+<tr>
+<td>後綴</td>
+<td>以<code>*.</code>開始，並以某種後綴結尾</td>
+<td>*.jsp</td>
+<td>工程目錄下所有.jsp</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>優先級別從上到下，只要匹配到了就會交給對應的servlet處理，而不管其他</li>
+</ul>
+<h2 id="生命週期">生命週期</h2>
+<ul>
+<li>執行Servlet構造器:第一次訪問時</li>
+<li>執行init初始化方法:第一次訪問時</li>
+<li>執行service方法:每次訪問都調用</li>
+<li>執行destory銷毀:在web工程停止時</li>
+</ul>
+<h2 id="post--get">Post &amp; Get</h2>
+<p>這兩種都是傳送請求的方法，Post優於Get在於:</p>
+<ul>
+<li>GET傳送的參數有大小限制，當需要的參數內容較多，不見得可用</li>
+<li>GET傳送的資料會直接在url上看到，會有安全性的隱憂</li>
+<li>POST傳送方式不能將FORM加入我的最愛</li>
+<li>一般若和資料有關係的傳送(即修改刪除)都是用POST</li>
+<li>GET只會在處理頁面的載入，即檢視的部分</li>
+</ul>
+<h2 id="servletconfig類">ServletConfig類</h2>
+<blockquote>
+<p>從類名上來看，就知道是 Servlet 程式的配置資訊類</p>
+</blockquote>
+<ul>
+<li>開發上通常會把參數設在DB裡面，而ServletConfig優勢在可以不需要改程式碼，直接調整<code>web.xml</code></li>
+<li>ServletConfig為每個Servlet自己所擁有，必須在Servlet執行init()後才會取得ServletConfig物件，而不能透過構造器手動生成</li>
+<li>如上面生命週期所述，Servlet程式預設是第一次訪問的時候由web容器(tomcat)創建
+<ul>
+<li>同時也會創建一個對應的ServletConfig物件，它的資訊來自於<code>web.xml</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="作用">作用</h3>
+<ul>
+<li>ServletConfig 類的三大作用
+<ul>
+<li>可以獲取 Servlet 程式的別名 servlet-name 的值</li>
+<li>獲取初始化參數 init-param</li>
+<li>獲取 ServletContext 對象</li>
+</ul>
+</li>
+</ul>
+<h3 id="範例-1">範例</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#8b008b;font-weight:bold">&lt;servlet&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;init-param&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>username<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>root<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/init-param&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;servlet&gt;</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">init</span>(ServletConfig servletConfig) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException {
+    <span style="color:#228b22">// super.init(ServletConfig); // 注意如果是重寫的init必須先調用父類的init
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;init 初始化方法&#34;</span>);
+    <span style="color:#228b22">// 1、可以獲取 Servlet 程式的別名 servlet-name 的值
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;HelloServlet 程式的別名是:&#34;</span> + servletConfig.<span style="color:#658b00">getServletName</span>());
+    <span style="color:#228b22">// 2、獲取初始化參數 init-param
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化參數 username 的值是;&#34;</span> + servletConfig.<span style="color:#658b00">getInitParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>));
+    <span style="color:#228b22">// 3、獲取 ServletContext 對象
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(servletConfig.<span style="color:#658b00">getServletContext</span>());
+}
+
+<span style="color:#228b22">// 在其他地方調用
+</span><span style="color:#228b22"></span>String secretName = getServletConfig().<span style="color:#658b00">getInitParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+String secretName =  getInitParameter(<span style="color:#cd5555">&#34;username&#34;</span>); 另一種方式
+</code></pre></div><h2 id="servletcontext">ServletContext</h2>
+<ul>
+<li>ServletContext 是一個接口，它表示 Servlet 上下文物件</li>
+<li>一個 web 工程，只有一個 ServletContext 物件實例</li>
+<li>ServletContext 物件是一個域物件，作用範圍在整個工程</li>
+<li>ServletContext 在 web 工程部署啟動的時候創建，在 web 工程停止的時候銷毀</li>
+</ul>
+<h3 id="作用-1">作用</h3>
+<ul>
+<li>獲取 web.xml 中配置的上下文參數 context-param</li>
+<li>獲取當前的工程路徑，格式: /工程路徑</li>
+<li>獲取工程部署後在伺服器硬碟上的絕對路徑</li>
+<li>像 Map 一樣存取資料
+<ul>
+<li><code>setAttribute()</code></li>
+<li><code>getAttribute()</code></li>
+<li><code>removeAttribute()</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="範例-2">範例</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doGet</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span>
+        ServletException, IOException {
+    <span style="color:#228b22">// 1、獲取 web.xml 中配置的上下文參數 context-param
+</span><span style="color:#228b22"></span>    ServletContext context = getServletConfig().<span style="color:#658b00">getServletContext</span>();
+    String username = context.<span style="color:#658b00">getInitParameter</span>(<span style="color:#cd5555">&#34;username&#34;</span>);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;context-param 參數 username 的值是:&#34;</span> + username);
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;context-param 參數 password 的值是:&#34;</span> +
+    context.<span style="color:#658b00">getInitParameter</span>(<span style="color:#cd5555">&#34;password&#34;</span>));
+    <span style="color:#228b22">// 2、獲取當前的工程路徑，格式: /工程路徑
+</span><span style="color:#228b22"></span>
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>( <span style="color:#cd5555">&#34;當前工程路徑:&#34;</span> + context.<span style="color:#658b00">getContextPath</span>() );
+    <span style="color:#228b22">// 3、獲取工程部署後在伺服器硬碟上的絕對路徑
+</span><span style="color:#228b22"></span>
+  	<span style="color:#228b22">// 斜杠被伺服器解析地址為:http://ip:port/工程名/ 映射到 IDEA 代碼的 web 目錄&lt;br/&gt;
+</span><span style="color:#228b22"></span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;工程部署的路徑是:&#34;</span> + context.<span style="color:#658b00">getRealPath</span>(<span style="color:#cd5555">&#34;/&#34;</span>));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;工程下 css 目錄的絕對路徑是:&#34;</span> + context.<span style="color:#658b00">getRealPath</span>(<span style="color:#cd5555">&#34;/css&#34;</span>));
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;工程下 imgs 目錄 1.jpg 的絕對路徑是:&#34;</span> + context.<span style="color:#658b00">getRealPath</span>(<span style="color:#cd5555">&#34;/imgs/1.jpg&#34;</span>));
+
+    <span style="color:#228b22">// 當map存取資料
+</span><span style="color:#228b22"></span>	ServletContext context = getServletContext();
+	context.<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;key1&#34;</span>, <span style="color:#cd5555">&#34;value1&#34;</span>);
+
+}
+</code></pre></div><ul>
+<li><code>web.xml</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!--context-param 是上下文參數(它屬於整個 web 工程)--&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;context-param&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>username<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>context<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/context-param&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;context-param&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;param-name&gt;</span>password<span style="color:#8b008b;font-weight:bold">&lt;/param-name&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;param-value&gt;</span>root<span style="color:#8b008b;font-weight:bold">&lt;/param-value&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/context-param&gt;</span>
+</code></pre></div><h2 id="小結">小結</h2>
+<ul>
+<li>一個Servlet會有一個ServletConfig</li>
+<li>整個web應用程式只會有一個ServletContext</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-03</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220104-agg-javaweb-04/">
+			下一篇<br>JavaWeb架構、Servlet頁面轉發
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220102-agg-javaweb-02/">
+			上一篇<br>jQuery
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

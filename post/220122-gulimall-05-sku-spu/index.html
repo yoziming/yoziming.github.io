@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>後台-商品屬性，多對多非外鍵表操作</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-05">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="後台-商品屬性，多對多非外鍵表操作" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-05" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220122-gulimall-05-sku-spu/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-22T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="後台-商品屬性，多對多非外鍵表操作"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-05"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0-%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#後台-商品屬性-nav`)" id="後台-商品屬性-nav">
+									後台-商品屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e8%a1%a8%e7%9a%84%e5%90%8d%e8%a9%9e%e5%b0%8d%e6%87%89" onclick="onNavClick(`#資料庫表的名詞對應-nav`)" id="資料庫表的名詞對應-nav">
+									資料庫表的名詞對應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e5%ad%90%e7%af%80%e9%bb%9e%e8%a8%8a%e6%81%af%e5%82%b3%e9%81%9e" onclick="onNavClick(`#父子節點訊息傳遞-nav`)" id="父子節點訊息傳遞-nav">
+									父子節點訊息傳遞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bean%e8%bd%89json%e7%a9%ba%e5%88%a4%e6%96%b7" onclick="onNavClick(`#bean轉json空判斷-nav`)" id="bean轉json空判斷-nav">
+									Bean轉JSON空判斷
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9e%e9%a1%af%e8%b3%87%e6%96%99" onclick="onNavClick(`#回顯資料-nav`)" id="回顯資料-nav">
+									回顯資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e7%b3%8a%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#模糊查詢-nav`)" id="模糊查詢-nav">
+									模糊查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%8f%92%e4%bb%b6" onclick="onNavClick(`#分頁插件-nav`)" id="分頁插件-nav">
+									分頁插件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e8%81%af%e5%88%86%e9%a1%9e" onclick="onNavClick(`#關聯分類-nav`)" id="關聯分類-nav">
+									關聯分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%96%b0%e5%86%97%e9%a4%98%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#更新冗餘屬性-nav`)" id="更新冗餘屬性-nav">
+									更新冗餘屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%99%95%e7%90%86%e5%93%81%e7%89%8c%e5%90%8d" onclick="onNavClick(`#先處理品牌名-nav`)" id="先處理品牌名-nav">
+									先處理品牌名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#xml%e7%b7%a8%e5%af%absql%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#xml編寫sql語句-nav`)" id="xml編寫sql語句-nav">
+									xml編寫SQL語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3%e4%ba%8b%e5%8b%99" onclick="onNavClick(`#註解事務-nav`)" id="註解事務-nav">
+									註解事務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#vo%e9%a1%9e" onclick="onNavClick(`#vo類-nav`)" id="vo類-nav">
+									Vo類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e" onclick="onNavClick(`#新增-nav`)" id="新增-nav">
+									新增
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b4%80%e9%8c%84%e4%b8%80%e5%80%8bdebug%e5%8d%8a%e5%a4%a9%e7%9a%84%e5%9d%91" onclick="onNavClick(`#紀錄一個debug半天的坑-nav`)" id="紀錄一個debug半天的坑-nav">
+									紀錄一個debug半天的坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#修改-nav`)" id="修改-nav">
+									修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0-%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#後台-商品屬性-nav`)" id="後台-商品屬性-nav">
+									後台-商品屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e8%a1%a8%e7%9a%84%e5%90%8d%e8%a9%9e%e5%b0%8d%e6%87%89" onclick="onNavClick(`#資料庫表的名詞對應-nav`)" id="資料庫表的名詞對應-nav">
+									資料庫表的名詞對應
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%88%b6%e5%ad%90%e7%af%80%e9%bb%9e%e8%a8%8a%e6%81%af%e5%82%b3%e9%81%9e" onclick="onNavClick(`#父子節點訊息傳遞-nav`)" id="父子節點訊息傳遞-nav">
+									父子節點訊息傳遞
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#bean%e8%bd%89json%e7%a9%ba%e5%88%a4%e6%96%b7" onclick="onNavClick(`#bean轉json空判斷-nav`)" id="bean轉json空判斷-nav">
+									Bean轉JSON空判斷
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%9b%9e%e9%a1%af%e8%b3%87%e6%96%99" onclick="onNavClick(`#回顯資料-nav`)" id="回顯資料-nav">
+									回顯資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e7%b3%8a%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#模糊查詢-nav`)" id="模糊查詢-nav">
+									模糊查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%86%e9%a0%81%e6%8f%92%e4%bb%b6" onclick="onNavClick(`#分頁插件-nav`)" id="分頁插件-nav">
+									分頁插件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%97%9c%e8%81%af%e5%88%86%e9%a1%9e" onclick="onNavClick(`#關聯分類-nav`)" id="關聯分類-nav">
+									關聯分類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%96%b0%e5%86%97%e9%a4%98%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#更新冗餘屬性-nav`)" id="更新冗餘屬性-nav">
+									更新冗餘屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%85%88%e8%99%95%e7%90%86%e5%93%81%e7%89%8c%e5%90%8d" onclick="onNavClick(`#先處理品牌名-nav`)" id="先處理品牌名-nav">
+									先處理品牌名
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#xml%e7%b7%a8%e5%af%absql%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#xml編寫sql語句-nav`)" id="xml編寫sql語句-nav">
+									xml編寫SQL語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3%e4%ba%8b%e5%8b%99" onclick="onNavClick(`#註解事務-nav`)" id="註解事務-nav">
+									註解事務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#vo%e9%a1%9e" onclick="onNavClick(`#vo類-nav`)" id="vo類-nav">
+									Vo類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e" onclick="onNavClick(`#新增-nav`)" id="新增-nav">
+									新增
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b4%80%e9%8c%84%e4%b8%80%e5%80%8bdebug%e5%8d%8a%e5%a4%a9%e7%9a%84%e5%9d%91" onclick="onNavClick(`#紀錄一個debug半天的坑-nav`)" id="紀錄一個debug半天的坑-nav">
+									紀錄一個debug半天的坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bf%ae%e6%94%b9" onclick="onNavClick(`#修改-nav`)" id="修改-nav">
+									修改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    後台-商品屬性，多對多非外鍵表操作
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-05
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-22 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="後台-商品屬性">後台-商品屬性</h1>
+<blockquote>
+<p>先認識名詞</p>
+</blockquote>
+<ul>
+<li>SPU（Standard Product Unit）
+<ul>
+<li>「標準產品單位」，是商品資訊聚合的最小單位，是一組可複用、易檢索的標準化資訊的集合，該集合描述了一個產品的特性，例如: 「iPhone 13」</li>
+</ul>
+</li>
+<li>SKU（Stock Keeping Unit）
+<ul>
+<li>「最小庫存單位」，對應具體規格的商品，即貨號（或料號），例如: 「iPhone 13(256G)」、「潮男衝鋒衣-M-Blue」</li>
+</ul>
+</li>
+<li>既然是商城項目，現在需要呈現幾種關聯:
+<ul>
+<li>選中一個品牌，他有哪些品項的產品，例如: 蘋果:手機、平板&hellip;</li>
+<li>選中一個品項(分類)，裡面有他的規格等參數，例如: 手機{CPU:高通880, 尺寸:6吋&hellip;}</li>
+<li>選中一個SPU，他有那些共通屬性，例如: iPhone 13的廠商都是蘋果、作業系統都是IOS&hellip;</li>
+<li>選中一個SKU，有哪些獨特屬性，例如: 顏色、有多少庫存&hellip;</li>
+<li>以上有些是多對多的關係，還挺複雜的，一一拆解來實現
+<ul>
+<li>標題大綱是學習的知識點</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="資料庫表的名詞對應">資料庫表的名詞對應</h2>
+<blockquote>
+<p>我直到跟著做完整個商品管理，才弄清他資料庫設計背後的商業邏輯，因為沒有外鍵又要多對多關聯，整個挺複雜的，這塊是難點</p>
+</blockquote>
+<ul>
+<li>brand = 品牌，一個品牌之下可能存在多個category
+<ul>
+<li>蘋果 有 手機、平板</li>
+</ul>
+</li>
+<li>在品牌中操作關聯 = 操作pms_category_brand_relation</li>
+</ul>
+<p><img src="image-20220116152328062.png" alt="image-20220116152328062"></p>
+<ul>
+<li>category = 分類，品項</li>
+</ul>
+<p><img src="image-20220116152104695.png" alt="image-20220116152104695"></p>
+<ul>
+<li>attr_group = 屬性分組
+<ul>
+<li>隸屬於某個category之下</li>
+<li>例如: 手機的基本信息集合(裡面有長寬、大小、材質等等)</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220116153732943.png" alt="image-20220116153732943"></p>
+<ul>
+<li>attr = 屬性
+<ul>
+<li>隸屬於某個category之下，例如: 手機的外殼有白色、黑色</li>
+<li>其中attr_type = 1 表示基本屬性(規格參數)，例如: 三星S21的充電口是typeC(每個型號都一樣)</li>
+<li>其中attr_type = 0 表示銷售屬性，例如哀鳳13的顏色(有多種對應的貨號)</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220116154240270.png" alt="image-20220116154240270"></p>
+<ul>
+<li>屬性不一定有分組，因為他建立的時候不一定要填</li>
+<li>建立關聯就是操作pms_attr_attrgroup_relation這張表
+<ul>
+<li>可以在規格參數頁面中對某條參數修改，指定他屬於某分組</li>
+<li>也可以在分組頁面中將同品項未納入分組的屬性關聯到旗下</li>
+</ul>
+</li>
+</ul>
+<h2 id="父子節點訊息傳遞">父子節點訊息傳遞</h2>
+<ul>
+<li>首先從品項出發，要呈現的效果是這樣</li>
+</ul>
+<p><img src="image-20220114214047979.png" alt="image-20220114214047979"></p>
+<ul>
+<li>
+<p>左邊的品項三級分類直接拿先前做好的來用</p>
+</li>
+<li>
+<p>attrgroup是父節點，引用了<code>&quot;../common/category&quot;</code>用來顯示三級分類</p>
+<ul>
+<li><code>../</code>表示上一層</li>
+<li><code>./</code>表示同層</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220114174101734.png" alt="image-20220114174101734"></p>
+<ul>
+<li>資料呈現是沒問題，然而這邊還需要互動，所以是跨節點事件</li>
+</ul>
+<p><img src="image-20220114175105375.png" alt="image-20220114175105375"></p>
+<ul>
+<li>在category子節點綁定點擊事件，並且用<code>this.$emit</code>傳遞出去</li>
+</ul>
+<pre tabindex="0"><code>this.$emit(&quot;自訂事件名&quot;,傳遞的資料...)
+</code></pre><p><img src="image-20220114174338462.png" alt="image-20220114174338462"></p>
+<ul>
+<li>回到attrgroup父節點，由於一開始就import了，可以直接調用剛剛自訂的事件名<code>tree-node-click</code></li>
+<li>並且綁定一個重新查詢的動作(從子節點傳來的data拿到Id，並調用get方法得到資訊)</li>
+</ul>
+<p><img src="image-20220114174528813.png" alt="image-20220114174528813"></p>
+<ul>
+<li>初步完成功能，接著完善新增修改，目標預覽:</li>
+</ul>
+<p><img src="image-20220114214159788.png" alt="image-20220114214159788"></p>
+<h2 id="bean轉json空判斷">Bean轉JSON空判斷</h2>
+<ul>
+<li>
+<p>查詢子分類children，到了第三級他的children是<code>[]</code>，導致出現空白的下級分類</p>
+</li>
+<li>
+<p>使用<code>@JsonInclude</code>，讓返回結果時如果是空時，不傳一個空的<code>[]</code>過去</p>
+<ul>
+<li>NON_EMPTY就包含NON_NULL</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@TableField</span>(exist = <span style="color:#8b008b;font-weight:bold">false</span>)
+<span style="color:#707a7c">@JsonInclude</span>(JsonInclude.<span style="color:#658b00">Include</span>.<span style="color:#658b00">NON_EMPTY</span>)
+<span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; children;
+</code></pre></div><h2 id="回顯資料">回顯資料</h2>
+<ul>
+<li>當在頁面上點新增或修改時會觸發事件，調用它的子模組xxx-add-or-update，點開來看裡面會有一個init方法，從這邊發起請求給後端</li>
+</ul>
+<p><img src="image-20220114213624976.png" alt="image-20220114213624976"></p>
+<ul>
+<li>在AttrGroup中增加一個表示路徑的屬性</li>
+</ul>
+<p><img src="image-20220114211504934.png" alt="image-20220114211504934"></p>
+<ul>
+<li>AttrGroupController</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/info/{attrGroupId}&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">info</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;attrGroupId&#34;</span>) Long attrGroupId) {
+    AttrGroupEntity attrGroup = attrGroupService.<span style="color:#658b00">getById</span>(attrGroupId);
+    Long catelogId = attrGroup.<span style="color:#658b00">getCatelogId</span>();
+    <span style="color:#228b22">// 找出商品屬性所在的路徑(電器-大家電-電視)
+</span><span style="color:#228b22"></span>    Long[] path = categoryService.<span style="color:#658b00">findCatalogPath</span>(catelogId);
+    attrGroup.<span style="color:#658b00">setCatalogPath</span>(path);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;attrGroup&#34;</span>, attrGroup);
+}
+</code></pre></div><ul>
+<li>
+<p>注意是在AttrGroup中調用categoryService</p>
+</li>
+<li>
+<p>categoryServiceImpl</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 找出商品屬性所在的路徑(電器-大家電-電視)
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @param catelogId
+</span><span style="color:#228b22">     * @return
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> Long[] <span style="color:#008b45">findCatalogPath</span>(Long catelogId) {
+        List&lt;Long&gt; paths = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+        List&lt;Long&gt; parentPath = findParentPath(catelogId, paths);
+        <span style="color:#228b22">// 找的是從子出發，所以還要逆轉
+</span><span style="color:#228b22"></span>        Collections.<span style="color:#658b00">reverse</span>(parentPath);
+        <span style="color:#8b008b;font-weight:bold">return</span> parentPath.<span style="color:#658b00">toArray</span>(<span style="color:#8b008b;font-weight:bold">new</span> Long[parentPath.<span style="color:#658b00">size</span>()]);
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 找出所有父path
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @param catelogId
+</span><span style="color:#228b22">     * @param paths
+</span><span style="color:#228b22">     * @return
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Long&gt; <span style="color:#008b45">findParentPath</span>(Long catelogId, List&lt;Long&gt; paths) {
+        <span style="color:#228b22">// 先放進當前的
+</span><span style="color:#228b22"></span>        paths.<span style="color:#658b00">add</span>(catelogId);
+        CategoryEntity byId = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getById</span>(catelogId);
+        <span style="color:#8b008b;font-weight:bold">if</span> (byId.<span style="color:#658b00">getParentCid</span>() != 0) {
+            <span style="color:#228b22">// 遞歸搜
+</span><span style="color:#228b22"></span>            findParentPath(byId.<span style="color:#658b00">getParentCid</span>(), paths);
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> paths;
+    }
+</code></pre></div><h2 id="模糊查詢">模糊查詢</h2>
+<ul>
+<li>品牌管理直接導入頁面，完成一個簡單的查詢篩選功能</li>
+</ul>
+<p><img src="image-20220114220827080.png" alt="image-20220114220827080"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPage</span>(Map&lt;String, Object&gt; params) {
+    <span style="color:#228b22">// 模糊查詢
+</span><span style="color:#228b22"></span>    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    QueryWrapper&lt;BrandEntity&gt; qw = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(key)) {
+        qw.<span style="color:#658b00">and</span>((obj) -&gt; {
+            obj.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>, key).<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;name&#34;</span>, key);
+        });
+    }
+    IPage&lt;BrandEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> Query&lt;BrandEntity&gt;().<span style="color:#658b00">getPage</span>(params), qw);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+}
+</code></pre></div><h2 id="分頁插件">分頁插件</h2>
+<blockquote>
+<p>官方 <a href="https://baomidou.com/pages/2976a3/#spring">https://baomidou.com/pages/2976a3/#spring</a></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
+<span style="color:#707a7c">@EnableTransactionManagement</span>
+<span style="color:#707a7c">@MapperScan</span>(basePackages = <span style="color:#cd5555">&#34;yozi.mall.**.dao&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyBatisPlusConfig</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 插件集合
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> MybatisPlusInterceptor <span style="color:#008b45">mybatisPlusInterceptor</span>() {
+        <span style="color:#228b22">// 插件
+</span><span style="color:#228b22"></span>        MybatisPlusInterceptor interceptor = <span style="color:#8b008b;font-weight:bold">new</span> MybatisPlusInterceptor();
+        <span style="color:#228b22">// 分頁插件
+</span><span style="color:#228b22"></span>        PaginationInnerInterceptor paginationInnerInterceptor = <span style="color:#8b008b;font-weight:bold">new</span> PaginationInnerInterceptor(DbType.<span style="color:#658b00">MYSQL</span>);
+        <span style="color:#228b22">// 添加分頁插件
+</span><span style="color:#228b22"></span>        interceptor.<span style="color:#658b00">addInnerInterceptor</span>(paginationInnerInterceptor);
+        <span style="color:#8b008b;font-weight:bold">return</span> interceptor;
+    }
+}
+</code></pre></div><h2 id="關聯分類">關聯分類</h2>
+<ul>
+<li>品牌與品項是多對多的關係，例如品牌蘋果對應品項手機、平板；品項手機對應許多廠牌</li>
+</ul>
+<p><img src="image-20220114222344156.png" alt="image-20220114222344156"></p>
+<ul>
+<li>多對多，所以資料庫有中間表</li>
+</ul>
+<p><img src="image-20220114222519902.png" alt="image-20220114222519902"></p>
+<ul>
+<li>CategoryBrandRelationController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JAVA" data-lang="JAVA"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 從品牌獲取關聯品項列表
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/catelog/list&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">catelogList</span>(<span style="color:#707a7c">@RequestParam</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>) Long brandId) {
+    List&lt;CategoryBrandRelationEntity&gt; data =
+            categoryBrandRelationService.<span style="color:#658b00">list</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;CategoryBrandRelationEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>,
+                    brandId));
+
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;data&#34;</span>, data);
+}
+
+
+</code></pre></div><ul>
+<li>因為新增的api前端只傳來品牌id跟品項id，後端還得自己去找品牌名、品項名
+<ul>
+<li>為何不在資料庫外鍵連表?</li>
+<li>比如淘寶這種大電商，假如品牌10萬個，品項100萬個，用外鍵笛卡爾積會高的嚇人拖垮資源，for循環查表N次相較之下微不足道，只能說兩害相權取其輕</li>
+<li>一般來說實務上都是禁止使用外鍵的(那之前還學個毛left join 哭阿)</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220114224604927.png" alt="image-20220114224604927"></p>
+<ul>
+<li>完成</li>
+</ul>
+<p><img src="image-20220114225005472.png" alt="image-20220114225005472"></p>
+<h2 id="更新冗餘屬性">更新冗餘屬性</h2>
+<ul>
+<li>前面用多餘的查詢方式去獲取品牌名、品項名，雖然省下了外鍵的消耗，但是有隱患，就是更新品牌名稱或品項名，就要連中間表裡面的品牌名、品項名一起更新</li>
+</ul>
+<h3 id="先處理品牌名">先處理品牌名</h3>
+<p><img src="image-20220114225513176.png" alt="image-20220114225513176"></p>
+<ul>
+<li>BrandServiceImpl</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 冗餘的品牌名、品項名更新
+</span><span style="color:#228b22">     *
+</span><span style="color:#228b22">     * @param brand
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateDetail</span>(BrandEntity brand) {
+        <span style="color:#228b22">// 先更新自己
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(brand);
+        <span style="color:#228b22">// 如果有更動品牌名
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(brand.<span style="color:#658b00">getName</span>())) {
+            <span style="color:#228b22">// 更新資料庫表中所有舊的品牌名
+</span><span style="color:#228b22"></span>            categoryBrandRelationService.<span style="color:#658b00">updateBrand</span>(brand.<span style="color:#658b00">getBrandId</span>(), brand.<span style="color:#658b00">getName</span>());
+        }
+        <span style="color:#228b22">// TODO 更新其他關聯
+</span><span style="color:#228b22"></span>
+    }
+</code></pre></div><ul>
+<li>注意是從Brand調用CategoryBrandRelationService
+<ul>
+<li>CategoryBrandRelationServiceImpl</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateBrand</span>(Long brandId, String name) {
+    CategoryBrandRelationEntity categoryBrandRelationEntity = <span style="color:#8b008b;font-weight:bold">new</span> CategoryBrandRelationEntity();
+    categoryBrandRelationEntity.<span style="color:#658b00">setBrandId</span>(brandId);
+    categoryBrandRelationEntity.<span style="color:#658b00">setBrandName</span>(name);
+    <span style="color:#228b22">// 更新資料庫表中所有舊的品牌名
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">update</span>(categoryBrandRelationEntity, <span style="color:#8b008b;font-weight:bold">new</span> UpdateWrapper&lt;CategoryBrandRelationEntity&gt;()
+            .<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>, brandId));
+
+}
+</code></pre></div><h3 id="xml編寫sql語句">xml編寫SQL語句</h3>
+<blockquote>
+<p>承上，品項名稱也要改</p>
+</blockquote>
+<ul>
+<li>CategoryController也要改</li>
+</ul>
+<p><img src="image-20220114231726896.png" alt="image-20220114231726896"></p>
+<ul>
+<li>CategoryServiceImpl
+<ul>
+<li>這裡換個花樣，不是用UpdateWrapper，換自己造一個執行sql語句的方法</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateCascade</span>(CategoryEntity category) {
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(category);
+    categoryBrandRelationService.<span style="color:#658b00">updateCategory</span>(category.<span style="color:#658b00">getCatId</span>(),category.<span style="color:#658b00">getName</span>() );
+}
+</code></pre></div><ul>
+<li>IDEA安裝MybatisX插件，在DAO可以看到這個鳥兒</li>
+</ul>
+<p><img src="image-20220114232816525.png" alt="image-20220114232816525"></p>
+<ul>
+<li>alt + enter 點一下跳到xml，已經自動生成好待綁定的方法，自己填入SQL語句</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;update</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;updateCategory&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+    UPDATE pms_category_brand_relation
+    SET catelog_name= #{name}
+    WHERE catelog_id = #{catId}
+<span style="color:#8b008b;font-weight:bold">&lt;/update&gt;</span>
+</code></pre></div><ul>
+<li>回到DAO用<code>@Param(&quot;變數名&quot;)</code>綁定xml中的<code>#{變數名}</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Mapper</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">CategoryBrandRelationDao</span> <span style="color:#8b008b;font-weight:bold">extends</span> BaseMapper&lt;CategoryBrandRelationEntity&gt; {
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateCategory</span>(<span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;catId&#34;</span>) Long catId, <span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;name&#34;</span>) String name);
+}
+</code></pre></div><h3 id="註解事務">註解事務</h3>
+<ul>
+<li>最後為了確保更新成功，還要加上事務註解，必須先到MyBatisPlusConfig開啟功能<code>@EnableTransactionManagement</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// MyBatisPlusConfig
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Configuration</span>
+<span style="color:#707a7c">@EnableTransactionManagement</span>
+<span style="color:#707a7c">@MapperScan</span>(basePackages = <span style="color:#cd5555">&#34;yozi.mall.**.dao&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyBatisPlusConfig</span> {
+
+<span style="color:#228b22">// CategoryServiceImpl
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateCascade</span>(CategoryEntity category) {
+
+<span style="color:#228b22">// BrandServiceImpl
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateDetail</span>(BrandEntity brand) {
+</code></pre></div><h2 id="vo類">Vo類</h2>
+<ul>
+<li>現在來到規格參數，資料庫中<code>pms_attr</code>這張表，保存的是這些資料</li>
+</ul>
+<p><img src="image-20220115100359811.png" alt="image-20220115100359811"></p>
+<ul>
+<li>因為都是多對多關聯，所以Entity中根據資料庫表生成的屬性肯定是不夠用的，還要有能夠表示外鍵關聯的額外屬性</li>
+<li>用舊方法可以在AttrEntity新增一個屬性然後聲明<code>@TableField(exist = false)</code>，但這麼做久了會很亂</li>
+<li>於是就要使用VO，VO簡單來說就是專門應付前端的需求，用來接收ajax傳遞的data或返回查詢結果用</li>
+</ul>
+<h3 id="新增">新增</h3>
+<ul>
+<li>前端的API是這樣</li>
+</ul>
+<p><img src="image-20220115101222051.png" alt="image-20220115101222051"></p>
+<ul>
+<li>
+<p>顯然本來的AttrEntity是沒有attrGroupId這個欄位的，所以必須造一個AttrVo，他跟AttrEntity一樣，但多了<code>private Long attrGroupId;</code></p>
+</li>
+<li>
+<p>修改保存方法</p>
+</li>
+</ul>
+<p><img src="image-20220115011445868.png" alt="image-20220115011445868"></p>
+<ul>
+<li>AttrServiceImpl
+<ul>
+<li>注意這邊是分兩步驟，本來的attrEntity一樣存給他本來的表</li>
+<li>下面額外保存關聯關係，調用的是AttrAttrgroupRelationDao的insert</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220115012331942.png" alt="image-20220115012331942"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveAttr</span>(AttrVo attr) {
+    <span style="color:#228b22">// 先保存基本資料
+</span><span style="color:#228b22"></span>    AttrEntity attrEntity = <span style="color:#8b008b;font-weight:bold">new</span> AttrEntity();
+    BeanUtils.<span style="color:#658b00">copyProperties</span>(attr, attrEntity);
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">save</span>(attrEntity);
+    <span style="color:#228b22">// 保存關聯關係
+</span><span style="color:#228b22"></span>    AttrAttrgroupRelationEntity relationEntity = <span style="color:#8b008b;font-weight:bold">new</span> AttrAttrgroupRelationEntity();
+    relationEntity.<span style="color:#658b00">setAttrGroupId</span>(attr.<span style="color:#658b00">getAttrGroupId</span>());
+    relationEntity.<span style="color:#658b00">setAttrId</span>(attrEntity.<span style="color:#658b00">getAttrId</span>());
+    relationDao.<span style="color:#658b00">insert</span>(relationEntity);
+}
+</code></pre></div><h3 id="查詢">查詢</h3>
+<blockquote>
+<p>難點，重點知識流式處理、無外鍵多關聯表的查詢返回</p>
+</blockquote>
+<ul>
+<li>前端的API</li>
+</ul>
+<p><img src="image-20220115101509373.png" alt="image-20220115101509373"></p>
+<ul>
+<li>為了給前端返回結果，再造一個AttrRespVo</li>
+</ul>
+<p><img src="image-20220115115338585.png" alt="image-20220115115338585"></p>
+<ul>
+<li>AttrController</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 規格參數列表
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/base/list/{catelogId}&#34;</span>)
+<span style="color:#228b22">//@RequiresPermissions(&#34;product:attr:list&#34;)
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">baseAttrList</span>(<span style="color:#707a7c">@RequestParam</span> Map&lt;String, Object&gt; params,
+                      <span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;catelogId&#34;</span>) Long catelogId) {
+    PageUtils page = attrService.<span style="color:#658b00">queryBasePageCatelogId</span>(params, catelogId);
+
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;page&#34;</span>, page);
+}
+</code></pre></div><ul>
+<li>AttrServiceImpl
+<ul>
+<li>這個就複雜了，要先查出自己本來的，然後拿CatelogId去關聯表、catelogName、groupName</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220115095914398.png" alt="image-20220115095914398"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryBasePageCatelogId</span>(Map&lt;String, Object&gt; params, Long catelogId) {
+    QueryWrapper&lt;AttrEntity&gt; qw = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;&gt;();
+    <span style="color:#228b22">// 指定三級分類
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (catelogId != 0) {
+        qw.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;catelog_id&#34;</span>, catelogId);
+    }
+    <span style="color:#228b22">// 有查詢條件
+</span><span style="color:#228b22"></span>    String key = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;key&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(key)) {
+        qw.<span style="color:#658b00">and</span>((obj) -&gt; {
+            obj.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;attr_id&#34;</span>, key).<span style="color:#658b00">or</span>().<span style="color:#658b00">like</span>(<span style="color:#cd5555">&#34;attr_name&#34;</span>, key);
+        });
+    }
+    IPage&lt;AttrEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(
+            <span style="color:#8b008b;font-weight:bold">new</span> Query&lt;AttrEntity&gt;().<span style="color:#658b00">getPage</span>(params), qw);
+    <span style="color:#228b22">// 到這邊查完Attr基本訊息，把頁數總數那些啥的用PageUtils封裝起來
+</span><span style="color:#228b22"></span>    PageUtils pageUtils = <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
+
+    <span style="color:#228b22">// 但是內容物還沒完，將查到的紀錄一筆筆拿出來，找他們的catelogName與groupName
+</span><span style="color:#228b22"></span>    List&lt;AttrEntity&gt; records = page.<span style="color:#658b00">getRecords</span>();
+
+    <span style="color:#228b22">// 流式，把一筆筆資料當水流，過完管道就處理完了
+</span><span style="color:#228b22"></span>    List&lt;AttrRespVo&gt; respVos = records.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(attrEntity -&gt; {
+        <span style="color:#228b22">// 抓出裡面的attrEntity，拷貝到AttrRespVo上
+</span><span style="color:#228b22"></span>        AttrRespVo attrRespVo = <span style="color:#8b008b;font-weight:bold">new</span> AttrRespVo();
+        BeanUtils.<span style="color:#658b00">copyProperties</span>(attrEntity, attrRespVo);
+        <span style="color:#228b22">// 去關聯表拿relationEntity，用來找到AttrGroupId，注意是selectOne
+</span><span style="color:#228b22"></span>        AttrAttrgroupRelationEntity relationEntity =
+                relationDao.<span style="color:#658b00">selectOne</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;AttrAttrgroupRelationEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;attr_id&#34;</span>,
+                        attrEntity.<span style="color:#658b00">getAttrId</span>()));
+        <span style="color:#228b22">// 拿到groupName分組名: 主體、螢幕等
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (relationEntity != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            AttrGroupEntity attrGroupEntity = attrGroupDao.<span style="color:#658b00">selectById</span>(relationEntity.<span style="color:#658b00">getAttrGroupId</span>());
+            attrRespVo.<span style="color:#658b00">setGroupName</span>(attrGroupEntity.<span style="color:#658b00">getAttrGroupName</span>());
+        }
+        <span style="color:#228b22">// 拿到catelogName分類名(電器-大家電-&#34;電視&#34;)
+</span><span style="color:#228b22"></span>        CategoryEntity categoryEntity = categoryDao.<span style="color:#658b00">selectById</span>(attrEntity.<span style="color:#658b00">getCatelogId</span>());
+        <span style="color:#8b008b;font-weight:bold">if</span> (categoryEntity != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            attrRespVo.<span style="color:#658b00">setCatelogName</span>(categoryEntity.<span style="color:#658b00">getName</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> attrRespVo;
+    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>()); <span style="color:#228b22">// 接起處理完的流，裝到List&lt;AttrRespVo&gt; respVos
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 把多賦好2個屬性的list塞回去
+</span><span style="color:#228b22"></span>    pageUtils.<span style="color:#658b00">setList</span>(respVos);
+    <span style="color:#8b008b;font-weight:bold">return</span> pageUtils;
+}
+</code></pre></div><h4 id="紀錄一個debug半天的坑">紀錄一個debug半天的坑</h4>
+<ul>
+<li>因為這個功能外連到其他表，只想到relationEntity有判斷非空不會往下做，但是我沒想到relationEntity是有了，結果表裏面有空的欄</li>
+</ul>
+<p><img src="image-20220115153034095.png" alt="image-20220115153034095"></p>
+<ul>
+<li>debug功力還太差了，我實在不怎會用小紅點，每次一直按都跑到很深的地方回不來</li>
+<li>總之有外連的表，開發時可能暫時測功能填了不符合規定的值，用完記得刪掉，切記切記!!</li>
+</ul>
+<h3 id="修改">修改</h3>
+<ul>
+<li>修改要先完成回顯，API:</li>
+</ul>
+<p><img src="image-20220115113406718.png" alt="image-20220115113406718"></p>
+<ul>
+<li>AttrController.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/info/{attrId}&#34;</span>)
+<span style="color:#228b22">//@RequiresPermissions(&#34;product:attr:info&#34;)
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">info</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;attrId&#34;</span>) Long attrId) {
+    <span style="color:#228b22">// AttrEntity attr = attrService.getById(attrId);
+</span><span style="color:#228b22"></span>    AttrRespVo respVo = attrService.<span style="color:#658b00">getInfoById</span>(attrId);
+    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;attr&#34;</span>, respVo);
+}
+</code></pre></div><ul>
+<li>AttrServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 屬性詳情(給修改回顯用)
+</span><span style="color:#228b22"> *
+</span><span style="color:#228b22"> * @param attrId
+</span><span style="color:#228b22"> * @return
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> AttrRespVo <span style="color:#008b45">getInfoById</span>(Long attrId) {
+    AttrEntity attrEntity = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getById</span>(attrId);
+    AttrRespVo attrRespVo = <span style="color:#8b008b;font-weight:bold">new</span> AttrRespVo();
+    BeanUtils.<span style="color:#658b00">copyProperties</span>(attrEntity, attrRespVo);
+
+    <span style="color:#228b22">// 去關聯表拿relationEntity，用來找到AttrGroupId，注意是selectOne
+</span><span style="color:#228b22"></span>    AttrAttrgroupRelationEntity relationEntity =
+            relationDao.<span style="color:#658b00">selectOne</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;AttrAttrgroupRelationEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;attr_id&#34;</span>,
+                    attrEntity.<span style="color:#658b00">getAttrId</span>()));
+    <span style="color:#228b22">// 拿到groupName分組名: 主體、螢幕等
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (relationEntity != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        attrRespVo.<span style="color:#658b00">setAttrGroupId</span>(relationEntity.<span style="color:#658b00">getAttrGroupId</span>());
+        AttrGroupEntity attrGroupEntity = attrGroupDao.<span style="color:#658b00">selectById</span>(relationEntity.<span style="color:#658b00">getAttrGroupId</span>());
+        <span style="color:#8b008b;font-weight:bold">if</span> (attrGroupEntity != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            attrRespVo.<span style="color:#658b00">setGroupName</span>(attrGroupEntity.<span style="color:#658b00">getAttrGroupName</span>());
+        }
+    }
+    <span style="color:#228b22">// 完整分類路徑，之前寫過的
+</span><span style="color:#228b22"></span>    Long catelogId = attrEntity.<span style="color:#658b00">getCatelogId</span>();
+    Long[] catalogPath = categoryService.<span style="color:#658b00">findCatalogPath</span>(catelogId);
+    attrRespVo.<span style="color:#658b00">setCatelogPath</span>(catalogPath);
+    <span style="color:#228b22">// 自己的三級分類名
+</span><span style="color:#228b22"></span>    CategoryEntity categoryEntity = categoryDao.<span style="color:#658b00">selectById</span>(catelogId);
+    <span style="color:#8b008b;font-weight:bold">if</span> (categoryEntity != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        attrRespVo.<span style="color:#658b00">setCatelogName</span>(categoryEntity.<span style="color:#658b00">getName</span>());
+    }
+
+    <span style="color:#8b008b;font-weight:bold">return</span> attrRespVo;
+}
+</code></pre></div><ul>
+<li>接著修改，讓保存的也跟前面一樣拆成兩步</li>
+</ul>
+<p><img src="image-20220115115830496.png" alt="image-20220115115830496"></p>
+<ul>
+<li>AttrServiceImpl.java</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Transactional</span>
+<span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">updateAttr</span>(AttrVo attr) {
+    <span style="color:#228b22">// 先更新基本資料
+</span><span style="color:#228b22"></span>    AttrEntity attrEntity = <span style="color:#8b008b;font-weight:bold">new</span> AttrEntity();
+    BeanUtils.<span style="color:#658b00">copyProperties</span>(attr, attrEntity);
+    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(attrEntity);
+
+    <span style="color:#228b22">// 保存關聯關係
+</span><span style="color:#228b22"></span>    AttrAttrgroupRelationEntity relationEntity = <span style="color:#8b008b;font-weight:bold">new</span> AttrAttrgroupRelationEntity();
+    relationEntity.<span style="color:#658b00">setAttrGroupId</span>(attr.<span style="color:#658b00">getAttrGroupId</span>());
+    relationEntity.<span style="color:#658b00">setAttrId</span>(attr.<span style="color:#658b00">getAttrId</span>());
+    <span style="color:#228b22">// 先判斷本來有無值
+</span><span style="color:#228b22"></span>    Long count = relationDao.<span style="color:#658b00">selectCount</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;AttrAttrgroupRelationEntity&gt;().<span style="color:#658b00">eq</span>(
+            <span style="color:#cd5555">&#34;attr_id&#34;</span>,
+            attr.<span style="color:#658b00">getAttrId</span>()));
+    <span style="color:#8b008b;font-weight:bold">if</span> (count &gt; 0) {
+        <span style="color:#228b22">// 更新
+</span><span style="color:#228b22"></span>        relationDao.<span style="color:#658b00">update</span>(relationEntity, <span style="color:#8b008b;font-weight:bold">new</span> UpdateWrapper&lt;AttrAttrgroupRelationEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;attr_id&#34;</span>,
+                attr.<span style="color:#658b00">getAttrId</span>()));
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 新增
+</span><span style="color:#228b22"></span>        relationDao.<span style="color:#658b00">insert</span>(relationEntity);
+    }
+}
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-22</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220122-java-try-finally-return/">
+			下一篇<br>Java中finally與return的順序
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220121-npm-sass-webpack/">
+			上一篇<br>node版本對應、NVS快速切換
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

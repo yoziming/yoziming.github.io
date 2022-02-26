@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>高併發方案、Sentinel限流、Sleuth鏈路追蹤</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="SpringBoot微服務項目筆記-24">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="高併發方案、Sentinel限流、Sleuth鏈路追蹤" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-24" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220210-gulimall-24-sentinel/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-10T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="高併發方案、Sentinel限流、Sleuth鏈路追蹤"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-24"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e4%bd%b5%e7%99%bc%e9%97%9c%e6%b3%a8%e9%87%8d%e9%bb%9e" onclick="onNavClick(`#高併發關注重點-nav`)" id="高併發關注重點-nav">
+									高併發關注重點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sentinel" onclick="onNavClick(`#sentinel-nav`)" id="sentinel-nav">
+									Sentinel
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8d%b3%e6%99%82%e7%9b%a3%e6%8e%a7" onclick="onNavClick(`#即時監控-nav`)" id="即時監控-nav">
+									即時監控
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e9%98%bb%e5%a1%9e%e8%bf%94%e5%9b%9e" onclick="onNavClick(`#自定義阻塞返回-nav`)" id="自定義阻塞返回-nav">
+									自定義阻塞返回
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a7%e5%88%b6%e8%a6%8f%e5%89%87" onclick="onNavClick(`#控制規則-nav`)" id="控制規則-nav">
+									控制規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e6%8e%a7%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#流控模式-nav`)" id="流控模式-nav">
+									流控模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e6%8e%a7%e6%95%88%e6%9e%9c" onclick="onNavClick(`#流控效果-nav`)" id="流控效果-nav">
+									流控效果
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%86%94%e6%96%b7feign%e9%81%a0%e7%a8%8b%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#熔斷feign遠程調用-nav`)" id="熔斷feign遠程調用-nav">
+									熔斷feign遠程調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%96%b9%e6%8c%87%e5%ae%9a%e7%86%94%e6%96%b7%e9%99%8d%e7%b4%9a%e7%ad%96%e7%95%a5" onclick="onNavClick(`#調用方指定熔斷降級策略-nav`)" id="調用方指定熔斷降級策略-nav">
+									調用方指定熔斷降級策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%90%e4%be%9b%e6%96%b9%e4%b8%bb%e5%8b%95%e9%99%8d%e7%b4%9a%e7%ad%96%e7%95%a5" onclick="onNavClick(`#提供方主動降級策略-nav`)" id="提供方主動降級策略-nav">
+									提供方主動降級策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e8%b3%87%e6%ba%90" onclick="onNavClick(`#自訂資源-nav`)" id="自訂資源-nav">
+									自訂資源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#try-catch%e6%b3%95" onclick="onNavClick(`#try-catch法-nav`)" id="try-catch法-nav">
+									Try-catch法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#註解法-nav`)" id="註解法-nav">
+									註解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c%e6%b5%81%e6%8e%a7" onclick="onNavClick(`#網關流控-nav`)" id="網關流控-nav">
+									網關流控
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e5%89%87%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#規則持久化-nav`)" id="規則持久化-nav">
+									規則持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sleuth-%e9%8f%88%e8%b7%af%e8%bf%bd%e8%b9%a4" onclick="onNavClick(`#sleuth-鏈路追蹤-nav`)" id="sleuth-鏈路追蹤-nav">
+									Sleuth 鏈路追蹤
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8-1" onclick="onNavClick(`#使用-1-nav`)" id="使用-1-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91-%e5%95%9f%e5%8b%95%e5%a0%b1%e9%8c%af" onclick="onNavClick(`#坑-啟動報錯-nav`)" id="坑-啟動報錯-nav">
+									坑-啟動報錯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#zipkin" onclick="onNavClick(`#zipkin-nav`)" id="zipkin-nav">
+									zipkin
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#持久化-nav`)" id="持久化-nav">
+									持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e7%b4%9a%e7%af%87%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#高級篇小結-nav`)" id="高級篇小結-nav">
+									高級篇小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e4%bd%b5%e7%99%bc%e9%97%9c%e6%b3%a8%e9%87%8d%e9%bb%9e" onclick="onNavClick(`#高併發關注重點-nav`)" id="高併發關注重點-nav">
+									高併發關注重點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sentinel" onclick="onNavClick(`#sentinel-nav`)" id="sentinel-nav">
+									Sentinel
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8" onclick="onNavClick(`#使用-nav`)" id="使用-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b8%ac%e8%a9%a6" onclick="onNavClick(`#測試-nav`)" id="測試-nav">
+									測試
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8d%b3%e6%99%82%e7%9b%a3%e6%8e%a7" onclick="onNavClick(`#即時監控-nav`)" id="即時監控-nav">
+									即時監控
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%ae%9a%e7%be%a9%e9%98%bb%e5%a1%9e%e8%bf%94%e5%9b%9e" onclick="onNavClick(`#自定義阻塞返回-nav`)" id="自定義阻塞返回-nav">
+									自定義阻塞返回
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%8e%a7%e5%88%b6%e8%a6%8f%e5%89%87" onclick="onNavClick(`#控制規則-nav`)" id="控制規則-nav">
+									控制規則
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e6%8e%a7%e6%a8%a1%e5%bc%8f" onclick="onNavClick(`#流控模式-nav`)" id="流控模式-nav">
+									流控模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%b5%81%e6%8e%a7%e6%95%88%e6%9e%9c" onclick="onNavClick(`#流控效果-nav`)" id="流控效果-nav">
+									流控效果
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%86%94%e6%96%b7feign%e9%81%a0%e7%a8%8b%e8%aa%bf%e7%94%a8" onclick="onNavClick(`#熔斷feign遠程調用-nav`)" id="熔斷feign遠程調用-nav">
+									熔斷feign遠程調用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91" onclick="onNavClick(`#坑-nav`)" id="坑-nav">
+									坑
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%96%b9%e6%8c%87%e5%ae%9a%e7%86%94%e6%96%b7%e9%99%8d%e7%b4%9a%e7%ad%96%e7%95%a5" onclick="onNavClick(`#調用方指定熔斷降級策略-nav`)" id="調用方指定熔斷降級策略-nav">
+									調用方指定熔斷降級策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8f%90%e4%be%9b%e6%96%b9%e4%b8%bb%e5%8b%95%e9%99%8d%e7%b4%9a%e7%ad%96%e7%95%a5" onclick="onNavClick(`#提供方主動降級策略-nav`)" id="提供方主動降級策略-nav">
+									提供方主動降級策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e8%b3%87%e6%ba%90" onclick="onNavClick(`#自訂資源-nav`)" id="自訂資源-nav">
+									自訂資源
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#try-catch%e6%b3%95" onclick="onNavClick(`#try-catch法-nav`)" id="try-catch法-nav">
+									Try-catch法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a8%bb%e8%a7%a3%e6%b3%95" onclick="onNavClick(`#註解法-nav`)" id="註解法-nav">
+									註解法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c%e6%b5%81%e6%8e%a7" onclick="onNavClick(`#網關流控-nav`)" id="網關流控-nav">
+									網關流控
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e5%89%87%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#規則持久化-nav`)" id="規則持久化-nav">
+									規則持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#sleuth-%e9%8f%88%e8%b7%af%e8%bf%bd%e8%b9%a4" onclick="onNavClick(`#sleuth-鏈路追蹤-nav`)" id="sleuth-鏈路追蹤-nav">
+									Sleuth 鏈路追蹤
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8-1" onclick="onNavClick(`#使用-1-nav`)" id="使用-1-nav">
+									使用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9d%91-%e5%95%9f%e5%8b%95%e5%a0%b1%e9%8c%af" onclick="onNavClick(`#坑-啟動報錯-nav`)" id="坑-啟動報錯-nav">
+									坑-啟動報錯
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#zipkin" onclick="onNavClick(`#zipkin-nav`)" id="zipkin-nav">
+									zipkin
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%8c%81%e4%b9%85%e5%8c%96" onclick="onNavClick(`#持久化-nav`)" id="持久化-nav">
+									持久化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e9%ab%98%e7%b4%9a%e7%af%87%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#高級篇小結-nav`)" id="高級篇小結-nav">
+									高級篇小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    高併發方案、Sentinel限流、Sleuth鏈路追蹤
+                    
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-24
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-02-10 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="高併發關注重點">高併發關注重點</h1>
+<p><img src="image-20220206222827204.png" alt="image-20220206222827204"></p>
+<p><img src="image-20220206223434557.png" alt="image-20220206223434557"></p>
+<ul>
+<li>單一職責: 專門的服務模組，就只幹這件事，不論要擴容或是掛了都方便</li>
+<li>鏈結加密: 每場商品都有隨機產生的Token，防有心人提早準備(台鐵搶票系統學一下好嗎?)</li>
+<li>預熱、扣減: 既然知道會讀多寫少，提前把要被查的資料放Redis；用信號量做令牌，只放行這些數量</li>
+<li>動靜分離: 靜態資源從網關就打回去，確保來到伺服的都是動態請求</li>
+<li>攔截惡意請求: 在網關設定，判斷那些非人的操作(例如同IP超快超大量的)，直接擋回去</li>
+<li>流量錯峰: 用干擾手段使人的操作時間不同(就是噁心用戶)，爭取錯開請求進來的時間</li>
+<li>限流、熔斷、降級: 降級就是負載超過上限，Show一個&quot;當前流量過高，請稍後重試&quot;之類的惱人畫面給用戶看</li>
+<li>延遲隊列: 終極手段，管你多少請求只要通過驗證就放進隊列，之後慢慢處理，總會給你處理到，但不保證是現在</li>
+</ul>
+<h1 id="sentinel">Sentinel</h1>
+<blockquote>
+<p>官方: <a href="https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D">https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D</a></p>
+</blockquote>
+<ul>
+<li>用來限流、保護資源</li>
+<li>Sentinel分為核心庫 與 Dashboard可視化界面，核心庫不依賴Dashboard</li>
+<li>工作原理主要分為三個步驟:
+<ul>
+<li>定義資源: 叫做&quot;埋點&quot;，即聲明要保護的資源，可以是服務、方法、甚至單純一段程式碼
+<ul>
+<li>方法很多，最簡單就是用註解或try-catch</li>
+<li><a href="https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8</a></li>
+</ul>
+</li>
+<li>定義規則: 流量控制規則、熔斷降級規則、系統保護規則、來源訪問控制規則 和 熱點參數規則
+<ul>
+<li>最簡單就是開啟Dashboard用可視化界面建立規則(但這樣用的設定保存在記憶體，重開會消失)</li>
+</ul>
+</li>
+<li>檢驗規則是否生效</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用">使用</h2>
+<ul>
+<li>引包</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+    &lt;version&gt;2021.1&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>設定application.properties
+<ul>
+<li>注意他有2端口，一個是訪問dashboard本身，預設是8080</li>
+<li>另一個是微服務傳給sentinel中心，預設是8719</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># sentinel控制台
+spring.cloud.sentinel.transport.dashboard=localhost:8333
+# 微服務與控制台傳輸數據的端口
+spring.cloud.sentinel.transport.port=8719
+</code></pre><ul>
+<li>
+<p>載Dashboard: <a href="https://github.com/alibaba/Sentinel/releases">https://github.com/alibaba/Sentinel/releases</a></p>
+</li>
+<li>
+<p>啟動Dashboard</p>
+<ul>
+<li>預設埠是8080可能衝突，所以自己指定一個</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>java -jar sentinel-dashboard-1.8.3.jar --server.port=8333
+</code></pre><ul>
+<li>訪問 <code>localhost:8333</code>，賬號密碼都是<code>sentinel</code>
+<ul>
+<li>點進去看啥都沒有，因為有訪問的時候才會加載</li>
+</ul>
+</li>
+</ul>
+<h3 id="測試">測試</h3>
+<ul>
+<li>啟動監控後，調用一次API讓Dashboard發現資源</li>
+<li>隨便手動設定一個限流，然後嘗試快速連續訪問</li>
+</ul>
+<p><img src="image-20220207155148467.png" alt="image-20220207155148467"></p>
+<h3 id="即時監控">即時監控</h3>
+<ul>
+<li>pom.xml
+<ul>
+<li>注意actuator是依賴於springboot，小心循環依賴</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>&lt;!--springboot 收集健康狀況信息，提供給sentinel使用--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>application.properties</li>
+</ul>
+<pre tabindex="0"><code># 暴露端點給sentinel監控產生圖表
+management.endpoints.web.exposure.include=*
+</code></pre><ul>
+<li>效果:</li>
+</ul>
+<p><img src="image-20220207162007592.png" alt="image-20220207162007592"></p>
+<h3 id="自定義阻塞返回">自定義阻塞返回</h3>
+<ul>
+<li>MyUrlBlockHandler.java
+<ul>
+<li>需要實現<code>BlockExceptionHandler</code>並重寫<code>handle</code>方法</li>
+<li>注意編碼問題</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 流量過高阻塞時返回的資訊
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyUrlBlockHandler</span> <span style="color:#8b008b;font-weight:bold">implements</span> BlockExceptionHandler {
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">handle</span>(HttpServletRequest request, HttpServletResponse response, BlockException ex) <span style="color:#8b008b;font-weight:bold">throws</span>
+            IOException {
+        <span style="color:#228b22">// TOO_MANY_REQUEST(10002, &#34;請求流量過大，請稍後再試&#34;),
+</span><span style="color:#228b22"></span>        R error = R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getMessage</span>());
+        response.<span style="color:#658b00">setCharacterEncoding</span>(<span style="color:#cd5555">&#34;UTF-8&#34;</span>);
+        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/json&#34;</span>);
+        response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(JSON.<span style="color:#658b00">toJSONString</span>(error));
+    }
+}
+</code></pre></div><ul>
+<li>效果:</li>
+</ul>
+<p><img src="image-20220207161840046.png" alt="image-20220207161840046"></p>
+<h2 id="控制規則">控制規則</h2>
+<p><img src="image-20220207163131552.png" alt="image-20220207163131552"></p>
+<h3 id="流控模式">流控模式</h3>
+<ul>
+<li>直接: 就只關注資源本身</li>
+<li>關聯: A限流，A關聯B，如果B的流量大就對A限流，否則不限</li>
+<li>鏈路: 指定某個入口開始到這邊的請求(中間可能隔了很多層)，才會被限制</li>
+</ul>
+<h3 id="流控效果">流控效果</h3>
+<ul>
+<li>快速失敗: 直接拒絕拋出異常</li>
+<li>Warm Up: 預熱啓動，例如給定10S，10S內才將請求增加到閾值500，不會一次性放行500個
+<ul>
+<li>剛開機沒有cache所以反應慢，不能一下子太高流量</li>
+</ul>
+</li>
+<li>排隊等待: 如果限制閾值500，此時來了700個請求，500個直接放行，剩下200排隊
+<ul>
+<li>可以設置超時時間，3S內得不到處理也是失敗</li>
+</ul>
+</li>
+</ul>
+<h3 id="熔斷feign遠程調用">熔斷feign遠程調用</h3>
+<ul>
+<li>
+<p>情景: A遠程調用B，當B掛掉的時候，希望A還能維持作用</p>
+</li>
+<li>
+<p>Sentinel預設支援openFeign，只要設定application.properties</p>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># feign開啓sentinel
+feign.sentinel.enabled=true
+</code></pre><ul>
+<li>在原本的Feign接口設定fallback</li>
+</ul>
+<p><img src="image-20220207165856170.png" alt="image-20220207165856170"></p>
+<ul>
+<li>SeckillFeignServiceFallBack.java
+<ul>
+<li>實現FeignService接口，並且重寫方法</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 熔斷或降級的實現
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SeckillFeignServiceFallBack</span> <span style="color:#8b008b;font-weight:bold">implements</span> SeckillFeignService {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">getSkuSeckilInfo</span>(Long skuId) {
+        <span style="color:#228b22">// 可以返回某些預設值
+</span><span style="color:#228b22"></span>        <span style="color:#228b22">// TOO_MANY_REQUEST(10002, &#34;請求流量過大，請稍後再試&#34;),
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getMessage</span>());
+    }
+}
+</code></pre></div><h4 id="坑">坑</h4>
+<ul>
+<li>版本問題會導致啟動報錯</li>
+</ul>
+<pre tabindex="0"><code>FactoryBean threw exception on object creation; nested exception...
+</code></pre><p><img src="image-20220207212645872.png" alt="image-20220207212645872"></p>
+<ul>
+<li>解法: <a href="https://www.sqms.xyz/archives/springcloud%E4%B8%ADopenfeign%E6%95%B4%E5%90%88sentinel%E5%90%AF%E5%8A%A8%E6%8A%A5%E9%94%99">https://www.sqms.xyz/archives/springcloud%E4%B8%ADopenfeign%E6%95%B4%E5%90%88sentinel%E5%90%AF%E5%8A%A8%E6%8A%A5%E9%94%99</a></li>
+</ul>
+<h4 id="調用方指定熔斷降級策略">調用方指定熔斷降級策略</h4>
+<blockquote>
+<p>參考官方: <a href="https://github.com/alibaba/Sentinel/wiki/%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7">https://github.com/alibaba/Sentinel/wiki/%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7</a></p>
+</blockquote>
+<ul>
+<li>我是A調用方，我大概知道B提供方能負載多少(超過負載B就會爆炸)，為了不讓B爆炸導致我A也受牽連，所以我A遠程調用B的時候做監控，設定超過多少就節制，讓B緩緩</li>
+</ul>
+<p><img src="image-20220207170452522.png" alt="image-20220207170452522"></p>
+<ul>
+<li>RT: 響應時間，比如上圖設定意思是 1000ms內，如果進來有5個請求以上，且平均每個請求的響應時間大於1ms，那就熔斷10s</li>
+<li>進入熔斷後，不會報錯，但調用的是本地FallBack.java中的方法</li>
+</ul>
+<h4 id="提供方主動降級策略">提供方主動降級策略</h4>
+<p><img src="image-20220207171811932.png" alt="image-20220207171811932"></p>
+<ul>
+<li>我是B提供方，我知道自己只能幹多少活，超過就限流，可以直接甩手不幹或是讓請求排隊等等</li>
+<li>當然也可以返回降級頁面或預設值，做法就是前面說過的自定義阻塞返回</li>
+</ul>
+<h2 id="自訂資源">自訂資源</h2>
+<ul>
+<li>所有controller請求的流控和降級，預設都是用<code>BlockExceptionHandler</code>中統一的自定義阻塞返回</li>
+<li>service中的每一個資源(可以是一個方法或一個代碼塊)都可以自訂自己的返回</li>
+<li>一個方法可以被定義成多個資源(可以隨便套娃)，並且每個資源的限流規則不一樣</li>
+</ul>
+<h3 id="try-catch法">Try-catch法</h3>
+<ul>
+<li>翻sentinel源碼，最底層的實現就是這樣</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> (Entry entry = SphU.<span style="color:#658b00">entry</span>(<span style="color:#cd5555">&#34;資源名&#34;</span>)) {
+<span style="color:#228b22">// 業務邏輯
+</span><span style="color:#228b22"></span>}<span style="color:#8b008b;font-weight:bold">catch</span>(BlockException e){
+ log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;資源被限流{}&#34;</span>, e.<span style="color:#658b00">getMessage</span>());
+}
+</code></pre></div><h3 id="註解法">註解法</h3>
+<ul>
+<li>在同類中創造降級後執行的<code>blockHandler</code>方法，並且參數、返回類型跟原方法一樣</li>
+<li>使用<code>@SentinelResource</code>註解資源</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;SeckillSkuRedisTo&gt; <span style="color:#008b45">blockHandler</span>(BlockException e) {
+        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;getCurrentSeckillSkusResource被限流了,{}&#34;</span>, e.<span style="color:#658b00">getMessage</span>());
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 獲取到當前可以參加秒殺商品的信息
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@SentinelResource</span>(value = <span style="color:#cd5555">&#34;getCurrentSeckillSkusResource&#34;</span>, blockHandler = <span style="color:#cd5555">&#34;blockHandler&#34;</span>)
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;SeckillSkuRedisTo&gt; <span style="color:#008b45">getCurrentSeckillSkus</span>() {
+</code></pre></div><h2 id="網關流控">網關流控</h2>
+<ul>
+<li>已經整合好了，可以直接在gateway模組引包</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-sentinel-gateway&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>一樣到.properties註冊sentinel端口</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># sentinel控制台
+spring.cloud.sentinel.transport.dashboard=localhost:8333
+# 微服務與控制台傳輸數據的端口
+spring.cloud.sentinel.transport.port=8719
+</code></pre><ul>
+<li>到控制台可以發現針對網關有專門的規則可以調控</li>
+</ul>
+<p><img src="image-20220207213813075.png" alt="image-20220207213813075"></p>
+<ul>
+<li>並且也可以設定統一的返回
+<ul>
+<li>什麼Mono.just關鍵字是<code>響應式編程</code></li>
+<li>稍微了解一下是Spring5的新特性webflux，特色在於異步、非阻塞、天然應對高併發</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * @Description: 自定義阻塞返回方法
+</span><span style="color:#228b22"> **/</span>
+<span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SentinelGatewayConfig</span> {
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">SentinelGatewayConfig</span>() {
+        GatewayCallbackManager.<span style="color:#658b00">setBlockHandler</span>(<span style="color:#8b008b;font-weight:bold">new</span> BlockRequestHandler() {
+            <span style="color:#228b22">// 網關限流了請求，就會調用此回調
+</span><span style="color:#228b22"></span>            <span style="color:#707a7c">@Override</span>
+            <span style="color:#8b008b;font-weight:bold">public</span> Mono&lt;ServerResponse&gt; <span style="color:#008b45">handleRequest</span>(ServerWebExchange serverWebExchange, Throwable throwable) {
+                R error = R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">TOO_MANY_REQUEST</span>.<span style="color:#658b00">getMessage</span>());
+                String errJson = JSON.<span style="color:#658b00">toJSONString</span>(error);
+                <span style="color:#8b008b;font-weight:bold">return</span> ServerResponse.<span style="color:#658b00">ok</span>().<span style="color:#658b00">body</span>(Mono.<span style="color:#658b00">just</span>(errJson), String.<span style="color:#658b00">class</span>);
+            }
+        });
+    }
+}
+</code></pre></div><ul>
+<li>一圖理解響應式編程:</li>
+</ul>
+<p><img src="image-20220207214935780.png" alt="image-20220207214935780"></p>
+<h2 id="規則持久化">規則持久化</h2>
+<ul>
+<li>預設存在記憶體重開就消失，可以把規則存到Nacos</li>
+<li>參考: <a href="https://www.cnblogs.com/jian0110/p/14139044.html">https://www.cnblogs.com/jian0110/p/14139044.html</a></li>
+</ul>
+<h1 id="sleuth-鏈路追蹤">Sleuth 鏈路追蹤</h1>
+<ul>
+<li>若有一個請求跨越了多個微服務，想知道各服務花費了多少時間，可以用Spring Sleuth追蹤</li>
+<li>當發現某個服務特別慢，針對改善或直接將其降級</li>
+<li>核心原理就是每到達一個節點都會記錄時間戳，計算差值就可以得到傳輸時間、某個節點處理請求的時間
+<ul>
+<li>每一個節點都是一個<code>Span</code></li>
+<li>多個<code>Span</code>共同組成<code>Trace</code>，就是一個完整從客戶端發起到返回的任務</li>
+</ul>
+</li>
+<li>並且可以搭配Zipkin可視化</li>
+</ul>
+<h2 id="使用-1">使用</h2>
+<ul>
+<li>引包，sleuth需要spring-cloud</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!-- 鏈路追蹤sleuth --&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-sleuth<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+
+<span style="color:#8b008b;font-weight:bold">&lt;/dependencies&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependencyManagement&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;dependencies&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-dependencies<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>Hoxton.SR9<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;scope&gt;</span>import<span style="color:#8b008b;font-weight:bold">&lt;/scope&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;type&gt;</span>pom<span style="color:#8b008b;font-weight:bold">&lt;/type&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencies&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependencyManagement&gt;</span>
+</code></pre></div><ul>
+<li>application.properties</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 開啓sleuth鏈路追蹤debug日誌
+logging.level.org.springframework.cloud.openfeign=debug
+logging.level.org.springframework.cloud.sleuth=debug
+</code></pre><h3 id="坑-啟動報錯">坑-啟動報錯</h3>
+<ul>
+<li>引入sleuth後啟動報錯</li>
+</ul>
+<pre tabindex="0"><code>Error creating bean with name 'scopedTarget.defaultTraceSampler'
+</code></pre><blockquote>
+<p>參考: <a href="https://blog.csdn.net/u011039332/article/details/107423951">https://blog.csdn.net/u011039332/article/details/107423951</a></p>
+<p><a href="https://blog.csdn.net/weixin_44743245/article/details/120813121">https://blog.csdn.net/weixin_44743245/article/details/120813121</a></p>
+</blockquote>
+<ul>
+<li>原因: main 線程持有 singletonObjects 的鎖, 並且等待 lettuce-kqueueEventLoop-4-1 來 unpark, lettuce-kqueueEventLoop-4-1 線程需要 singletonObjects 的鎖, 所以 就造成了死鎖</li>
+<li>解法有以下幾種可選</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">解法1: 在配置文件application.properties
+# 防止啟動死鎖衝突
+spring.sleuth.redis.enabled=false
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">解法2: 啟動類排除TraceRedisAutoConfiguration.<span style="color:#658b00">class</span>
+<span style="color:#707a7c">@SpringBootApplication</span>(exclude = {DataSourceAutoConfiguration.<span style="color:#658b00">class</span>,TraceRedisAutoConfiguration.<span style="color:#658b00">class</span>})
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">解法3: 自己聲明配置一個zipkin的採樣器<span style="color:#a61717;background-color:#e3d2d2">，</span>而不是使用 spring boot 自動配置的 代碼如下<span style="color:#a61717;background-color:#e3d2d2">：</span>
+<span style="color:#707a7c">@Configuration</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SleuthSamplerConfiguration</span> {
+
+    <span style="color:#707a7c">@Bean</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> Sampler <span style="color:#008b45">defaultSampler</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        <span style="color:#228b22">// 这个值是采样率，设置为1就是100%采样，每一条请求都采，0.1就是10%采样率
+</span><span style="color:#228b22"></span>        Float f = <span style="color:#8b008b;font-weight:bold">new</span> Float(0.<span style="color:#658b00">1f</span>);
+        SamplerProperties samplerProperties = <span style="color:#8b008b;font-weight:bold">new</span> SamplerProperties();
+        samplerProperties.<span style="color:#658b00">setProbability</span>(f);
+        ProbabilityBasedSampler sampler = <span style="color:#8b008b;font-weight:bold">new</span> ProbabilityBasedSampler(samplerProperties);
+        <span style="color:#8b008b;font-weight:bold">return</span> sampler;
+    }
+}
+</code></pre></div><h2 id="zipkin">zipkin</h2>
+<blockquote>
+<p>可視化顯示鏈路，官方: <a href="https://zipkin.io">https://zipkin.io</a></p>
+</blockquote>
+<ul>
+<li>拉docker服務，也有jar執行版，但docker比較通用</li>
+</ul>
+<pre tabindex="0"><code>docker run -d -p 9411:9411 openzipkin/zipkin
+</code></pre><ul>
+<li>引包</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!-- 可視化zipkin已經包含鏈路追蹤sleuth --&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-zipkin<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ul>
+<li>application.properties
+<ul>
+<li>每個服務都要設定</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 鏈路追蹤可視化zipkin伺服器
+spring.zipkin.base-url=http://localhost:9411/
+# 關閉服務發現，否則spring cloud會把zipkin的url當做服務名稱
+spring.zipkin.discovery-client-enabled=false
+# 使用http的方式傳輸數據
+spring.zipkin.sender.type=web
+# 設置抽樣採集率為100%，預設是0.1
+spring.sleuth.sampler.probability=1
+</code></pre><ul>
+<li>瀏覽器訪問 http://localhost:9411/
+<ul>
+<li>發起請求，看到底在哪邊耗時最多、哪裡是瓶頸</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220207235808905.png" alt="image-20220207235808905"></p>
+<ul>
+<li>發現只要有feign遠程調用就特別慢，盡量少用，真要用要盡量做異步
+<ul>
+<li>而發消息給MQ跟接收都超快，難怪喜歡用消息隊列，真的舒服</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220208003057292.png" alt="image-20220208003057292"></p>
+<ul>
+<li>還可以查看依賴</li>
+</ul>
+<p><img src="image-20220208003438550.png" alt="image-20220208003438550"></p>
+<ul>
+<li>選取節點，能查看他的上下游</li>
+</ul>
+<p><img src="image-20220208003722008.png" alt="image-20220208003722008"></p>
+<h3 id="持久化">持久化</h3>
+<ul>
+<li>預設是存在記憶體，一樣關機就GG</li>
+<li>可以存到MySQL或elasticsearch，由於追蹤要搜尋、篩選，用ES更好一點</li>
+</ul>
+<pre tabindex="0"><code>docker run --env STORAGE_TYPE=elasticsearch --env ES_HOSTS=localhost:9200 openzipkin/zipkin-dependencies
+</code></pre><h1 id="高級篇小結">高級篇小結</h1>
+<ul>
+<li>併發有三寶: 緩存、異步、隊排好</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-10</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220211-javaweb-heroku/">
+			下一篇<br>用Heroku部署Tomcat網站
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220209-javaweb-book-market/">
+			上一篇<br>柚子書城
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

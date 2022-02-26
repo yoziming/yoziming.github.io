@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>MySQL簡介、環境配置、編碼與GUI</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷MySQL筆記-01">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="MySQL簡介、環境配置、編碼與GUI" />
+<meta property="og:description" content="尚硅谷MySQL筆記-01" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211216-agg-mysql-01/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-16T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL簡介、環境配置、編碼與GUI"/>
+<meta name="twitter:description" content="尚硅谷MySQL筆記-01"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e7%b0%a1%e4%bb%8b" onclick="onNavClick(`#mysql簡介-nav`)" id="mysql簡介-nav">
+									MySQL簡介
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e8%88%87%e8%a1%a8%e7%9a%84%e9%97%9c%e8%81%af%e9%97%9c%e4%bf%82" onclick="onNavClick(`#表與表的關聯關係-nav`)" id="表與表的關聯關係-nav">
+									表與表的關聯關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e5%b0%8d%e4%b8%80" onclick="onNavClick(`#一對一-nav`)" id="一對一-nav">
+									一對一
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e5%b0%8d%e5%a4%9a" onclick="onNavClick(`#一對多-nav`)" id="一對多-nav">
+									一對多
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e5%b0%8d%e5%a4%9a" onclick="onNavClick(`#多對多-nav`)" id="多對多-nav">
+									多對多
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e6%88%91%e5%bc%95%e7%94%a8" onclick="onNavClick(`#自我引用-nav`)" id="自我引用-nav">
+									自我引用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9d%e7%92%b0%e5%a2%83%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#安裝環境配置-nav`)" id="安裝環境配置-nav">
+									安裝、環境配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5" onclick="onNavClick(`#登入-nav`)" id="登入-nav">
+									登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%94%b9%e9%a0%90%e8%a8%ad%e7%b7%a8%e7%a2%bc" onclick="onNavClick(`#更改預設編碼-nav`)" id="更改預設編碼-nav">
+									更改預設編碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#gui" onclick="onNavClick(`#gui-nav`)" id="gui-nav">
+									GUI
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8e%e5%85%a5%e7%af%84%e4%be%8b" onclick="onNavClick(`#導入範例-nav`)" id="導入範例-nav">
+									導入範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mysql%e5%ae%98%e6%96%b9%e7%af%84%e4%be%8b" onclick="onNavClick(`#mysql官方範例-nav`)" id="mysql官方範例-nav">
+									MySQL官方範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%9a%e7%a1%85%e8%b0%b7%e7%9a%84%e7%af%84%e4%be%8b" onclick="onNavClick(`#尚硅谷的範例-nav`)" id="尚硅谷的範例-nav">
+									尚硅谷的範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%95%b4%e8%aa%b2%e4%bb%b6" onclick="onNavClick(`#完整課件-nav`)" id="完整課件-nav">
+									完整課件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql%e7%b0%a1%e4%bb%8b" onclick="onNavClick(`#mysql簡介-nav`)" id="mysql簡介-nav">
+									MySQL簡介
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e8%88%87%e8%a1%a8%e7%9a%84%e9%97%9c%e8%81%af%e9%97%9c%e4%bf%82" onclick="onNavClick(`#表與表的關聯關係-nav`)" id="表與表的關聯關係-nav">
+									表與表的關聯關係
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e5%b0%8d%e4%b8%80" onclick="onNavClick(`#一對一-nav`)" id="一對一-nav">
+									一對一
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e5%b0%8d%e5%a4%9a" onclick="onNavClick(`#一對多-nav`)" id="一對多-nav">
+									一對多
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e5%b0%8d%e5%a4%9a" onclick="onNavClick(`#多對多-nav`)" id="多對多-nav">
+									多對多
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e6%88%91%e5%bc%95%e7%94%a8" onclick="onNavClick(`#自我引用-nav`)" id="自我引用-nav">
+									自我引用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%89%e8%a3%9d%e7%92%b0%e5%a2%83%e9%85%8d%e7%bd%ae" onclick="onNavClick(`#安裝環境配置-nav`)" id="安裝環境配置-nav">
+									安裝、環境配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%99%bb%e5%85%a5" onclick="onNavClick(`#登入-nav`)" id="登入-nav">
+									登入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9b%b4%e6%94%b9%e9%a0%90%e8%a8%ad%e7%b7%a8%e7%a2%bc" onclick="onNavClick(`#更改預設編碼-nav`)" id="更改預設編碼-nav">
+									更改預設編碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#gui" onclick="onNavClick(`#gui-nav`)" id="gui-nav">
+									GUI
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8e%e5%85%a5%e7%af%84%e4%be%8b" onclick="onNavClick(`#導入範例-nav`)" id="導入範例-nav">
+									導入範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mysql%e5%ae%98%e6%96%b9%e7%af%84%e4%be%8b" onclick="onNavClick(`#mysql官方範例-nav`)" id="mysql官方範例-nav">
+									MySQL官方範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%9a%e7%a1%85%e8%b0%b7%e7%9a%84%e7%af%84%e4%be%8b" onclick="onNavClick(`#尚硅谷的範例-nav`)" id="尚硅谷的範例-nav">
+									尚硅谷的範例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%8c%e6%95%b4%e8%aa%b2%e4%bb%b6" onclick="onNavClick(`#完整課件-nav`)" id="完整課件-nav">
+									完整課件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/mysql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    MySQL簡介、環境配置、編碼與GUI
+                    
+                    <div class="post-subtitle">
+                        尚硅谷MySQL筆記-01
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-16 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/mysql%E7%B7%9A%E4%B8%8A%E8%AA%B2">MySQL線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <blockquote>
+<p>本筆記基於這份2021年11月的公開教學影片
+【宋红康】MySQL数据库（安装/基础/高级/优化）
+<a href="https://www.bilibili.com/video/BV1iq4y1u7vj?p=1">https://www.bilibili.com/video/BV1iq4y1u7vj?p=1</a></p>
+</blockquote>
+<h1 id="mysql簡介">MySQL簡介</h1>
+<ul>
+<li>MySQL是開源且免費的資料庫</li>
+<li>常用版本5.7、8.0</li>
+<li>NoSQL為關聯式資料庫(Relational Database Management System)
+<ul>
+<li>想像成最傳統意義的表格，像Excel那樣</li>
+<li>非關聯式資料庫(NoSQL)則例如以<code>key-value</code>形式儲存的<code>redis</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="表與表的關聯關係">表與表的關聯關係</h2>
+<blockquote>
+<p>以下討論都是基於關聯式資料庫</p>
+</blockquote>
+<h3 id="一對一">一對一</h3>
+<ul>
+<li>
+<p>通常可以直接建成一張表，但也是有應用場景</p>
+</li>
+<li>
+<p>例如以使用頻率拆分兩表(為了降低IO讀取提高效率):</p>
+<ul>
+<li>
+<p>學生常用訊息表:學號、姓名、手機、班級</p>
+</li>
+<li>
+<p>學生其他訊息表:學號、住址、身分證號、緊急聯絡人</p>
+<ul>
+<li>兩張表的學號是唯一且相同的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>建表原則:</p>
+<ul>
+<li>外鍵唯一:主表的主鍵和從表的外鍵(唯一)，形成主外鍵關係</li>
+<li>外鍵為主鍵:主表的主鍵和從表的主鍵，形成主外鍵關係</li>
+</ul>
+</li>
+</ul>
+<h3 id="一對多">一對多</h3>
+<ul>
+<li>舉例:
+<ul>
+<li>員工表:員工編號、員工姓名、所屬部門</li>
+<li>部門表:部門編號、部門名</li>
+</ul>
+</li>
+<li>建表原則:從表(多方，這裡就是員工表)創建一個字段，字段作為外鍵指向主表(一方，這裡就是部門表)的主鍵</li>
+</ul>
+<h3 id="多對多">多對多</h3>
+<ul>
+<li>必須創建第三張表，通常將該表稱為關聯表，此關聯表以兩個一對多關係，將兩個表的主鍵都插到第三個表中</li>
+<li>舉例:
+<ul>
+<li>學生訊息表:學號、姓名</li>
+<li>課程訊息表:課程編號、課程內容</li>
+<li>選課訊息表(關聯表):可以看到學號與對應的課程編號，一個課程編號必定對應多個學號；一個學號也可以選有多門課程</li>
+</ul>
+</li>
+<li>建表原則:關聯表中至少有2個字段，分別作為外鍵個指向一方的的主鍵</li>
+</ul>
+<h3 id="自我引用">自我引用</h3>
+<ul>
+<li>
+<p>表中的某個字段指向同張表的另一個字段</p>
+</li>
+<li>
+<p>舉例:</p>
+</li>
+<li>
+<table>
+<thead>
+<tr>
+<th>員工編號</th>
+<th>姓名</th>
+<th>主管編號</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A001</td>
+<td>老闆</td>
+<td>null</td>
+</tr>
+<tr>
+<td>A002</td>
+<td>張三</td>
+<td>A001</td>
+</tr>
+<tr>
+<td>A003</td>
+<td>李四</td>
+<td>A002</td>
+</tr>
+<tr>
+<td>A004</td>
+<td>王五</td>
+<td>A002</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 id="安裝環境配置">安裝、環境配置</h2>
+<ul>
+<li>安裝部分跳過</li>
+<li>設定環境變量:<code>path=C:\Program Files\MySQL\MySQL Server 5.7\bin\</code></li>
+</ul>
+<h3 id="登入">登入</h3>
+<p><code>mysql -uroot -p</code>，常用參數說明</p>
+<ul>
+<li><code>-u</code>:使用者，通常是root</li>
+<li><code>-P</code>:大寫P指定port，例如<code>-P13306</code></li>
+<li><code>-p</code>:小寫p是密碼，可以明碼接著寫，也能暗碼分兩步輸入</li>
+<li><code>-h</code>:host，比如<code>127.0.0.1</code>、<code>localhost</code></li>
+</ul>
+<h3 id="更改預設編碼">更改預設編碼</h3>
+<blockquote>
+<p>5.7版本預設不是utf8而是本地編碼</p>
+</blockquote>
+<h5 id="查看編碼">查看編碼</h5>
+<p>用<code>use</code>進到一個database後</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#228b22">-- 查看資料儲存編碼
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;character_%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 查看比較器編碼
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;collation_%&#39;</span>;<span style="color:#bbb">
+</span></code></pre></div><h5 id="修改">修改</h5>
+<p>進到儲存data的目錄(不是安裝完有bin的那個)找<code>my.ini</code></p>
+<pre tabindex="0"><code>[mysql]
+default-character-set=utf8mb4
+
+[mysqld]
+collation-server=utf8mb4_general_ci
+character_set_server=utf8mb4
+
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a61717;background-color:#e3d2d2">如果仍有編碼不是</span>utf8的<span style="color:#a61717;background-color:#e3d2d2">，也可使用</span>mysql命令設定<span style="color:#a61717;background-color:#e3d2d2">：</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>character_set_client<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>character_set_server<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>character_set_connection<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>character_set_database<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>character_set_results<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>collation_connection<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4_general_ci;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>collation_database<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4_general_ci;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>collation_server<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>utf8mb4_general_ci;<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a61717;background-color:#e3d2d2">建立資料庫時可以使用以下命令：</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span>app_relation<span style="color:#bbb"> </span><span style="color:#658b00">character</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>use<span style="color:#bbb"> </span>app_relation;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">source</span><span style="color:#bbb"> </span>app_relation.<span style="color:#8b008b;font-weight:bold">sql</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">修改資料庫編碼的命令為：</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">alter</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">database</span><span style="color:#bbb"> </span>app_relation<span style="color:#bbb"> </span><span style="color:#658b00">character</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span>utf8mb4;<span style="color:#bbb">
+</span></code></pre></div><h3 id="gui">GUI</h3>
+<blockquote>
+<p>圖形介面操作工具，看個人習慣</p>
+</blockquote>
+<ul>
+<li>DBeaver社區版:開源免費，試用看看</li>
+<li>Navicat:付費，介面友好，貼近office</li>
+<li>SQLyog</li>
+<li>DataGrip:JetBrains出品，熟悉的無敵tab，真香</li>
+</ul>
+<h2 id="導入範例">導入範例</h2>
+<h3 id="mysql官方範例">MySQL官方範例</h3>
+<ul>
+<li>可以用這個github上面的示範資料庫</li>
+<li><a href="https://github.com/datacharmer/test_db">https://github.com/datacharmer/test_db</a></li>
+<li>抓下來，隨便找個地方解壓縮，找到&quot;<code>employees.sql</code>&quot;，複製它的完整路徑</li>
+<li>隨便開個cmd，登入mysql，使用關鍵字<code>source 路徑</code>，例如:</li>
+</ul>
+<pre tabindex="0"><code>source C:\Users\Yoziming\Desktop\test_db-master\employees.sql
+</code></pre><ul>
+<li>它就會開始導入了，會建立叫<code>employees</code>的Database</li>
+</ul>
+<pre tabindex="0"><code>USE employees;
+SHOW TABLES ;
+</code></pre><h3 id="尚硅谷的範例">尚硅谷的範例</h3>
+<blockquote>
+<p>來自atguigudb.sql</p>
+<p>全選複製，找一個console貼上全部執行即可</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">/*
+</span><span style="color:#228b22">SQLyog Ultimate v12.08 (64 bit)
+</span><span style="color:#228b22">MySQL - 5.7.28-log : Database - atguigudb
+</span><span style="color:#228b22">*********************************************************************
+</span><span style="color:#228b22">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET NAMES utf8 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET SQL_MODE=&#39;&#39;*/</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE=&#39;NO_AUTO_VALUE_ON_ZERO&#39; */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span><span style="color:#bbb"> </span><span style="color:#228b22">/*!32312 IF NOT EXISTS*/</span>`atguigudb`<span style="color:#bbb"> </span><span style="color:#228b22">/*!40100 DEFAULT CHARACTER SET utf8 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>USE<span style="color:#bbb"> </span>`atguigudb`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `countries` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`countries`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`countries`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`country_id`<span style="color:#bbb"> </span><span style="color:#658b00">char</span>(<span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`country_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">40</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`region_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">11</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`country_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`countr_reg_fk`<span style="color:#bbb"> </span>(`region_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`countr_reg_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`region_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`regions`<span style="color:#bbb"> </span>(`region_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `countries` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`countries`(`country_id`,`country_name`,`region_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#cd5555">&#39;AR&#39;</span>,<span style="color:#cd5555">&#39;Argentina&#39;</span>,<span style="color:#b452cd">2</span>),(<span style="color:#cd5555">&#39;AU&#39;</span>,<span style="color:#cd5555">&#39;Australia&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;BE&#39;</span>,<span style="color:#cd5555">&#39;Belgium&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;BR&#39;</span>,<span style="color:#cd5555">&#39;Brazil&#39;</span>,<span style="color:#b452cd">2</span>),(<span style="color:#cd5555">&#39;CA&#39;</span>,<span style="color:#cd5555">&#39;Canada&#39;</span>,<span style="color:#b452cd">2</span>),(<span style="color:#cd5555">&#39;CH&#39;</span>,<span style="color:#cd5555">&#39;Switzerland&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;CN&#39;</span>,<span style="color:#cd5555">&#39;China&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;DE&#39;</span>,<span style="color:#cd5555">&#39;Germany&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;DK&#39;</span>,<span style="color:#cd5555">&#39;Denmark&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;EG&#39;</span>,<span style="color:#cd5555">&#39;Egypt&#39;</span>,<span style="color:#b452cd">4</span>),(<span style="color:#cd5555">&#39;FR&#39;</span>,<span style="color:#cd5555">&#39;France&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;HK&#39;</span>,<span style="color:#cd5555">&#39;HongKong&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;IL&#39;</span>,<span style="color:#cd5555">&#39;Israel&#39;</span>,<span style="color:#b452cd">4</span>),(<span style="color:#cd5555">&#39;IN&#39;</span>,<span style="color:#cd5555">&#39;India&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;IT&#39;</span>,<span style="color:#cd5555">&#39;Italy&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;JP&#39;</span>,<span style="color:#cd5555">&#39;Japan&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;KW&#39;</span>,<span style="color:#cd5555">&#39;Kuwait&#39;</span>,<span style="color:#b452cd">4</span>),(<span style="color:#cd5555">&#39;MX&#39;</span>,<span style="color:#cd5555">&#39;Mexico&#39;</span>,<span style="color:#b452cd">2</span>),(<span style="color:#cd5555">&#39;NG&#39;</span>,<span style="color:#cd5555">&#39;Nigeria&#39;</span>,<span style="color:#b452cd">4</span>),(<span style="color:#cd5555">&#39;NL&#39;</span>,<span style="color:#cd5555">&#39;Netherlands&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;SG&#39;</span>,<span style="color:#cd5555">&#39;Singapore&#39;</span>,<span style="color:#b452cd">3</span>),(<span style="color:#cd5555">&#39;UK&#39;</span>,<span style="color:#cd5555">&#39;United Kingdom&#39;</span>,<span style="color:#b452cd">1</span>),(<span style="color:#cd5555">&#39;US&#39;</span>,<span style="color:#cd5555">&#39;United States of America&#39;</span>,<span style="color:#b452cd">2</span>),(<span style="color:#cd5555">&#39;ZM&#39;</span>,<span style="color:#cd5555">&#39;Zambia&#39;</span>,<span style="color:#b452cd">4</span>),(<span style="color:#cd5555">&#39;ZW&#39;</span>,<span style="color:#cd5555">&#39;Zimbabwe&#39;</span>,<span style="color:#b452cd">4</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `departments` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`departments`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`departments`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`department_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;0&#39;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`department_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">30</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`manager_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`location_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`dept_id_pk`<span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`dept_loc_fk`<span style="color:#bbb"> </span>(`location_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`dept_mgr_fk`<span style="color:#bbb"> </span>(`manager_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`dept_loc_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`location_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`locations`<span style="color:#bbb"> </span>(`location_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`dept_mgr_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`manager_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`employees`<span style="color:#bbb"> </span>(`employee_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `departments` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`departments`(`department_id`,`department_name`,`manager_id`,`location_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">10</span>,<span style="color:#cd5555">&#39;Administration&#39;</span>,<span style="color:#b452cd">200</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">20</span>,<span style="color:#cd5555">&#39;Marketing&#39;</span>,<span style="color:#b452cd">201</span>,<span style="color:#b452cd">1800</span>),(<span style="color:#b452cd">30</span>,<span style="color:#cd5555">&#39;Purchasing&#39;</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">40</span>,<span style="color:#cd5555">&#39;Human Resources&#39;</span>,<span style="color:#b452cd">203</span>,<span style="color:#b452cd">2400</span>),(<span style="color:#b452cd">50</span>,<span style="color:#cd5555">&#39;Shipping&#39;</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">1500</span>),(<span style="color:#b452cd">60</span>,<span style="color:#cd5555">&#39;IT&#39;</span>,<span style="color:#b452cd">103</span>,<span style="color:#b452cd">1400</span>),(<span style="color:#b452cd">70</span>,<span style="color:#cd5555">&#39;Public Relations&#39;</span>,<span style="color:#b452cd">204</span>,<span style="color:#b452cd">2700</span>),(<span style="color:#b452cd">80</span>,<span style="color:#cd5555">&#39;Sales&#39;</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">2500</span>),(<span style="color:#b452cd">90</span>,<span style="color:#cd5555">&#39;Executive&#39;</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">100</span>,<span style="color:#cd5555">&#39;Finance&#39;</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">110</span>,<span style="color:#cd5555">&#39;Accounting&#39;</span>,<span style="color:#b452cd">205</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">120</span>,<span style="color:#cd5555">&#39;Treasury&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">130</span>,<span style="color:#cd5555">&#39;Corporate Tax&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">140</span>,<span style="color:#cd5555">&#39;Control And Credit&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">150</span>,<span style="color:#cd5555">&#39;Shareholder Services&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">160</span>,<span style="color:#cd5555">&#39;Benefits&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">170</span>,<span style="color:#cd5555">&#39;Manufacturing&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">180</span>,<span style="color:#cd5555">&#39;Construction&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">190</span>,<span style="color:#cd5555">&#39;Contracting&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">200</span>,<span style="color:#cd5555">&#39;Operations&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">210</span>,<span style="color:#cd5555">&#39;IT Support&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">220</span>,<span style="color:#cd5555">&#39;NOC&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">230</span>,<span style="color:#cd5555">&#39;IT Helpdesk&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">240</span>,<span style="color:#cd5555">&#39;Government Sales&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">250</span>,<span style="color:#cd5555">&#39;Retail Sales&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">260</span>,<span style="color:#cd5555">&#39;Recruiting&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>),(<span style="color:#b452cd">270</span>,<span style="color:#cd5555">&#39;Payroll&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">1700</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `employees` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`employees`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`employees`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`employee_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;0&#39;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`first_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`last_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`email`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`phone_number`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`hire_date`<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`job_id`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`salary`<span style="color:#bbb"> </span>double(<span style="color:#b452cd">8</span>,<span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`commission_pct`<span style="color:#bbb"> </span>double(<span style="color:#b452cd">2</span>,<span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`manager_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`department_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`employee_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`emp_email_uk`<span style="color:#bbb"> </span>(`email`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`emp_emp_id_pk`<span style="color:#bbb"> </span>(`employee_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`emp_dept_fk`<span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`emp_job_fk`<span style="color:#bbb"> </span>(`job_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`emp_manager_fk`<span style="color:#bbb"> </span>(`manager_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`emp_dept_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`department_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`departments`<span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`emp_job_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`job_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`jobs`<span style="color:#bbb"> </span>(`job_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`emp_manager_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`manager_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`employees`<span style="color:#bbb"> </span>(`employee_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `employees` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`employees`(`employee_id`,`first_name`,`last_name`,`email`,`phone_number`,`hire_date`,`job_id`,`salary`,`commission_pct`,`manager_id`,`department_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">100</span>,<span style="color:#cd5555">&#39;Steven&#39;</span>,<span style="color:#cd5555">&#39;King&#39;</span>,<span style="color:#cd5555">&#39;SKING&#39;</span>,<span style="color:#cd5555">&#39;515.123.4567&#39;</span>,<span style="color:#cd5555">&#39;1987-06-17&#39;</span>,<span style="color:#cd5555">&#39;AD_PRES&#39;</span>,<span style="color:#b452cd">24000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">90</span>),(<span style="color:#b452cd">101</span>,<span style="color:#cd5555">&#39;Neena&#39;</span>,<span style="color:#cd5555">&#39;Kochhar&#39;</span>,<span style="color:#cd5555">&#39;NKOCHHAR&#39;</span>,<span style="color:#cd5555">&#39;515.123.4568&#39;</span>,<span style="color:#cd5555">&#39;1989-09-21&#39;</span>,<span style="color:#cd5555">&#39;AD_VP&#39;</span>,<span style="color:#b452cd">17000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">90</span>),(<span style="color:#b452cd">102</span>,<span style="color:#cd5555">&#39;Lex&#39;</span>,<span style="color:#cd5555">&#39;De Haan&#39;</span>,<span style="color:#cd5555">&#39;LDEHAAN&#39;</span>,<span style="color:#cd5555">&#39;515.123.4569&#39;</span>,<span style="color:#cd5555">&#39;1993-01-13&#39;</span>,<span style="color:#cd5555">&#39;AD_VP&#39;</span>,<span style="color:#b452cd">17000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">90</span>),(<span style="color:#b452cd">103</span>,<span style="color:#cd5555">&#39;Alexander&#39;</span>,<span style="color:#cd5555">&#39;Hunold&#39;</span>,<span style="color:#cd5555">&#39;AHUNOLD&#39;</span>,<span style="color:#cd5555">&#39;590.423.4567&#39;</span>,<span style="color:#cd5555">&#39;1990-01-03&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">9000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">102</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">104</span>,<span style="color:#cd5555">&#39;Bruce&#39;</span>,<span style="color:#cd5555">&#39;Ernst&#39;</span>,<span style="color:#cd5555">&#39;BERNST&#39;</span>,<span style="color:#cd5555">&#39;590.423.4568&#39;</span>,<span style="color:#cd5555">&#39;1991-05-21&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">6000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">103</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">105</span>,<span style="color:#cd5555">&#39;David&#39;</span>,<span style="color:#cd5555">&#39;Austin&#39;</span>,<span style="color:#cd5555">&#39;DAUSTIN&#39;</span>,<span style="color:#cd5555">&#39;590.423.4569&#39;</span>,<span style="color:#cd5555">&#39;1997-06-25&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">4800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">103</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">106</span>,<span style="color:#cd5555">&#39;Valli&#39;</span>,<span style="color:#cd5555">&#39;Pataballa&#39;</span>,<span style="color:#cd5555">&#39;VPATABAL&#39;</span>,<span style="color:#cd5555">&#39;590.423.4560&#39;</span>,<span style="color:#cd5555">&#39;1998-02-05&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">4800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">103</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">107</span>,<span style="color:#cd5555">&#39;Diana&#39;</span>,<span style="color:#cd5555">&#39;Lorentz&#39;</span>,<span style="color:#cd5555">&#39;DLORENTZ&#39;</span>,<span style="color:#cd5555">&#39;590.423.5567&#39;</span>,<span style="color:#cd5555">&#39;1999-02-07&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">4200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">103</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">108</span>,<span style="color:#cd5555">&#39;Nancy&#39;</span>,<span style="color:#cd5555">&#39;Greenberg&#39;</span>,<span style="color:#cd5555">&#39;NGREENBE&#39;</span>,<span style="color:#cd5555">&#39;515.124.4569&#39;</span>,<span style="color:#cd5555">&#39;1994-08-17&#39;</span>,<span style="color:#cd5555">&#39;FI_MGR&#39;</span>,<span style="color:#b452cd">12000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">101</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">109</span>,<span style="color:#cd5555">&#39;Daniel&#39;</span>,<span style="color:#cd5555">&#39;Faviet&#39;</span>,<span style="color:#cd5555">&#39;DFAVIET&#39;</span>,<span style="color:#cd5555">&#39;515.124.4169&#39;</span>,<span style="color:#cd5555">&#39;1994-08-16&#39;</span>,<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#b452cd">9000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">110</span>,<span style="color:#cd5555">&#39;John&#39;</span>,<span style="color:#cd5555">&#39;Chen&#39;</span>,<span style="color:#cd5555">&#39;JCHEN&#39;</span>,<span style="color:#cd5555">&#39;515.124.4269&#39;</span>,<span style="color:#cd5555">&#39;1997-09-28&#39;</span>,<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#b452cd">8200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">111</span>,<span style="color:#cd5555">&#39;Ismael&#39;</span>,<span style="color:#cd5555">&#39;Sciarra&#39;</span>,<span style="color:#cd5555">&#39;ISCIARRA&#39;</span>,<span style="color:#cd5555">&#39;515.124.4369&#39;</span>,<span style="color:#cd5555">&#39;1997-09-30&#39;</span>,<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#b452cd">7700</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">112</span>,<span style="color:#cd5555">&#39;Jose Manuel&#39;</span>,<span style="color:#cd5555">&#39;Urman&#39;</span>,<span style="color:#cd5555">&#39;JMURMAN&#39;</span>,<span style="color:#cd5555">&#39;515.124.4469&#39;</span>,<span style="color:#cd5555">&#39;1998-03-07&#39;</span>,<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#b452cd">7800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">113</span>,<span style="color:#cd5555">&#39;Luis&#39;</span>,<span style="color:#cd5555">&#39;Popp&#39;</span>,<span style="color:#cd5555">&#39;LPOPP&#39;</span>,<span style="color:#cd5555">&#39;515.124.4567&#39;</span>,<span style="color:#cd5555">&#39;1999-12-07&#39;</span>,<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#b452cd">6900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">108</span>,<span style="color:#b452cd">100</span>),(<span style="color:#b452cd">114</span>,<span style="color:#cd5555">&#39;Den&#39;</span>,<span style="color:#cd5555">&#39;Raphaely&#39;</span>,<span style="color:#cd5555">&#39;DRAPHEAL&#39;</span>,<span style="color:#cd5555">&#39;515.127.4561&#39;</span>,<span style="color:#cd5555">&#39;1994-12-07&#39;</span>,<span style="color:#cd5555">&#39;PU_MAN&#39;</span>,<span style="color:#b452cd">11000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">115</span>,<span style="color:#cd5555">&#39;Alexander&#39;</span>,<span style="color:#cd5555">&#39;Khoo&#39;</span>,<span style="color:#cd5555">&#39;AKHOO&#39;</span>,<span style="color:#cd5555">&#39;515.127.4562&#39;</span>,<span style="color:#cd5555">&#39;1995-05-18&#39;</span>,<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#b452cd">3100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">116</span>,<span style="color:#cd5555">&#39;Shelli&#39;</span>,<span style="color:#cd5555">&#39;Baida&#39;</span>,<span style="color:#cd5555">&#39;SBAIDA&#39;</span>,<span style="color:#cd5555">&#39;515.127.4563&#39;</span>,<span style="color:#cd5555">&#39;1997-12-24&#39;</span>,<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#b452cd">2900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">117</span>,<span style="color:#cd5555">&#39;Sigal&#39;</span>,<span style="color:#cd5555">&#39;Tobias&#39;</span>,<span style="color:#cd5555">&#39;STOBIAS&#39;</span>,<span style="color:#cd5555">&#39;515.127.4564&#39;</span>,<span style="color:#cd5555">&#39;1997-07-24&#39;</span>,<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#b452cd">2800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">118</span>,<span style="color:#cd5555">&#39;Guy&#39;</span>,<span style="color:#cd5555">&#39;Himuro&#39;</span>,<span style="color:#cd5555">&#39;GHIMURO&#39;</span>,<span style="color:#cd5555">&#39;515.127.4565&#39;</span>,<span style="color:#cd5555">&#39;1998-11-15&#39;</span>,<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#b452cd">2600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">119</span>,<span style="color:#cd5555">&#39;Karen&#39;</span>,<span style="color:#cd5555">&#39;Colmenares&#39;</span>,<span style="color:#cd5555">&#39;KCOLMENA&#39;</span>,<span style="color:#cd5555">&#39;515.127.4566&#39;</span>,<span style="color:#cd5555">&#39;1999-08-10&#39;</span>,<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">114</span>,<span style="color:#b452cd">30</span>),(<span style="color:#b452cd">120</span>,<span style="color:#cd5555">&#39;Matthew&#39;</span>,<span style="color:#cd5555">&#39;Weiss&#39;</span>,<span style="color:#cd5555">&#39;MWEISS&#39;</span>,<span style="color:#cd5555">&#39;650.123.1234&#39;</span>,<span style="color:#cd5555">&#39;1996-07-18&#39;</span>,<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#b452cd">8000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">121</span>,<span style="color:#cd5555">&#39;Adam&#39;</span>,<span style="color:#cd5555">&#39;Fripp&#39;</span>,<span style="color:#cd5555">&#39;AFRIPP&#39;</span>,<span style="color:#cd5555">&#39;650.123.2234&#39;</span>,<span style="color:#cd5555">&#39;1997-04-10&#39;</span>,<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#b452cd">8200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">122</span>,<span style="color:#cd5555">&#39;Payam&#39;</span>,<span style="color:#cd5555">&#39;Kaufling&#39;</span>,<span style="color:#cd5555">&#39;PKAUFLIN&#39;</span>,<span style="color:#cd5555">&#39;650.123.3234&#39;</span>,<span style="color:#cd5555">&#39;1995-05-01&#39;</span>,<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#b452cd">7900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">123</span>,<span style="color:#cd5555">&#39;Shanta&#39;</span>,<span style="color:#cd5555">&#39;Vollman&#39;</span>,<span style="color:#cd5555">&#39;SVOLLMAN&#39;</span>,<span style="color:#cd5555">&#39;650.123.4234&#39;</span>,<span style="color:#cd5555">&#39;1997-10-10&#39;</span>,<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#b452cd">6500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">124</span>,<span style="color:#cd5555">&#39;Kevin&#39;</span>,<span style="color:#cd5555">&#39;Mourgos&#39;</span>,<span style="color:#cd5555">&#39;KMOURGOS&#39;</span>,<span style="color:#cd5555">&#39;650.123.5234&#39;</span>,<span style="color:#cd5555">&#39;1999-11-16&#39;</span>,<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#b452cd">5800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">125</span>,<span style="color:#cd5555">&#39;Julia&#39;</span>,<span style="color:#cd5555">&#39;Nayer&#39;</span>,<span style="color:#cd5555">&#39;JNAYER&#39;</span>,<span style="color:#cd5555">&#39;650.124.1214&#39;</span>,<span style="color:#cd5555">&#39;1997-07-16&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">126</span>,<span style="color:#cd5555">&#39;Irene&#39;</span>,<span style="color:#cd5555">&#39;Mikkilineni&#39;</span>,<span style="color:#cd5555">&#39;IMIKKILI&#39;</span>,<span style="color:#cd5555">&#39;650.124.1224&#39;</span>,<span style="color:#cd5555">&#39;1998-09-28&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2700</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">127</span>,<span style="color:#cd5555">&#39;James&#39;</span>,<span style="color:#cd5555">&#39;Landry&#39;</span>,<span style="color:#cd5555">&#39;JLANDRY&#39;</span>,<span style="color:#cd5555">&#39;650.124.1334&#39;</span>,<span style="color:#cd5555">&#39;1999-01-14&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2400</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">128</span>,<span style="color:#cd5555">&#39;Steven&#39;</span>,<span style="color:#cd5555">&#39;Markle&#39;</span>,<span style="color:#cd5555">&#39;SMARKLE&#39;</span>,<span style="color:#cd5555">&#39;650.124.1434&#39;</span>,<span style="color:#cd5555">&#39;2000-03-08&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">129</span>,<span style="color:#cd5555">&#39;Laura&#39;</span>,<span style="color:#cd5555">&#39;Bissot&#39;</span>,<span style="color:#cd5555">&#39;LBISSOT&#39;</span>,<span style="color:#cd5555">&#39;650.124.5234&#39;</span>,<span style="color:#cd5555">&#39;1997-08-20&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3300</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">130</span>,<span style="color:#cd5555">&#39;Mozhe&#39;</span>,<span style="color:#cd5555">&#39;Atkinson&#39;</span>,<span style="color:#cd5555">&#39;MATKINSO&#39;</span>,<span style="color:#cd5555">&#39;650.124.6234&#39;</span>,<span style="color:#cd5555">&#39;1997-10-30&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">131</span>,<span style="color:#cd5555">&#39;James&#39;</span>,<span style="color:#cd5555">&#39;Marlow&#39;</span>,<span style="color:#cd5555">&#39;JAMRLOW&#39;</span>,<span style="color:#cd5555">&#39;650.124.7234&#39;</span>,<span style="color:#cd5555">&#39;1997-02-16&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">132</span>,<span style="color:#cd5555">&#39;TJ&#39;</span>,<span style="color:#cd5555">&#39;Olson&#39;</span>,<span style="color:#cd5555">&#39;TJOLSON&#39;</span>,<span style="color:#cd5555">&#39;650.124.8234&#39;</span>,<span style="color:#cd5555">&#39;1999-04-10&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">133</span>,<span style="color:#cd5555">&#39;Jason&#39;</span>,<span style="color:#cd5555">&#39;Mallin&#39;</span>,<span style="color:#cd5555">&#39;JMALLIN&#39;</span>,<span style="color:#cd5555">&#39;650.127.1934&#39;</span>,<span style="color:#cd5555">&#39;1996-06-14&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3300</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">134</span>,<span style="color:#cd5555">&#39;Michael&#39;</span>,<span style="color:#cd5555">&#39;Rogers&#39;</span>,<span style="color:#cd5555">&#39;MROGERS&#39;</span>,<span style="color:#cd5555">&#39;650.127.1834&#39;</span>,<span style="color:#cd5555">&#39;1998-08-26&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">135</span>,<span style="color:#cd5555">&#39;Ki&#39;</span>,<span style="color:#cd5555">&#39;Gee&#39;</span>,<span style="color:#cd5555">&#39;KGEE&#39;</span>,<span style="color:#cd5555">&#39;650.127.1734&#39;</span>,<span style="color:#cd5555">&#39;1999-12-12&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2400</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">136</span>,<span style="color:#cd5555">&#39;Hazel&#39;</span>,<span style="color:#cd5555">&#39;Philtanker&#39;</span>,<span style="color:#cd5555">&#39;HPHILTAN&#39;</span>,<span style="color:#cd5555">&#39;650.127.1634&#39;</span>,<span style="color:#cd5555">&#39;2000-02-06&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">137</span>,<span style="color:#cd5555">&#39;Renske&#39;</span>,<span style="color:#cd5555">&#39;Ladwig&#39;</span>,<span style="color:#cd5555">&#39;RLADWIG&#39;</span>,<span style="color:#cd5555">&#39;650.121.1234&#39;</span>,<span style="color:#cd5555">&#39;1995-07-14&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">138</span>,<span style="color:#cd5555">&#39;Stephen&#39;</span>,<span style="color:#cd5555">&#39;Stiles&#39;</span>,<span style="color:#cd5555">&#39;SSTILES&#39;</span>,<span style="color:#cd5555">&#39;650.121.2034&#39;</span>,<span style="color:#cd5555">&#39;1997-10-26&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">139</span>,<span style="color:#cd5555">&#39;John&#39;</span>,<span style="color:#cd5555">&#39;Seo&#39;</span>,<span style="color:#cd5555">&#39;JSEO&#39;</span>,<span style="color:#cd5555">&#39;650.121.2019&#39;</span>,<span style="color:#cd5555">&#39;1998-02-12&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2700</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">140</span>,<span style="color:#cd5555">&#39;Joshua&#39;</span>,<span style="color:#cd5555">&#39;Patel&#39;</span>,<span style="color:#cd5555">&#39;JPATEL&#39;</span>,<span style="color:#cd5555">&#39;650.121.1834&#39;</span>,<span style="color:#cd5555">&#39;1998-04-06&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">141</span>,<span style="color:#cd5555">&#39;Trenna&#39;</span>,<span style="color:#cd5555">&#39;Rajs&#39;</span>,<span style="color:#cd5555">&#39;TRAJS&#39;</span>,<span style="color:#cd5555">&#39;650.121.8009&#39;</span>,<span style="color:#cd5555">&#39;1995-10-17&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">142</span>,<span style="color:#cd5555">&#39;Curtis&#39;</span>,<span style="color:#cd5555">&#39;Davies&#39;</span>,<span style="color:#cd5555">&#39;CDAVIES&#39;</span>,<span style="color:#cd5555">&#39;650.121.2994&#39;</span>,<span style="color:#cd5555">&#39;1997-01-29&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">3100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">143</span>,<span style="color:#cd5555">&#39;Randall&#39;</span>,<span style="color:#cd5555">&#39;Matos&#39;</span>,<span style="color:#cd5555">&#39;RMATOS&#39;</span>,<span style="color:#cd5555">&#39;650.121.2874&#39;</span>,<span style="color:#cd5555">&#39;1998-03-15&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">144</span>,<span style="color:#cd5555">&#39;Peter&#39;</span>,<span style="color:#cd5555">&#39;Vargas&#39;</span>,<span style="color:#cd5555">&#39;PVARGAS&#39;</span>,<span style="color:#cd5555">&#39;650.121.2004&#39;</span>,<span style="color:#cd5555">&#39;1998-07-09&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">145</span>,<span style="color:#cd5555">&#39;John&#39;</span>,<span style="color:#cd5555">&#39;Russell&#39;</span>,<span style="color:#cd5555">&#39;JRUSSEL&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.429268&#39;</span>,<span style="color:#cd5555">&#39;1996-10-01&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">14000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">40</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">146</span>,<span style="color:#cd5555">&#39;Karen&#39;</span>,<span style="color:#cd5555">&#39;Partners&#39;</span>,<span style="color:#cd5555">&#39;KPARTNER&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.467268&#39;</span>,<span style="color:#cd5555">&#39;1997-01-05&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">13500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">147</span>,<span style="color:#cd5555">&#39;Alberto&#39;</span>,<span style="color:#cd5555">&#39;Errazuriz&#39;</span>,<span style="color:#cd5555">&#39;AERRAZUR&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.429278&#39;</span>,<span style="color:#cd5555">&#39;1997-03-10&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">12000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">148</span>,<span style="color:#cd5555">&#39;Gerald&#39;</span>,<span style="color:#cd5555">&#39;Cambrault&#39;</span>,<span style="color:#cd5555">&#39;GCAMBRAU&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.619268&#39;</span>,<span style="color:#cd5555">&#39;1999-10-15&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">11000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">149</span>,<span style="color:#cd5555">&#39;Eleni&#39;</span>,<span style="color:#cd5555">&#39;Zlotkey&#39;</span>,<span style="color:#cd5555">&#39;EZLOTKEY&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.429018&#39;</span>,<span style="color:#cd5555">&#39;2000-01-29&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">10500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">150</span>,<span style="color:#cd5555">&#39;Peter&#39;</span>,<span style="color:#cd5555">&#39;Tucker&#39;</span>,<span style="color:#cd5555">&#39;PTUCKER&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.129268&#39;</span>,<span style="color:#cd5555">&#39;1997-01-30&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">10000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">151</span>,<span style="color:#cd5555">&#39;David&#39;</span>,<span style="color:#cd5555">&#39;Bernstein&#39;</span>,<span style="color:#cd5555">&#39;DBERNSTE&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.345268&#39;</span>,<span style="color:#cd5555">&#39;1997-03-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">152</span>,<span style="color:#cd5555">&#39;Peter&#39;</span>,<span style="color:#cd5555">&#39;Hall&#39;</span>,<span style="color:#cd5555">&#39;PHALL&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.478968&#39;</span>,<span style="color:#cd5555">&#39;1997-08-20&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">153</span>,<span style="color:#cd5555">&#39;Christopher&#39;</span>,<span style="color:#cd5555">&#39;Olsen&#39;</span>,<span style="color:#cd5555">&#39;COLSEN&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.498718&#39;</span>,<span style="color:#cd5555">&#39;1998-03-30&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">8000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">154</span>,<span style="color:#cd5555">&#39;Nanette&#39;</span>,<span style="color:#cd5555">&#39;Cambrault&#39;</span>,<span style="color:#cd5555">&#39;NCAMBRAU&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.987668&#39;</span>,<span style="color:#cd5555">&#39;1998-12-09&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">155</span>,<span style="color:#cd5555">&#39;Oliver&#39;</span>,<span style="color:#cd5555">&#39;Tuvault&#39;</span>,<span style="color:#cd5555">&#39;OTUVAULT&#39;</span>,<span style="color:#cd5555">&#39;011.44.1344.486508&#39;</span>,<span style="color:#cd5555">&#39;1999-11-23&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">15</span>,<span style="color:#b452cd">145</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">156</span>,<span style="color:#cd5555">&#39;Janette&#39;</span>,<span style="color:#cd5555">&#39;King&#39;</span>,<span style="color:#cd5555">&#39;JKING&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.429268&#39;</span>,<span style="color:#cd5555">&#39;1996-01-30&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">10000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">35</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">157</span>,<span style="color:#cd5555">&#39;Patrick&#39;</span>,<span style="color:#cd5555">&#39;Sully&#39;</span>,<span style="color:#cd5555">&#39;PSULLY&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.929268&#39;</span>,<span style="color:#cd5555">&#39;1996-03-04&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">35</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">158</span>,<span style="color:#cd5555">&#39;Allan&#39;</span>,<span style="color:#cd5555">&#39;McEwen&#39;</span>,<span style="color:#cd5555">&#39;AMCEWEN&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.829268&#39;</span>,<span style="color:#cd5555">&#39;1996-08-01&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">35</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">159</span>,<span style="color:#cd5555">&#39;Lindsey&#39;</span>,<span style="color:#cd5555">&#39;Smith&#39;</span>,<span style="color:#cd5555">&#39;LSMITH&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.729268&#39;</span>,<span style="color:#cd5555">&#39;1997-03-10&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">8000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">160</span>,<span style="color:#cd5555">&#39;Louise&#39;</span>,<span style="color:#cd5555">&#39;Doran&#39;</span>,<span style="color:#cd5555">&#39;LDORAN&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.629268&#39;</span>,<span style="color:#cd5555">&#39;1997-12-15&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">161</span>,<span style="color:#cd5555">&#39;Sarath&#39;</span>,<span style="color:#cd5555">&#39;Sewall&#39;</span>,<span style="color:#cd5555">&#39;SSEWALL&#39;</span>,<span style="color:#cd5555">&#39;011.44.1345.529268&#39;</span>,<span style="color:#cd5555">&#39;1998-11-03&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">146</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">162</span>,<span style="color:#cd5555">&#39;Clara&#39;</span>,<span style="color:#cd5555">&#39;Vishney&#39;</span>,<span style="color:#cd5555">&#39;CVISHNEY&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.129268&#39;</span>,<span style="color:#cd5555">&#39;1997-11-11&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">10500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">163</span>,<span style="color:#cd5555">&#39;Danielle&#39;</span>,<span style="color:#cd5555">&#39;Greene&#39;</span>,<span style="color:#cd5555">&#39;DGREENE&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.229268&#39;</span>,<span style="color:#cd5555">&#39;1999-03-19&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">15</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">164</span>,<span style="color:#cd5555">&#39;Mattea&#39;</span>,<span style="color:#cd5555">&#39;Marvins&#39;</span>,<span style="color:#cd5555">&#39;MMARVINS&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.329268&#39;</span>,<span style="color:#cd5555">&#39;2000-01-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7200</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">165</span>,<span style="color:#cd5555">&#39;David&#39;</span>,<span style="color:#cd5555">&#39;Lee&#39;</span>,<span style="color:#cd5555">&#39;DLEE&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.529268&#39;</span>,<span style="color:#cd5555">&#39;2000-02-23&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">6800</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">166</span>,<span style="color:#cd5555">&#39;Sundar&#39;</span>,<span style="color:#cd5555">&#39;Ande&#39;</span>,<span style="color:#cd5555">&#39;SANDE&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.629268&#39;</span>,<span style="color:#cd5555">&#39;2000-03-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">6400</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">167</span>,<span style="color:#cd5555">&#39;Amit&#39;</span>,<span style="color:#cd5555">&#39;Banda&#39;</span>,<span style="color:#cd5555">&#39;ABANDA&#39;</span>,<span style="color:#cd5555">&#39;011.44.1346.729268&#39;</span>,<span style="color:#cd5555">&#39;2000-04-21&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">6200</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">147</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">168</span>,<span style="color:#cd5555">&#39;Lisa&#39;</span>,<span style="color:#cd5555">&#39;Ozer&#39;</span>,<span style="color:#cd5555">&#39;LOZER&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.929268&#39;</span>,<span style="color:#cd5555">&#39;1997-03-11&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">11500</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">169</span>,<span style="color:#cd5555">&#39;Harrison&#39;</span>,<span style="color:#cd5555">&#39;Bloom&#39;</span>,<span style="color:#cd5555">&#39;HBLOOM&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.829268&#39;</span>,<span style="color:#cd5555">&#39;1998-03-23&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">10000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">170</span>,<span style="color:#cd5555">&#39;Tayler&#39;</span>,<span style="color:#cd5555">&#39;Fox&#39;</span>,<span style="color:#cd5555">&#39;TFOX&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.729268&#39;</span>,<span style="color:#cd5555">&#39;1998-01-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">9600</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">171</span>,<span style="color:#cd5555">&#39;William&#39;</span>,<span style="color:#cd5555">&#39;Smith&#39;</span>,<span style="color:#cd5555">&#39;WSMITH&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.629268&#39;</span>,<span style="color:#cd5555">&#39;1999-02-23&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7400</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">15</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">172</span>,<span style="color:#cd5555">&#39;Elizabeth&#39;</span>,<span style="color:#cd5555">&#39;Bates&#39;</span>,<span style="color:#cd5555">&#39;EBATES&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.529268&#39;</span>,<span style="color:#cd5555">&#39;1999-03-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7300</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">15</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">173</span>,<span style="color:#cd5555">&#39;Sundita&#39;</span>,<span style="color:#cd5555">&#39;Kumar&#39;</span>,<span style="color:#cd5555">&#39;SKUMAR&#39;</span>,<span style="color:#cd5555">&#39;011.44.1343.329268&#39;</span>,<span style="color:#cd5555">&#39;2000-04-21&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">6100</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">148</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">174</span>,<span style="color:#cd5555">&#39;Ellen&#39;</span>,<span style="color:#cd5555">&#39;Abel&#39;</span>,<span style="color:#cd5555">&#39;EABEL&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429267&#39;</span>,<span style="color:#cd5555">&#39;1996-05-11&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">11000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">30</span>,<span style="color:#b452cd">149</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">175</span>,<span style="color:#cd5555">&#39;Alyssa&#39;</span>,<span style="color:#cd5555">&#39;Hutton&#39;</span>,<span style="color:#cd5555">&#39;AHUTTON&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429266&#39;</span>,<span style="color:#cd5555">&#39;1997-03-19&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">8800</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">25</span>,<span style="color:#b452cd">149</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">176</span>,<span style="color:#cd5555">&#39;Jonathon&#39;</span>,<span style="color:#cd5555">&#39;Taylor&#39;</span>,<span style="color:#cd5555">&#39;JTAYLOR&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429265&#39;</span>,<span style="color:#cd5555">&#39;1998-03-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">8600</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">149</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">177</span>,<span style="color:#cd5555">&#39;Jack&#39;</span>,<span style="color:#cd5555">&#39;Livingston&#39;</span>,<span style="color:#cd5555">&#39;JLIVINGS&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429264&#39;</span>,<span style="color:#cd5555">&#39;1998-04-23&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">8400</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">20</span>,<span style="color:#b452cd">149</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">178</span>,<span style="color:#cd5555">&#39;Kimberely&#39;</span>,<span style="color:#cd5555">&#39;Grant&#39;</span>,<span style="color:#cd5555">&#39;KGRANT&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429263&#39;</span>,<span style="color:#cd5555">&#39;1999-05-24&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">7000</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">15</span>,<span style="color:#b452cd">149</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>),(<span style="color:#b452cd">179</span>,<span style="color:#cd5555">&#39;Charles&#39;</span>,<span style="color:#cd5555">&#39;Johnson&#39;</span>,<span style="color:#cd5555">&#39;CJOHNSON&#39;</span>,<span style="color:#cd5555">&#39;011.44.1644.429262&#39;</span>,<span style="color:#cd5555">&#39;2000-01-04&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">6200</span>.<span style="color:#b452cd">00</span>,<span style="color:#b452cd">0</span>.<span style="color:#b452cd">10</span>,<span style="color:#b452cd">149</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">180</span>,<span style="color:#cd5555">&#39;Winston&#39;</span>,<span style="color:#cd5555">&#39;Taylor&#39;</span>,<span style="color:#cd5555">&#39;WTAYLOR&#39;</span>,<span style="color:#cd5555">&#39;650.507.9876&#39;</span>,<span style="color:#cd5555">&#39;1998-01-24&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">181</span>,<span style="color:#cd5555">&#39;Jean&#39;</span>,<span style="color:#cd5555">&#39;Fleaur&#39;</span>,<span style="color:#cd5555">&#39;JFLEAUR&#39;</span>,<span style="color:#cd5555">&#39;650.507.9877&#39;</span>,<span style="color:#cd5555">&#39;1998-02-23&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">182</span>,<span style="color:#cd5555">&#39;Martha&#39;</span>,<span style="color:#cd5555">&#39;Sullivan&#39;</span>,<span style="color:#cd5555">&#39;MSULLIVA&#39;</span>,<span style="color:#cd5555">&#39;650.507.9878&#39;</span>,<span style="color:#cd5555">&#39;1999-06-21&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">183</span>,<span style="color:#cd5555">&#39;Girard&#39;</span>,<span style="color:#cd5555">&#39;Geoni&#39;</span>,<span style="color:#cd5555">&#39;GGEONI&#39;</span>,<span style="color:#cd5555">&#39;650.507.9879&#39;</span>,<span style="color:#cd5555">&#39;2000-02-03&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">120</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">184</span>,<span style="color:#cd5555">&#39;Nandita&#39;</span>,<span style="color:#cd5555">&#39;Sarchand&#39;</span>,<span style="color:#cd5555">&#39;NSARCHAN&#39;</span>,<span style="color:#cd5555">&#39;650.509.1876&#39;</span>,<span style="color:#cd5555">&#39;1996-01-27&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">4200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">185</span>,<span style="color:#cd5555">&#39;Alexis&#39;</span>,<span style="color:#cd5555">&#39;Bull&#39;</span>,<span style="color:#cd5555">&#39;ABULL&#39;</span>,<span style="color:#cd5555">&#39;650.509.2876&#39;</span>,<span style="color:#cd5555">&#39;1997-02-20&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">4100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">186</span>,<span style="color:#cd5555">&#39;Julia&#39;</span>,<span style="color:#cd5555">&#39;Dellinger&#39;</span>,<span style="color:#cd5555">&#39;JDELLING&#39;</span>,<span style="color:#cd5555">&#39;650.509.3876&#39;</span>,<span style="color:#cd5555">&#39;1998-06-24&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3400</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">187</span>,<span style="color:#cd5555">&#39;Anthony&#39;</span>,<span style="color:#cd5555">&#39;Cabrio&#39;</span>,<span style="color:#cd5555">&#39;ACABRIO&#39;</span>,<span style="color:#cd5555">&#39;650.509.4876&#39;</span>,<span style="color:#cd5555">&#39;1999-02-07&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">121</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">188</span>,<span style="color:#cd5555">&#39;Kelly&#39;</span>,<span style="color:#cd5555">&#39;Chung&#39;</span>,<span style="color:#cd5555">&#39;KCHUNG&#39;</span>,<span style="color:#cd5555">&#39;650.505.1876&#39;</span>,<span style="color:#cd5555">&#39;1997-06-14&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">189</span>,<span style="color:#cd5555">&#39;Jennifer&#39;</span>,<span style="color:#cd5555">&#39;Dilly&#39;</span>,<span style="color:#cd5555">&#39;JDILLY&#39;</span>,<span style="color:#cd5555">&#39;650.505.2876&#39;</span>,<span style="color:#cd5555">&#39;1997-08-13&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">190</span>,<span style="color:#cd5555">&#39;Timothy&#39;</span>,<span style="color:#cd5555">&#39;Gates&#39;</span>,<span style="color:#cd5555">&#39;TGATES&#39;</span>,<span style="color:#cd5555">&#39;650.505.3876&#39;</span>,<span style="color:#cd5555">&#39;1998-07-11&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">191</span>,<span style="color:#cd5555">&#39;Randall&#39;</span>,<span style="color:#cd5555">&#39;Perkins&#39;</span>,<span style="color:#cd5555">&#39;RPERKINS&#39;</span>,<span style="color:#cd5555">&#39;650.505.4876&#39;</span>,<span style="color:#cd5555">&#39;1999-12-19&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">122</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">192</span>,<span style="color:#cd5555">&#39;Sarah&#39;</span>,<span style="color:#cd5555">&#39;Bell&#39;</span>,<span style="color:#cd5555">&#39;SBELL&#39;</span>,<span style="color:#cd5555">&#39;650.501.1876&#39;</span>,<span style="color:#cd5555">&#39;1996-02-04&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">4000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">193</span>,<span style="color:#cd5555">&#39;Britney&#39;</span>,<span style="color:#cd5555">&#39;Everett&#39;</span>,<span style="color:#cd5555">&#39;BEVERETT&#39;</span>,<span style="color:#cd5555">&#39;650.501.2876&#39;</span>,<span style="color:#cd5555">&#39;1997-03-03&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3900</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">194</span>,<span style="color:#cd5555">&#39;Samuel&#39;</span>,<span style="color:#cd5555">&#39;McCain&#39;</span>,<span style="color:#cd5555">&#39;SMCCAIN&#39;</span>,<span style="color:#cd5555">&#39;650.501.3876&#39;</span>,<span style="color:#cd5555">&#39;1998-07-01&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3200</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">195</span>,<span style="color:#cd5555">&#39;Vance&#39;</span>,<span style="color:#cd5555">&#39;Jones&#39;</span>,<span style="color:#cd5555">&#39;VJONES&#39;</span>,<span style="color:#cd5555">&#39;650.501.4876&#39;</span>,<span style="color:#cd5555">&#39;1999-03-17&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2800</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">123</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">196</span>,<span style="color:#cd5555">&#39;Alana&#39;</span>,<span style="color:#cd5555">&#39;Walsh&#39;</span>,<span style="color:#cd5555">&#39;AWALSH&#39;</span>,<span style="color:#cd5555">&#39;650.507.9811&#39;</span>,<span style="color:#cd5555">&#39;1998-04-24&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3100</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">197</span>,<span style="color:#cd5555">&#39;Kevin&#39;</span>,<span style="color:#cd5555">&#39;Feeney&#39;</span>,<span style="color:#cd5555">&#39;KFEENEY&#39;</span>,<span style="color:#cd5555">&#39;650.507.9822&#39;</span>,<span style="color:#cd5555">&#39;1998-05-23&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">3000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">198</span>,<span style="color:#cd5555">&#39;Donald&#39;</span>,<span style="color:#cd5555">&#39;OConnell&#39;</span>,<span style="color:#cd5555">&#39;DOCONNEL&#39;</span>,<span style="color:#cd5555">&#39;650.507.9833&#39;</span>,<span style="color:#cd5555">&#39;1999-06-21&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">199</span>,<span style="color:#cd5555">&#39;Douglas&#39;</span>,<span style="color:#cd5555">&#39;Grant&#39;</span>,<span style="color:#cd5555">&#39;DGRANT&#39;</span>,<span style="color:#cd5555">&#39;650.507.9844&#39;</span>,<span style="color:#cd5555">&#39;2000-01-13&#39;</span>,<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#b452cd">2600</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">124</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">200</span>,<span style="color:#cd5555">&#39;Jennifer&#39;</span>,<span style="color:#cd5555">&#39;Whalen&#39;</span>,<span style="color:#cd5555">&#39;JWHALEN&#39;</span>,<span style="color:#cd5555">&#39;515.123.4444&#39;</span>,<span style="color:#cd5555">&#39;1987-09-17&#39;</span>,<span style="color:#cd5555">&#39;AD_ASST&#39;</span>,<span style="color:#b452cd">4400</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">101</span>,<span style="color:#b452cd">10</span>),(<span style="color:#b452cd">201</span>,<span style="color:#cd5555">&#39;Michael&#39;</span>,<span style="color:#cd5555">&#39;Hartstein&#39;</span>,<span style="color:#cd5555">&#39;MHARTSTE&#39;</span>,<span style="color:#cd5555">&#39;515.123.5555&#39;</span>,<span style="color:#cd5555">&#39;1996-02-17&#39;</span>,<span style="color:#cd5555">&#39;MK_MAN&#39;</span>,<span style="color:#b452cd">13000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">100</span>,<span style="color:#b452cd">20</span>),(<span style="color:#b452cd">202</span>,<span style="color:#cd5555">&#39;Pat&#39;</span>,<span style="color:#cd5555">&#39;Fay&#39;</span>,<span style="color:#cd5555">&#39;PFAY&#39;</span>,<span style="color:#cd5555">&#39;603.123.6666&#39;</span>,<span style="color:#cd5555">&#39;1997-08-17&#39;</span>,<span style="color:#cd5555">&#39;MK_REP&#39;</span>,<span style="color:#b452cd">6000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">201</span>,<span style="color:#b452cd">20</span>),(<span style="color:#b452cd">203</span>,<span style="color:#cd5555">&#39;Susan&#39;</span>,<span style="color:#cd5555">&#39;Mavris&#39;</span>,<span style="color:#cd5555">&#39;SMAVRIS&#39;</span>,<span style="color:#cd5555">&#39;515.123.7777&#39;</span>,<span style="color:#cd5555">&#39;1994-06-07&#39;</span>,<span style="color:#cd5555">&#39;HR_REP&#39;</span>,<span style="color:#b452cd">6500</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">101</span>,<span style="color:#b452cd">40</span>),(<span style="color:#b452cd">204</span>,<span style="color:#cd5555">&#39;Hermann&#39;</span>,<span style="color:#cd5555">&#39;Baer&#39;</span>,<span style="color:#cd5555">&#39;HBAER&#39;</span>,<span style="color:#cd5555">&#39;515.123.8888&#39;</span>,<span style="color:#cd5555">&#39;1994-06-07&#39;</span>,<span style="color:#cd5555">&#39;PR_REP&#39;</span>,<span style="color:#b452cd">10000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">101</span>,<span style="color:#b452cd">70</span>),(<span style="color:#b452cd">205</span>,<span style="color:#cd5555">&#39;Shelley&#39;</span>,<span style="color:#cd5555">&#39;Higgins&#39;</span>,<span style="color:#cd5555">&#39;SHIGGINS&#39;</span>,<span style="color:#cd5555">&#39;515.123.8080&#39;</span>,<span style="color:#cd5555">&#39;1994-06-07&#39;</span>,<span style="color:#cd5555">&#39;AC_MGR&#39;</span>,<span style="color:#b452cd">12000</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">101</span>,<span style="color:#b452cd">110</span>),(<span style="color:#b452cd">206</span>,<span style="color:#cd5555">&#39;William&#39;</span>,<span style="color:#cd5555">&#39;Gietz&#39;</span>,<span style="color:#cd5555">&#39;WGIETZ&#39;</span>,<span style="color:#cd5555">&#39;515.123.8181&#39;</span>,<span style="color:#cd5555">&#39;1994-06-07&#39;</span>,<span style="color:#cd5555">&#39;AC_ACCOUNT&#39;</span>,<span style="color:#b452cd">8300</span>.<span style="color:#b452cd">00</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#b452cd">205</span>,<span style="color:#b452cd">110</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `job_grades` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`job_grades`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`job_grades`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`grade_level`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">3</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`lowest_sal`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">11</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`highest_sal`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">11</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `job_grades` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`job_grades`(`grade_level`,`lowest_sal`,`highest_sal`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#cd5555">&#39;A&#39;</span>,<span style="color:#b452cd">1000</span>,<span style="color:#b452cd">2999</span>),(<span style="color:#cd5555">&#39;B&#39;</span>,<span style="color:#b452cd">3000</span>,<span style="color:#b452cd">5999</span>),(<span style="color:#cd5555">&#39;C&#39;</span>,<span style="color:#b452cd">6000</span>,<span style="color:#b452cd">9999</span>),(<span style="color:#cd5555">&#39;D&#39;</span>,<span style="color:#b452cd">10000</span>,<span style="color:#b452cd">14999</span>),(<span style="color:#cd5555">&#39;E&#39;</span>,<span style="color:#b452cd">15000</span>,<span style="color:#b452cd">24999</span>),(<span style="color:#cd5555">&#39;F&#39;</span>,<span style="color:#b452cd">25000</span>,<span style="color:#b452cd">40000</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `job_history` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`job_history`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`job_history`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`employee_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`start_date`<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`end_date`<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`job_id`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`department_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`employee_id`,`start_date`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`jhist_emp_id_st_date_pk`<span style="color:#bbb"> </span>(`employee_id`,`start_date`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`jhist_job_fk`<span style="color:#bbb"> </span>(`job_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`jhist_dept_fk`<span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`jhist_dept_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`department_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`departments`<span style="color:#bbb"> </span>(`department_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`jhist_emp_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`employee_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`employees`<span style="color:#bbb"> </span>(`employee_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`jhist_job_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`job_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`jobs`<span style="color:#bbb"> </span>(`job_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `job_history` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`job_history`(`employee_id`,`start_date`,`end_date`,`job_id`,`department_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">101</span>,<span style="color:#cd5555">&#39;1989-09-21&#39;</span>,<span style="color:#cd5555">&#39;1993-10-27&#39;</span>,<span style="color:#cd5555">&#39;AC_ACCOUNT&#39;</span>,<span style="color:#b452cd">110</span>),(<span style="color:#b452cd">101</span>,<span style="color:#cd5555">&#39;1993-10-28&#39;</span>,<span style="color:#cd5555">&#39;1997-03-15&#39;</span>,<span style="color:#cd5555">&#39;AC_MGR&#39;</span>,<span style="color:#b452cd">110</span>),(<span style="color:#b452cd">102</span>,<span style="color:#cd5555">&#39;1993-01-13&#39;</span>,<span style="color:#cd5555">&#39;1998-07-24&#39;</span>,<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#b452cd">60</span>),(<span style="color:#b452cd">114</span>,<span style="color:#cd5555">&#39;1998-03-24&#39;</span>,<span style="color:#cd5555">&#39;1999-12-31&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">122</span>,<span style="color:#cd5555">&#39;1999-01-01&#39;</span>,<span style="color:#cd5555">&#39;1999-12-31&#39;</span>,<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#b452cd">50</span>),(<span style="color:#b452cd">176</span>,<span style="color:#cd5555">&#39;1998-03-24&#39;</span>,<span style="color:#cd5555">&#39;1998-12-31&#39;</span>,<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">176</span>,<span style="color:#cd5555">&#39;1999-01-01&#39;</span>,<span style="color:#cd5555">&#39;1999-12-31&#39;</span>,<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#b452cd">80</span>),(<span style="color:#b452cd">200</span>,<span style="color:#cd5555">&#39;1987-09-17&#39;</span>,<span style="color:#cd5555">&#39;1993-06-17&#39;</span>,<span style="color:#cd5555">&#39;AD_ASST&#39;</span>,<span style="color:#b452cd">90</span>),(<span style="color:#b452cd">200</span>,<span style="color:#cd5555">&#39;1994-07-01&#39;</span>,<span style="color:#cd5555">&#39;1998-12-31&#39;</span>,<span style="color:#cd5555">&#39;AC_ACCOUNT&#39;</span>,<span style="color:#b452cd">90</span>),(<span style="color:#b452cd">201</span>,<span style="color:#cd5555">&#39;1996-02-17&#39;</span>,<span style="color:#cd5555">&#39;1999-12-19&#39;</span>,<span style="color:#cd5555">&#39;MK_REP&#39;</span>,<span style="color:#b452cd">20</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `jobs` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`jobs`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`jobs`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`job_id`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;&#39;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`job_title`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">35</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`min_salary`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`max_salary`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">6</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`job_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`job_id_pk`<span style="color:#bbb"> </span>(`job_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `jobs` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`jobs`(`job_id`,`job_title`,`min_salary`,`max_salary`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#cd5555">&#39;AC_ACCOUNT&#39;</span>,<span style="color:#cd5555">&#39;Public Accountant&#39;</span>,<span style="color:#b452cd">4200</span>,<span style="color:#b452cd">9000</span>),(<span style="color:#cd5555">&#39;AC_MGR&#39;</span>,<span style="color:#cd5555">&#39;Accounting Manager&#39;</span>,<span style="color:#b452cd">8200</span>,<span style="color:#b452cd">16000</span>),(<span style="color:#cd5555">&#39;AD_ASST&#39;</span>,<span style="color:#cd5555">&#39;Administration Assistant&#39;</span>,<span style="color:#b452cd">3000</span>,<span style="color:#b452cd">6000</span>),(<span style="color:#cd5555">&#39;AD_PRES&#39;</span>,<span style="color:#cd5555">&#39;President&#39;</span>,<span style="color:#b452cd">20000</span>,<span style="color:#b452cd">40000</span>),(<span style="color:#cd5555">&#39;AD_VP&#39;</span>,<span style="color:#cd5555">&#39;Administration Vice President&#39;</span>,<span style="color:#b452cd">15000</span>,<span style="color:#b452cd">30000</span>),(<span style="color:#cd5555">&#39;FI_ACCOUNT&#39;</span>,<span style="color:#cd5555">&#39;Accountant&#39;</span>,<span style="color:#b452cd">4200</span>,<span style="color:#b452cd">9000</span>),(<span style="color:#cd5555">&#39;FI_MGR&#39;</span>,<span style="color:#cd5555">&#39;Finance Manager&#39;</span>,<span style="color:#b452cd">8200</span>,<span style="color:#b452cd">16000</span>),(<span style="color:#cd5555">&#39;HR_REP&#39;</span>,<span style="color:#cd5555">&#39;Human Resources Representative&#39;</span>,<span style="color:#b452cd">4000</span>,<span style="color:#b452cd">9000</span>),(<span style="color:#cd5555">&#39;IT_PROG&#39;</span>,<span style="color:#cd5555">&#39;Programmer&#39;</span>,<span style="color:#b452cd">4000</span>,<span style="color:#b452cd">10000</span>),(<span style="color:#cd5555">&#39;MK_MAN&#39;</span>,<span style="color:#cd5555">&#39;Marketing Manager&#39;</span>,<span style="color:#b452cd">9000</span>,<span style="color:#b452cd">15000</span>),(<span style="color:#cd5555">&#39;MK_REP&#39;</span>,<span style="color:#cd5555">&#39;Marketing Representative&#39;</span>,<span style="color:#b452cd">4000</span>,<span style="color:#b452cd">9000</span>),(<span style="color:#cd5555">&#39;PR_REP&#39;</span>,<span style="color:#cd5555">&#39;Public Relations Representative&#39;</span>,<span style="color:#b452cd">4500</span>,<span style="color:#b452cd">10500</span>),(<span style="color:#cd5555">&#39;PU_CLERK&#39;</span>,<span style="color:#cd5555">&#39;Purchasing Clerk&#39;</span>,<span style="color:#b452cd">2500</span>,<span style="color:#b452cd">5500</span>),(<span style="color:#cd5555">&#39;PU_MAN&#39;</span>,<span style="color:#cd5555">&#39;Purchasing Manager&#39;</span>,<span style="color:#b452cd">8000</span>,<span style="color:#b452cd">15000</span>),(<span style="color:#cd5555">&#39;SA_MAN&#39;</span>,<span style="color:#cd5555">&#39;Sales Manager&#39;</span>,<span style="color:#b452cd">10000</span>,<span style="color:#b452cd">20000</span>),(<span style="color:#cd5555">&#39;SA_REP&#39;</span>,<span style="color:#cd5555">&#39;Sales Representative&#39;</span>,<span style="color:#b452cd">6000</span>,<span style="color:#b452cd">12000</span>),(<span style="color:#cd5555">&#39;SH_CLERK&#39;</span>,<span style="color:#cd5555">&#39;Shipping Clerk&#39;</span>,<span style="color:#b452cd">2500</span>,<span style="color:#b452cd">5500</span>),(<span style="color:#cd5555">&#39;ST_CLERK&#39;</span>,<span style="color:#cd5555">&#39;Stock Clerk&#39;</span>,<span style="color:#b452cd">2000</span>,<span style="color:#b452cd">5000</span>),(<span style="color:#cd5555">&#39;ST_MAN&#39;</span>,<span style="color:#cd5555">&#39;Stock Manager&#39;</span>,<span style="color:#b452cd">5500</span>,<span style="color:#b452cd">8500</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `locations` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`locations`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`locations`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`location_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">4</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;0&#39;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`street_address`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">40</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`postal_code`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">12</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`city`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">30</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`state_province`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`country_id`<span style="color:#bbb"> </span><span style="color:#658b00">char</span>(<span style="color:#b452cd">2</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`location_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`loc_id_pk`<span style="color:#bbb"> </span>(`location_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`loc_c_id_fk`<span style="color:#bbb"> </span>(`country_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">CONSTRAINT</span><span style="color:#bbb"> </span>`loc_c_id_fk`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">FOREIGN</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`country_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">REFERENCES</span><span style="color:#bbb"> </span>`countries`<span style="color:#bbb"> </span>(`country_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `locations` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`locations`(`location_id`,`street_address`,`postal_code`,`city`,`state_province`,`country_id`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">1000</span>,<span style="color:#cd5555">&#39;1297 Via Cola di Rie&#39;</span>,<span style="color:#cd5555">&#39;00989&#39;</span>,<span style="color:#cd5555">&#39;Roma&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;IT&#39;</span>),(<span style="color:#b452cd">1100</span>,<span style="color:#cd5555">&#39;93091 Calle della Testa&#39;</span>,<span style="color:#cd5555">&#39;10934&#39;</span>,<span style="color:#cd5555">&#39;Venice&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;IT&#39;</span>),(<span style="color:#b452cd">1200</span>,<span style="color:#cd5555">&#39;2017 Shinjuku-ku&#39;</span>,<span style="color:#cd5555">&#39;1689&#39;</span>,<span style="color:#cd5555">&#39;Tokyo&#39;</span>,<span style="color:#cd5555">&#39;Tokyo Prefecture&#39;</span>,<span style="color:#cd5555">&#39;JP&#39;</span>),(<span style="color:#b452cd">1300</span>,<span style="color:#cd5555">&#39;9450 Kamiya-cho&#39;</span>,<span style="color:#cd5555">&#39;6823&#39;</span>,<span style="color:#cd5555">&#39;Hiroshima&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;JP&#39;</span>),(<span style="color:#b452cd">1400</span>,<span style="color:#cd5555">&#39;2014 Jabberwocky Rd&#39;</span>,<span style="color:#cd5555">&#39;26192&#39;</span>,<span style="color:#cd5555">&#39;Southlake&#39;</span>,<span style="color:#cd5555">&#39;Texas&#39;</span>,<span style="color:#cd5555">&#39;US&#39;</span>),(<span style="color:#b452cd">1500</span>,<span style="color:#cd5555">&#39;2011 Interiors Blvd&#39;</span>,<span style="color:#cd5555">&#39;99236&#39;</span>,<span style="color:#cd5555">&#39;South San Francisco&#39;</span>,<span style="color:#cd5555">&#39;California&#39;</span>,<span style="color:#cd5555">&#39;US&#39;</span>),(<span style="color:#b452cd">1600</span>,<span style="color:#cd5555">&#39;2007 Zagora St&#39;</span>,<span style="color:#cd5555">&#39;50090&#39;</span>,<span style="color:#cd5555">&#39;South Brunswick&#39;</span>,<span style="color:#cd5555">&#39;New Jersey&#39;</span>,<span style="color:#cd5555">&#39;US&#39;</span>),(<span style="color:#b452cd">1700</span>,<span style="color:#cd5555">&#39;2004 Charade Rd&#39;</span>,<span style="color:#cd5555">&#39;98199&#39;</span>,<span style="color:#cd5555">&#39;Seattle&#39;</span>,<span style="color:#cd5555">&#39;Washington&#39;</span>,<span style="color:#cd5555">&#39;US&#39;</span>),(<span style="color:#b452cd">1800</span>,<span style="color:#cd5555">&#39;147 Spadina Ave&#39;</span>,<span style="color:#cd5555">&#39;M5V 2L7&#39;</span>,<span style="color:#cd5555">&#39;Toronto&#39;</span>,<span style="color:#cd5555">&#39;Ontario&#39;</span>,<span style="color:#cd5555">&#39;CA&#39;</span>),(<span style="color:#b452cd">1900</span>,<span style="color:#cd5555">&#39;6092 Boxwood St&#39;</span>,<span style="color:#cd5555">&#39;YSW 9T2&#39;</span>,<span style="color:#cd5555">&#39;Whitehorse&#39;</span>,<span style="color:#cd5555">&#39;Yukon&#39;</span>,<span style="color:#cd5555">&#39;CA&#39;</span>),(<span style="color:#b452cd">2000</span>,<span style="color:#cd5555">&#39;40-5-12 Laogianggen&#39;</span>,<span style="color:#cd5555">&#39;190518&#39;</span>,<span style="color:#cd5555">&#39;Beijing&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;CN&#39;</span>),(<span style="color:#b452cd">2100</span>,<span style="color:#cd5555">&#39;1298 Vileparle (E)&#39;</span>,<span style="color:#cd5555">&#39;490231&#39;</span>,<span style="color:#cd5555">&#39;Bombay&#39;</span>,<span style="color:#cd5555">&#39;Maharashtra&#39;</span>,<span style="color:#cd5555">&#39;IN&#39;</span>),(<span style="color:#b452cd">2200</span>,<span style="color:#cd5555">&#39;12-98 Victoria Street&#39;</span>,<span style="color:#cd5555">&#39;2901&#39;</span>,<span style="color:#cd5555">&#39;Sydney&#39;</span>,<span style="color:#cd5555">&#39;New South Wales&#39;</span>,<span style="color:#cd5555">&#39;AU&#39;</span>),(<span style="color:#b452cd">2300</span>,<span style="color:#cd5555">&#39;198 Clementi North&#39;</span>,<span style="color:#cd5555">&#39;540198&#39;</span>,<span style="color:#cd5555">&#39;Singapore&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;SG&#39;</span>),(<span style="color:#b452cd">2400</span>,<span style="color:#cd5555">&#39;8204 Arthur St&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;London&#39;</span>,<span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#cd5555">&#39;UK&#39;</span>),(<span style="color:#b452cd">2500</span>,<span style="color:#cd5555">&#39;Magdalen Centre, The Oxford Science Park&#39;</span>,<span style="color:#cd5555">&#39;OX9 9ZB&#39;</span>,<span style="color:#cd5555">&#39;Oxford&#39;</span>,<span style="color:#cd5555">&#39;Oxford&#39;</span>,<span style="color:#cd5555">&#39;UK&#39;</span>),(<span style="color:#b452cd">2600</span>,<span style="color:#cd5555">&#39;9702 Chester Road&#39;</span>,<span style="color:#cd5555">&#39;09629850293&#39;</span>,<span style="color:#cd5555">&#39;Stretford&#39;</span>,<span style="color:#cd5555">&#39;Manchester&#39;</span>,<span style="color:#cd5555">&#39;UK&#39;</span>),(<span style="color:#b452cd">2700</span>,<span style="color:#cd5555">&#39;Schwanthalerstr. 7031&#39;</span>,<span style="color:#cd5555">&#39;80925&#39;</span>,<span style="color:#cd5555">&#39;Munich&#39;</span>,<span style="color:#cd5555">&#39;Bavaria&#39;</span>,<span style="color:#cd5555">&#39;DE&#39;</span>),(<span style="color:#b452cd">2800</span>,<span style="color:#cd5555">&#39;Rua Frei Caneca 1360 &#39;</span>,<span style="color:#cd5555">&#39;01307-002&#39;</span>,<span style="color:#cd5555">&#39;Sao Paulo&#39;</span>,<span style="color:#cd5555">&#39;Sao Paulo&#39;</span>,<span style="color:#cd5555">&#39;BR&#39;</span>),(<span style="color:#b452cd">2900</span>,<span style="color:#cd5555">&#39;20 Rue des Corps-Saints&#39;</span>,<span style="color:#cd5555">&#39;1730&#39;</span>,<span style="color:#cd5555">&#39;Geneva&#39;</span>,<span style="color:#cd5555">&#39;Geneve&#39;</span>,<span style="color:#cd5555">&#39;CH&#39;</span>),(<span style="color:#b452cd">3000</span>,<span style="color:#cd5555">&#39;Murtenstrasse 921&#39;</span>,<span style="color:#cd5555">&#39;3095&#39;</span>,<span style="color:#cd5555">&#39;Bern&#39;</span>,<span style="color:#cd5555">&#39;BE&#39;</span>,<span style="color:#cd5555">&#39;CH&#39;</span>),(<span style="color:#b452cd">3100</span>,<span style="color:#cd5555">&#39;Pieter Breughelstraat 837&#39;</span>,<span style="color:#cd5555">&#39;3029SK&#39;</span>,<span style="color:#cd5555">&#39;Utrecht&#39;</span>,<span style="color:#cd5555">&#39;Utrecht&#39;</span>,<span style="color:#cd5555">&#39;NL&#39;</span>),(<span style="color:#b452cd">3200</span>,<span style="color:#cd5555">&#39;Mariano Escobedo 9991&#39;</span>,<span style="color:#cd5555">&#39;11932&#39;</span>,<span style="color:#cd5555">&#39;Mexico City&#39;</span>,<span style="color:#cd5555">&#39;Distrito Federal,&#39;</span>,<span style="color:#cd5555">&#39;MX&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `order` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`order_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">11</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`order_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `order` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`(`order_id`,`order_name`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">1</span>,<span style="color:#cd5555">&#39;shkstart&#39;</span>),(<span style="color:#b452cd">2</span>,<span style="color:#cd5555">&#39;tomcat&#39;</span>),(<span style="color:#b452cd">3</span>,<span style="color:#cd5555">&#39;dubbo&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `regions` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`regions`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>`regions`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`region_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span>(<span style="color:#b452cd">11</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`region_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`region_id`),<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>`reg_id_pk`<span style="color:#bbb"> </span>(`region_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Data for the table `regions` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">insert</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">into</span><span style="color:#bbb"> </span>`regions`(`region_id`,`region_name`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">values</span><span style="color:#bbb"> </span>(<span style="color:#b452cd">1</span>,<span style="color:#cd5555">&#39;Europe&#39;</span>),(<span style="color:#b452cd">2</span>,<span style="color:#cd5555">&#39;Americas&#39;</span>),(<span style="color:#b452cd">3</span>,<span style="color:#cd5555">&#39;Asia&#39;</span>),(<span style="color:#b452cd">4</span>,<span style="color:#cd5555">&#39;Middle East and Africa&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*Table structure for table `emp_details_view` */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`emp_details_view`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 DROP VIEW IF EXISTS `emp_details_view` */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 DROP TABLE IF EXISTS `emp_details_view` */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 CREATE TABLE  `emp_details_view`(
+</span><span style="color:#228b22"> `employee_id` int(6) ,
+</span><span style="color:#228b22"> `job_id` varchar(10) ,
+</span><span style="color:#228b22"> `manager_id` int(6) ,
+</span><span style="color:#228b22"> `department_id` int(4) ,
+</span><span style="color:#228b22"> `location_id` int(4) ,
+</span><span style="color:#228b22"> `country_id` char(2) ,
+</span><span style="color:#228b22"> `first_name` varchar(20) ,
+</span><span style="color:#228b22"> `last_name` varchar(25) ,
+</span><span style="color:#228b22"> `salary` double(8,2) ,
+</span><span style="color:#228b22"> `commission_pct` double(2,2) ,
+</span><span style="color:#228b22"> `department_name` varchar(30) ,
+</span><span style="color:#228b22"> `job_title` varchar(35) ,
+</span><span style="color:#228b22"> `city` varchar(30) ,
+</span><span style="color:#228b22"> `state_province` varchar(25) ,
+</span><span style="color:#228b22"> `country_name` varchar(40) ,
+</span><span style="color:#228b22"> `region_name` varchar(25)
+</span><span style="color:#228b22">)*/</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*View structure for view emp_details_view */</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 DROP TABLE IF EXISTS `emp_details_view` */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 DROP VIEW IF EXISTS `emp_details_view` */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `emp_details_view` AS select `e`.`employee_id` AS `employee_id`,`e`.`job_id` AS `job_id`,`e`.`manager_id` AS `manager_id`,`e`.`department_id` AS `department_id`,`d`.`location_id` AS `location_id`,`l`.`country_id` AS `country_id`,`e`.`first_name` AS `first_name`,`e`.`last_name` AS `last_name`,`e`.`salary` AS `salary`,`e`.`commission_pct` AS `commission_pct`,`d`.`department_name` AS `department_name`,`j`.`job_title` AS `job_title`,`l`.`city` AS `city`,`l`.`state_province` AS `state_province`,`c`.`country_name` AS `country_name`,`r`.`region_name` AS `region_name` from (((((`employees` `e` join `departments` `d`) join `jobs` `j`) join `locations` `l`) join `countries` `c`) join `regions` `r`) where ((`e`.`department_id` = `d`.`department_id`) and (`d`.`location_id` = `l`.`location_id`) and (`l`.`country_id` = `c`.`country_id`) and (`c`.`region_id` = `r`.`region_id`) and (`j`.`job_id` = `e`.`job_id`)) */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET SQL_MODE=@OLD_SQL_MODE */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><h3 id="完整課件">完整課件</h3>
+<blockquote>
+<p>他官方用的百度雲非中國不好抓，且還要微信關注啥的</p>
+<p>我另外傳了一份到google drive，取得有的困難可以試試這個</p>
+<p>純學術知識分享，若有版權問題請通知我，謝謝</p>
+</blockquote>
+<pre tabindex="0"><code>【宋红康】MySQL数据库-課程資料(2021年11月版) 81.9 MB
+https://drive.google.com/file/d/1DdHRFJovv3LD6iqi9v4BxyLeZhDjZ_jm/view?usp=sharing
+</code></pre>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-16</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211217-agg-mysql-02/">
+			下一篇<br>SQL語言基本關鍵字、排序與分頁
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211215-agg-ja-30/">
+			上一篇<br>JDK8新特性:Lambda表達式、StreamAPI、Optional類
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title></title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="" />
+<meta property="og:description" content="柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 &#43; 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth &#43; Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器&#43;MVC框架 https://spring." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220214-gulimall-26/" /><meta property="article:section" content="post" />
+
+<meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 &#43; 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth &#43; Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器&#43;MVC框架 https://spring."/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%9a%e5%ad%90%e5%95%86%e5%9f%8e" onclick="onNavClick(`#柚子商城-nav`)" id="柚子商城-nav">
+									柚子商城
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%88%e6%a1%88%e8%83%8c%e6%99%afbackground" onclick="onNavClick(`#專案背景background-nav`)" id="專案背景background-nav">
+									專案背景(Background)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%85%e7%9b%ae%e6%9e%b6%e6%a7%8b%e5%9c%96" onclick="onNavClick(`#項目架構圖-nav`)" id="項目架構圖-nav">
+									項目架構圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%9e%90" onclick="onNavClick(`#解析-nav`)" id="解析-nav">
+									解析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%8d%e5%8b%99%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#服務模組-nav`)" id="服務模組-nav">
+									服務模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%94%e6%a1%88%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#檔案結構-nav`)" id="檔案結構-nav">
+									檔案結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%80%e8%a1%93%e9%81%b8%e5%9e%8b" onclick="onNavClick(`#技術選型-nav`)" id="技術選型-nav">
+									技術選型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e6%8a%80%e8%a1%93" onclick="onNavClick(`#後端技術-nav`)" id="後端技術-nav">
+									後端技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e6%8a%80%e8%a1%93" onclick="onNavClick(`#前端技術-nav`)" id="前端技術-nav">
+									前端技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%92%b0%e5%a2%83%e8%88%87%e7%89%88%e6%9c%acversion" onclick="onNavClick(`#環境與版本version-nav`)" id="環境與版本version-nav">
+									環境與版本(Version)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%96%8b%e7%99%bc%e5%b7%a5%e5%85%b7" onclick="onNavClick(`#開發工具-nav`)" id="開發工具-nav">
+									開發工具
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%96%8b%e7%99%bc%e7%92%b0%e5%a2%83" onclick="onNavClick(`#開發環境-nav`)" id="開發環境-nav">
+									開發環境
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%9f%e5%8b%95%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#啟動前置-nav`)" id="啟動前置-nav">
+									啟動前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c%e9%83%a8%e5%88%86" onclick="onNavClick(`#網關部分-nav`)" id="網關部分-nav">
+									網關部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e9%83%a8%e5%88%86" onclick="onNavClick(`#資料庫部分-nav`)" id="資料庫部分-nav">
+									資料庫部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96docker%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#其他docker服務-nav`)" id="其他docker服務-nav">
+									其他docker服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e7%b3%bb%e7%b5%b1" onclick="onNavClick(`#後台系統-nav`)" id="後台系統-nav">
+									後台系統
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%bc%94%e7%a4%bademo" onclick="onNavClick(`#演示demo-nav`)" id="演示demo-nav">
+									演示(Demo)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e9%a6%96%e9%a0%81" onclick="onNavClick(`#商城首頁-nav`)" id="商城首頁-nav">
+									商城首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7%e5%93%81%e7%89%8c" onclick="onNavClick(`#商品屬性品牌-nav`)" id="商品屬性品牌-nav">
+									商品屬性、品牌
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e5%95%86%e5%93%81%e5%ba%ab%e5%ad%98%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#新增商品庫存模組-nav`)" id="新增商品庫存模組-nav">
+									新增商品、庫存模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e6%90%9c%e5%b0%8b" onclick="onNavClick(`#商品搜尋-nav`)" id="商品搜尋-nav">
+									商品搜尋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e8%a9%b3%e6%83%85%e8%88%87%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#商品詳情與購物車-nav`)" id="商品詳情與購物車-nav">
+									商品詳情與購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e8%a8%82%e5%96%ae" onclick="onNavClick(`#下訂單-nav`)" id="下訂單-nav">
+									下訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e9%83%a8%e5%88%86" onclick="onNavClick(`#後台部分-nav`)" id="後台部分-nav">
+									後台部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%9a%e5%ad%90%e5%95%86%e5%9f%8e" onclick="onNavClick(`#柚子商城-nav`)" id="柚子商城-nav">
+									柚子商城
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b0%88%e6%a1%88%e8%83%8c%e6%99%afbackground" onclick="onNavClick(`#專案背景background-nav`)" id="專案背景background-nav">
+									專案背景(Background)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a0%85%e7%9b%ae%e6%9e%b6%e6%a7%8b%e5%9c%96" onclick="onNavClick(`#項目架構圖-nav`)" id="項目架構圖-nav">
+									項目架構圖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%9e%90" onclick="onNavClick(`#解析-nav`)" id="解析-nav">
+									解析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%8d%e5%8b%99%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#服務模組-nav`)" id="服務模組-nav">
+									服務模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%aa%94%e6%a1%88%e7%b5%90%e6%a7%8b" onclick="onNavClick(`#檔案結構-nav`)" id="檔案結構-nav">
+									檔案結構
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%80%e8%a1%93%e9%81%b8%e5%9e%8b" onclick="onNavClick(`#技術選型-nav`)" id="技術選型-nav">
+									技術選型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e6%8a%80%e8%a1%93" onclick="onNavClick(`#後端技術-nav`)" id="後端技術-nav">
+									後端技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af%e6%8a%80%e8%a1%93" onclick="onNavClick(`#前端技術-nav`)" id="前端技術-nav">
+									前端技術
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%92%b0%e5%a2%83%e8%88%87%e7%89%88%e6%9c%acversion" onclick="onNavClick(`#環境與版本version-nav`)" id="環境與版本version-nav">
+									環境與版本(Version)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%96%8b%e7%99%bc%e5%b7%a5%e5%85%b7" onclick="onNavClick(`#開發工具-nav`)" id="開發工具-nav">
+									開發工具
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%96%8b%e7%99%bc%e7%92%b0%e5%a2%83" onclick="onNavClick(`#開發環境-nav`)" id="開發環境-nav">
+									開發環境
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%9f%e5%8b%95%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#啟動前置-nav`)" id="啟動前置-nav">
+									啟動前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e9%97%9c%e9%83%a8%e5%88%86" onclick="onNavClick(`#網關部分-nav`)" id="網關部分-nav">
+									網關部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b3%87%e6%96%99%e5%ba%ab%e9%83%a8%e5%88%86" onclick="onNavClick(`#資料庫部分-nav`)" id="資料庫部分-nav">
+									資料庫部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%85%b6%e4%bb%96docker%e6%9c%8d%e5%8b%99" onclick="onNavClick(`#其他docker服務-nav`)" id="其他docker服務-nav">
+									其他docker服務
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e7%b3%bb%e7%b5%b1" onclick="onNavClick(`#後台系統-nav`)" id="後台系統-nav">
+									後台系統
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%bc%94%e7%a4%bademo" onclick="onNavClick(`#演示demo-nav`)" id="演示demo-nav">
+									演示(Demo)
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%9f%8e%e9%a6%96%e9%a0%81" onclick="onNavClick(`#商城首頁-nav`)" id="商城首頁-nav">
+									商城首頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e5%b1%ac%e6%80%a7%e5%93%81%e7%89%8c" onclick="onNavClick(`#商品屬性品牌-nav`)" id="商品屬性品牌-nav">
+									商品屬性、品牌
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e5%95%86%e5%93%81%e5%ba%ab%e5%ad%98%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#新增商品庫存模組-nav`)" id="新增商品庫存模組-nav">
+									新增商品、庫存模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e6%90%9c%e5%b0%8b" onclick="onNavClick(`#商品搜尋-nav`)" id="商品搜尋-nav">
+									商品搜尋
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%95%86%e5%93%81%e8%a9%b3%e6%83%85%e8%88%87%e8%b3%bc%e7%89%a9%e8%bb%8a" onclick="onNavClick(`#商品詳情與購物車-nav`)" id="商品詳情與購物車-nav">
+									商品詳情與購物車
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%8b%e8%a8%82%e5%96%ae" onclick="onNavClick(`#下訂單-nav`)" id="下訂單-nav">
+									下訂單
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e9%83%a8%e5%88%86" onclick="onNavClick(`#後台部分-nav`)" id="後台部分-nav">
+									後台部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    
+                    
+                    <div class="post-meta">
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="柚子商城">柚子商城</h1>
+<ul>
+<li>基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目</li>
+<li>項目由業務集群 + 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等</li>
+</ul>
+<h2 id="專案背景background">專案背景(Background)</h2>
+<ul>
+<li>本項目參考自 尚硅谷java微服務課程: <a href="https://www.bilibili.com/video/BV1np4y1C7Yf?p=342">https://www.bilibili.com/video/BV1np4y1C7Yf?p=342</a></li>
+<li>個人學習過程的詳細筆記(共26篇): <a href="https://yoziming.github.io/post/220118-gulimall-01/">https://yoziming.github.io/post/220118-gulimall-01/</a></li>
+</ul>
+<h3 id="項目架構圖">項目架構圖</h3>
+<p><img src="https://yoziming.github.io/post/220118-gulimall-01/gulimall-01.jpg" alt="架構圖"></p>
+<h3 id="解析">解析</h3>
+<ul>
+<li>使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway）</li>
+<li>Api網關:
+<ul>
+<li>根據當前請求，動態路由到指定的服務</li>
+<li>如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛</li>
+</ul>
+</li>
+<li>Nacos註冊中心：微服務的註冊與發現</li>
+<li>Feign：微服務之間的遠程調用</li>
+<li>OAuth2.0認證中心：登入與請求權限的管理</li>
+<li>快取：使用Redis結合spring cache與redsson分布式鎖</li>
+<li>持久化：使用MySQL</li>
+<li>消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性</li>
+<li>全文檢索：使用Elastic Search實現</li>
+<li>圖片存儲：使用MinIO存儲服務</li>
+<li>Sleuth + Zipkin：服務的可視化追蹤</li>
+<li>其他運維部分暫時沒完成</li>
+</ul>
+<h3 id="服務模組">服務模組</h3>
+<p><img src="service.jpg" alt="service"></p>
+<h3 id="檔案結構">檔案結構</h3>
+<pre tabindex="0"><code>mall-parent
+├── auth-server -- 登入認證中心
+├── cart -- 購物車服務
+├── common -- 工具類及通用程式碼
+├── coupon -- 優惠服務
+├── gateway -- 網關
+├── member -- 會員服務
+├── order -- 訂單服務
+├── preset -- 啟動需要的前置工作(docker、sql語句等等)
+├── product -- 商品服務
+├── search -- 商品搜尋服務
+├── seckill -- 秒殺優惠服務(高併發所以獨立出來)
+├── third-party -- 第三方服務
+├── ware -- 倉儲服務
+├── renren-fast -- 後台管理系統
+├── renren-generator -- 人人開源項目的代碼生成器
+renren-fast-vue -- 後台管理系統
+</code></pre><h3 id="技術選型">技術選型</h3>
+<h4 id="後端技術">後端技術</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">技術</th>
+<th style="text-align:center">説明</th>
+<th style="text-align:center">官網</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SpringBoot</td>
+<td style="text-align:center">容器+MVC框架</td>
+<td style="text-align:center"><a href="https://spring.io/projects/spring-boot">https://spring.io/projects/spring-boot</a></td>
+</tr>
+<tr>
+<td style="text-align:center">SpringCloud</td>
+<td style="text-align:center">微服務架構</td>
+<td style="text-align:center"><a href="https://spring.io/projects/spring-cloud">https://spring.io/projects/spring-cloud</a></td>
+</tr>
+<tr>
+<td style="text-align:center">SpringCloudAlibaba</td>
+<td style="text-align:center">一系列組件</td>
+<td style="text-align:center"><a href="https://spring.io/projects/spring-cloud-alibaba">https://spring.io/projects/spring-cloud-alibaba</a></td>
+</tr>
+<tr>
+<td style="text-align:center">MyBatis-Plus</td>
+<td style="text-align:center">ORM框架</td>
+<td style="text-align:center"><a href="https://mp.baomidou.com">https://mp.baomidou.com</a></td>
+</tr>
+<tr>
+<td style="text-align:center">renren-generator</td>
+<td style="text-align:center">程式碼生成器</td>
+<td style="text-align:center"><a href="https://gitee.com/renrenio/renren-generator">https://gitee.com/renrenio/renren-generator</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Elasticsearch</td>
+<td style="text-align:center">搜索引擎</td>
+<td style="text-align:center"><a href="https://github.com/elastic/elasticsearch">https://github.com/elastic/elasticsearch</a></td>
+</tr>
+<tr>
+<td style="text-align:center">RabbitMQ</td>
+<td style="text-align:center">消息隊列</td>
+<td style="text-align:center"><a href="https://www.rabbitmq.com">https://www.rabbitmq.com</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Springsession</td>
+<td style="text-align:center">分佈式緩存</td>
+<td style="text-align:center"><a href="https://projects.spring.io/spring-session">https://projects.spring.io/spring-session</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Redisson</td>
+<td style="text-align:center">分佈式鎖</td>
+<td style="text-align:center"><a href="https://github.com/redisson/redisson">https://github.com/redisson/redisson</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Docker</td>
+<td style="text-align:center">容器引擎</td>
+<td style="text-align:center"><a href="https://www.docker.com">https://www.docker.com</a></td>
+</tr>
+<tr>
+<td style="text-align:center">MinIO</td>
+<td style="text-align:center">圖片存儲</td>
+<td style="text-align:center"><a href="https://min.io">https://min.io</a></td>
+</tr>
+<tr>
+<td style="text-align:center">sentinel + zipkin</td>
+<td style="text-align:center">分布式限流 + 追蹤</td>
+<td style="text-align:center"><a href="https://zipkin.io">https://zipkin.io</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="前端技術">前端技術</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">技術</th>
+<th style="text-align:center">説明</th>
+<th style="text-align:center">官網</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Vue</td>
+<td style="text-align:center">前端框架</td>
+<td style="text-align:center"><a href="https://vuejs.org">https://vuejs.org</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Element</td>
+<td style="text-align:center">前端UI框架</td>
+<td style="text-align:center"><a href="https://element.eleme.io">https://element.eleme.io</a></td>
+</tr>
+<tr>
+<td style="text-align:center">thymeleaf</td>
+<td style="text-align:center">模板引擎</td>
+<td style="text-align:center"><a href="https://www.thymeleaf.org">https://www.thymeleaf.org</a></td>
+</tr>
+<tr>
+<td style="text-align:center">node.js</td>
+<td style="text-align:center">服務端的js</td>
+<td style="text-align:center"><a href="https://nodejs.org/en">https://nodejs.org/en</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="環境與版本version">環境與版本(Version)</h2>
+<h3 id="開發工具">開發工具</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">工具</th>
+<th style="text-align:center">説明</th>
+<th style="text-align:center">官網</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">IDEA</td>
+<td style="text-align:center">開發Java</td>
+<td style="text-align:center"><a href="https://www.jetbrains.com/idea/download">https://www.jetbrains.com/idea/download</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Another Redis Desktop</td>
+<td style="text-align:center">redis連接</td>
+<td style="text-align:center"><a href="https://github.com/qishibo/AnotherRedisDesktopManager">https://github.com/qishibo/AnotherRedisDesktopManager</a></td>
+</tr>
+<tr>
+<td style="text-align:center">SwitchHosts</td>
+<td style="text-align:center">host切換</td>
+<td style="text-align:center"><a href="https://oldj.github.io/SwitchHosts">https://oldj.github.io/SwitchHosts</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Navicat</td>
+<td style="text-align:center">資料庫連接</td>
+<td style="text-align:center"><a href="http://www.formysql.com/xiazai.html">http://www.formysql.com/xiazai.html</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Postman</td>
+<td style="text-align:center">API接口測試</td>
+<td style="text-align:center"><a href="https://www.postman.com">https://www.postman.com</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Jmeter</td>
+<td style="text-align:center">性能壓測工具</td>
+<td style="text-align:center"><a href="https://jmeter.apache.org">https://jmeter.apache.org</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Typora</td>
+<td style="text-align:center">筆記</td>
+<td style="text-align:center"><a href="https://typora.io">https://typora.io</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="開發環境">開發環境</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">工具</th>
+<th style="text-align:center">版本號</th>
+<th style="text-align:center">下載</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">JDK</td>
+<td style="text-align:center">1.8</td>
+<td style="text-align:center"><a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Mysql</td>
+<td style="text-align:center">5.7</td>
+<td style="text-align:center"><a href="https://www.mysql.com">https://www.mysql.com</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Redis</td>
+<td style="text-align:center">6.0</td>
+<td style="text-align:center"><a href="https://redis.io/download">https://redis.io/download</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Elasticsearch</td>
+<td style="text-align:center">7.16.2</td>
+<td style="text-align:center"><a href="https://www.elastic.co/downloads">https://www.elastic.co/downloads</a></td>
+</tr>
+<tr>
+<td style="text-align:center">RabbitMQ</td>
+<td style="text-align:center">3.9.13</td>
+<td style="text-align:center"><a href="http://www.rabbitmq.com/download.html">http://www.rabbitmq.com/download.html</a></td>
+</tr>
+<tr>
+<td style="text-align:center">Nginx</td>
+<td style="text-align:center">1.21.5</td>
+<td style="text-align:center"><a href="http://nginx.org/en/download.html">http://nginx.org/en/download.html</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="啟動前置">啟動前置</h3>
+<blockquote>
+<p>由於項目龐雜，啟動需要不少前置工作，大部分都使用docker運行</p>
+</blockquote>
+<ul>
+<li>請參閱專案之下的preset資料夾，需要用到的都放在這邊了</li>
+</ul>
+<h4 id="網關部分">網關部分</h4>
+<ul>
+<li>首先設定網關，參考 <a href="https://yoziming.github.io/post/220127-gulimall-10-stress-testing">https://yoziming.github.io/post/220127-gulimall-10-stress-testing</a></li>
+<li>這邊使用SwitchHosts模擬DNS的效果，在本地訪問mall.com就會被轉向虛擬linux機的ip，</li>
+<li>該linux上運行了多個docker服務，其中使用nginx負責反向代理與回覆靜態資源(動靜分離)</li>
+</ul>
+<p><img src="image-20220214154428532.png" alt="image-20220214154428532"></p>
+<ul>
+<li>nginx將請求再轉回本機的spring cloud gateway服務，並且結合已經在nacos註冊好的各個微服務模組名稱，將請求正確的轉發到要去的地方</li>
+</ul>
+<p><img src="image-20220214155409854.png" alt="image-20220214155409854"></p>
+<ul>
+<li>啟動的各個服務使用<code>@EnableDiscoveryClient</code>都註冊到Nacos上</li>
+</ul>
+<p><img src="image-20220214202042289.png" alt="image-20220214202042289"></p>
+<h4 id="資料庫部分">資料庫部分</h4>
+<ul>
+<li>mysql參見資料夾，裡面有所需的建表資料，要注意的是原版教學文件中有不少錯字(例如商品種類的catelog)，我個人都把它修改過</li>
+<li>minIO啟動後一樣需要自己設定名稱與密碼，java程式運行起來發現如果沒有bucket會自動創建，但是還要去minIO dashboard手動修改bucket訪問權限(注意minIO的dashboard用的cookie與後台管理系統衝突，發現登入有問題需要手動刪cookie)</li>
+<li>ElasticSearch啟動後需要手動安裝中文分詞器，參考 <a href="https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/">https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</a>
+<ul>
+<li>並且需要手動建立mappings，建表的JSON參見elasticsearch.txt</li>
+</ul>
+</li>
+</ul>
+<p><img src="image-20220214202813951.png" alt="image-20220214202813951"></p>
+<h4 id="其他docker服務">其他docker服務</h4>
+<ul>
+<li>RabbitMQ、zipkin、Redis、Nacos用docker啟動，沒特別改的，預設模式就OK了</li>
+</ul>
+<h4 id="後台系統">後台系統</h4>
+<ul>
+<li>後台系統基於renren-fast，是一個Vue框架構成的管理網站，使用 <code>npm i</code>安裝所需依賴，<code>npm run dev</code>啟動</li>
+<li>當然在java端需要先啟動網關與renren-fast，才能驗證登入、獲取資料</li>
+<li>遇到npm版本問題可以參考 <a href="https://yoziming.github.io/post/220121-npm-sass-webpack/">https://yoziming.github.io/post/220121-npm-sass-webpack/</a></li>
+</ul>
+<h2 id="演示demo">演示(Demo)</h2>
+<p>原本打算將服務部署到AWS的EC2主機上，因為使用Sleuth追蹤發現只要是feign調用的反應時間都特別長，所以弄了一個合併版本(從原本12個微服務合併成4個)</p>
+<p>並且合併版本有比較滿意的外觀(原教學版本是扒京東JD.COM的皮，頁面非常雜亂)，合併版仿網易嚴選商城比較簡潔美觀，所以使用合併版作為展示</p>
+<h3 id="商城首頁">商城首頁</h3>
+<ul>
+<li>首先是三級商品分類，這個分類幾乎存在所有頁面</li>
+<li>商城頁面使用thymeleaf渲染模板</li>
+<li>由於包含大量資料，且讀多改少，以JSON形式存到redis cache中</li>
+</ul>
+<p><img src="01-index.gif" alt="01-index"></p>
+<ul>
+<li>對應的後台管理與實際資料庫表單所在</li>
+</ul>
+<p><img src="image-20220214211947779.png" alt="image-20220214211947779"></p>
+<ul>
+<li>首頁輪播廣告也可以在後台控制</li>
+<li>圖片上傳的部分，網頁是用element-ui 的 <em>el</em>-<em>upload</em> 元件發送檔案流給後端</li>
+<li>後端串接的API接收MultipartFile，再上傳到MinIO中儲存，並返回圖片網址給前端</li>
+</ul>
+<p><img src="02-index-banner.gif" alt="02-index-banner"></p>
+<ul>
+<li>網站中其他上傳品牌圖片、商品圖片也都是透過這種方式</li>
+<li>教學中上傳圖片使用的是pre signed預簽名的方法，省下前端傳圖片給後端server的流量，讓使用者直接把圖傳到雲端，我有嘗試使用AWS S3想達成類似的操作，但不是卡在CORS就是有access key洩漏的風險，只好暫時放棄而使用MinIO代替</li>
+</ul>
+<h3 id="商品屬性品牌">商品屬性、品牌</h3>
+<ul>
+<li>品牌與關連的商品分類</li>
+</ul>
+<p><img src="03-brand.gif" alt="03-brand"></p>
+<ul>
+<li>新增商品的SPU與SKU屬性與分組</li>
+</ul>
+<p><img src="04-sku.gif" alt="04-sku"></p>
+<ul>
+<li>詳細可參考筆記 <a href="https://yoziming.github.io/post/220122-gulimall-05-sku-spu/">https://yoziming.github.io/post/220122-gulimall-05-sku-spu/</a></li>
+</ul>
+<h3 id="新增商品庫存模組">新增商品、庫存模組</h3>
+<ul>
+<li>新增商品的動態展示</li>
+</ul>
+<p><img src="05-upload.gif" alt="05-upload"></p>
+<ul>
+<li>新增完商品後，可以在sku管理查看商品，並且快速找到對應的庫存訊息</li>
+</ul>
+<p><img src="image-20220214221847909.png" alt="image-20220214221847909"></p>
+<ul>
+<li>
+<p>庫存模組就是一些新增採購單的功能，理論上還要做一個採購的模組，讓採購人員能夠領取採購單、回報採購情況等等，可能是做成一個app或是簡單的網頁，這邊暫時用postman假裝發送採購完成的訊息給串接的API</p>
+<ul>
+<li>詳細可參考 <a href="https://yoziming.github.io/post/220124-gulimall-07">https://yoziming.github.io/post/220124-gulimall-07</a></li>
+</ul>
+</li>
+<li>
+<p>之後營運人員便可以在spu管理將商品上架</p>
+</li>
+</ul>
+<p><img src="image-20220214222140404.png" alt="image-20220214222140404"></p>
+<ul>
+<li>
+<p>上架的同時，會將商品屬性等等關鍵字抽出到Elasticsearch，以便之後可以搜尋</p>
+</li>
+<li>
+<p>詳細可參考: <a href="https://yoziming.github.io/post/220130-gulimall-13">https://yoziming.github.io/post/220130-gulimall-13</a></p>
+</li>
+</ul>
+<h3 id="商品搜尋">商品搜尋</h3>
+<ul>
+<li>使用ElasticSearch實現，並且有Breadcrumb Trail與Highlight關鍵字，動態演示圖:</li>
+</ul>
+<p><img src="06-search.gif" alt="06-search"></p>
+<h3 id="商品詳情與購物車">商品詳情與購物車</h3>
+<ul>
+<li>可以看到之前新增商品時填入的規格參數與商品詳情介紹</li>
+</ul>
+<p><img src="07-cart.gif" alt="07-cart"></p>
+<ul>
+<li>購物車的實現可以參考 <a href="https://yoziming.github.io/post/220203-gulimall-17-offline-cart">https://yoziming.github.io/post/220203-gulimall-17-offline-cart</a></li>
+<li>支付的部分可以參考 <a href="https://yoziming.github.io/post/220208-gulimall-22-pay">https://yoziming.github.io/post/220208-gulimall-22-pay</a>
+<ul>
+<li>有稍微研究了一下綠界支付，他算是目前台灣最大的第三方金流，但方便度比起教學用的支付寶template確實差了很多，不得不承認電支這塊台灣真的很落後。並且還要有正式店家才能申請，只好暫時跳過了</li>
+</ul>
+</li>
+</ul>
+<h3 id="下訂單">下訂單</h3>
+<ul>
+<li>網站動態演示:</li>
+</ul>
+<p><img src="08-order.gif" alt="08-order"></p>
+<ul>
+<li>
+<p>由於下訂單牽扯許多模組(如會員地址、計算運費、商品詳情、鎖定庫存、支付&hellip;等等)，這邊採用RabbitMQ來保證分散式交易的最終一致性</p>
+</li>
+<li>
+<p>詳細可以參考筆記 <a href="https://yoziming.github.io/post/220205-gulimall-19">https://yoziming.github.io/post/220205-gulimall-19</a></p>
+<ul>
+<li>有連續三章的筆記都是在講這塊，關於MQ的最終一致性大部分是在這篇</li>
+<li><a href="https://yoziming.github.io/post/220207-gulimall-21-delay-queue/">https://yoziming.github.io/post/220207-gulimall-21-delay-queue/</a></li>
+</ul>
+</li>
+<li>
+<p>簡單來說因為有很多遠程調用，下單、庫存、支付、退貨又各自牽扯到許多種情況，任何一個環節都有可能失敗，所以使用RabbitMQ的消息對列在各子模組之間傳送訂單與庫存的訊息，例如: 下單後就要鎖定庫存，會把訂單與庫存工作單發到各自的隊列中，拖太久沒付錢的就會取消訂單，進入解鎖庫存階段</p>
+</li>
+<li>
+<p>使用MQ的情況下，可以慢、可以遠程調用失敗、可以高併發，因為每個<code>Listener</code>消費訊息前都是用<code>try</code>包住調用的方法，被調用的方法在本地大多還用<code>@Transactional</code>確保安全，並且再次查驗訂單或庫存的最新狀態，執行相應階段該做的動作</p>
+</li>
+<li>
+<p>一切都正確無誤才<code>basicAck</code>手動消費隊列中的訊息，若出問題就<code>rollback</code>回復資料庫中的狀態 + <code>basicReject</code>把消息重新放回隊列，也不擔心重複消費的問題，因為會查驗訂單或庫存的最新狀態</p>
+</li>
+</ul>
+<h4 id="後台部分">後台部分</h4>
+<ul>
+<li>這個就沒有實作了，理論上還要串流物流業者的API，台灣的話我看過綠界支付有提供相關的服務</li>
+<li>這邊只能手動修改訂單狀態，例如改成已發貨並且假裝填一個物流的公司跟編號</li>
+</ul>
+<p><img src="image-20220215110530982.png" alt="image-20220215110530982"></p>
+<ul>
+<li>然後顧客端查看訂單詳情就可以選擇確認收貨，或是有問題要申請售後</li>
+</ul>
+<p><img src="image-20220215111521208.png" alt="image-20220215111521208"></p>
+<ul>
+<li>售後的部分，教學中串接的支付寶API有提供現成的退款template，也是暫時跳過</li>
+<li>至此算是一個完整的流程
+<ul>
+<li>商戶: 設定商品屬性、展示訊息</li>
+<li>用戶: 瀏覽廣告、搜尋商品、加入購物車、確認訂單、下訂單</li>
+<li>平台: 管理商品庫存、上架、輪播廣告、訂單、支付與出貨</li>
+</ul>
+</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>目前正在嘗試將網站部署到AWS的EC2上面，但由於此項目十分龐雜，不像之前的javaweb只要一個tomcat與mySQL就能開起來</li>
+<li>暫時的想法是java部分全部打包成dockerfile丟上去，並且試試看用traefik取代nginx，但還有許多技術難點要克服。先暫時擱置了，以後有能力再回來補完</li>
+</ul>
+
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/210810-agg-go-sequential-search/">
+			下一篇<br>順序查找
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220102-java-uml/">
+			上一篇<br>Java UML類圖
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

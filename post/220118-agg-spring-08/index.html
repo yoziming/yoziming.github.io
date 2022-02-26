@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>醫院管理API &amp; 服務註冊與發現</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷Spring筆記-08">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="醫院管理API &amp; 服務註冊與發現" />
+<meta property="og:description" content="尚硅谷Spring筆記-08" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220118-agg-spring-08/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-18T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="醫院管理API &amp; 服務註冊與發現"/>
+<meta name="twitter:description" content="尚硅谷Spring筆記-08"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%86%ab%e9%99%a2%e7%ae%a1%e7%90%86%e7%b3%bb%e7%b5%b1" onclick="onNavClick(`#醫院管理系統-nav`)" id="醫院管理系統-nav">
+									醫院管理系統
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5mongodb" onclick="onNavClick(`#連接mongodb-nav`)" id="連接mongodb-nav">
+									連接MongoDB
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e5%82%b3%e9%86%ab%e9%99%a2" onclick="onNavClick(`#上傳醫院-nav`)" id="上傳醫院-nav">
+									上傳醫院
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2%e9%86%ab%e9%99%a2" onclick="onNavClick(`#查詢醫院-nav`)" id="查詢醫院-nav">
+									查詢醫院
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%91%e5%ae%a4" onclick="onNavClick(`#科室-nav`)" id="科室-nav">
+									科室
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8f%ad%e8%a1%a8" onclick="onNavClick(`#班表-nav`)" id="班表-nav">
+									班表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%8d%e5%8b%99%e8%a8%bb%e5%86%8a%e4%b8%ad%e5%bf%83" onclick="onNavClick(`#服務註冊中心-nav`)" id="服務註冊中心-nav">
+									服務註冊中心
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#nacos%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#nacos前置-nav`)" id="nacos前置-nav">
+									Nacos前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#java%e9%83%a8%e5%88%86" onclick="onNavClick(`#java部分-nav`)" id="java部分-nav">
+									Java部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#後台模組-nav`)" id="後台模組-nav">
+									後台模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%86%ab%e9%99%a2%e7%ae%a1%e7%90%86%e7%b3%bb%e7%b5%b1" onclick="onNavClick(`#醫院管理系統-nav`)" id="醫院管理系統-nav">
+									醫院管理系統
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5mongodb" onclick="onNavClick(`#連接mongodb-nav`)" id="連接mongodb-nav">
+									連接MongoDB
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%8a%e5%82%b3%e9%86%ab%e9%99%a2" onclick="onNavClick(`#上傳醫院-nav`)" id="上傳醫院-nav">
+									上傳醫院
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2%e9%86%ab%e9%99%a2" onclick="onNavClick(`#查詢醫院-nav`)" id="查詢醫院-nav">
+									查詢醫院
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a7%91%e5%ae%a4" onclick="onNavClick(`#科室-nav`)" id="科室-nav">
+									科室
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8f%ad%e8%a1%a8" onclick="onNavClick(`#班表-nav`)" id="班表-nav">
+									班表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9c%8d%e5%8b%99%e8%a8%bb%e5%86%8a%e4%b8%ad%e5%bf%83" onclick="onNavClick(`#服務註冊中心-nav`)" id="服務註冊中心-nav">
+									服務註冊中心
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#nacos%e5%89%8d%e7%bd%ae" onclick="onNavClick(`#nacos前置-nav`)" id="nacos前置-nav">
+									Nacos前置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#java%e9%83%a8%e5%88%86" onclick="onNavClick(`#java部分-nav`)" id="java部分-nav">
+									Java部分
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e5%8f%b0%e6%a8%a1%e7%b5%84" onclick="onNavClick(`#後台模組-nav`)" id="後台模組-nav">
+									後台模組
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/spring.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    醫院管理API &amp; 服務註冊與發現
+                    
+                    <div class="post-subtitle">
+                        尚硅谷Spring筆記-08
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-18 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/spring%E7%B7%9A%E4%B8%8A%E8%AA%B2">Spring線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="醫院管理系統">醫院管理系統</h1>
+<ul>
+<li>hospital-manage醫院管理系統，是一個已經完成的模組，功能是提供給醫院方操作，讓醫院管理人員上傳醫院的科室、排班資訊等等的一個小系統</li>
+<li>我們的項目是預約掛號平台，要實現求診者與醫院的配對</li>
+<li>現在就要模擬實際業務，參考提供的API文檔完成對接</li>
+</ul>
+<h2 id="連接mongodb">連接MongoDB</h2>
+<blockquote>
+<p>練習點，這邊把醫院方上傳的資料存到mongoDB</p>
+</blockquote>
+<ul>
+<li>回到<code>service-hosp</code>模組，先去<code>application.properties</code>設定資料庫連線地址</li>
+<li>建立接口繼承<code>MongoRepository</code></li>
+</ul>
+<pre tabindex="0"><code>@Repository
+public interface HospitalRepository extends MongoRepository&lt;Hospital, String&gt; {}
+</code></pre><ul>
+<li>建立<code>HospitalServiceImpl</code>接口與實現類、<code>ApiController</code>開始對接API</li>
+</ul>
+<h3 id="上傳醫院">上傳醫院</h3>
+<ul>
+<li>控制層知識點:
+<ul>
+<li><code>request.getParameterMap()</code>拿到的是String[]，最好轉成Obj方便後續操作</li>
+<li>這邊用了base64編碼傳了一張圖片，&quot;+&ldquo;變成了&rdquo; &ldquo;空白要還原</li>
+<li>之後用<code>&lt;img src=&quot;data:image/png;base64,編碼串&quot;/&gt;</code>可以把圖片還原顯示出來</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳醫院&#34;</span>)
+<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveHospital&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveHospital</span>(HttpServletRequest request) {
+    Map&lt;String, String[]&gt; parameterMap = request.<span style="color:#658b00">getParameterMap</span>();
+    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
+</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; stringObjectMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap);
+    <span style="color:#228b22">// base64編碼傳送過程中把&#34;+&#34;變成了&#34; &#34;空白，要轉換回來
+</span><span style="color:#228b22"></span>    String logoData = (String) stringObjectMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>);
+    logoData = logoData.<span style="color:#658b00">replaceAll</span>(<span style="color:#cd5555">&#34; &#34;</span>, <span style="color:#cd5555">&#34;+&#34;</span>);
+    stringObjectMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>, logoData);
+    <span style="color:#8b008b;font-weight:bold">return</span> hospitalService.<span style="color:#658b00">save</span>(stringObjectMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院編號已存在，修改請聯絡工程師&#34;</span>);
+}
+</code></pre></div><ul>
+<li>服務層
+<ul>
+<li>他教學這邊用<code>alibaba.fastjson</code>包把<code>stringObjectMap</code>轉成<code>JSON</code>，再從JSON轉回Bean，把我看暈了</li>
+<li>幹嘛不乾脆用<code>apache.commons.beanutils</code>的<code>populate</code></li>
+<li>後來發現mybatis+自帶<code>BeanUtils.mapToBean</code>也可以，還少導依賴</li>
+<li>MD5加密跟修改上傳也把我看暈了，他教學這裡有點瑕疵，反正原理能懂，暫時跳過吧</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; stringObjectMap) {
+    <span style="color:#228b22">// 將map轉成Hospital實體類物件
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// String string = JSONObject.toJSONString(stringObjectMap);
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// Hospital hospital = JSONObject.parseObject(string, Hospital.class);
+</span><span style="color:#228b22"></span>    Hospital hospital = BeanUtils.<span style="color:#658b00">mapToBean</span>(stringObjectMap, Hospital.<span style="color:#658b00">class</span>);
+    <span style="color:#228b22">// 判斷是否已存在
+</span><span style="color:#228b22"></span>    String hoscode = hospital.<span style="color:#658b00">getHoscode</span>();
+    Hospital hospitalExist = hospitalRepository.<span style="color:#658b00">getHospitalByHoscode</span>(hoscode);
+    <span style="color:#228b22">/*  TODO 這裡有bug，他設定hoscode是唯一，但是又不標記成mongo的Id，物件沒有mongo的Id作為屬性，
+</span><span style="color:#228b22">    就沒辦法靠同Id視為更新的save去更新，永遠只會說重複不給存報錯，如果拿掉不重複標記，
+</span><span style="color:#228b22">    就變成一直存成新物件，修這個要從model層去改
+</span><span style="color:#228b22">    而MD5加密驗證的部分，覺得這邊他教的太混亂，應該寫在service層
+</span><span style="color:#228b22">    原理懂就好，就醫院方API把key用MD5加密傳過來，平台方去醫院設定mysql也抓那個key
+</span><span style="color:#228b22">    然後執行一樣的MD5加密，驗證是否相同，利用MD5不可逆推(暴力哈希碰撞除外)特性
+</span><span style="color:#228b22">    實現安全驗證
+</span><span style="color:#228b22">    */</span>
+    <span style="color:#8b008b;font-weight:bold">if</span> (hospitalExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// 新物件
+</span><span style="color:#228b22"></span>        hospital.<span style="color:#658b00">setStatus</span>(0);
+        hospital.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+        hospital.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+        hospital.<span style="color:#658b00">setIsDeleted</span>(0);
+        hospitalRepository.<span style="color:#658b00">save</span>(hospital);
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 已存在，要修改
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+}
+</code></pre></div><h3 id="查詢醫院">查詢醫院</h3>
+<ul>
+<li>毫無難度，利用Repository自動生成的方法，用Hoscode往mongoDB查找出對應的Hospital物件丟回去就完了</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢醫院&#34;</span>)
+<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;hospital/show&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">showHospital</span>(HttpServletRequest request) {
+    Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
+</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+    String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(hospitalService.<span style="color:#658b00">showHospital</span>(hoscode));
+}
+</code></pre></div><h3 id="科室">科室</h3>
+<ul>
+<li>控制層，注意Page是spring框架的</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳科室&#34;</span>)
+    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveDepartment&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveDepartment</span>(HttpServletRequest request) {
+        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+        <span style="color:#8b008b;font-weight:bold">return</span> departmentService.<span style="color:#658b00">save</span>(parameterMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院科室編號已存在，修改請聯絡工程師&#34;</span>);
+    }
+
+    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢科室&#34;</span>)
+    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/list&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">findDepartment</span>(HttpServletRequest request) {
+        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+        <span style="color:#228b22">// 獲取醫院編號
+</span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+        <span style="color:#228b22">// 獲取當前頁 和 每頁記錄數，沒指定(為空)就是1跟10
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> page = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;page&#34;</span>)) ? 1 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+                <span style="color:#cd5555">&#34;page&#34;</span>));
+        <span style="color:#00688b;font-weight:bold">int</span> limit = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;limit&#34;</span>)) ? 10 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+                <span style="color:#cd5555">&#34;limit&#34;</span>));
+
+        DepartmentQueryVo departmentQueryVo = <span style="color:#8b008b;font-weight:bold">new</span> DepartmentQueryVo();
+        departmentQueryVo.<span style="color:#658b00">setHoscode</span>(hoscode);
+        <span style="color:#228b22">// 調用service方法
+</span><span style="color:#228b22"></span>        Page&lt;Department&gt; pageModel = departmentService.<span style="color:#658b00">findPageDepartment</span>(page, limit, departmentQueryVo);
+        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(pageModel);
+    }
+
+    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;刪除科室&#34;</span>)
+    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/remove&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">removeDepartment</span>(HttpServletRequest request) {
+        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+        <span style="color:#228b22">// 醫院編號 和 科室編號
+</span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+        String depcode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;depcode&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (depcode == <span style="color:#8b008b;font-weight:bold">null</span> || hoscode == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院或科室編號不存在&#34;</span>);
+        }
+        departmentService.<span style="color:#658b00">remove</span>(hoscode, depcode);
+        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>();
+    }
+</code></pre></div><ul>
+<li>服務層，知識重點在條件查詢與頁數</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Service</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DepartmentServiceImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> DepartmentService {
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> DepartmentRepository departmentRepository;
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; parameterMap) {
+        Department department = BeanUtils.<span style="color:#658b00">mapToBean</span>(parameterMap, Department.<span style="color:#658b00">class</span>);
+        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
+</span><span style="color:#228b22"></span>        Department departmentExist = departmentRepository.
+                <span style="color:#008b45">getDepartmentByHoscodeAndDepcode</span>(department.<span style="color:#658b00">getHoscode</span>(), department.<span style="color:#658b00">getDepcode</span>());
+        <span style="color:#8b008b;font-weight:bold">if</span> (departmentExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
+            department.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+            department.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+            departmentRepository.<span style="color:#658b00">save</span>(department);
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> Page&lt;Department&gt; <span style="color:#008b45">findPageDepartment</span>(<span style="color:#00688b;font-weight:bold">int</span> page, <span style="color:#00688b;font-weight:bold">int</span> limit, DepartmentQueryVo departmentQueryVo) {
+        <span style="color:#228b22">// 創建Pageable，設置當前頁和每頁記錄數，0是第一頁
+</span><span style="color:#228b22"></span>        Pageable pageable = PageRequest.<span style="color:#658b00">of</span>(page - 1, limit);
+        <span style="color:#228b22">// 查詢用VO，所以要先造一個department去承接屬性
+</span><span style="color:#228b22"></span>        Department department = <span style="color:#8b008b;font-weight:bold">new</span> Department();
+        org.<span style="color:#658b00">springframework</span>.<span style="color:#658b00">beans</span>.<span style="color:#658b00">BeanUtils</span>.<span style="color:#658b00">copyProperties</span>(departmentQueryVo, department);
+        <span style="color:#228b22">// 創建Example設定查詢條件
+</span><span style="color:#228b22"></span>        ExampleMatcher matcher = ExampleMatcher.<span style="color:#658b00">matching</span>()
+                .<span style="color:#658b00">withStringMatcher</span>(ExampleMatcher.<span style="color:#658b00">StringMatcher</span>.<span style="color:#658b00">CONTAINING</span>)
+                .<span style="color:#658b00">withIgnoreCase</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        Example&lt;Department&gt; example = Example.<span style="color:#658b00">of</span>(department, matcher);
+
+        Page&lt;Department&gt; all = departmentRepository.<span style="color:#658b00">findAll</span>(example, pageable);
+        <span style="color:#8b008b;font-weight:bold">return</span> all;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">remove</span>(String hoscode, String depcode) {
+        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
+</span><span style="color:#228b22"></span>        Department department = departmentRepository.<span style="color:#658b00">getDepartmentByHoscodeAndDepcode</span>(hoscode, depcode);
+        <span style="color:#8b008b;font-weight:bold">if</span> (department != <span style="color:#8b008b;font-weight:bold">null</span>) {
+            <span style="color:#228b22">// 調用方法刪除
+</span><span style="color:#228b22"></span>            departmentRepository.<span style="color:#658b00">deleteById</span>(department.<span style="color:#658b00">getId</span>());
+        }
+    }
+}
+</code></pre></div><h3 id="班表">班表</h3>
+<ul>
+<li>類似的就不重複，小結操作MongoDB的流程:
+<ul>
+<li>建立對應的Bean，有要條件查詢的可以建立VO
+<ul>
+<li>後來查了一下這算是開發規範，前端用VO後端用POJO</li>
+</ul>
+</li>
+<li>造xxxRepository介面繼承MongoRepository&lt;bean, String&gt;，記得註解<code>@Repository</code></li>
+<li>造service層介面與實現類，實現類記得註解<code>@Service</code></li>
+<li>造controller對接API，oooMapping(&ldquo;URL&rdquo;)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="服務註冊中心">服務註冊中心</h1>
+<ul>
+<li>接著要繼續完成預約平台的後台系統，這邊需要橫跨多個模組查詢資料，例如醫院設定 + 字典檔模組</li>
+<li>微服務架構之下，當啟動多個Spring服務要讓他們彼此能溝通，就需要依靠服務註冊與發現</li>
+<li>常見的組合有:
+<ul>
+<li>Spring Cloud Eureka +  Spring Cloud Config</li>
+<li>Zookeeper + dubbo</li>
+<li>Consul</li>
+<li>這邊使用Nacos，優勢在於註冊與配置二合一，簡單</li>
+</ul>
+</li>
+</ul>
+<h2 id="nacos前置">Nacos前置</h2>
+<blockquote>
+<p>用docker啟動</p>
+</blockquote>
+<pre tabindex="0"><code># 拉映像
+docker pull nacos/nacos-server
+
+# 啟動容器
+docker run --env MODE=standalone --name nacos -d -p 8848:8848 nacos/nacos-server
+</code></pre><ul>
+<li><code>--env</code> 配置環境</li>
+<li><code>MODE=standalong</code> 單節點</li>
+<li><code>--name nacos</code> 映象名稱為nacos</li>
+<li><code>-d</code> 背景啟動</li>
+<li>預設網址為<code>localhost:8848/nacos</code>，帳號密碼都是<code>nacos</code></li>
+<li>通常為了持久化會搭配資料庫啟動，把服務資訊寫到資料庫例如mysql中，這邊先用內建的</li>
+</ul>
+<h3 id="java部分">Java部分</h3>
+<ul>
+<li>pom.xml</li>
+</ul>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>application.properties</li>
+</ul>
+<pre tabindex="0"><code># nacos服務地址
+spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+</code></pre><ul>
+<li>啟動類上加註解
+<ul>
+<li>小竅門: 在IDEA下面Service那邊點兩下就能快速找到</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>@EnableDiscoveryClient
+</code></pre><ul>
+<li>設定完重啟服務就完成註冊了，可以在列表中看到</li>
+</ul>
+<hr>
+<h1 id="後台模組">後台模組</h1>
+<ul>
+<li>接著回頭到平台的後台管理，在後台要能看到醫院方上傳來的科室、班表資料那些，先開始搭建後端</li>
+<li>他教學的模組分類與命名真的忍不住要吐槽，甚麼hos、hosp、hospital、hospitalSet全都寫在一起辨識度有夠差，等整個搭完我一定要全部重新理一遍</li>
+<li>不行了，這個項目差點把我做吐了，先停在P84，決定先去練谷粒商城，有機會再回來填坑吧</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-18</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220118-gulimall-01/">
+			下一篇<br>項目簡介 &amp; 環境搭建
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220117-agg-spring-07-mongodb/">
+			上一篇<br>MongoDB
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

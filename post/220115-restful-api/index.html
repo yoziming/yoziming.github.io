@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>RESTful API</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="RESTful API">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="RESTful API" />
+<meta property="og:description" content="RESTful API" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220115-restful-api/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-15T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RESTful API"/>
+<meta name="twitter:description" content="RESTful API"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#restful-api" onclick="onNavClick(`#restful-api-nav`)" id="restful-api-nav">
+									RESTful API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e7%af%84" onclick="onNavClick(`#規範-nav`)" id="規範-nav">
+									規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85" onclick="onNavClick(`#補充-nav`)" id="補充-nav">
+									補充
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#restful-api" onclick="onNavClick(`#restful-api-nav`)" id="restful-api-nav">
+									RESTful API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a6%8f%e7%af%84" onclick="onNavClick(`#規範-nav`)" id="規範-nav">
+									規範
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%87%89%e7%94%a8" onclick="onNavClick(`#應用-nav`)" id="應用-nav">
+									應用
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a3%9c%e5%85%85" onclick="onNavClick(`#補充-nav`)" id="補充-nav">
+									補充
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/restful.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    RESTful API
+                    
+                    <div class="post-subtitle">
+                        RESTful API
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-01-15 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/web">web</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="restful-api">RESTful API</h2>
+<blockquote>
+<p>一種設計風格，以資源為核心，用HTTP請求方法傳達動作意涵</p>
+</blockquote>
+<ul>
+<li>HTTP協議的常見請求，對應的資料庫操作為:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>SQL</th>
+<th>意義</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>SELECT</td>
+<td>從Server讀取資源</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>CREATE</td>
+<td>往Server建立(或更新)資源</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>UPDATE</td>
+<td>使Server更新(全覆蓋)指定資源</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>UPDATE</td>
+<td>使Server更新(局部)指定資源</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>DELETE</td>
+<td>使Server刪除指定資源</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>URI: Uniform Resource Identifier，統一資源定位，一個URI表示一個確切的資源
+<ul>
+<li>為URL的子集</li>
+</ul>
+</li>
+<li>範例:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>格式</th>
+<th>範例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>協議://域名/路徑?查詢#HASH</td>
+<td><a href="http://abc.com/users?action=delete&amp;id=1">http://abc.com/users?action=delete&amp;id=1</a></td>
+</tr>
+<tr>
+<td>URI</td>
+<td>協議://域名/路徑</td>
+<td><a href="http://abc.com/users/1">http://abc.com/users/1</a></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>傳統風格關注於方法，透過URL表達動作與參數等等</p>
+<ul>
+<li>例如http://abc.com/service/deleteUser?id=1</li>
+</ul>
+</li>
+<li>
+<p>REST風格關注於資源本身(URI)，透過請求的不同決定對這個資源做啥操作，例如:</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HTTP請求方式</th>
+<th>表達含意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/users/1</td>
+<td>GET</td>
+<td>想獲取user1資料</td>
+</tr>
+<tr>
+<td>/users/1</td>
+<td>DELETE</td>
+<td>刪除user1</td>
+</tr>
+<tr>
+<td>/users</td>
+<td>POST</td>
+<td>要新增一個user</td>
+</tr>
+</tbody>
+</table>
+<h3 id="規範">規範</h3>
+<ol>
+<li>不用大寫字母，所有單詞使用英文且小寫。</li>
+<li>連字元用中槓<code>&quot;-&quot;</code>而不用下槓<code>&quot;_&quot;</code></li>
+<li>正確使用 <code>&quot;/&quot; </code>表示層級關係,URL的層級不要過深，並且越靠前的層級應該相對越穩定</li>
+<li>結尾不要包含正斜槓分隔符<code>&quot;/&quot;</code></li>
+<li>URL中不出現動詞，用請求方式表示動作</li>
+<li>資源表示用複數不要用單數</li>
+<li>不要使用副檔名</li>
+</ol>
+<h3 id="應用">應用</h3>
+<ul>
+<li>說是風格，表示實際執行上不是很嚴格，只是說如果大家都這麼做會比較方便</li>
+<li>例如更新資料POST、PUT、PATCH都有人用，並且這個還涉及idempotence(冪等)的問題，實際還是要看開發的時候API如何設計
+<ul>
+<li>冪等:多次請求結果是否一致</li>
+</ul>
+</li>
+</ul>
+<h3 id="補充">補充</h3>
+<ul>
+<li>瀏覽器的表單<code>&lt;form&gt;</code>只有GET與PSOT</li>
+<li>擴展用<code>&lt;input name=&quot;_method&quot;</code>傳遞參數</li>
+<li>在Spring框架使用<code>HiddenHttpMethodFilter</code>可以接收<code>_method</code>參數，從而識別表單的DELETE與PUT，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#8b008b;font-weight:bold">form</span> <span style="color:#658b00">action</span>=<span style="color:#cd5555">&#34;book/1&#34;</span> <span style="color:#658b00">method</span>=<span style="color:#cd5555">&#34;post&#34;</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">input</span> <span style="color:#658b00">name</span>=<span style="color:#cd5555">&#34;_method&#34;</span> <span style="color:#658b00">value</span>=<span style="color:#cd5555">&#34;delete&#34;</span>/&gt;
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-01-15</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/220116-agg-spring-06/">
+			下一篇<br>字典檔模組、Spring Cache&#43;Redis、Nginx
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220115-agg-spring-05/">
+			上一篇<br>前端:後臺模板vue-admin-template
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

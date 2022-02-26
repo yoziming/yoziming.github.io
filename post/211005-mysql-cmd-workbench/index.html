@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>MySQL常用語句 &amp; Workbench</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="MySQL常用語句 &amp; Workbench基本操作">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="MySQL常用語句 &amp; Workbench" />
+<meta property="og:description" content="MySQL常用語句 &amp; Workbench基本操作" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211005-mysql-cmd-workbench/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-10-05T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL常用語句 &amp; Workbench"/>
+<meta name="twitter:description" content="MySQL常用語句 &amp; Workbench基本操作"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql-%e5%b8%b8%e7%94%a8%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#mysql-常用語句-nav`)" id="mysql-常用語句-nav">
+									MySQL 常用語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql-workbench-%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#mysql-workbench-常用操作-nav`)" id="mysql-workbench-常用操作-nav">
+									MySQL Workbench 常用操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ac%b2%e7%b7%a8%e8%bc%af%e6%9f%90%e5%bc%b5%e8%a1%a8%e7%9a%84%e6%9f%90%e5%80%8b%e8%b3%87%e6%96%99" onclick="onNavClick(`#欲編輯某張表的某個資料-nav`)" id="欲編輯某張表的某個資料-nav">
+									欲編輯某張表的某個資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8e%e5%87%ba%e5%85%a5%e8%b3%87%e6%96%99" onclick="onNavClick(`#導出入資料-nav`)" id="導出入資料-nav">
+									導出/入資料 
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql-%e5%b8%b8%e7%94%a8%e8%aa%9e%e5%8f%a5" onclick="onNavClick(`#mysql-常用語句-nav`)" id="mysql-常用語句-nav">
+									MySQL 常用語句
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#mysql-workbench-%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c" onclick="onNavClick(`#mysql-workbench-常用操作-nav`)" id="mysql-workbench-常用操作-nav">
+									MySQL Workbench 常用操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%ac%b2%e7%b7%a8%e8%bc%af%e6%9f%90%e5%bc%b5%e8%a1%a8%e7%9a%84%e6%9f%90%e5%80%8b%e8%b3%87%e6%96%99" onclick="onNavClick(`#欲編輯某張表的某個資料-nav`)" id="欲編輯某張表的某個資料-nav">
+									欲編輯某張表的某個資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8e%e5%87%ba%e5%85%a5%e8%b3%87%e6%96%99" onclick="onNavClick(`#導出入資料-nav`)" id="導出入資料-nav">
+									導出/入資料 
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/sql.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    MySQL常用語句 &amp; Workbench
+                    
+                    <div class="post-subtitle">
+                        MySQL常用語句 &amp; Workbench基本操作
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-10-05 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/sql">sql</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="mysql-常用語句">MySQL 常用語句</h1>
+<p>資料庫database</p>
+<pre tabindex="0"><code>create database XXX;
+show databases;
+use XXX;
+drop database XXX;
+</code></pre><p>資料表table</p>
+<pre tabindex="0"><code>create table mytable(school char(5),name char(10),id int);
+show tables;
+describe mytable; // 顯示這表有哪些欄位跟屬性
+drop table mytable;
+</code></pre><pre tabindex="0"><code>select * from mytable; // 顯示mytable中所有資料
+
+insert into mytable(school, name, id) values ('NCTU','Jerry','123');
+insert into mytable values ('NCTU','Jerry','123');
+
+update mytable set name = 'HaHa' where id = '123';
+
+delete from mytable where name = 'HaHa';
+delete from 表格; // 把表格內資料都刪除(但格式宣告還在)
+
+select * from mytable where id = '123' order by name DESC;  // 資料表查詢+條件+排序 (DESC 代表由大到小排序)
+
+load data local infile &quot;c:\\data.txt&quot; into table mytable; //匯入
+</code></pre><h1 id="mysql-workbench-常用操作">MySQL Workbench 常用操作</h1>
+<h3 id="欲編輯某張表的某個資料">欲編輯某張表的某個資料</h3>
+<ol>
+<li>在左方導航點開那張表，移到它的右上角可以看資訊、進入編輯模式等等</li>
+</ol>
+<p><img src="image-20211016183042070.png" alt="image-20211016183042070"></p>
+<ol start="2">
+<li>對資料欄位左鍵2下修改，改完之後按Apply，會跳出sql語句的確定視窗，再次Apply後應用</li>
+</ol>
+<h3 id="導出入資料">導出/入資料 </h3>
+<ol>
+<li>上方選到 Server &gt; Data Import，會出現這個畫面</li>
+</ol>
+<p><img src="image-20211016183300110.png" alt="image-20211016183300110"></p>
+<p>照著按就是了，導出也差不多，不過導出可以選擇是否含格式還是單純資料值</p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-10-05</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211006-k8s/">
+			下一篇<br>Kubernetes基礎認識
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211002-docker-redis/">
+			上一篇<br>Docker啟用Redis
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

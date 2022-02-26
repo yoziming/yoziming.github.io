@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>反射Reflection、動態代理</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JavaSE筆記-29">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="反射Reflection、動態代理" />
+<meta property="og:description" content="尚硅谷JavaSE筆記-29" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211214-agg-ja-29/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-14T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="反射Reflection、動態代理"/>
+<meta name="twitter:description" content="尚硅谷JavaSE筆記-29"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%8d%e5%b0%84reflection" onclick="onNavClick(`#反射reflection-nav`)" id="反射reflection-nav">
+									反射Reflection
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%bb%e8%a6%81api" onclick="onNavClick(`#主要api-nav`)" id="主要api-nav">
+									主要API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#class%e9%a1%9e" onclick="onNavClick(`#class類-nav`)" id="class類-nav">
+									Class類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96class%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6" onclick="onNavClick(`#獲取class實例物件-nav`)" id="獲取class實例物件-nav">
+									獲取Class實例物件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#classloader" onclick="onNavClick(`#classloader-nav`)" id="classloader-nav">
+									ClassLoader
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9eclass%e5%89%b5%e7%ab%8b%e9%a1%9e%e7%9a%84%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6" onclick="onNavClick(`#從class創立類的實例物件-nav`)" id="從class創立類的實例物件-nav">
+									從Class創立類的實例物件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9eclass%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6%e5%8f%8d%e5%b0%84%e7%8d%b2%e5%8f%96%e8%b3%87%e8%a8%8a" onclick="onNavClick(`#從class實例物件反射獲取資訊-nav`)" id="從class實例物件反射獲取資訊-nav">
+									從Class實例物件反射獲取資訊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e5%8f%8d%e5%b0%84" onclick="onNavClick(`#使用反射-nav`)" id="使用反射-nav">
+									使用反射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#操作屬性-nav`)" id="操作屬性-nav">
+									操作屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#調用方法-nav`)" id="調用方法-nav">
+									調用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%a7%8b%e9%80%a0%e5%99%a8" onclick="onNavClick(`#調用構造器-nav`)" id="調用構造器-nav">
+									調用構造器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8b%95%e6%85%8b%e4%bb%a3%e7%90%86" onclick="onNavClick(`#動態代理-nav`)" id="動態代理-nav">
+									動態代理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%8d%e5%b0%84reflection" onclick="onNavClick(`#反射reflection-nav`)" id="反射reflection-nav">
+									反射Reflection
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%bb%e8%a6%81api" onclick="onNavClick(`#主要api-nav`)" id="主要api-nav">
+									主要API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#class%e9%a1%9e" onclick="onNavClick(`#class類-nav`)" id="class類-nav">
+									Class類
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96class%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6" onclick="onNavClick(`#獲取class實例物件-nav`)" id="獲取class實例物件-nav">
+									獲取Class實例物件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#classloader" onclick="onNavClick(`#classloader-nav`)" id="classloader-nav">
+									ClassLoader
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9eclass%e5%89%b5%e7%ab%8b%e9%a1%9e%e7%9a%84%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6" onclick="onNavClick(`#從class創立類的實例物件-nav`)" id="從class創立類的實例物件-nav">
+									從Class創立類的實例物件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%9eclass%e5%af%a6%e4%be%8b%e7%89%a9%e4%bb%b6%e5%8f%8d%e5%b0%84%e7%8d%b2%e5%8f%96%e8%b3%87%e8%a8%8a" onclick="onNavClick(`#從class實例物件反射獲取資訊-nav`)" id="從class實例物件反射獲取資訊-nav">
+									從Class實例物件反射獲取資訊
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e5%8f%8d%e5%b0%84" onclick="onNavClick(`#使用反射-nav`)" id="使用反射-nav">
+									使用反射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e5%b1%ac%e6%80%a7" onclick="onNavClick(`#操作屬性-nav`)" id="操作屬性-nav">
+									操作屬性
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#調用方法-nav`)" id="調用方法-nav">
+									調用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%aa%bf%e7%94%a8%e6%a7%8b%e9%80%a0%e5%99%a8" onclick="onNavClick(`#調用構造器-nav`)" id="調用構造器-nav">
+									調用構造器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8b%95%e6%85%8b%e4%bb%a3%e7%90%86" onclick="onNavClick(`#動態代理-nav`)" id="動態代理-nav">
+									動態代理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    反射Reflection、動態代理
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JavaSE筆記-29
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-14 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javase%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaSE線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="反射reflection">反射Reflection</h1>
+<ul>
+<li>反射Reflection是Java被視為動態語言的關鍵，可以在運行時獲取類的內部訊息
+<ul>
+<li>動態語言:程式運行時，代碼可以根據某些條件改變自身結構</li>
+</ul>
+</li>
+<li>具體來說，當我們加載完某類之後，在記憶體中堆的方法區就產生了一個該類的<code>Class物件</code>，此物件包含了完整的該類的結構訊息</li>
+<li>因此我們能透過反射的API，從一個物件取得他所屬類的屬性與方法並進行各種操作</li>
+</ul>
+<h3 id="主要api">主要API</h3>
+<ul>
+<li><code>java.lang.Class</code>:代表一個類</li>
+<li><code>java.lang.reflect.Method</code>:代表類的方法</li>
+<li><code>java.lang.reflect.Field</code>:代表類的成員變數</li>
+<li><code>java.lang.reflect.Constructor</code>:代表類的構造器</li>
+</ul>
+<h3 id="class類">Class類</h3>
+<ul>
+<li><code>Class類</code>即是&quot;類的類&quot;，為反射的源頭</li>
+<li>Object類中定義了<code>getClass()</code>方法，此方法被所有類繼承</li>
+<li><code>Class類</code>的實例物件只能由系統建立，當一個<code>.class檔案</code>被JVM載入執行時系統在堆的方法區產生唯一對應的物件</li>
+<li>通過<code>Class物件</code>可以完整獲取類的結構並進行各種操作，所以要使用反射必須先獲取<code>Class物件</code></li>
+<li>萬物皆物件、萬物皆有<code>Class類</code>
+<ul>
+<li>數組的話只要元素類型與維度相同，視為同一個<code>Class</code>，例如<code>int[5]</code>與<code>int[20]</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="獲取class實例物件">獲取Class實例物件</h3>
+<ul>
+<li>已知具體類名:<code>Class clazz = String.class</code></li>
+<li>已知全類名:<code>Class clazz = Class.forName(&quot;java.lang.String&quot;)</code>
+<ul>
+<li>可能拋出錯誤<code>ClassNotFoundException</code></li>
+<li>也可以透過<code>ClassLoader</code>
+<ul>
+<li><code>ClassLoader cl = this.getClass().getClassLoader()</code></li>
+<li><code>Class clazz4 = cl.loadClass(&quot;全類名&quot;)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>已有某類的實例物件:<code>Class clazz = obj01.getClass()</code></li>
+</ul>
+<h3 id="classloader">ClassLoader</h3>
+<blockquote>
+<p>補充知識點，有印象就好</p>
+</blockquote>
+<h5 id="類的加載實際步驟">類的加載實際步驟</h5>
+<ol>
+<li>Load:將<code>.class檔案</code>讀入記憶體、創建<code>Class物件</code></li>
+<li>Link:將類的二進位數據合併到JRE中、引入<code>常量</code></li>
+<li>Initialize:初始化，執行類構造器<code>&lt;clinit&gt;()</code>方法，進行<code>static</code>屬性或指定初始值的賦值</li>
+</ol>
+<ul>
+<li>如果一個類的父類還沒初始化，會先進行父類的初始化</li>
+<li>JVM會保證<code>&lt;clinit&gt;()</code>方法在多線程環境中的加鎖與同步</li>
+</ul>
+<h5 id="加載器的分類">加載器的分類</h5>
+<ul>
+<li>Bootstrap:引導類，由C語言編寫，負責Java平台核心庫，無法直接獲取</li>
+<li>Extension:擴展類，負責載入<code>jre/lib/ext或</code>指定目錄下的<code>jar包</code></li>
+<li>System(APPs):系統類，負責載入<code>java.class.path</code>目錄下的<code>jar包</code>，最常用的</li>
+<li>SomeClass:自訂類</li>
+</ul>
+<h3 id="從class創立類的實例物件">從Class創立類的實例物件</h3>
+<ul>
+<li>取得一個<code>Class物件</code>後，可以透過<code>newInstance()</code>方法創建對應類的實例，但有前提:
+<ul>
+<li>該類必須有一個空參的構造器</li>
+<li>該構造器要有符合的訪問權限</li>
+</ul>
+</li>
+</ul>
+<h3 id="從class實例物件反射獲取資訊">從Class實例物件反射獲取資訊</h3>
+<blockquote>
+<p>基本都是<code>getXXX()</code>，沒特別聲明的會返回包含父類的<code>public</code>資訊</p>
+<p><code>Declared</code>用於指明&quot;當前代&quot;，並且無視權限修飾符</p>
+</blockquote>
+<h5 id="取得構造器">取得構造器</h5>
+<ul>
+<li><code>public Constructor&lt;T&gt;[] getConstructors()</code>:返回<code>public</code>的構造器，構造器無法繼承，這可不會拿到父類的構造器</li>
+<li><code>public Constructor&lt;T&gt;[] getDeclaredConstructors</code>:返回當前類的所有構造器(含private)</li>
+<li>對於返回的<code>Constructor類物件</code>，還能再細探:
+<ul>
+<li><code>public int getModifiers()</code>:取得修飾符</li>
+<li><code>public String getName()</code>:取得方法名稱</li>
+<li><code>public Class&lt;?&gt;[] getParameterTypes()</code>:取得參數的類型</li>
+</ul>
+</li>
+</ul>
+<h5 id="取得屬性">取得屬性</h5>
+<ul>
+<li>
+<p><code>public Field[] getFields()</code>:返回類或接口public的Field(含父類)</p>
+</li>
+<li>
+<p><code>public Field[] getDeclaredFields()</code>:返回當前的Field(含private)</p>
+</li>
+<li>
+<p>對於返回的<code>Field類物件</code>，還能再細探:</p>
+<ul>
+<li>
+<p><code>public int getModifiers()</code>:以整數形式返回此Field的修飾符</p>
+</li>
+<li>
+<p><code>public Class&lt;?&gt; getType()</code>:得到Field的屬性類型</p>
+</li>
+<li>
+<p><code>public String getName()</code>:返回Field的名稱</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="取得方法">取得方法</h5>
+<ul>
+<li><code>public Method[] getMethods()</code>:返回類<code>public</code>的方法(含父類)</li>
+<li><code>public Method[] getDeclaredMethods()</code>:返回當前的方法(含<code>private</code>)</li>
+<li>對於返回的<code>Method類物件</code>，還能再細探:
+<ul>
+<li><code>public Class&lt;?&gt; getReturnType()</code>:取得全部的返回值</li>
+<li><code>public Class&lt;?&gt;[] getParameterTypes()</code>:取得全部的參數</li>
+<li><code>public int getModifiers()</code>:取得修飾符</li>
+<li><code>public Class&lt;?&gt;[] getExceptionTypes()</code>:取得異常資訊</li>
+</ul>
+</li>
+</ul>
+<h5 id="獲取父類或實現的接口">獲取父類或實現的接口</h5>
+<ul>
+<li><code>public Class&lt;?&gt;[] getInterfaces()</code>:返回當前類所有實現的接口(不含父類)</li>
+<li><code>public Class&lt;? Super T&gt; getSuperclass()</code>:返回父類的<code>Class物件</code></li>
+<li>想獲得父類的接口可以2個組合用</li>
+</ul>
+<h5 id="heading"></h5>
+<h5 id="其他資訊">其他資訊</h5>
+<blockquote>
+<p>框架常用到，尤其是泛型相關的</p>
+</blockquote>
+<ul>
+<li><code>getDeclaredAnnotations()</code>:取得註解</li>
+<li><code>getGenericSuperclass</code>:獲取父類泛型類型Type</li>
+<li><code>ParameterizedType</code>:獲取泛型類型</li>
+<li><code>getActualTypeArguments</code>:獲取實際的泛型類型參數</li>
+<li><code>Package getPackage()</code>:獲取類所在的包</li>
+</ul>
+<h5 id="範例">範例</h5>
+<blockquote>
+<p>自訂一個Person類，他的繼承、接口、註解這邊就不貼了</p>
+<p>用來嘗試調用上面講的這些獲得資訊方法</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@MyAnnotation</span>(value = <span style="color:#cd5555">&#34;hi&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Person</span> <span style="color:#8b008b;font-weight:bold">extends</span> Creature&lt;String&gt; <span style="color:#8b008b;font-weight:bold">implements</span> Comparable&lt;String&gt;, MyInterface {
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+    <span style="color:#00688b;font-weight:bold">int</span> age;
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> id;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Person</span>() {
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">toString</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;name=&#34;</span> + name + <span style="color:#cd5555">&#34;,id=&#34;</span> + id+ <span style="color:#cd5555">&#34;,age=&#34;</span> + age;
+    }
+
+    <span style="color:#707a7c">@MyAnnotation</span>(value = <span style="color:#cd5555">&#34;name&amp;int&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">Person</span>(String name, <span style="color:#00688b;font-weight:bold">int</span> age) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">name</span> = name;
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">age</span> = age;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">private</span> String <span style="color:#008b45">show</span>(String nation) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;我的國籍是&#34;</span> + nation);
+        <span style="color:#8b008b;font-weight:bold">return</span> nation;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">display</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;我是靜態方法&#34;</span>);
+    }
+
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">compareTo</span>(String o) {
+        <span style="color:#8b008b;font-weight:bold">return</span> 0;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">info</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;我是人&#34;</span>);
+    }
+
+}
+</code></pre></div><h1 id="使用反射">使用反射</h1>
+<blockquote>
+<p>獲取資訊後，可以用返回的結構透過反射來操作物件實例</p>
+</blockquote>
+<h3 id="操作屬性">操作屬性</h3>
+<h5 id="作法1">作法1</h5>
+<blockquote>
+<p>已知要調用的屬姓名</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Class&lt;Person&gt; clazz = Person.<span style="color:#658b00">class</span>;
+Person p = clazz.<span style="color:#658b00">newInstance</span>();
+<span style="color:#228b22">// 返回該屬性的Field物件
+</span><span style="color:#228b22"></span>Field id = clazz.<span style="color:#658b00">getField</span>(<span style="color:#cd5555">&#34;id&#34;</span>);
+<span style="color:#228b22">// 調用set方法
+</span><span style="color:#228b22"></span>id.<span style="color:#658b00">set</span>(p, 20);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(p);
+
+<span style="color:#228b22">// 查看可調用get方法，返回obj需要強轉
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">int</span> nid = (<span style="color:#00688b;font-weight:bold">int</span>) id.<span style="color:#658b00">get</span>(p);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(nid);
+</code></pre></div><ul>
+<li>用<code>getField(String 屬性名)</code>方法獲得該屬性的Field物件</li>
+<li>以Field物件調用set方法</li>
+<li>受到權限管制，實際開發不這樣用</li>
+</ul>
+<hr>
+<h5 id="作法2">作法2</h5>
+<blockquote>
+<p>真正使用的</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Class&lt;Person&gt; clazz = Person.<span style="color:#658b00">class</span>;
+Person p = clazz.<span style="color:#658b00">newInstance</span>();
+<span style="color:#228b22">// 用Declared返回該屬性的Field物件
+</span><span style="color:#228b22"></span>Field name = clazz.<span style="color:#658b00">getDeclaredField</span>(<span style="color:#cd5555">&#34;name&#34;</span>);
+<span style="color:#228b22">// 開啟權限
+</span><span style="color:#228b22"></span>name.<span style="color:#658b00">setAccessible</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+name.<span style="color:#658b00">set</span>(p, <span style="color:#cd5555">&#34;Tom&#34;</span>);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(name.<span style="color:#658b00">get</span>(p));
+</code></pre></div><ul>
+<li>已知要調用的屬姓名</li>
+<li>用<code>getDeclaredField(String 屬性名)</code>方法獲得該屬性的Field物件，這次沒有權限問題了，總是能獲得</li>
+<li>但是能獲得不等於能修改，想修改之前要先<code>setAccessible(true)</code></li>
+<li>以Field物件調用set方法</li>
+</ul>
+<h3 id="調用方法">調用方法</h3>
+<blockquote>
+<p>使用invoke</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Class&lt;Person&gt; clazz = Person.<span style="color:#658b00">class</span>;
+Person p = clazz.<span style="color:#658b00">newInstance</span>();
+<span style="color:#228b22">// 調用方法，需要指明方法的形參類型
+</span><span style="color:#228b22"></span>Method show = clazz.<span style="color:#658b00">getDeclaredMethod</span>(<span style="color:#cd5555">&#34;show&#34;</span>, String.<span style="color:#658b00">class</span>);
+show.<span style="color:#658b00">setAccessible</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+Object nation = show.<span style="color:#658b00">invoke</span>(p, <span style="color:#cd5555">&#34;台灣&#34;</span>);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;nation = &#34;</span> + nation);
+<span style="color:#228b22">// 調用靜態方法
+</span><span style="color:#228b22"></span>Method display = clazz.<span style="color:#658b00">getDeclaredMethod</span>(<span style="color:#cd5555">&#34;display&#34;</span>);
+display.<span style="color:#658b00">invoke</span>(clazz);
+</code></pre></div><ul>
+<li>已知要調用的方法名</li>
+<li>用<code>getDeclaredMethod</code>，需要指明具體形參類型，因為可能有很多<code>override</code>的方法</li>
+<li>有權限問題一樣需要<code>setAccessible</code></li>
+<li><code>invoke(物件, 形參...)</code>的返回值就是調用的方法的返回值
+<ul>
+<li>如果沒有則返回<code>null</code></li>
+</ul>
+</li>
+<li>也可以調用靜態方法</li>
+</ul>
+<h3 id="調用構造器">調用構造器</h3>
+<blockquote>
+<p>JDK8幾乎不這樣用，直接clazz.newInstance()就造物件了</p>
+<p>但新版的JDK將該方法廢棄，建議用這種形式，所以還是學一下</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Class&lt;Person&gt; clazz = Person.<span style="color:#658b00">class</span>;
+<span style="color:#228b22">// 調用構造器
+</span><span style="color:#228b22"></span>Constructor&lt;Person&gt; con = clazz.<span style="color:#658b00">getDeclaredConstructor</span>(String.<span style="color:#658b00">class</span>, <span style="color:#00688b;font-weight:bold">int</span>.<span style="color:#658b00">class</span>);
+con.<span style="color:#658b00">setAccessible</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+Person jay = con.<span style="color:#658b00">newInstance</span>(<span style="color:#cd5555">&#34;Jay&#34;</span>, 50);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(jay);
+</code></pre></div><ul>
+<li>參數的部分要注意，我本來還以為<code>int.class</code>要用<code>Integer.class</code>，結果不用</li>
+</ul>
+<h1 id="動態代理">動態代理</h1>
+<blockquote>
+<p>一個動態的代理工廠，可以隨目標類創造出對應的代理實例</p>
+</blockquote>
+<ul>
+<li>
+<p>由靜態代理模式轉動態，需要解決兩個問題</p>
+<ul>
+<li>
+<p>如何根據加載到記憶體中的<code>被代理類</code>，動態的創建一個<code>代理類</code>及<code>實例物件</code>?</p>
+</li>
+<li>
+<p>當通過<code>代理類實例物件</code>調用<code>方法a</code>時，如何動態的去調用<code>被代理類</code>中的同名<code>方法a</code>?</p>
+</li>
+</ul>
+</li>
+<li>
+<p>範例代碼:</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">Human</span> {
+    String <span style="color:#008b45">getBelief</span>();
+
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">eat</span>(String food);
+}
+
+<span style="color:#228b22">// 被代理類
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SuperMan</span> <span style="color:#8b008b;font-weight:bold">implements</span> Human {
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">getBelief</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;I believe I can fly!&#34;</span>;
+    }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">eat</span>(String food) {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;超人愛吃&#34;</span> + food);
+    }
+}
+
+<span style="color:#228b22">// 代理工廠
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ProxyFactory</span> {
+    <span style="color:#228b22">// 調用此方法，返回一個代理類的物件
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> Object <span style="color:#008b45">getProxyInstance</span>(Object obj) { <span style="color:#228b22">// obj=被代理類的物件
+</span><span style="color:#228b22"></span>        MyInvocationHandler myInvocationHandler = <span style="color:#8b008b;font-weight:bold">new</span> MyInvocationHandler();
+        myInvocationHandler.<span style="color:#658b00">bind</span>(obj); <span style="color:#228b22">// 連結物件
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> Proxy.<span style="color:#658b00">newProxyInstance</span>(obj.<span style="color:#658b00">getClass</span>().<span style="color:#658b00">getClassLoader</span>(), obj.<span style="color:#658b00">getClass</span>().<span style="color:#658b00">getInterfaces</span>(),
+                myInvocationHandler);
+    }
+}
+
+<span style="color:#228b22">// 代理類的物件被調用方法a時，就自動調用invoke方法
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyInvocationHandler</span> <span style="color:#8b008b;font-weight:bold">implements</span> InvocationHandler {
+    <span style="color:#8b008b;font-weight:bold">private</span> Object obj; <span style="color:#228b22">// 需要使用被代理類的物件進行賦值
+</span><span style="color:#228b22"></span>
+    <span style="color:#228b22">// 連結物件
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">bind</span>(Object obj) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">obj</span> = obj;
+    }
+
+    <span style="color:#228b22">// 物件傳進來，在這裡進行反射調用
+</span><span style="color:#228b22"></span>    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> Object <span style="color:#008b45">invoke</span>(Object proxy, Method method, Object[] args) <span style="color:#8b008b;font-weight:bold">throws</span> Throwable {
+        <span style="color:#228b22">// 要執行的方法就在這
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> method.<span style="color:#658b00">invoke</span>(obj, args);
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ProxyTest</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) {
+        SuperMan superMan = <span style="color:#8b008b;font-weight:bold">new</span> SuperMan();
+        Human proxyInstance = (Human) ProxyFactory.<span style="color:#658b00">getProxyInstance</span>(superMan);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(proxyInstance.<span style="color:#658b00">getBelief</span>());
+        proxyInstance.<span style="color:#658b00">eat</span>(<span style="color:#cd5555">&#34;漢堡包&#34;</span>);
+
+    }
+}
+</code></pre></div><ul>
+<li>實現<code>InvocationHandler</code>接口，在<code>invoke</code>方法中完成具體的代理操作</li>
+<li>透過<code>Proxy.newProxyInstance</code>靜態方法，返回代理類的物件</li>
+<li>以此物件完成想代理的操作</li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>獲取Class物件:<code>類.class</code></li>
+<li>反射創造實例:<code>newInstance()</code></li>
+<li>獲取資訊:
+<ul>
+<li><code>getXXX()</code>獲取<code>public</code>及一些父類的</li>
+<li><code>getDeclaredXXX()</code>獲得當前類，無視封裝性</li>
+</ul>
+</li>
+<li>突破封裝權限:<code>setAccessible(true)</code></li>
+<li>操作:<code>set</code>改變屬性、<code>invoke</code>調用方法</li>
+<li>動態代理:<code>Proxy.newProxyInstance</code>靜態方法、實現<code>InvocationHandler</code>接口</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-14</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211215-agg-ja-30/">
+			下一篇<br>JDK8新特性:Lambda表達式、StreamAPI、Optional類
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211213-agg-ja-28/">
+			上一篇<br>通訊協定:URL、IP與網路編程
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

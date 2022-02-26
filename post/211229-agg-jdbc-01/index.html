@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>JDBC基礎、PreparedStatement增刪改查</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="尚硅谷JDBC筆記-01">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="JDBC基礎、PreparedStatement增刪改查" />
+<meta property="og:description" content="尚硅谷JDBC筆記-01" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/211229-agg-jdbc-01/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-12-29T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JDBC基礎、PreparedStatement增刪改查"/>
+<meta name="twitter:description" content="尚硅谷JDBC筆記-01"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jdbc" onclick="onNavClick(`#jdbc-nav`)" id="jdbc-nav">
+									JDBC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%95%99%e5%ad%b8%e7%94%a8%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#教學用資料庫-nav`)" id="教學用資料庫-nav">
+									教學用資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5%e8%87%b3%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#連接至資料庫-nav`)" id="連接至資料庫-nav">
+									連接至資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a9%85%e5%8b%95driver" onclick="onNavClick(`#驅動driver-nav`)" id="驅動driver-nav">
+									驅動Driver
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e5%9d%80url" onclick="onNavClick(`#網址url-nav`)" id="網址url-nav">
+									網址URL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b9%be%e7%a8%ae%e5%b8%b8%e7%94%a8%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84-jdbc-url" onclick="onNavClick(`#幾種常用資料庫的-jdbc-url-nav`)" id="幾種常用資料庫的-jdbc-url-nav">
+									幾種常用資料庫的 JDBC URL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b8%b3%e8%99%9f%e5%af%86%e7%a2%bc" onclick="onNavClick(`#帳號密碼-nav`)" id="帳號密碼-nav">
+									帳號密碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e8%b3%87%e6%96%99" onclick="onNavClick(`#操作資料-nav`)" id="操作資料-nav">
+									操作資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#preparedstatement" onclick="onNavClick(`#preparedstatement-nav`)" id="preparedstatement-nav">
+									PreparedStatement
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a2%9e%e5%88%aa%e6%94%b9" onclick="onNavClick(`#增刪改-nav`)" id="增刪改-nav">
+									增刪改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b3%a8%e6%84%8f%e9%bb%9e" onclick="onNavClick(`#注意點-nav`)" id="注意點-nav">
+									注意點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#orm%e7%9a%84%e6%a6%82%e5%bf%b5" onclick="onNavClick(`#orm的概念-nav`)" id="orm的概念-nav">
+									ORM的概念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e8%88%87sql%e5%b0%8d%e6%87%89%e7%9a%84%e8%b3%87%e6%96%99%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#java與sql對應的資料類型-nav`)" id="java與sql對應的資料類型-nav">
+									Java與SQL對應的資料類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#resultsetmetadata%e7%9a%84%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#resultsetmetadata的常用方法-nav`)" id="resultsetmetadata的常用方法-nav">
+									ResultSetMetaData的常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9cblob%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#操作blob類型-nav`)" id="操作blob類型-nav">
+									操作BLOB類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%8f%92%e5%85%a5" onclick="onNavClick(`#批量插入-nav`)" id="批量插入-nav">
+									批量插入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jdbc" onclick="onNavClick(`#jdbc-nav`)" id="jdbc-nav">
+									JDBC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%95%99%e5%ad%b8%e7%94%a8%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#教學用資料庫-nav`)" id="教學用資料庫-nav">
+									教學用資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%80%a3%e6%8e%a5%e8%87%b3%e8%b3%87%e6%96%99%e5%ba%ab" onclick="onNavClick(`#連接至資料庫-nav`)" id="連接至資料庫-nav">
+									連接至資料庫
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%a9%85%e5%8b%95driver" onclick="onNavClick(`#驅動driver-nav`)" id="驅動driver-nav">
+									驅動Driver
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%b6%b2%e5%9d%80url" onclick="onNavClick(`#網址url-nav`)" id="網址url-nav">
+									網址URL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%b9%be%e7%a8%ae%e5%b8%b8%e7%94%a8%e8%b3%87%e6%96%99%e5%ba%ab%e7%9a%84-jdbc-url" onclick="onNavClick(`#幾種常用資料庫的-jdbc-url-nav`)" id="幾種常用資料庫的-jdbc-url-nav">
+									幾種常用資料庫的 JDBC URL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b8%b3%e8%99%9f%e5%af%86%e7%a2%bc" onclick="onNavClick(`#帳號密碼-nav`)" id="帳號密碼-nav">
+									帳號密碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9c%e8%b3%87%e6%96%99" onclick="onNavClick(`#操作資料-nav`)" id="操作資料-nav">
+									操作資料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#preparedstatement" onclick="onNavClick(`#preparedstatement-nav`)" id="preparedstatement-nav">
+									PreparedStatement
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a2%9e%e5%88%aa%e6%94%b9" onclick="onNavClick(`#增刪改-nav`)" id="增刪改-nav">
+									增刪改
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%b3%a8%e6%84%8f%e9%bb%9e" onclick="onNavClick(`#注意點-nav`)" id="注意點-nav">
+									注意點
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%a9%a2" onclick="onNavClick(`#查詢-nav`)" id="查詢-nav">
+									查詢
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#orm%e7%9a%84%e6%a6%82%e5%bf%b5" onclick="onNavClick(`#orm的概念-nav`)" id="orm的概念-nav">
+									ORM的概念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java%e8%88%87sql%e5%b0%8d%e6%87%89%e7%9a%84%e8%b3%87%e6%96%99%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#java與sql對應的資料類型-nav`)" id="java與sql對應的資料類型-nav">
+									Java與SQL對應的資料類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#resultsetmetadata%e7%9a%84%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95" onclick="onNavClick(`#resultsetmetadata的常用方法-nav`)" id="resultsetmetadata的常用方法-nav">
+									ResultSetMetaData的常用方法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%93%8d%e4%bd%9cblob%e9%a1%9e%e5%9e%8b" onclick="onNavClick(`#操作blob類型-nav`)" id="操作blob類型-nav">
+									操作BLOB類型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%8f%92%e5%85%a5" onclick="onNavClick(`#批量插入-nav`)" id="批量插入-nav">
+									批量插入
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%b5%90" onclick="onNavClick(`#小結-nav`)" id="小結-nav">
+									小結
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/jdbc.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    JDBC基礎、PreparedStatement增刪改查
+                    
+                    <div class="post-subtitle">
+                        尚硅谷JDBC筆記-01
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-12-29 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/javaweb%E7%B7%9A%E4%B8%8A%E8%AA%B2">JavaWeb線上課</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/jdbc">jdbc</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <blockquote>
+<p>本筆記基於2019年9月的 尚硅谷JDBC核心技术(新版jdbc)</p>
+<p><a href="https://www.bilibili.com/video/BV1eJ411c7rf">https://www.bilibili.com/video/BV1eJ411c7rf</a></p>
+</blockquote>
+<h1 id="jdbc">JDBC</h1>
+<ul>
+<li>JDBC，全稱Java Database Connectivity</li>
+<li>為java用來統一管理連接資料庫的接口</li>
+<li>JDBC挺短的，且為JavaWeb的前置知識，我就歸到同一個筆記分類了</li>
+</ul>
+<h2 id="教學用資料庫">教學用資料庫</h2>
+<blockquote>
+<p>他官方的有編碼問題，這個是修正版的，用工具自己導入</p>
+<p>PS1.DataGrip的導入常常出問題，針對導入最好用別款GUI</p>
+<p>PS2.少了一個BLOB學到那邊自己插入即可</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#228b22">-- --------------------------------------------------------
+</span><span style="color:#228b22">-- 主机:                           127.0.0.1
+</span><span style="color:#228b22">-- 服务器版本:                        8.0.22 - MySQL Community Server - GPL
+</span><span style="color:#228b22">-- 服务器操作系统:                      Win64
+</span><span style="color:#228b22">-- HeidiSQL 版本:                  11.1.0.6116
+</span><span style="color:#228b22">-- --------------------------------------------------------
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET NAMES utf8 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!50503 SET NAMES utf8mb4 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE=&#39;NO_AUTO_VALUE_ON_ZERO&#39; */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出 jdbc_learn 的数据库结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`jdbc_learn`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DATABASE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`jdbc_learn`<span style="color:#bbb"> </span><span style="color:#228b22">/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */</span><span style="color:#bbb"> </span><span style="color:#228b22">/*!80016 DEFAULT ENCRYPTION=&#39;N&#39; */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>USE<span style="color:#bbb"> </span>`jdbc_learn`;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出  表 jdbc_learn.customers 结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`customers`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`customers`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span>AUTO_INCREMENT,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`email`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`birth`<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`photo`<span style="color:#bbb"> </span>mediumblob,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span>AUTO_INCREMENT=<span style="color:#b452cd">19</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8mb4<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COLLATE</span>=utf8mb4_0900_ai_ci;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 正在导出表  jdbc_learn.customers 的数据：~0 rows (大约)
+</span><span style="color:#228b22"></span><span style="color:#228b22">/*!40000 ALTER TABLE `customers` DISABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>`customers`<span style="color:#bbb"> </span>(`id`,<span style="color:#bbb"> </span>`name`,<span style="color:#bbb"> </span>`email`,<span style="color:#bbb"> </span>`birth`,<span style="color:#bbb"> </span>`photo`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;汪峰&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;wf@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2010-02-02&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;王菲&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;wangf@163.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1988-12-26&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">3</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;林志玲&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;linzl@gmail.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1984-06-12&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;汤唯&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;tangw@sina.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1986-06-13&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">5</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;成龙&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Jackey@gmai.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1955-07-14&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">6</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;迪丽热巴&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;reba@163.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1983-05-17&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">7</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;刘亦菲&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;liuyifei@qq.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1991-11-14&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">8</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;陈道明&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;bdf@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2014-01-17&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">10</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;周杰伦&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;zhoujl@sina.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1979-11-15&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">12</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;黎明&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;LiM@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1998-09-08&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">13</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;张学友&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;zhangxy@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1998-12-21&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">16</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;朱茵&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;zhuyin@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2014-01-16&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">18</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;贝多芬&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;beidf@126.com&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2014-01-17&#39;</span>,<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40000 ALTER TABLE `customers` ENABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出  表 jdbc_learn.examstudent 结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`examstudent`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`examstudent`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`FlowID`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span>AUTO_INCREMENT,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`<span style="color:#8b008b;font-weight:bold">Type</span>`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`IDCard`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">18</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`ExamCard`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`StudentName`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`<span style="color:#8b008b;font-weight:bold">Location</span>`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`Grade`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`FlowID`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span>AUTO_INCREMENT=<span style="color:#b452cd">7</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=gb2312;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 正在导出表  jdbc_learn.examstudent 的数据：~0 rows (大约)
+</span><span style="color:#228b22"></span><span style="color:#228b22">/*!40000 ALTER TABLE `examstudent` DISABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>`examstudent`<span style="color:#bbb"> </span>(`FlowID`,<span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">Type</span>`,<span style="color:#bbb"> </span>`IDCard`,<span style="color:#bbb"> </span>`ExamCard`,<span style="color:#bbb"> </span>`StudentName`,<span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">Location</span>`,<span style="color:#bbb"> </span>`Grade`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;412824195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754000&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;张锋&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;郑州&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">85</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;222224195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754001&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;孙朋&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;大连&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">56</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">3</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">6</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;342824195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754002&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;刘明&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;沈阳&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">72</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">6</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;100824195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754003&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;赵虎&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;哈尔滨&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">95</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">5</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;454524195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754004&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;杨丽&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;北京&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">64</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">6</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;854524195263214584&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;200523164754005&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;王小红&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;太原&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">60</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40000 ALTER TABLE `examstudent` ENABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出  表 jdbc_learn.order 结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`order_id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span>AUTO_INCREMENT,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`order_name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`order_date`<span style="color:#bbb"> </span><span style="color:#658b00">date</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`order_id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span>AUTO_INCREMENT=<span style="color:#b452cd">5</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8mb4<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COLLATE</span>=utf8mb4_0900_ai_ci;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 正在导出表  jdbc_learn.order 的数据：~0 rows (大约)
+</span><span style="color:#228b22"></span><span style="color:#228b22">/*!40000 ALTER TABLE `order` DISABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">order</span>`<span style="color:#bbb"> </span>(`order_id`,<span style="color:#bbb"> </span>`order_name`,<span style="color:#bbb"> </span>`order_date`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;AA&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2010-03-04&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;BB&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;2000-02-01&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;GG&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;1994-06-28&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40000 ALTER TABLE `order` ENABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出  表 jdbc_learn.user 结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">user</span>`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">user</span>`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`id`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span>AUTO_INCREMENT,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`name`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">10</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`password`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;123456&#39;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`address`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">25</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`phone`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">15</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(`id`)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span>AUTO_INCREMENT=<span style="color:#b452cd">6</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8mb4<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COLLATE</span>=utf8mb4_0900_ai_ci;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 正在导出表  jdbc_learn.user 的数据：~5 rows (大约)
+</span><span style="color:#228b22"></span><span style="color:#228b22">/*!40000 ALTER TABLE `user` DISABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>`<span style="color:#8b008b;font-weight:bold">user</span>`<span style="color:#bbb"> </span>(`id`,<span style="color:#bbb"> </span>`name`,<span style="color:#bbb"> </span>`password`,<span style="color:#bbb"> </span>`address`,<span style="color:#bbb"> </span>`phone`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">1</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;章子怡&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;qwerty&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Beijing&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;13788658672&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">2</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;郭富城&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;HongKong&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;15678909898&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">3</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;林志玲&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;654321&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;Taiwan&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;18612124565&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">4</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;梁静茹&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;987654367&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;malaixiya&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;18912340998&#39;</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#b452cd">5</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;LadyGaGa&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;123456&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;America&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;13012386565&#39;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40000 ALTER TABLE `user` ENABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 导出  表 jdbc_learn.user_table 结构
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">DROP</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`user_table`;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">IF</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NOT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">EXISTS</span><span style="color:#bbb"> </span>`user_table`<span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`<span style="color:#8b008b;font-weight:bold">user</span>`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`password`<span style="color:#bbb"> </span><span style="color:#658b00">varchar</span>(<span style="color:#b452cd">20</span>)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>`balance`<span style="color:#bbb"> </span><span style="color:#658b00">int</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">NULL</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>ENGINE=InnoDB<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">DEFAULT</span><span style="color:#bbb"> </span>CHARSET=utf8mb4<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">COLLATE</span>=utf8mb4_0900_ai_ci;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">-- 正在导出表  jdbc_learn.user_table 的数据：~4 rows (大约)
+</span><span style="color:#228b22"></span><span style="color:#228b22">/*!40000 ALTER TABLE `user_table` DISABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">INSERT</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">INTO</span><span style="color:#bbb"> </span>`user_table`<span style="color:#bbb"> </span>(`<span style="color:#8b008b;font-weight:bold">user</span>`,<span style="color:#bbb"> </span>`password`,<span style="color:#bbb"> </span>`balance`)<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">VALUES</span><span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#cd5555">&#39;AA&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;123456&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1000</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#cd5555">&#39;BB&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;654321&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">1000</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#cd5555">&#39;CC&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abcd&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">2000</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">	</span>(<span style="color:#cd5555">&#39;DD&#39;</span>,<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abcder&#39;</span>,<span style="color:#bbb"> </span><span style="color:#b452cd">3000</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40000 ALTER TABLE `user_table` ENABLE KEYS */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, &#39;&#39;) */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#228b22">/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span></code></pre></div><h2 id="連接至資料庫">連接至資料庫</h2>
+<ul>
+<li>
+<p>從java透過JDBC連接到資料庫需要3個要素:驅動、網址、帳號密碼</p>
+</li>
+<li>
+<p>範例如下，接著一項一項說明:</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Class.<span style="color:#658b00">forName</span>(<span style="color:#cd5555">&#34;com.mysql.cj.jdbc.Driver&#34;</span>); <span style="color:#228b22">// mysql 8.0
+</span><span style="color:#228b22"></span>Connection conn = DriverManager.<span style="color:#658b00">getConnection</span>(<span style="color:#cd5555">&#34;jdbc:mysql://localhost:3306/jdbc_learn?user=root&amp;password=1234&#34;</span>);
+</code></pre></div><h3 id="驅動driver">驅動Driver</h3>
+<blockquote>
+<p>硬體層面的支援</p>
+</blockquote>
+<ul>
+<li>在程式中不需要直接去訪問實現了Driver介面的類，而是由驅動程式管理器類(<code>java.sql.DriverManager</code>)去調用這些Driver實現</li>
+<li>需要手動下載驅動並導入jar包，之後透過靜態方法<code>Class.forname(&quot;驅動名&quot;)</code>載入</li>
+</ul>
+<pre tabindex="0"><code>- Oracle的驅動:oracle.jdbc.driver.OracleDriver
+- mysql 5的驅動:com.mysql.jdbc.Driver
+- mysql 8的驅動:com.mysql.cj.jdbc.Driver
+</code></pre><h3 id="網址url">網址URL</h3>
+<blockquote>
+<p>宣告實際要連的資料庫位置</p>
+</blockquote>
+<p>JDBC URL的標準由三部分組成，例如:<code>jdbc:子協議:子名稱</code></p>
+<ul>
+<li>協議:JDBC URL中的協議總是jdbc</li>
+<li>子協議:子協定用於標識一個資料庫驅動程式</li>
+<li>子名稱:一種標識資料庫的方法。子名稱可以依不同的子協議而變化，用子名稱的目的是為了定位資料庫提供足夠的資訊。包含主機名稱(對應服務端的ip位址)，埠號，資料庫名</li>
+</ul>
+<h4 id="幾種常用資料庫的-jdbc-url">幾種常用資料庫的 JDBC URL</h4>
+<ul>
+<li>MySQL的連接URL編寫方式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">jdbc:mysql:<span style="color:#228b22">//主機名稱稱:mysql服務埠號/資料庫名稱?參數=值&amp;參數=值
+</span><span style="color:#228b22"></span>
+jdbc:mysql:<span style="color:#228b22">//localhost:3306/atguigu
+</span><span style="color:#228b22"></span>
+jdbc:mysql:<span style="color:#228b22">//localhost:3306/atguigu?useUnicode=true&amp;characterEncoding=utf8
+</span><span style="color:#228b22"></span>
+jdbc:mysql:<span style="color:#228b22">//localhost:3306/atguigu?user=root&amp;password=123456
+</span><span style="color:#228b22"></span>
+<span style="color:#228b22">// 8.0以後還要加時區，不然可能報錯
+</span><span style="color:#228b22"></span>jdbc:mysql:<span style="color:#228b22">//localhost:3306/DBname?characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=GMT%2B8
+</span></code></pre></div><ul>
+<li>Oracle 9i的連接URL編寫方式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">jdbc:oracle:thin:<span style="color:#707a7c">@主機名稱稱</span>:oracle服務埠號:資料庫名稱
+
+jdbc:oracle:thin:<span style="color:#707a7c">@localhost</span>:1521:atguigu
+</code></pre></div><ul>
+<li>SQLServer的連接URL編寫方式:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">jdbc:sqlserver:<span style="color:#228b22">//主機名稱稱:sqlserver服務埠號:DatabaseName=資料庫名稱
+</span><span style="color:#228b22"></span>
+jdbc:sqlserver:<span style="color:#228b22">//localhost:1433:DatabaseName=atguigu
+</span></code></pre></div><h5 id="關於時區">關於時區</h5>
+<p>指的是mysql server的時區，可以用指令查看</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#8b008b;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;%time_zone%&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">如果沒有特別設定過，返回值應該是空跟</span><span style="color:#8b008b;font-weight:bold">SYSTEM</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">即</span>mysql<span style="color:#bbb"> </span>server自動使用該電腦的系統時區<span style="color:#a61717;background-color:#e3d2d2">，入鄉隨俗的意思</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">為了防止錯誤，我們可以手動設定，在</span>MySQL目錄下找到my.ini<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">在</span>[mysqld]<span style="color:#a61717;background-color:#e3d2d2">下添加一行</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">default</span>-time-<span style="color:#8b008b;font-weight:bold">zone</span>=<span style="color:#cd5555">&#39;+08:00&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">重啟服務然後使用指令</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#8b008b;font-weight:bold">set</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">global</span><span style="color:#bbb"> </span>time_zone=<span style="color:#cd5555">&#39;+8:00&#39;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">這樣</span>mysql<span style="color:#bbb"> </span>server的時區就鎖定在+<span style="color:#b452cd">8</span><span style="color:#a61717;background-color:#e3d2d2">了，</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">接著回到</span>JDBC的URL部分<span style="color:#a61717;background-color:#e3d2d2">，設定</span>:<span style="color:#bbb">
+</span><span style="color:#bbb"></span>&amp;serverTimezone=Asia/Shanghai<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">或</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>&amp;serverTimezone=GMT%<span style="color:#b452cd">2</span>B8<span style="color:#bbb">
+</span><span style="color:#bbb"> </span><span style="color:#228b22">-- %2B是+的意思
+</span></code></pre></div><h3 id="帳號密碼">帳號密碼</h3>
+<blockquote>
+<p>連到資料庫了當然要輸入帳號密碼</p>
+</blockquote>
+<ul>
+<li><code>user,password</code>可以用&quot;<code>屬性名=屬性值</code>&ldquo;方式告訴資料庫</li>
+<li>可以調用 <code>DriverManager</code> 類的 <code>getConnection()</code> 方法建立到資料庫的連接</li>
+<li>通常我們將這些配置寫到<code>jdbc.properties</code>文件檔，達成解偶方便擴展與維護</li>
+<li>範例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span>  <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">testConnection</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+<span style="color:#228b22">//1.載入設定檔
+</span><span style="color:#228b22"></span>InputStream is = ConnectionTest.<span style="color:#658b00">class</span>.<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;jdbc.properties&#34;</span>);
+Properties pros = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+pros.<span style="color:#658b00">load</span>(is);
+
+<span style="color:#228b22">//2.讀取配置資訊
+</span><span style="color:#228b22"></span>String user = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;user&#34;</span>);
+String password = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+String url = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;url&#34;</span>);
+String driverClass = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;driverClass&#34;</span>);
+
+<span style="color:#228b22">//3.載入驅動
+</span><span style="color:#228b22"></span>Class.<span style="color:#658b00">forName</span>(driverClass);
+
+<span style="color:#228b22">//4.獲取連接
+</span><span style="color:#228b22"></span>Connection conn = DriverManager.<span style="color:#658b00">getConnection</span>(url,user,password);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(conn);
+
+<span style="color:#228b22">//5. 永遠別忘記關閉
+</span><span style="color:#228b22"></span>    conn.<span style="color:#658b00">close</span>();
+}
+</code></pre></div><ul>
+<li>配置文件<code>jdbc.properties</code></li>
+</ul>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">user=root
+password=1234
+url=jdbc:mysql://localhost:3306/jdbc_learn
+driverClass=com.mysql.cj.jdbc.Driver
+</code></pre><ul>
+<li>封裝成一個自訂的<code>JDBCUtils</code>類方便練習使用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.io.InputStream</span>;
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.sql.Connection</span>;
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.sql.DriverManager</span>;
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.sql.SQLException</span>;
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.sql.Statement</span>;
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">java.util.Properties</span>;
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">JDBCUtils</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> Connection <span style="color:#008b45">getConnection</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+        <span style="color:#228b22">// 造流載入配置文件
+</span><span style="color:#228b22"></span>        InputStream resourceAsStream = ClassLoader.<span style="color:#658b00">getSystemClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;jdbc.properties&#34;</span>);
+        Properties pros = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+        pros.<span style="color:#658b00">load</span>(resourceAsStream);
+
+        <span style="color:#228b22">// 讀取出對應的值
+</span><span style="color:#228b22"></span>        String user = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;user&#34;</span>);
+        String password = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;password&#34;</span>);
+        String url = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;url&#34;</span>);
+        String driverClass = pros.<span style="color:#658b00">getProperty</span>(<span style="color:#cd5555">&#34;driverClass&#34;</span>);
+
+        <span style="color:#228b22">// 驅動
+</span><span style="color:#228b22"></span>        Class.<span style="color:#658b00">forName</span>(driverClass);
+
+        <span style="color:#228b22">// 連接
+</span><span style="color:#228b22"></span>        Connection connection = DriverManager.<span style="color:#658b00">getConnection</span>(url, user, password);
+
+        <span style="color:#8b008b;font-weight:bold">return</span> connection;
+    }
+    <span style="color:#228b22">// 關閉資源
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">closeResource</span>(Connection conn, Statement ps) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">assert</span> conn != <span style="color:#8b008b;font-weight:bold">null</span>;
+            conn.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">assert</span> ps != <span style="color:#8b008b;font-weight:bold">null</span>;
+            ps.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+}
+
+</code></pre></div><h2 id="操作資料">操作資料</h2>
+<ul>
+<li>在 <code>java.sql</code> 包中有 3 個介面分別定義了對資料庫的調用的不同方式:
+<ul>
+<li><code>Statement</code>:用於執行靜態 SQL 語句並返回它所生成結果的物件
+<ul>
+<li>有sql注入風險，通常不用</li>
+</ul>
+</li>
+<li><code>PreparedStatement</code>:SQL 語句被預編譯並存儲在此物件中，可以使用此物件多次高效地執行該語句</li>
+<li><code>CallableStatement</code>:用於執行 SQL 存儲過程</li>
+</ul>
+</li>
+</ul>
+<h2 id="preparedstatement">PreparedStatement</h2>
+<blockquote>
+<p>其實這些操作實際開發在框架都封裝好了，不過從基底了解總是好的</p>
+</blockquote>
+<ul>
+<li>Prepared顧名思義，預編好了SQL語句，參數的部分用<code>?</code>問號佔位</li>
+<li>相當於在DBMS緩存了該語句，執行效率更高</li>
+<li>由於預編時會把單引號<code>'</code>轉義成<code>\'</code>，所以可以防止用單引號截斷產生歧意的SQL注入
+<ul>
+<li>實際上仍有一個漏洞就是<code>%</code>符號並不會被轉義，可能跟<code>like</code>查詢構成一種拖垮效能的大量查詢惡意注入</li>
+</ul>
+</li>
+</ul>
+<h3 id="增刪改">增刪改</h3>
+<ol>
+<li>連接資料庫獲取<code>Connection</code>物件</li>
+<li>編寫<code>sql</code>語句</li>
+<li>調用<code>prepareStatement(sql)</code>方法，獲取<code>prepareStatement</code>實例</li>
+<li>使用<code>setObject()</code>依序填充佔位符，注意從1開始</li>
+<li>執行<code>executeUpdate()</code>方法</li>
+<li>關閉資源</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 舉例
+</span><span style="color:#228b22"></span>Connection conn = JDBCUtils.<span style="color:#658b00">getConnection</span>();
+String sql = <span style="color:#cd5555">&#34;update customers set name = ? where id = ?&#34;</span>;
+PreparedStatement ps = conn.<span style="color:#658b00">prepareStatement</span>(sql);
+ps.<span style="color:#658b00">setObject</span>(1, <span style="color:#cd5555">&#34;Tommy&#34;</span>);
+ps.<span style="color:#658b00">setObject</span>(2, <span style="color:#cd5555">&#34;2&#34;</span>);
+ps.<span style="color:#658b00">executeUpdate</span>();
+JDBCUtils.<span style="color:#658b00">closeResource</span>(conn, ps);
+</code></pre></div><h4 id="注意點">注意點</h4>
+<ul>
+<li>Java中的<code>sql</code>語句我們通常用<code>String</code>去裝</li>
+<li>如果用了<code>()</code>記得前後要對應好</li>
+<li>而結尾的<code>;</code>不需要加，但加了大部分情況也不會報錯
+<ul>
+<li>使用Batched操作Statement時最尾的若有;會出錯</li>
+</ul>
+</li>
+</ul>
+<h3 id="查詢">查詢</h3>
+<blockquote>
+<p>由於查詢有返回值，需要有容器來裝結果，利用反射造這個容器</p>
+</blockquote>
+<ol>
+<li>連接資料庫獲取<code>Connection</code>物件</li>
+<li>編寫<code>sql</code>語句</li>
+<li>調用<code>prepareStatement(sql)</code>方法，獲取<code>prepareStatement</code>實例</li>
+<li>使用<code>setObject()</code>依序填充佔位符，注意從1開始</li>
+<li>執行<code>executeQuery()</code>方法，得到返回的結果集<code>ResultSet</code></li>
+<li>從結果集調用<code>getMetaData()</code>方法，獲取結果集元資料<code>ResultSetMetaData</code></li>
+<li>從元資料調用get方法獲取資料筆數與列的別名<code>columnCount、columnLabel</code></li>
+<li>透過反射創造物件並賦予對應的值</li>
+<li>關閉資源</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 舉例
+</span><span style="color:#228b22"></span><span style="color:#707a7c">@Test</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">testList</span>() {
+    String sql = <span style="color:#cd5555">&#34;select id customerId,name,email from customers where id &lt; ?&#34;</span>;
+    List&lt;Customers&gt; list = getForList(Customers.<span style="color:#658b00">class</span>, sql, 5);
+    list.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; List&lt;T&gt; <span style="color:#008b45">getForList</span>(Class&lt;T&gt; tClass, String sql, Object... args) {
+    Connection conn = <span style="color:#8b008b;font-weight:bold">null</span>;
+    PreparedStatement ps = <span style="color:#8b008b;font-weight:bold">null</span>;
+    ResultSet resultSet = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#228b22">// 連線
+</span><span style="color:#228b22"></span>        conn = JDBCUtils.<span style="color:#658b00">getConnection</span>();
+        ps = conn.<span style="color:#658b00">prepareStatement</span>(sql);
+        <span style="color:#228b22">// 填入佔位符
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; args.<span style="color:#658b00">length</span>; i++) {
+            ps.<span style="color:#658b00">setObject</span>(i + 1, args[i]); <span style="color:#228b22">// 注意sql的index從1開始
+</span><span style="color:#228b22"></span>        }
+        <span style="color:#228b22">// 開查
+</span><span style="color:#228b22"></span>        resultSet = ps.<span style="color:#658b00">executeQuery</span>();
+        <span style="color:#228b22">// 從結果集得出元資料
+</span><span style="color:#228b22"></span>        ResultSetMetaData metaData = resultSet.<span style="color:#658b00">getMetaData</span>();
+        <span style="color:#228b22">// 查總共有幾列資料
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> columnCount = metaData.<span style="color:#658b00">getColumnCount</span>();
+
+        <span style="color:#228b22">// 造一個用來接收最後結果的list
+</span><span style="color:#228b22"></span>        ArrayList&lt;T&gt; list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+        <span style="color:#228b22">// 開始把從資料庫來的結果集賦到接收的ORM類
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">while</span> (resultSet.<span style="color:#658b00">next</span>()) {
+            T t = tClass.<span style="color:#658b00">newInstance</span>();
+            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; columnCount; i++) {
+                <span style="color:#228b22">// 這個for循環類似印表機，開始橫向掃描，例如第一筆資料&#34;張三&#34;
+</span><span style="color:#228b22"></span>                <span style="color:#228b22">// 他的學號是OOO，地址是XXX，電話是...
+</span><span style="color:#228b22"></span>
+                <span style="color:#228b22">// 查列名，豎的，注意是取列的別名
+</span><span style="color:#228b22"></span>                String columnLabel = metaData.<span style="color:#658b00">getColumnLabel</span>(i + 1);
+                <span style="color:#228b22">// 取該筆資料的值
+</span><span style="color:#228b22"></span>                Object value = resultSet.<span style="color:#658b00">getObject</span>(i + 1);
+                <span style="color:#228b22">// 用反射賦值
+</span><span style="color:#228b22"></span>                Field field = tClass.<span style="color:#658b00">getDeclaredField</span>(columnLabel); <span style="color:#228b22">// 從列名找到對應類的屬性名
+</span><span style="color:#228b22"></span>                field.<span style="color:#658b00">setAccessible</span>(<span style="color:#8b008b;font-weight:bold">true</span>); <span style="color:#228b22">// 暴力獲取權限
+</span><span style="color:#228b22"></span>                field.<span style="color:#658b00">set</span>(t, value); <span style="color:#228b22">// 反射賦值給物件t
+</span><span style="color:#228b22"></span>            }
+            list.<span style="color:#658b00">add</span>(t); <span style="color:#228b22">// 一筆資料完整了，貼進去最終要返回的集合
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 回到上面while (resultSet.next()，如果有下一筆&#34;李四&#34;繼續
+</span><span style="color:#228b22"></span>        }
+        <span style="color:#8b008b;font-weight:bold">return</span> list; <span style="color:#228b22">// 返回整張表
+</span><span style="color:#228b22"></span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+        e.<span style="color:#658b00">printStackTrace</span>();
+    } <span style="color:#8b008b;font-weight:bold">finally</span> {
+        <span style="color:#8b008b;font-weight:bold">assert</span> conn != <span style="color:#8b008b;font-weight:bold">null</span>;
+        JDBCUtils.<span style="color:#658b00">closeResource</span>(conn, ps);
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">assert</span> resultSet != <span style="color:#8b008b;font-weight:bold">null</span>;
+            resultSet.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SQLException e) {
+            e.<span style="color:#658b00">printStackTrace</span>();
+        }
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">null</span>;
+}
+</code></pre></div><ul>
+<li>用來接收的類</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customers</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> customerId;
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+    <span style="color:#8b008b;font-weight:bold">private</span> String email;
+<span style="color:#228b22">///  ... 構造器，toString方法等等
+</span></code></pre></div><h4 id="orm的概念">ORM的概念</h4>
+<ul>
+<li>
+<p>英文叫 Object Relational Mapping，翻譯成中文為物件關聯對</p>
+</li>
+<li>
+<p>把關聯式資料庫中的一筆資料，對應成一個類的物件</p>
+</li>
+<li>
+<p>簡單來說是這樣的對應:</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>MySQL</th>
+<th>Java</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一張表Table</td>
+<td>一個自訂類Class</td>
+</tr>
+<tr>
+<td>表中的欄位(列名)</td>
+<td>類中的屬性</td>
+</tr>
+<tr>
+<td>一筆資料</td>
+<td>一個物件</td>
+</tr>
+</tbody>
+</table>
+<h4 id="java與sql對應的資料類型">Java與SQL對應的資料類型</h4>
+<table>
+<thead>
+<tr>
+<th>Java</th>
+<th>SQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>BIT</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>TINYINT</td>
+</tr>
+<tr>
+<td>short</td>
+<td>SMALLINT</td>
+</tr>
+<tr>
+<td>int</td>
+<td>INTEGER</td>
+</tr>
+<tr>
+<td>long</td>
+<td>BIGINT</td>
+</tr>
+<tr>
+<td>String</td>
+<td>CHAR,VARCHAR,LONGVARCHAR</td>
+</tr>
+<tr>
+<td>byte   array</td>
+<td>BINARY  ,    VAR BINARY</td>
+</tr>
+<tr>
+<td>java.sql.Date</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>java.sql.Time</td>
+<td>TIME</td>
+</tr>
+<tr>
+<td>java.sql.Timestamp</td>
+<td>TIMESTAMP</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resultsetmetadata的常用方法">ResultSetMetaData的常用方法</h3>
+<blockquote>
+<p>可用於獲取關於 ResultSet 物件中列的類型和屬性資訊的物件</p>
+</blockquote>
+<ul>
+<li><code>getColumnName(int column)</code>:獲取指定列的名稱</li>
+<li><code>getColumnLabel(int column)</code>:獲取指定列的別名</li>
+<li><code>getColumnCount()</code>:返回當前 ResultSet 物件中的列數。</li>
+<li><code>getColumnTypeName(int column)</code>:檢索指定列的資料庫特定的類型名稱。</li>
+<li><code>getColumnDisplaySize(int column)</code>:指示指定列的最大標準寬度，以字元為單位</li>
+<li><code>isNullable(int column)</code>:指示指定列中的值是否可以為 null</li>
+<li><code>isAutoIncrement(int column)</code>:指示是否自動為指定列進行編號，這樣這些列仍然是唯讀的</li>
+</ul>
+<h3 id="操作blob類型">操作BLOB類型</h3>
+<blockquote>
+<p>把檔案編成二進位存到資料庫中，實際開發沒人會這樣存，了解即可</p>
+</blockquote>
+<ul>
+<li>造一個流去接收或儲存</li>
+<li>使用<code>setBlob()</code>方法傳檔案至資料庫</li>
+<li>以<code>resultSet</code>使用<code>getBlob(列標籤)</code>接收成blob檔案</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 存，範例
+</span><span style="color:#228b22"></span>Connection conn = JDBCUtils.<span style="color:#658b00">getConnection</span>();
+PreparedStatement ps = conn.<span style="color:#658b00">prepareStatement</span>(<span style="color:#cd5555">&#34;select photo from customers where id=?;&#34;</span>);
+FileInputStream is = <span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#cd5555">&#34;G:\\Java\\code\\guigu\\JDBC\\src\\400.png&#34;</span>);
+ps.<span style="color:#658b00">setBlob</span>(1, is);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(ps.<span style="color:#658b00">executeUpdate</span>());
+
+<span style="color:#228b22">// 讀，範例
+</span><span style="color:#228b22"></span>Connection conn = JDBCUtils.<span style="color:#658b00">getConnection</span>();
+PreparedStatement ps = conn.<span style="color:#658b00">prepareStatement</span>(<span style="color:#cd5555">&#34;select photo from customers where id=?;&#34;</span>);
+ps.<span style="color:#658b00">setObject</span>(1, 1);
+ResultSet resultSet = ps.<span style="color:#658b00">executeQuery</span>();
+<span style="color:#8b008b;font-weight:bold">if</span> (resultSet.<span style="color:#658b00">next</span>()) {
+    Blob photo = resultSet.<span style="color:#658b00">getBlob</span>(<span style="color:#cd5555">&#34;photo&#34;</span>);
+    <span style="color:#228b22">// 造一個流去裝Blob
+</span><span style="color:#228b22"></span>    InputStream bs = photo.<span style="color:#658b00">getBinaryStream</span>();
+    FileOutputStream os = <span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#cd5555">&#34;G:\\Java\\code\\guigu\\JDBC\\src\\new2.png&#34;</span>);
+    <span style="color:#228b22">// 複製到檔案輸出流
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">byte</span>[] buffer = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[1024];
+    <span style="color:#00688b;font-weight:bold">int</span> len;
+    <span style="color:#8b008b;font-weight:bold">while</span> ((len = bs.<span style="color:#658b00">read</span>(buffer)) != -1) {
+        os.<span style="color:#658b00">write</span>(buffer, 0, len);
+    }
+    conn.<span style="color:#658b00">close</span>();
+    bs.<span style="color:#658b00">close</span>();
+    os.<span style="color:#658b00">close</span>();
+}
+</code></pre></div><ul>
+<li>注意<code>resultset</code>的遊標的起始位置是第一行之前，如果沒有<code>next()</code>一下就會出現如下異常:<code>Before start of result set</code>
+<ul>
+<li>確定只會有一個結果可以用if判斷一下，否則還是老實while</li>
+</ul>
+</li>
+<li>另外要注意mysql中blob類型的大小問題
+<ul>
+<li><code>tinyblob</code>:僅255個字元</li>
+<li><code>blob</code>:最大限制到65KB</li>
+<li><code>mediumblob</code>:限制到16MB</li>
+<li><code>longblob</code>:可達4GB</li>
+</ul>
+</li>
+<li>有時候明明大小在限制內，卻還是報錯，要到<code>my.ini</code>下修改環境變數<code>max_allowed_packet=</code></li>
+</ul>
+<h3 id="批量插入">批量插入</h3>
+<blockquote>
+<p>用緩存、手動控制提交來增加效率</p>
+</blockquote>
+<ul>
+<li><code>addBatch(String)</code>:添加需要批量處理的SQL語句或是參數</li>
+<li><code>executeBatch()</code>:執行批量處理語句</li>
+<li><code>clearBatch()</code>:清空緩存的數據</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例
+</span><span style="color:#228b22"></span>Class.<span style="color:#658b00">forName</span>(<span style="color:#cd5555">&#34;com.mysql.cj.jdbc.Driver&#34;</span>);
+<span style="color:#228b22">// 連線時增加允許批次處理的參數&#34;&amp;rewriteBatchedStatements=true&#34;
+</span><span style="color:#228b22"></span>Connection conn = DriverManager.<span style="color:#658b00">getConnection</span>(<span style="color:#cd5555">&#34;jdbc:mysql://localhost:3306/jdbc_learn&#34;</span> +
+        <span style="color:#cd5555">&#34;?user=root&amp;password=1234&amp;rewriteBatchedStatements=true&#34;</span>);
+<span style="color:#228b22">// 設定不要自動提交
+</span><span style="color:#228b22"></span>conn.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">false</span>);
+PreparedStatement ps = conn.<span style="color:#658b00">prepareStatement</span>(<span style="color:#cd5555">&#34;insert into goods (name) value (?)&#34;</span>);
+<span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 1; i &lt; 10000; i++) {
+    ps.<span style="color:#658b00">setString</span>(1, <span style="color:#cd5555">&#34;name_&#34;</span> + i);
+    <span style="color:#228b22">// 積攢sql命令
+</span><span style="color:#228b22"></span>    ps.<span style="color:#658b00">addBatch</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (i % 500 == 0) {
+        <span style="color:#228b22">// 每500筆執行一次並清空
+</span><span style="color:#228b22"></span>        ps.<span style="color:#658b00">executeBatch</span>();
+        ps.<span style="color:#658b00">clearBatch</span>();
+    }
+}
+conn.<span style="color:#658b00">commit</span>();
+</code></pre></div><ul>
+<li>driver版本需要5.1.13以上才能使用<code>rewriteBatchedStatements=true</code></li>
+</ul>
+<h1 id="小結">小結</h1>
+<ul>
+<li>連接資料庫三要素:驅動、URL、帳號密碼</li>
+<li><code>PreparedStatement</code>的好處:預編譯、可批次處理效率高，有轉義<code>''</code>單引號防sql注入，可操作blob類型</li>
+<li>操作資料的步驟:
+<ul>
+<li>連接資料庫、寫<code>sql</code>語句、獲取<code>PreparedStatement</code>實例、填佔位符&hellip;
+<ul>
+<li>增刪改:<code>executeUpdate</code>、關閉連接</li>
+<li>查:<code>executeQuery</code>返回結果集、從結果集取元數據、<code>.next()</code>取出資料、反射賦值、關閉連接</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2021-12-29</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://yoziming.github.io/post/211230-agg-jdbc-02/">
+			下一篇<br>事務、DAO、連接池、Dbutils工具包
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/211229-agg-mysql-14/">
+			上一篇<br>MySQL8新特性
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mq on 柚子茶室</title>
+    <link>https://yoziming.github.io/tags/mq/</link>
+    <description>Recent content in mq on 柚子茶室</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Yoziming</copyright>
+    <lastBuildDate>Mon, 07 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/mq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Seata、消息隊列分佈式事務</title>
+      <link>https://yoziming.github.io/post/220207-gulimall-21-delay-queue/</link>
+      <pubDate>Mon, 07 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220207-gulimall-21-delay-queue/</guid>
+      <description>Spring cloud alibaba Seata  有很多模式，這邊只演示最簡單的AT模式 簡單來說就是多包一層，額外開一個伺服器去監控多個分佈式模組，誰出問題就讓大家都回滾    使用@GlobalTransactional就可以達成分佈式事務
+  利用的機制是在DB增加一個undo_log表，這個表相當於存快照的地方，當要回滾就從這邊還原
+ AT模式簡單，代價就是面對併發效率不高    這玩意才幾個版本設定就變好多次，具體使用還是看官網吧
+ https://seata.io/zh-cn/docs/ops/deploy-guide-beginner.html    延遲隊列  Delay Queue，使用 消息隊列 + 庫存工作單表 來控制分佈式事務
+  下訂單後，要鎖定庫存，這是個分佈式事務，需要保證鎖定的庫存能回滾，首先在DB使用兩張表 wms_ware_order_task 庫存工作單表，訂單、工作單id、倉庫id wms_ware_order_task_detail 庫存工作單詳情表，訂單、工作單id、倉庫id、skuId、鎖庫存數量 鎖庫存的時候往工作單表、工作單詳情表插入數據  創建隊列與交換機  在RabbitMQ
+  創建訂單時，遠程調用orderLockStock創建了庫存工作單，並且鎖定庫存  那邊發了&amp;quot;stock-event-exchange&amp;quot;, &amp;quot;stock.locked&amp;quot;, lockedTo，lockedTo裡面就是庫存工作單id   當遠程調用創建庫存工作單成功，本地也發一個&amp;quot;order-event-exchange&amp;quot;, &amp;quot;order.create.order&amp;quot;，裡面存的是訂單本體   改良，省下一個交換機，帶有&amp;quot;order.create.order&amp;quot;路由鍵的訂單會進到order.delay.queue這個延遲隊列，而這個隊列還是指向order-event-exchange交換機 但是他設有過期時間，當時間到了就把路由鍵換成order.release.order 也就是說，所有的訂單最終都會進到order.release.order.queue，並且被listener消費，這個listener會調用closeOrder方法 closeOrder方法查看訂單是否已經支付，若已支付就完事，訂單可以安心離開隊列。若沒支付就查詢訂單最新狀態，再發到&amp;quot;order-event-exchange&amp;quot;, &amp;quot;order.release.other.unlock&amp;quot;, order 這個&amp;quot;order.release.other.unlock&amp;quot;路由鍵就會把訂單送到stock.release.stock.queue，嘗試進行庫存解鎖的動作   之前學了用AmqpAdmin創建交換機與隊列的方法，有更省事的可以直接用@Bean讓spring自動創建  Broker中沒有該名字的隊列、交換機才會創建 不會重複創建覆蓋(一旦創好，不能更新)，如果同名的隊列其中設定(例如過期時間)對不上會報錯 第一次使用隊列的時候才會創建   MyMQConfig.</description>
+    </item>
+    
+    <item>
+      <title>RabbitMQ與訊息確認</title>
+      <link>https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/</link>
+      <pubDate>Fri, 04 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/</guid>
+      <description>Message Queue  Message queue 訊息佇列
+  佇列（queue），又稱為隊列，特性是先進先出(FIFO) 訊息佇列是一個中間件，又是經典的&amp;quot;加一層&amp;quot;操作，抽出一個專門存放溝通訊息的地方，就是訊息佇列  可以理解成去銀行辦事，那個領號碼牌的機器   市面上常見的MQ: ActiveMQ、RabbitMQ、RocketMQ、Kafka  目的  縮短調用時間: 透過序列分發後續的異步調用，不需要一步一步往下走等返回  就像去醫院，醫生開了檢查要你去抽血跟照X光，哪邊方便就先去做，總之檢查單開了醫生就不管了，你總會去做完檢查     解耦: 模組間溝通用訂閱佇列的形式，只需要關注收發訊息，減少業務邏輯的侵入  比如到了抽血站，拿檢驗單去掃機器就能完成抽血報名，不需要醫生打電話告知抽血站誰要抽什麼血     削峰: 流量控制，錯開高併發，依順序處理  隊列是有序、可控制流量的，不會突然1000人擠爆抽血站    名詞   消息代理（message broker）: 安裝了消息中間件的伺服器，發送消息和接收消息都要連上它
+ 冒險者公會的任務看板    目的地（destination）: 目的地表示生產者發送消息給消息代理之後，是存儲到消息代理中哪一個具體的目的地（隊列或主題）
+  隊列（queue）：點對點通信，1個發送者，n個接受者，但一個信息只會被一個接受者消費（消費後移出隊列）
+ 理解為拋繡球    主題（topic）：發佈/訂閲，多個發送者+多個訂閲者。多個訂閲者會同時接收到
+ 廣播      JMS (Java Message Service): 基於JAVA API定義的標準介面</description>
+    </item>
+    
+  </channel>
+</rss>
