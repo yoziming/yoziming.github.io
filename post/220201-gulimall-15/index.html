@@ -694,11 +694,11 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>前端頁面一樣用thymeleaf渲染</li>
 <li>thymeleaf中動態網址的寫法，用<code>|</code>包住網址前後，中間<code>${參數}</code></li>
 </ul>
-<pre tabindex="0"><code>&lt;a th:href=&quot;|http://item.mall.com/${product.skuId}.html|&quot;&gt;
+<pre tabindex="0"><code>&lt;a th:href=&#34;|http://item.mall.com/${product.skuId}.html|&#34;&gt;
 </code></pre><ul>
 <li>格式化數字，前面3是整數位，2是小數位</li>
 </ul>
-<pre tabindex="0"><code>&lt;span th:text=&quot;${#numbers.formatDecimal(item.info.price,3,2)}&quot;&gt;
+<pre tabindex="0"><code>&lt;span th:text=&#34;${#numbers.formatDecimal(item.info.price,3,2)}&#34;&gt;
 </code></pre><ul>
 <li>sku組合切換，太偏前端了，有用到再來學</li>
 </ul>
@@ -722,17 +722,17 @@ OOOO
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/{skuId}.html&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">skuItem</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId, Model model) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException,
-        InterruptedException {
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;準備查詢&#34;</span> + skuId + <span style="color:#cd5555">&#34;詳情&#34;</span>);
-
-
-    SkuItemVo vos = skuInfoService.<span style="color:#658b00">item</span>(skuId);
-    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;item&#34;</span>, vos);
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;item&#34;</span>;
-}
-</code></pre></div><h2 id="model">Model</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/{skuId}.html&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">skuItem</span>(<span style="color:#707a7c">@PathVariable</span>(<span style="color:#cd5555">&#34;skuId&#34;</span>) Long skuId, Model model) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException,
+</span></span><span style="display:flex;"><span>        InterruptedException {
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;準備查詢&#34;</span> + skuId + <span style="color:#cd5555">&#34;詳情&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SkuItemVo vos = skuInfoService.<span style="color:#658b00">item</span>(skuId);
+</span></span><span style="display:flex;"><span>    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;item&#34;</span>, vos);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;item&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="model">Model</h2>
 <ul>
 <li>Vo設計</li>
 </ul>
@@ -751,73 +751,73 @@ OOOO
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">//1、sku基本信息的獲取  pms_sku_info
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> SkuInfoEntity info;
-
-<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">boolean</span> hasStock = <span style="color:#8b008b;font-weight:bold">true</span>;
-
-<span style="color:#228b22">//2、sku的圖片信息    pms_sku_images
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SkuImagesEntity&gt; images;
-
-<span style="color:#228b22">//3、獲取spu的銷售屬性組合【一個vo是一個銷售屬性】
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SkuItemSaleAttrVo&gt; saleAttr;
-
-<span style="color:#228b22">//4、獲取spu的介紹
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> SpuInfoDescEntity desc;
-
-<span style="color:#228b22">//5、獲取spu的規格參數信息【以組為單位】
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SpuItemAttrGroupVo&gt; groupAttrs;
-</code></pre></div><h3 id="異步獲取商品詳情">異步獲取商品詳情</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">//1、sku基本信息的獲取  pms_sku_info
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> SkuInfoEntity info;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">boolean</span> hasStock = <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//2、sku的圖片信息    pms_sku_images
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SkuImagesEntity&gt; images;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//3、獲取spu的銷售屬性組合【一個vo是一個銷售屬性】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SkuItemSaleAttrVo&gt; saleAttr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//4、獲取spu的介紹
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> SpuInfoDescEntity desc;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//5、獲取spu的規格參數信息【以組為單位】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;SpuItemAttrGroupVo&gt; groupAttrs;
+</span></span></code></pre></div><h3 id="異步獲取商品詳情">異步獲取商品詳情</h3>
 <ul>
 <li>使用自訂的線程池，由於3 4 5要等1完成，所以最後順序調了下</li>
 <li>SkuInfoServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 商品詳情
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> SkuItemVo <span style="color:#008b45">item</span>(Long skuId) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
-
-    SkuItemVo skuItemVo = <span style="color:#8b008b;font-weight:bold">new</span> SkuItemVo();
-
-    CompletableFuture&lt;SkuInfoEntity&gt; infoFuture = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
-        <span style="color:#228b22">// 1、sku基本信息的獲取  pms_sku_info
-</span><span style="color:#228b22"></span>        SkuInfoEntity info = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getById</span>(skuId);
-        skuItemVo.<span style="color:#658b00">setInfo</span>(info);
-        <span style="color:#8b008b;font-weight:bold">return</span> info;
-    }, executor);
-
-    CompletableFuture&lt;Void&gt; saleAttrFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
-        <span style="color:#228b22">// 3、獲取spu的銷售屬性組合
-</span><span style="color:#228b22"></span>        List&lt;SkuItemSaleAttrVo&gt; saleAttrVos = skuSaleAttrValueService.<span style="color:#658b00">getSaleAttrBySpuId</span>(res.<span style="color:#658b00">getSpuId</span>());
-        skuItemVo.<span style="color:#658b00">setSaleAttr</span>(saleAttrVos);
-    }, executor);
-
-    CompletableFuture&lt;Void&gt; descFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
-        <span style="color:#228b22">// 4、獲取spu的介紹    pms_spu_info_desc
-</span><span style="color:#228b22"></span>        SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.<span style="color:#658b00">getById</span>(res.<span style="color:#658b00">getSpuId</span>());
-        skuItemVo.<span style="color:#658b00">setDesc</span>(spuInfoDescEntity);
-    }, executor);
-
-    CompletableFuture&lt;Void&gt; baseAttrFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
-        <span style="color:#228b22">// 5、獲取spu的規格參數信息
-</span><span style="color:#228b22"></span>        List&lt;SpuItemAttrGroupVo&gt; attrGroupVos = attrGroupService.<span style="color:#658b00">getAttrGroupWithAttrsBySpuId</span>(res.<span style="color:#658b00">getSpuId</span>(),
-                res.<span style="color:#658b00">getCatalogId</span>());
-        skuItemVo.<span style="color:#658b00">setGroupAttrs</span>(attrGroupVos);
-    }, executor);
-
-    <span style="color:#228b22">// 2、sku的圖片信息    pms_sku_images
-</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; imageFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
-        List&lt;SkuImagesEntity&gt; imagesEntities = skuImagesService.<span style="color:#658b00">getImagesBySkuId</span>(skuId);
-        <span style="color:#8b008b;font-weight:bold">if</span> (ArrayUtil.<span style="color:#658b00">isNotEmpty</span>(imagesEntities)) {
-            skuItemVo.<span style="color:#658b00">setImages</span>(imagesEntities);
-        }
-    }, executor);
-
-    <span style="color:#228b22">// 等到所有任務都完成
-</span><span style="color:#228b22"></span>    CompletableFuture.<span style="color:#658b00">allOf</span>(saleAttrFuture, descFuture, baseAttrFuture, imageFuture).<span style="color:#658b00">get</span>();
-
-    <span style="color:#8b008b;font-weight:bold">return</span> skuItemVo;
-}
-</code></pre></div><h3 id="獲取規格參數">獲取規格參數</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 商品詳情
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> SkuItemVo <span style="color:#008b45">item</span>(Long skuId) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SkuItemVo skuItemVo = <span style="color:#8b008b;font-weight:bold">new</span> SkuItemVo();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CompletableFuture&lt;SkuInfoEntity&gt; infoFuture = CompletableFuture.<span style="color:#658b00">supplyAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 1、sku基本信息的獲取  pms_sku_info
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        SkuInfoEntity info = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getById</span>(skuId);
+</span></span><span style="display:flex;"><span>        skuItemVo.<span style="color:#658b00">setInfo</span>(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> info;
+</span></span><span style="display:flex;"><span>    }, executor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CompletableFuture&lt;Void&gt; saleAttrFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 3、獲取spu的銷售屬性組合
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;SkuItemSaleAttrVo&gt; saleAttrVos = skuSaleAttrValueService.<span style="color:#658b00">getSaleAttrBySpuId</span>(res.<span style="color:#658b00">getSpuId</span>());
+</span></span><span style="display:flex;"><span>        skuItemVo.<span style="color:#658b00">setSaleAttr</span>(saleAttrVos);
+</span></span><span style="display:flex;"><span>    }, executor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CompletableFuture&lt;Void&gt; descFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 4、獲取spu的介紹    pms_spu_info_desc
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.<span style="color:#658b00">getById</span>(res.<span style="color:#658b00">getSpuId</span>());
+</span></span><span style="display:flex;"><span>        skuItemVo.<span style="color:#658b00">setDesc</span>(spuInfoDescEntity);
+</span></span><span style="display:flex;"><span>    }, executor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CompletableFuture&lt;Void&gt; baseAttrFuture = infoFuture.<span style="color:#658b00">thenAcceptAsync</span>((res) -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 5、獲取spu的規格參數信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;SpuItemAttrGroupVo&gt; attrGroupVos = attrGroupService.<span style="color:#658b00">getAttrGroupWithAttrsBySpuId</span>(res.<span style="color:#658b00">getSpuId</span>(),
+</span></span><span style="display:flex;"><span>                res.<span style="color:#658b00">getCatalogId</span>());
+</span></span><span style="display:flex;"><span>        skuItemVo.<span style="color:#658b00">setGroupAttrs</span>(attrGroupVos);
+</span></span><span style="display:flex;"><span>    }, executor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 2、sku的圖片信息    pms_sku_images
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; imageFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>        List&lt;SkuImagesEntity&gt; imagesEntities = skuImagesService.<span style="color:#658b00">getImagesBySkuId</span>(skuId);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (ArrayUtil.<span style="color:#658b00">isNotEmpty</span>(imagesEntities)) {
+</span></span><span style="display:flex;"><span>            skuItemVo.<span style="color:#658b00">setImages</span>(imagesEntities);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, executor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 等到所有任務都完成
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    CompletableFuture.<span style="color:#658b00">allOf</span>(saleAttrFuture, descFuture, baseAttrFuture, imageFuture).<span style="color:#658b00">get</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> skuItemVo;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="獲取規格參數">獲取規格參數</h3>
 <ul>
 <li>這塊</li>
 </ul>
@@ -841,29 +841,29 @@ OOOO
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#228b22">&lt;!--只要有嵌套屬性就要封裝自定義結果集--&gt;</span>
-<span style="color:#8b008b;font-weight:bold">&lt;resultMap</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;spuAttrGroup&#34;</span> <span style="color:#658b00">type=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.SpuItemAttrGroupVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;groupName&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_group_name&#34;</span><span style="color:#8b008b;font-weight:bold">/&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;collection</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrs&#34;</span> <span style="color:#658b00">ofType=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.Attr&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrId&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_id&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrName&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_name&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValue&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_value&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;/collection&gt;</span>
-<span style="color:#8b008b;font-weight:bold">&lt;/resultMap&gt;</span>
-<span style="color:#8b008b;font-weight:bold">&lt;select</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;getAttrGroupWithAttrsBySpuId&#34;</span> <span style="color:#658b00">resultMap=</span><span style="color:#cd5555">&#34;spuAttrGroup&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-    SELECT pav.spu_id,
-           pag.attr_group_id,
-           pag.attr_group_name,
-           pav.attr_id,
-           pav.attr_name,
-           pav.attr_value
-    FROM pms_product_attr_value pav
-             LEFT JOIN pms_attr_attrgroup_relation pagr ON pav.attr_id = pagr.attr_id
-             LEFT JOIN pms_attr_group pag ON pagr.attr_group_id = pag.attr_group_id
-    WHERE pav.spu_id = #{spuId}
-      AND pag.catalog_id = #{catalogId}
-<span style="color:#8b008b;font-weight:bold">&lt;/select&gt;</span>
-</code></pre></div><h3 id="獲取銷售屬性">獲取銷售屬性</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#228b22">&lt;!--只要有嵌套屬性就要封裝自定義結果集--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;resultMap</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;spuAttrGroup&#34;</span> <span style="color:#658b00">type=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.SpuItemAttrGroupVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;groupName&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_group_name&#34;</span><span style="color:#8b008b;font-weight:bold">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;collection</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrs&#34;</span> <span style="color:#658b00">ofType=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.Attr&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrId&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_id&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrName&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_name&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValue&#34;</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_value&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;/collection&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/resultMap&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;select</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;getAttrGroupWithAttrsBySpuId&#34;</span> <span style="color:#658b00">resultMap=</span><span style="color:#cd5555">&#34;spuAttrGroup&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>    SELECT pav.spu_id,
+</span></span><span style="display:flex;"><span>           pag.attr_group_id,
+</span></span><span style="display:flex;"><span>           pag.attr_group_name,
+</span></span><span style="display:flex;"><span>           pav.attr_id,
+</span></span><span style="display:flex;"><span>           pav.attr_name,
+</span></span><span style="display:flex;"><span>           pav.attr_value
+</span></span><span style="display:flex;"><span>    FROM pms_product_attr_value pav
+</span></span><span style="display:flex;"><span>             LEFT JOIN pms_attr_attrgroup_relation pagr ON pav.attr_id = pagr.attr_id
+</span></span><span style="display:flex;"><span>             LEFT JOIN pms_attr_group pag ON pagr.attr_group_id = pag.attr_group_id
+</span></span><span style="display:flex;"><span>    WHERE pav.spu_id = #{spuId}
+</span></span><span style="display:flex;"><span>      AND pag.catalog_id = #{catalogId}
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/select&gt;</span>
+</span></span></code></pre></div><h3 id="獲取銷售屬性">獲取銷售屬性</h3>
 <ul>
 <li>這塊</li>
 </ul>
@@ -876,28 +876,28 @@ OOOO
 <li>SkuSaleAttrValueDao.xml</li>
 </ul>
 <p><img src="image-20220124155355539.png" alt="image-20220124155355539"></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;resultMap</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;skuItemSaleAttrVo&#34;</span> <span style="color:#658b00">type=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.SkuItemSaleAttrVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_id&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrId&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_name&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrName&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;collection</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValues&#34;</span> <span style="color:#658b00">ofType=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.AttrValueWithSkuIdVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_value&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValue&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;sku_ids&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;skuIds&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
-    <span style="color:#8b008b;font-weight:bold">&lt;/collection&gt;</span>
-<span style="color:#8b008b;font-weight:bold">&lt;/resultMap&gt;</span>
-
-<span style="color:#8b008b;font-weight:bold">&lt;select</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;getSaleAttrBySpuId&#34;</span> <span style="color:#658b00">resultMap=</span><span style="color:#cd5555">&#34;skuItemSaleAttrVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-    SELECT ssav.attr_id                        attr_id,
-           ssav.attr_name                      attr_name,
-           ssav.attr_value,
-           group_concat(DISTINCT info.sku_id ) sku_ids
-    FROM pms_sku_info info
-             LEFT JOIN pms_sku_sale_attr_value ssav ON ssav.sku_id = info.sku_id
-    WHERE info.spu_id = #{spuId}
-    GROUP BY ssav.attr_id,
-             ssav.attr_name,
-             ssav.attr_value
-<span style="color:#8b008b;font-weight:bold">&lt;/select&gt;</span>
-</code></pre></div><h2 id="動態注入設定">動態注入設定</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;resultMap</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;skuItemSaleAttrVo&#34;</span> <span style="color:#658b00">type=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.SkuItemSaleAttrVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_id&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrId&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_name&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrName&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;collection</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValues&#34;</span> <span style="color:#658b00">ofType=</span><span style="color:#cd5555">&#34;yozi.mall.product.vo.AttrValueWithSkuIdVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;attr_value&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;attrValue&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;result</span> <span style="color:#658b00">column=</span><span style="color:#cd5555">&#34;sku_ids&#34;</span> <span style="color:#658b00">property=</span><span style="color:#cd5555">&#34;skuIds&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;&lt;/result&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;/collection&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/resultMap&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;select</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;getSaleAttrBySpuId&#34;</span> <span style="color:#658b00">resultMap=</span><span style="color:#cd5555">&#34;skuItemSaleAttrVo&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>    SELECT ssav.attr_id                        attr_id,
+</span></span><span style="display:flex;"><span>           ssav.attr_name                      attr_name,
+</span></span><span style="display:flex;"><span>           ssav.attr_value,
+</span></span><span style="display:flex;"><span>           group_concat(DISTINCT info.sku_id ) sku_ids
+</span></span><span style="display:flex;"><span>    FROM pms_sku_info info
+</span></span><span style="display:flex;"><span>             LEFT JOIN pms_sku_sale_attr_value ssav ON ssav.sku_id = info.sku_id
+</span></span><span style="display:flex;"><span>    WHERE info.spu_id = #{spuId}
+</span></span><span style="display:flex;"><span>    GROUP BY ssav.attr_id,
+</span></span><span style="display:flex;"><span>             ssav.attr_name,
+</span></span><span style="display:flex;"><span>             ssav.attr_value
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/select&gt;</span>
+</span></span></code></pre></div><h2 id="動態注入設定">動態注入設定</h2>
 <blockquote>
 <p>以前都用@Value讀取application.properties，現在多學一招</p>
 </blockquote>
@@ -930,23 +930,23 @@ OOOO
 </li>
 </ul>
 <p><img src="image-20220124165347738.png" alt="image-20220124165347738"></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CustomThreadConfig</span> {
-    
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> ThreadPoolExecutor <span style="color:#008b45">threadPoolExecutor</span>(ThreadPoolConfigProperties properties) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor(
-                properties.<span style="color:#658b00">getCoreSize</span>(),
-                properties.<span style="color:#658b00">getMaxSize</span>(),
-                properties.<span style="color:#658b00">getKeepAliveTime</span>(),
-                TimeUnit.<span style="color:#658b00">SECONDS</span>,
-                <span style="color:#8b008b;font-weight:bold">new</span> LinkedBlockingDeque&lt;&gt;(10000),
-                Executors.<span style="color:#658b00">defaultThreadFactory</span>(),
-                <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor.<span style="color:#658b00">AbortPolicy</span>()
-        );
-    }
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CustomThreadConfig</span> {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> ThreadPoolExecutor <span style="color:#008b45">threadPoolExecutor</span>(ThreadPoolConfigProperties properties) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor(
+</span></span><span style="display:flex;"><span>                properties.<span style="color:#658b00">getCoreSize</span>(),
+</span></span><span style="display:flex;"><span>                properties.<span style="color:#658b00">getMaxSize</span>(),
+</span></span><span style="display:flex;"><span>                properties.<span style="color:#658b00">getKeepAliveTime</span>(),
+</span></span><span style="display:flex;"><span>                TimeUnit.<span style="color:#658b00">SECONDS</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">new</span> LinkedBlockingDeque&lt;&gt;(10000),
+</span></span><span style="display:flex;"><span>                Executors.<span style="color:#658b00">defaultThreadFactory</span>(),
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">new</span> ThreadPoolExecutor.<span style="color:#658b00">AbortPolicy</span>()
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-02-01</p>

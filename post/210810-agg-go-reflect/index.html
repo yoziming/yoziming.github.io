@@ -487,45 +487,45 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 	//通過反射獲取傳入的各種訊息
 	//先拿reflect.Type
 	rType := reflect.TypeOf(b)
-	fmt.Println(&quot;rType=&quot;, rType)
+	fmt.Println(&#34;rType=&#34;, rType)
 
 	rVal := reflect.ValueOf(b)
-	fmt.Println(&quot;rVal=&quot;, rVal)
+	fmt.Println(&#34;rVal=&#34;, rVal)
 	// n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value
 	n1 := 10 + rVal.Int() //用.Int()轉換後就可以了
 	// n3 := rVal.Float()//像這樣也不行的，一定要確認類型
-	fmt.Println(&quot;n1=&quot;, n1)
-	// fmt.Println(&quot;n3=&quot;, n3)
+	fmt.Println(&#34;n1=&#34;, n1)
+	// fmt.Println(&#34;n3=&#34;, n3)
 
 	//把rVal轉回interface{}
 	iV := rVal.Interface()
 	n2 := iV.(int)
-	fmt.Println(&quot;n2=&quot;, n2)
+	fmt.Println(&#34;n2=&#34;, n2)
 }
 
 func reflectTest02(b interface{}) {
 	//通過反射獲取傳入的各種訊息
 	//先拿reflect.Type
 	rType := reflect.TypeOf(b)
-	fmt.Println(&quot;rType=&quot;, rType)
+	fmt.Println(&#34;rType=&#34;, rType)
 
 	rVal := reflect.ValueOf(b)
-	fmt.Println(&quot;rVal=&quot;, rVal)
+	fmt.Println(&#34;rVal=&#34;, rVal)
 
 	//把rVal轉回interface{}
 	iV := rVal.Interface()
 	//斷言回來
 	n2, ok := iV.(Student)
 	if !ok {
-		fmt.Println(&quot;從interface{}轉換回Student失敗&quot;)
+		fmt.Println(&#34;從interface{}轉換回Student失敗&#34;)
 	}
-	fmt.Println(&quot;n2=&quot;, n2)
-	fmt.Println(&quot;n2.Name=&quot;, n2.Name)
+	fmt.Println(&#34;n2=&#34;, n2)
+	fmt.Println(&#34;n2.Name=&#34;, n2.Name)
 
 	//獲取變量對應的kind，可以從Type也能從val拿。
 	//比如這個type是包名.Student，kind是stuct，可以說定義上kind包含type
-	fmt.Println(&quot;kind=&quot;, rType.Kind())
-	fmt.Println(&quot;kind=&quot;, rVal.Kind())
+	fmt.Println(&#34;kind=&#34;, rType.Kind())
+	fmt.Println(&#34;kind=&#34;, rVal.Kind())
 
 }
 
@@ -537,9 +537,9 @@ type Student struct {
 func main() {
 	var num int = 100
 	reflectTest01(num)
-	fmt.Println(&quot;===============================&quot;)
+	fmt.Println(&#34;===============================&#34;)
 	stu := Student{
-		Name: &quot;tom&quot;,
+		Name: &#34;tom&#34;,
 		Age:  20,
 	}
 	reflectTest02(stu)
@@ -548,36 +548,36 @@ func main() {
 </code></pre><h2 id="修改變量">修改變量</h2>
 <pre tabindex="0"><code>func reflect01(b interface{}) {
 	rVal := reflect.ValueOf(b)
-	fmt.Println(&quot;rVal=&quot;, rVal)
+	fmt.Println(&#34;rVal=&#34;, rVal)
 	rType := reflect.TypeOf(b)
-	fmt.Println(&quot;rType=&quot;, rType)
+	fmt.Println(&#34;rType=&#34;, rType)
 
 	iV := rVal.Interface()
 	vNew, ok := iV.(float64)
 	if ok {
-		fmt.Println(&quot;轉換成功 vNew=&quot;, vNew)
+		fmt.Println(&#34;轉換成功 vNew=&#34;, vNew)
 	} else {
-		fmt.Println(&quot;err&quot;)
+		fmt.Println(&#34;err&#34;)
 	}
 }
 func main() {
 	var v float64 = 1.2
 	reflect01(v)
 
-	// var str string = &quot;tom&quot;  //錯誤示範
+	// var str string = &#34;tom&#34;  //錯誤示範
 	// fs := reflect.ValueOf(str)
-	// fs.SetString(&quot;jack&quot;)
+	// fs.SetString(&#34;jack&#34;)
 	// fmt.Println(str)
 
-	var str string = &quot;tom&quot;
+	var str string = &#34;tom&#34;
 	fs := reflect.ValueOf(&amp;str)
-	fs.Elem().SetString(&quot;jack&quot;)
+	fs.Elem().SetString(&#34;jack&#34;)
 	fmt.Println(str)
 }
 </code></pre><h2 id="實踐">實踐</h2>
 <pre tabindex="0"><code>type Monster struct {
-	Name  string `json:&quot;name&quot;`
-	Age   int    `json:&quot;age&quot;`
+	Name  string `json:&#34;name&#34;`
+	Age   int    `json:&#34;age&#34;`
 	Score float64
 }
 
@@ -604,25 +604,25 @@ func TestStruct(a interface{}) {
 	val := reflect.ValueOf(a)
 	kd := val.Kind()
 	if kd != reflect.Struct {
-		fmt.Println(&quot;傳入的不是結構體&quot;)
+		fmt.Println(&#34;傳入的不是結構體&#34;)
 		return
 	}
 	//獲取該結構有幾字段
 	num := val.NumField()
-	fmt.Println(&quot;struct有幾個字段=&quot;, num)
+	fmt.Println(&#34;struct有幾個字段=&#34;, num)
 
 	//遍歷所有字段
 	for i := 0; i &lt; num; i++ {
-		fmt.Printf(&quot;Field%d 值為%v\n&quot;, i, val.Field(i))
+		fmt.Printf(&#34;Field%d 值為%v\n&#34;, i, val.Field(i))
 		//獲取struct標籤
-		tagVal := typ.Field(i).Tag.Get(&quot;json&quot;)
-		if tagVal != &quot;&quot; {
-			fmt.Printf(&quot;Field%d tag為%v\n&quot;, i, tagVal)
+		tagVal := typ.Field(i).Tag.Get(&#34;json&#34;)
+		if tagVal != &#34;&#34; {
+			fmt.Printf(&#34;Field%d tag為%v\n&#34;, i, tagVal)
 		}
 	}
 	//獲取結構體有幾個方法
 	numOfMethod := val.NumMethod()
-	fmt.Println(&quot;方法有&quot;, numOfMethod)
+	fmt.Println(&#34;方法有&#34;, numOfMethod)
 	//調用第[]個方法且call調用他(傳入參數值)
 	//但他這個是方法的首字(asc碼)當排序的 我們的方法是G P S開頭 (1)=第2個
 	val.Method(1).Call(nil)
@@ -630,21 +630,20 @@ func TestStruct(a interface{}) {
 	var params []reflect.Value
 	params = append(params, reflect.ValueOf(10))
 	params = append(params, reflect.ValueOf(20))
-	res := val.MethodByName(&quot;GetSum&quot;).Call(params)
-	fmt.Println(&quot;res=&quot;, res[0].Int())
+	res := val.MethodByName(&#34;GetSum&#34;).Call(params)
+	fmt.Println(&#34;res=&#34;, res[0].Int())
 }
 
 func main() {
 
 	var a Monster = Monster{
-		Name:  &quot;牛梅王&quot;,
+		Name:  &#34;牛梅王&#34;,
 		Age:   500,
 		Score: 87,
 	}
 	TestStruct(a)
 
 }
-
 </code></pre>
                     
                     <HR width="100%" id="EOF">

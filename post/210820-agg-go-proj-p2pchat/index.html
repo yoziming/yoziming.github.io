@@ -493,23 +493,23 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
                     <h1 id="實作練習-點對點聊天">實作練習-點對點聊天</h1>
 <h3 id="servergo">server.go</h3>
 <pre tabindex="0"><code>func main() {
-	fmt.Println(&quot;伺服器開始監聽&quot;)
-	listen, err := net.Listen(&quot;tcp&quot;, &quot;0.0.0.0:8888&quot;) //0.0.0.0 寫4位ip v4 v6都能用
+	fmt.Println(&#34;伺服器開始監聽&#34;)
+	listen, err := net.Listen(&#34;tcp&#34;, &#34;0.0.0.0:8888&#34;) //0.0.0.0 寫4位ip v4 v6都能用
 	if err != nil {
-		fmt.Println(&quot;監聽失敗&quot;, err)
+		fmt.Println(&#34;監聽失敗&#34;, err)
 		return
 	}
 	defer listen.Close() //主程式退出後就關閉監聽
-	// fmt.Printf(&quot;listen succes=%v\n&quot;, listen)
+	// fmt.Printf(&#34;listen succes=%v\n&#34;, listen)
 	for {
 		//開啟監聽端口8888
 		time.Sleep(time.Microsecond)
-		fmt.Println(&quot;等待連接中...&quot;)
+		fmt.Println(&#34;等待連接中...&#34;)
 		conn, err := listen.Accept()
 		if err != nil {
-			fmt.Println(&quot;Accept()err=&quot;, err)
+			fmt.Println(&#34;Accept()err=&#34;, err)
 		} else {
-			fmt.Printf(&quot;conn suc con=%v 客戶端ip=%v\n&quot;, conn, conn.RemoteAddr().String())
+			fmt.Printf(&#34;conn suc con=%v 客戶端ip=%v\n&#34;, conn, conn.RemoteAddr().String())
 		}
 		//準備啟動一個協程
 		go process(conn)
@@ -519,7 +519,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 func process(conn net.Conn) {
 	//循環接收客戶端送來的數據
 	defer conn.Close()
-	fmt.Printf(&quot;伺服器等待%s客戶端輸入...\n&quot;, conn.RemoteAddr().String())
+	fmt.Printf(&#34;伺服器等待%s客戶端輸入...\n&#34;, conn.RemoteAddr().String())
 	for {
 		//創建一個新的切片
 		buf := make([]byte, 1024)
@@ -528,7 +528,7 @@ func process(conn net.Conn) {
 		//如果客戶端沒有write,那協程就阻塞在這
 
 		if err != nil {
-			fmt.Println(&quot;客戶端Read err&quot;, err)
+			fmt.Println(&#34;客戶端Read err&#34;, err)
 			return
 		}
 		fmt.Print(string(buf[:n])) //不用換行因為接收來的就包含\n
@@ -537,34 +537,34 @@ func process(conn net.Conn) {
 }
 </code></pre><h3 id="clientgo">client.go</h3>
 <pre tabindex="0"><code>func main() {
-	conn, err := net.Dial(&quot;tcp&quot;, &quot;127.0.0.1:8888&quot;)
+	conn, err := net.Dial(&#34;tcp&#34;, &#34;127.0.0.1:8888&#34;)
 	if err != nil {
-		fmt.Println(&quot;client dial err=&quot;, err)
+		fmt.Println(&#34;client dial err=&#34;, err)
 		return
 	}
-	fmt.Printf(&quot;conn suc con=%v 主機端ip=%v\n&quot;, conn, conn.RemoteAddr().String())
+	fmt.Printf(&#34;conn suc con=%v 主機端ip=%v\n&#34;, conn, conn.RemoteAddr().String())
 	//客戶端讀取輸入行
 
 	for {
 
 		reader := bufio.NewReader(os.Stdin) //代表標準輸入(終端)
-		fmt.Println(&quot;等待輸入... (exit=離開)&quot;)
-		data, err := reader.ReadString('\n') //代表接受到\n為止
+		fmt.Println(&#34;等待輸入... (exit=離開)&#34;)
+		data, err := reader.ReadString(&#39;\n&#39;) //代表接受到\n為止
 		if err != nil {
-			fmt.Println(&quot;ReadString&quot;, err)
+			fmt.Println(&#34;ReadString&#34;, err)
 		}
 		//如果輸入exit就退出
-		line := strings.Trim(data, &quot;\n\r&quot;)
-		if line == &quot;exit&quot; {
-			fmt.Println(&quot;客戶端已退出&quot;)
+		line := strings.Trim(data, &#34;\n\r&#34;)
+		if line == &#34;exit&#34; {
+			fmt.Println(&#34;客戶端已退出&#34;)
 			break
 		}
 		//從客戶端發送數據
 		n, err := conn.Write([]byte(data))
 		if err != nil {
-			fmt.Println(&quot;conn.Write&quot;, err)
+			fmt.Println(&#34;conn.Write&#34;, err)
 		}
-		fmt.Printf(&quot;客戶端發送了%d字節的數據\n&quot;, n)
+		fmt.Printf(&#34;客戶端發送了%d字節的數據\n&#34;, n)
 
 	}
 

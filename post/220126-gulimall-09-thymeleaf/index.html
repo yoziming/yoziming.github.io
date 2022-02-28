@@ -788,111 +788,111 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>很繁瑣，但是不難</li>
 <li>SpuInfoController.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 上架
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/{spuId}/up&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">spuUp</span>(<span style="color:#707a7c">@PathVariable</span> Long spuId) {
-    spuInfoService.<span style="color:#658b00">up</span>(spuId);
-    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 上架
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;/{spuId}/up&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">spuUp</span>(<span style="color:#707a7c">@PathVariable</span> Long spuId) {
+</span></span><span style="display:flex;"><span>    spuInfoService.<span style="color:#658b00">up</span>(spuId);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>SpuInfoServiceImpl.java
 <ul>
 <li>知識點:用stream把list轉map</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 商品上架
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">up</span>(Long spuId) {
-    <span style="color:#228b22">// 先從spuID查出對應的所有sku
-</span><span style="color:#228b22"></span>    List&lt;SkuInfoEntity&gt; skuInfoEntities = skuInfoService.<span style="color:#658b00">getSkusBySpuId</span>(spuId);
-
-    <span style="color:#228b22">// 先查出當前sku的所有可以被用來檢索的規格屬性
-</span><span style="color:#228b22"></span>    List&lt;ProductAttrValueEntity&gt; baseAttrs = productAttrValueService.<span style="color:#658b00">baseAttrListforspu</span>(spuId);
-    List&lt;Long&gt; attrIds = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(ProductAttrValueEntity::getAttrId).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-    <span style="color:#228b22">// sku當初填值時就有一欄是&#34;是否能被檢索
-</span><span style="color:#228b22"></span>    List&lt;Long&gt; searchAttrIds = attrService.<span style="color:#658b00">selectSearchAttrs</span>(attrIds);
-    <span style="color:#228b22">// 轉換為Set集合
-</span><span style="color:#228b22"></span>    Set&lt;Long&gt; idSet = searchAttrIds.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toSet</span>());
-    <span style="color:#228b22">// 過濾留下能被檢索的Attrs
-</span><span style="color:#228b22"></span>    List&lt;SkuEsModel.<span style="color:#658b00">Attrs</span>&gt; attrsList = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; {
-        <span style="color:#8b008b;font-weight:bold">return</span> idSet.<span style="color:#658b00">contains</span>(item.<span style="color:#658b00">getAttrId</span>());
-    }).<span style="color:#658b00">map</span>(item -&gt; {
-        <span style="color:#228b22">// 封裝進SkuEsModel.Attrs
-</span><span style="color:#228b22"></span>        SkuEsModel.<span style="color:#658b00">Attrs</span> attrs = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel.<span style="color:#658b00">Attrs</span>();
-        BeanUtils.<span style="color:#658b00">copyProperties</span>(item, attrs);
-        <span style="color:#8b008b;font-weight:bold">return</span> attrs;
-    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-    <span style="color:#228b22">// 接著查是否有庫存，先把ID抽成list方便一次查完
-</span><span style="color:#228b22"></span>    List&lt;Long&gt; skuIdList = skuInfoEntities.<span style="color:#658b00">stream</span>()
-            .<span style="color:#658b00">map</span>(SkuInfoEntity::getSkuId)
-            .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-    <span style="color:#228b22">// 發送遠程調用，庫存系統查詢是否有庫存
-</span><span style="color:#228b22"></span>    Map&lt;Long, Boolean&gt; stockMap = <span style="color:#8b008b;font-weight:bold">null</span>;
-    <span style="color:#8b008b;font-weight:bold">try</span> {
-        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
-        TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
-        };
-        <span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
-</span><span style="color:#228b22"></span>        stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
-                SkuHasStockTo::getHasStock));
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;庫存服務查詢異常：原因{}&#34;</span>, e);
-    }
-    Map&lt;Long, Boolean&gt; finalStockMap = stockMap;
-    <span style="color:#228b22">// 要傳去ES的商品訊息
-</span><span style="color:#228b22"></span>    List&lt;SkuEsModel&gt; collect = skuInfoEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(sku -&gt; {
-        <span style="color:#228b22">// 組裝需要的數據
-</span><span style="color:#228b22"></span>        SkuEsModel esModel = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel();
-        BeanUtils.<span style="color:#658b00">copyProperties</span>(sku, esModel);
-        <span style="color:#228b22">// 其他對不上，需要手動添加的
-</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setSkuPrice</span>(sku.<span style="color:#658b00">getPrice</span>());
-        esModel.<span style="color:#658b00">setSkuImg</span>(sku.<span style="color:#658b00">getSkuDefaultImg</span>());
-
-        <span style="color:#228b22">// 設置庫存信息，如果遠程調用失敗就先當作有
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (finalStockMap == <span style="color:#8b008b;font-weight:bold">null</span>) {
-            esModel.<span style="color:#658b00">setHasStock</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            esModel.<span style="color:#658b00">setHasStock</span>(finalStockMap.<span style="color:#658b00">get</span>(sku.<span style="color:#658b00">getSkuId</span>()));
-        }
-        <span style="color:#228b22">// TODO 2、熱度評分。0
-</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setHotScore</span>(0L);
-        <span style="color:#228b22">// 查詢品牌和分類的名字信息
-</span><span style="color:#228b22"></span>        BrandEntity brandEntity = brandService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getBrandId</span>());
-        esModel.<span style="color:#658b00">setBrandName</span>(brandEntity.<span style="color:#658b00">getName</span>());
-        esModel.<span style="color:#658b00">setBrandId</span>(brandEntity.<span style="color:#658b00">getBrandId</span>());
-        esModel.<span style="color:#658b00">setBrandImg</span>(brandEntity.<span style="color:#658b00">getLogo</span>());
-
-        CategoryEntity categoryEntity = categoryService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getCatalogId</span>());
-        esModel.<span style="color:#658b00">setCatalogId</span>(categoryEntity.<span style="color:#658b00">getCatId</span>());
-        esModel.<span style="color:#658b00">setCatalogName</span>(categoryEntity.<span style="color:#658b00">getName</span>());
-
-        <span style="color:#228b22">// 設置子屬性，來自前面查的列表
-</span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setAttrs</span>(attrsList);
-        <span style="color:#8b008b;font-weight:bold">return</span> esModel;
-    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-    <span style="color:#228b22">// 發到ES
-</span><span style="color:#228b22"></span>    R r = searchFeignService.<span style="color:#658b00">productStatusUp</span>(collect);
-
-    <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
-        <span style="color:#228b22">// 遠程調用成功
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 修改當前spu的狀態
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">updateSpuStatus</span>(spuId, ProductConstant.<span style="color:#658b00">ProductStatusEnum</span>.<span style="color:#658b00">SPU_UP</span>.<span style="color:#658b00">getCode</span>());
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">//遠程調用失敗
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">//TODO 7、重複調用？接口冪等性:重試機制
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 商品上架
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">up</span>(Long spuId) {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 先從spuID查出對應的所有sku
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;SkuInfoEntity&gt; skuInfoEntities = skuInfoService.<span style="color:#658b00">getSkusBySpuId</span>(spuId);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 先查出當前sku的所有可以被用來檢索的規格屬性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;ProductAttrValueEntity&gt; baseAttrs = productAttrValueService.<span style="color:#658b00">baseAttrListforspu</span>(spuId);
+</span></span><span style="display:flex;"><span>    List&lt;Long&gt; attrIds = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(ProductAttrValueEntity::getAttrId).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// sku當初填值時就有一欄是&#34;是否能被檢索
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;Long&gt; searchAttrIds = attrService.<span style="color:#658b00">selectSearchAttrs</span>(attrIds);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 轉換為Set集合
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Set&lt;Long&gt; idSet = searchAttrIds.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toSet</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 過濾留下能被檢索的Attrs
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;SkuEsModel.<span style="color:#658b00">Attrs</span>&gt; attrsList = baseAttrs.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> idSet.<span style="color:#658b00">contains</span>(item.<span style="color:#658b00">getAttrId</span>());
+</span></span><span style="display:flex;"><span>    }).<span style="color:#658b00">map</span>(item -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 封裝進SkuEsModel.Attrs
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        SkuEsModel.<span style="color:#658b00">Attrs</span> attrs = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel.<span style="color:#658b00">Attrs</span>();
+</span></span><span style="display:flex;"><span>        BeanUtils.<span style="color:#658b00">copyProperties</span>(item, attrs);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> attrs;
+</span></span><span style="display:flex;"><span>    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 接著查是否有庫存，先把ID抽成list方便一次查完
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;Long&gt; skuIdList = skuInfoEntities.<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(SkuInfoEntity::getSkuId)
+</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 發送遠程調用，庫存系統查詢是否有庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Map&lt;Long, Boolean&gt; stockMap = <span style="color:#8b008b;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
+</span></span><span style="display:flex;"><span>        TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
+</span></span><span style="display:flex;"><span>                SkuHasStockTo::getHasStock));
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;庫存服務查詢異常：原因{}&#34;</span>, e);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Map&lt;Long, Boolean&gt; finalStockMap = stockMap;
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 要傳去ES的商品訊息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;SkuEsModel&gt; collect = skuInfoEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(sku -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 組裝需要的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        SkuEsModel esModel = <span style="color:#8b008b;font-weight:bold">new</span> SkuEsModel();
+</span></span><span style="display:flex;"><span>        BeanUtils.<span style="color:#658b00">copyProperties</span>(sku, esModel);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 其他對不上，需要手動添加的
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setSkuPrice</span>(sku.<span style="color:#658b00">getPrice</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setSkuImg</span>(sku.<span style="color:#658b00">getSkuDefaultImg</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 設置庫存信息，如果遠程調用失敗就先當作有
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (finalStockMap == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            esModel.<span style="color:#658b00">setHasStock</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            esModel.<span style="color:#658b00">setHasStock</span>(finalStockMap.<span style="color:#658b00">get</span>(sku.<span style="color:#658b00">getSkuId</span>()));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// TODO 2、熱度評分。0
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setHotScore</span>(0L);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 查詢品牌和分類的名字信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        BrandEntity brandEntity = brandService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getBrandId</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setBrandName</span>(brandEntity.<span style="color:#658b00">getName</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setBrandId</span>(brandEntity.<span style="color:#658b00">getBrandId</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setBrandImg</span>(brandEntity.<span style="color:#658b00">getLogo</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CategoryEntity categoryEntity = categoryService.<span style="color:#658b00">getById</span>(sku.<span style="color:#658b00">getCatalogId</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setCatalogId</span>(categoryEntity.<span style="color:#658b00">getCatId</span>());
+</span></span><span style="display:flex;"><span>        esModel.<span style="color:#658b00">setCatalogName</span>(categoryEntity.<span style="color:#658b00">getName</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 設置子屬性，來自前面查的列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        esModel.<span style="color:#658b00">setAttrs</span>(attrsList);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> esModel;
+</span></span><span style="display:flex;"><span>    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 發到ES
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    R r = searchFeignService.<span style="color:#658b00">productStatusUp</span>(collect);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠程調用成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 修改當前spu的狀態
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">updateSpuStatus</span>(spuId, ProductConstant.<span style="color:#658b00">ProductStatusEnum</span>.<span style="color:#658b00">SPU_UP</span>.<span style="color:#658b00">getCode</span>());
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//遠程調用失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">//TODO 7、重複調用？接口冪等性:重試機制
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>用List查SQL的拼接寫法</li>
 </ul>
-<pre tabindex="0"><code>List&lt;Long&gt; selectSearchAttrs(@Param(&quot;attrIds&quot;) List&lt;Long&gt; attrIds)
+<pre tabindex="0"><code>List&lt;Long&gt; selectSearchAttrs(@Param(&#34;attrIds&#34;) List&lt;Long&gt; attrIds)
 
-    &lt;select id=&quot;selectSearchAttrs&quot; resultType=&quot;java.lang.Long&quot;&gt;
+    &lt;select id=&#34;selectSearchAttrs&#34; resultType=&#34;java.lang.Long&#34;&gt;
         SELECT attr_id FROM pms_attr WHERE attr_id IN
-        &lt;foreach collection=&quot;attrIds&quot; item=&quot;id&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+        &lt;foreach collection=&#34;attrIds&#34; item=&#34;id&#34; separator=&#34;,&#34; open=&#34;(&#34; close=&#34;)&#34;&gt;
             #{id}
         &lt;/foreach&gt;
         AND search_type = 1
@@ -900,18 +900,18 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </code></pre><ul>
 <li>查庫存，WareSkuServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;SkuHasStockTo&gt; <span style="color:#008b45">getSkuHasStock</span>(List&lt;Long&gt; ids) {
-        List&lt;SkuHasStockTo&gt; collect = ids.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(e -&gt; {
-            Long count = baseMapper.<span style="color:#658b00">getStock</span>(e);
-            SkuHasStockTo to = <span style="color:#8b008b;font-weight:bold">new</span> SkuHasStockTo();
-            to.<span style="color:#658b00">setSkuId</span>(e);
-            to.<span style="color:#658b00">setHasStock</span>(count &gt; 0);
-            <span style="color:#8b008b;font-weight:bold">return</span> to;
-        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-        <span style="color:#8b008b;font-weight:bold">return</span> collect;
-    }
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;SkuHasStockTo&gt; <span style="color:#008b45">getSkuHasStock</span>(List&lt;Long&gt; ids) {
+</span></span><span style="display:flex;"><span>        List&lt;SkuHasStockTo&gt; collect = ids.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(e -&gt; {
+</span></span><span style="display:flex;"><span>            Long count = baseMapper.<span style="color:#658b00">getStock</span>(e);
+</span></span><span style="display:flex;"><span>            SkuHasStockTo to = <span style="color:#8b008b;font-weight:bold">new</span> SkuHasStockTo();
+</span></span><span style="display:flex;"><span>            to.<span style="color:#658b00">setSkuId</span>(e);
+</span></span><span style="display:flex;"><span>            to.<span style="color:#658b00">setHasStock</span>(count &gt; 0);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> to;
+</span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> collect;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
 <li>查庫存SQL，要減去鎖定的庫存
 <ul>
 <li>當參數只有一個就不用@Param</li>
@@ -920,7 +920,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 <pre tabindex="0"><code>Long getStock(Long e);
 
-&lt;select id=&quot;getStock&quot; resultType=&quot;java.lang.Long&quot;&gt;
+&lt;select id=&#34;getStock&#34; resultType=&#34;java.lang.Long&#34;&gt;
         SELECT SUM(stock - stock_locked)
         FROM wms_ware_sku
         WHERE sku_id = #{e}
@@ -941,56 +941,56 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>ElasticSaveController.java</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/** 
-</span><span style="color:#228b22"> * 上架商品 /search/save/product
-</span><span style="color:#228b22"> *
-</span><span style="color:#228b22"> * @param skuEsModels
-</span><span style="color:#228b22"> * @return
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/product&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">productStatusUp</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;SkuEsModel&gt; skuEsModels) {
-    <span style="color:#00688b;font-weight:bold">boolean</span> status = <span style="color:#8b008b;font-weight:bold">false</span>;
-    <span style="color:#8b008b;font-weight:bold">try</span> {
-        status = productSaveService.<span style="color:#658b00">productStatusUp</span>(skuEsModels);
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-        <span style="color:#228b22">// log.error(&#34;商品上架錯誤{}&#34;,e);
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
-    }
-    <span style="color:#8b008b;font-weight:bold">if</span> (status) {
-        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/** 
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 上架商品 /search/save/product
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @param skuEsModels
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/product&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">productStatusUp</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;SkuEsModel&gt; skuEsModels) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">boolean</span> status = <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        status = productSaveService.<span style="color:#658b00">productStatusUp</span>(skuEsModels);
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// log.error(&#34;商品上架錯誤{}&#34;,e);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (status) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">error</span>(BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getCode</span>(), BizCodeEnum.<span style="color:#658b00">PRODUCT_UP_EXCEPTION</span>.<span style="color:#658b00">getMessage</span>());
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>ProductSaveServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">productStatusUp</span>(List&lt;SkuEsModel&gt; skuEsModels) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
-    <span style="color:#228b22">// 1.在ES中建立索引，建立mapping（doc/json/product-mapping.json）
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 2.在ES中保存這些數據
-</span><span style="color:#228b22"></span>    BulkRequest bulkRequest = <span style="color:#8b008b;font-weight:bold">new</span> BulkRequest();
-    <span style="color:#8b008b;font-weight:bold">for</span> (SkuEsModel skuEsModel : skuEsModels) {
-        <span style="color:#228b22">// 構造保存請求
-</span><span style="color:#228b22"></span>        IndexRequest indexRequest = <span style="color:#8b008b;font-weight:bold">new</span> IndexRequest(EsConstant.<span style="color:#658b00">PRODUCT_INDEX</span>);
-        <span style="color:#228b22">// ES中的ID就是SKUID
-</span><span style="color:#228b22"></span>        indexRequest.<span style="color:#658b00">id</span>(skuEsModel.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>());
-        String jsonString = JSONUtil.<span style="color:#658b00">toJsonStr</span>(skuEsModel);
-        indexRequest.<span style="color:#658b00">source</span>(jsonString, XContentType.<span style="color:#658b00">JSON</span>);
-        <span style="color:#228b22">// 批量保存
-</span><span style="color:#228b22"></span>        bulkRequest.<span style="color:#658b00">add</span>(indexRequest);
-    }
-    BulkResponse bulk = esRestClient.<span style="color:#658b00">bulk</span>(bulkRequest, ElasticConfig.<span style="color:#658b00">COMMON_OPTIONS</span>);
-    <span style="color:#228b22">// TODO 如果批量錯誤
-</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">boolean</span> hasFailures = bulk.<span style="color:#658b00">hasFailures</span>();
-    <span style="color:#228b22">// 收集結果印到log
-</span><span style="color:#228b22"></span>    List&lt;String&gt; collect = Arrays.<span style="color:#658b00">asList</span>(bulk.<span style="color:#658b00">getItems</span>()).<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
-        <span style="color:#8b008b;font-weight:bold">return</span> item.<span style="color:#658b00">getId</span>();
-    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;商品上架完成：{}&#34;</span>, collect);
-    <span style="color:#8b008b;font-weight:bold">return</span> hasFailures;
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">productStatusUp</span>(List&lt;SkuEsModel&gt; skuEsModels) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 1.在ES中建立索引，建立mapping（doc/json/product-mapping.json）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 2.在ES中保存這些數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    BulkRequest bulkRequest = <span style="color:#8b008b;font-weight:bold">new</span> BulkRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (SkuEsModel skuEsModel : skuEsModels) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 構造保存請求
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        IndexRequest indexRequest = <span style="color:#8b008b;font-weight:bold">new</span> IndexRequest(EsConstant.<span style="color:#658b00">PRODUCT_INDEX</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// ES中的ID就是SKUID
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        indexRequest.<span style="color:#658b00">id</span>(skuEsModel.<span style="color:#658b00">getSkuId</span>().<span style="color:#658b00">toString</span>());
+</span></span><span style="display:flex;"><span>        String jsonString = JSONUtil.<span style="color:#658b00">toJsonStr</span>(skuEsModel);
+</span></span><span style="display:flex;"><span>        indexRequest.<span style="color:#658b00">source</span>(jsonString, XContentType.<span style="color:#658b00">JSON</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 批量保存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        bulkRequest.<span style="color:#658b00">add</span>(indexRequest);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    BulkResponse bulk = esRestClient.<span style="color:#658b00">bulk</span>(bulkRequest, ElasticConfig.<span style="color:#658b00">COMMON_OPTIONS</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// TODO 如果批量錯誤
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">boolean</span> hasFailures = bulk.<span style="color:#658b00">hasFailures</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 收集結果印到log
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;String&gt; collect = Arrays.<span style="color:#658b00">asList</span>(bulk.<span style="color:#658b00">getItems</span>()).<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> item.<span style="color:#658b00">getId</span>();
+</span></span><span style="display:flex;"><span>    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;商品上架完成：{}&#34;</span>, collect);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> hasFailures;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>註冊到feign等待調用</li>
 </ul>
 <h3 id="記一個5小時的坑">記一個5小時的坑</h3>
@@ -1012,46 +1012,46 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">setData</span>(Object data) {
-    put(<span style="color:#cd5555">&#34;data&#34;</span>, data);
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>;
-}
-
-<span style="color:#228b22">// 利用fastjson進行反序列化
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(TypeReference&lt;T&gt; typeReference) {
-    Object data = get(<span style="color:#cd5555">&#34;data&#34;</span>);
-    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
-    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
-    <span style="color:#8b008b;font-weight:bold">return</span> t;
-}
-
-<span style="color:#228b22">// 利用fastjson進行反序列化
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(String key, TypeReference&lt;T&gt; typeReference) {
-    Object data = get(key);
-    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
-    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
-    <span style="color:#8b008b;font-weight:bold">return</span> t;
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">setData</span>(Object data) {
+</span></span><span style="display:flex;"><span>    put(<span style="color:#cd5555">&#34;data&#34;</span>, data);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 利用fastjson進行反序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(TypeReference&lt;T&gt; typeReference) {
+</span></span><span style="display:flex;"><span>    Object data = get(<span style="color:#cd5555">&#34;data&#34;</span>);
+</span></span><span style="display:flex;"><span>    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
+</span></span><span style="display:flex;"><span>    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> t;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 利用fastjson進行反序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> &lt;T&gt; T <span style="color:#008b45">getData</span>(String key, TypeReference&lt;T&gt; typeReference) {
+</span></span><span style="display:flex;"><span>    Object data = get(key);
+</span></span><span style="display:flex;"><span>    String jsonString = JSON.<span style="color:#658b00">toJSONString</span>(data);
+</span></span><span style="display:flex;"><span>    T t = JSON.<span style="color:#658b00">parseObject</span>(jsonString, typeReference);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> t;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>返回的時候把list裝進去了，WareSkuController.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;SkuHasStockTo&gt; list = wareSkuService.<span style="color:#658b00">getSkuHasStock</span>(ids);
-
-<span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">setData</span>(list);
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List&lt;SkuHasStockTo&gt; list = wareSkuService.<span style="color:#658b00">getSkuHasStock</span>(ids);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>().<span style="color:#658b00">setData</span>(list);
+</span></span></code></pre></div><ul>
 <li>最後接收的時候，用<code>TypeReference</code>去指定反序列化的List&lt;&gt;類型
 <ul>
 <li>後面的<code>() {}</code>因為它是一個匿名內部類，別漏了</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
-TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
-};
-<span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
-</span><span style="color:#228b22"></span>stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
-SkuHasStockTo::getHasStock));
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIdList);
+</span></span><span style="display:flex;"><span>TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt; typeReference = <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuHasStockTo&gt;&gt;() {
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 把查詢結果拿出來，裝到Map&lt;Long, Boolean&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>stockMap = skuHasStock.<span style="color:#658b00">getData</span>(typeReference).<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuHasStockTo::getSkuId,
+</span></span><span style="display:flex;"><span>SkuHasStockTo::getHasStock));
+</span></span></code></pre></div><ul>
 <li>參考 <a href="https://www.1ju.org/article/jackson-linkedhashmap-cannot-be-cast">https://www.1ju.org/article/jackson-linkedhashmap-cannot-be-cast</a></li>
 </ul>
 <h1 id="thymeleaf">Thymeleaf</h1>
@@ -1125,14 +1125,14 @@ spring.thymeleaf.suffix: .html
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@GetMapping</span>(value = {<span style="color:#cd5555">&#34;/&#34;</span>, <span style="color:#cd5555">&#34;index.html&#34;</span>})
-<span style="color:#8b008b;font-weight:bold">private</span> String <span style="color:#008b45">indexPage</span>(Model model) {
-    <span style="color:#228b22">// 查出所有的一級分類
-</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; categoryEntities = categoryService.<span style="color:#658b00">getLevel1Catalog</span>();
-    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;categories&#34;</span>, categoryEntities);
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;index&#34;</span>;
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@GetMapping</span>(value = {<span style="color:#cd5555">&#34;/&#34;</span>, <span style="color:#cd5555">&#34;index.html&#34;</span>})
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span> String <span style="color:#008b45">indexPage</span>(Model model) {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 查出所有的一級分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; categoryEntities = categoryService.<span style="color:#658b00">getLevel1Catalog</span>();
+</span></span><span style="display:flex;"><span>    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;categories&#34;</span>, categoryEntities);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;index&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Model類，相當於這個頁面本身(感覺類似JSP的pagescope)
 <ul>
 <li>想要在訪問的同時獲取一些資源，並且用model.addAttribute存在裡面</li>
@@ -1140,9 +1140,9 @@ spring.thymeleaf.suffix: .html
 </li>
 <li>在html裡面用<code>th:each</code>把它遍歷取出</li>
 </ul>
-<pre tabindex="0"><code>&lt;li th:each=&quot;category : ${categories}&quot;&gt;
-&lt;a href=&quot;#&quot; class=&quot;header_main_left_a&quot; th:attr=&quot;ctg-data = ${category.catId}&quot;&gt;&lt;b
-th:text=&quot;${category.name}&quot;&gt;家用電器&lt;/b&gt;&lt;/a&gt;
+<pre tabindex="0"><code>&lt;li th:each=&#34;category : ${categories}&#34;&gt;
+&lt;a href=&#34;#&#34; class=&#34;header_main_left_a&#34; th:attr=&#34;ctg-data = ${category.catId}&#34;&gt;&lt;b
+th:text=&#34;${category.name}&#34;&gt;家用電器&lt;/b&gt;&lt;/a&gt;
 &lt;/li&gt;
 </code></pre><h3 id="商品分類表">商品分類表</h3>
 <ul>
@@ -1153,109 +1153,109 @@ th:text=&quot;${category.name}&quot;&gt;家用電器&lt;/b&gt;&lt;/a&gt;
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
-<span style="color:#707a7c">@AllArgsConstructor</span>
-<span style="color:#707a7c">@NoArgsConstructor</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Catalogs2Vo</span> {
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 一級父分類的id
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> String catalog1Id;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 三級子分類
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Category3Vo&gt; catalog3List;
-    <span style="color:#8b008b;font-weight:bold">private</span> String id;
-    <span style="color:#8b008b;font-weight:bold">private</span> String name;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 三級分類vo
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Data</span>
-    <span style="color:#707a7c">@AllArgsConstructor</span>
-    <span style="color:#707a7c">@NoArgsConstructor</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Category3Vo</span> {
-
-        <span style="color:#228b22">/**
-</span><span style="color:#228b22">         * 父分類、二級分類id
-</span><span style="color:#228b22">         */</span>
-        <span style="color:#8b008b;font-weight:bold">private</span> String catalog2Id;
-        <span style="color:#8b008b;font-weight:bold">private</span> String id;
-        <span style="color:#8b008b;font-weight:bold">private</span> String name;
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Data</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@AllArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@NoArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Catalogs2Vo</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 一級父分類的id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String catalog1Id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 三級子分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Category3Vo&gt; catalog3List;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String id;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 三級分類vo
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Data</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@AllArgsConstructor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@NoArgsConstructor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Category3Vo</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         * 父分類、二級分類id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">private</span> String catalog2Id;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">private</span> String id;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">private</span> String name;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>IndexController.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 獲取所有分類，且二、三級分類以封裝好
-</span><span style="color:#228b22"> *
-</span><span style="color:#228b22"> * @return
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/index/catalog.json&#34;</span>)
-<span style="color:#707a7c">@ResponseBody</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
-    <span style="color:#8b008b;font-weight:bold">return</span> categoryService.<span style="color:#658b00">getCatalogJson</span>();
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 獲取所有分類，且二、三級分類以封裝好
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/index/catalog.json&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@ResponseBody</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> categoryService.<span style="color:#658b00">getCatalogJson</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>CategoryServiceImpl.java
 <ul>
 <li>這個真的超繞，我覺得應該跟之前後台獲取分類的寫的treelist整合一下，不過肚子太餓就先算了，想來技術債就這這樣累積的吧</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取所有分類，且二、三級分類以封裝好
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
-    <span style="color:#228b22">// 性能優化：將數據庫的多次查詢變為一次
-</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; selectList = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
-
-    <span style="color:#228b22">// 查出所有一級分類
-</span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; level1Categories = getLevel1Catalog();
-
-    <span style="color:#228b22">// 封裝數據
-</span><span style="color:#228b22"></span>    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; parentCid =
-            level1Categories.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(k -&gt; k.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), v -&gt; {
-                <span style="color:#228b22">// 1、每一個的一級分類,查到這個一級分類的二級分類
-</span><span style="color:#228b22"></span>                List&lt;CategoryEntity&gt; categoryEntities = getParentCid(selectList, v.<span style="color:#658b00">getCatId</span>());
-
-                <span style="color:#228b22">// 2、封裝上面的結果
-</span><span style="color:#228b22"></span>                List&lt;Catalogs2Vo&gt; catalogs2Vos = <span style="color:#8b008b;font-weight:bold">null</span>;
-                <span style="color:#8b008b;font-weight:bold">if</span> (categoryEntities != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                    catalogs2Vos = categoryEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l2 -&gt; {
-                        Catalogs2Vo catalogs2Vo = <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo(v.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), <span style="color:#8b008b;font-weight:bold">null</span>,
-                                l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>()
-                                , l2.<span style="color:#658b00">getName</span>().<span style="color:#658b00">toString</span>());
-
-                        <span style="color:#228b22">// 1、找當前二級分類的三級分類封裝成vo
-</span><span style="color:#228b22"></span>                        List&lt;CategoryEntity&gt; level3Catelog = getParentCid(selectList, l2.<span style="color:#658b00">getCatId</span>());
-
-                        <span style="color:#8b008b;font-weight:bold">if</span> (level3Catelog != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                            List&lt;Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>&gt; category3Vos = level3Catelog.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l3 -&gt; {
-                                <span style="color:#228b22">//2、封裝成指定格式
-</span><span style="color:#228b22"></span>                                Catalogs2Vo.<span style="color:#658b00">Category3Vo</span> category3Vo =
-                                        <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>(l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
-                                                l3.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
-                                                l3.<span style="color:#658b00">getName</span>());
-
-                                <span style="color:#8b008b;font-weight:bold">return</span> category3Vo;
-                            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-                            catalogs2Vo.<span style="color:#658b00">setCatalog3List</span>(category3Vos);
-                        }
-                        <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vo;
-                    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-                }
-                <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vos;
-            }));
-    <span style="color:#8b008b;font-weight:bold">return</span> parentCid;
-}
-
-<span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">getParentCid</span>(List&lt;CategoryEntity&gt; selectList, Long parentCid) {
-    <span style="color:#8b008b;font-weight:bold">return</span> selectList.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; item.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(parentCid)).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 獲取所有分類，且二、三級分類以封裝好
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 性能優化：將數據庫的多次查詢變為一次
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; selectList = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">baseMapper</span>.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 查出所有一級分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;CategoryEntity&gt; level1Categories = getLevel1Catalog();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 封裝數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; parentCid =
+</span></span><span style="display:flex;"><span>            level1Categories.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(k -&gt; k.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), v -&gt; {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 1、每一個的一級分類,查到這個一級分類的二級分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                List&lt;CategoryEntity&gt; categoryEntities = getParentCid(selectList, v.<span style="color:#658b00">getCatId</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 2、封裝上面的結果
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                List&lt;Catalogs2Vo&gt; catalogs2Vos = <span style="color:#8b008b;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (categoryEntities != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                    catalogs2Vos = categoryEntities.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l2 -&gt; {
+</span></span><span style="display:flex;"><span>                        Catalogs2Vo catalogs2Vo = <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo(v.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(), <span style="color:#8b008b;font-weight:bold">null</span>,
+</span></span><span style="display:flex;"><span>                                l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>()
+</span></span><span style="display:flex;"><span>                                , l2.<span style="color:#658b00">getName</span>().<span style="color:#658b00">toString</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 1、找當前二級分類的三級分類封裝成vo
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                        List&lt;CategoryEntity&gt; level3Catelog = getParentCid(selectList, l2.<span style="color:#658b00">getCatId</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">if</span> (level3Catelog != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                            List&lt;Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>&gt; category3Vos = level3Catelog.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(l3 -&gt; {
+</span></span><span style="display:flex;"><span>                                <span style="color:#228b22">//2、封裝成指定格式
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                                Catalogs2Vo.<span style="color:#658b00">Category3Vo</span> category3Vo =
+</span></span><span style="display:flex;"><span>                                        <span style="color:#8b008b;font-weight:bold">new</span> Catalogs2Vo.<span style="color:#658b00">Category3Vo</span>(l2.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
+</span></span><span style="display:flex;"><span>                                                l3.<span style="color:#658b00">getCatId</span>().<span style="color:#658b00">toString</span>(),
+</span></span><span style="display:flex;"><span>                                                l3.<span style="color:#658b00">getName</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#8b008b;font-weight:bold">return</span> category3Vo;
+</span></span><span style="display:flex;"><span>                            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>                            catalogs2Vo.<span style="color:#658b00">setCatalog3List</span>(category3Vos);
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vo;
+</span></span><span style="display:flex;"><span>                    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> catalogs2Vos;
+</span></span><span style="display:flex;"><span>            }));
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> parentCid;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">getParentCid</span>(List&lt;CategoryEntity&gt; selectList, Long parentCid) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> selectList.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(item -&gt; item.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(parentCid)).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>前端頁面是一個JS，長這樣</li>
 </ul>
 <p><img src="image-20220120174709917.png" alt="image-20220120174709917"></p>

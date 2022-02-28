@@ -939,16 +939,16 @@ spring.redis.port=6379
 <li>用<code>.opsForXXX()</code>方法造出操作子，XXX是要存的value類型</li>
 <li>拿造出的操作子開始set、get</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
-StringRedisTemplate stringRedisTemplate;
-
-<span style="color:#707a7c">@Test</span>
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() {
-    ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
-    ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;hello&#34;</span>, <span style="color:#cd5555">&#34;world_&#34;</span> + UUID.<span style="color:#658b00">randomUUID</span>());
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;ops.get(\&#34;hello\&#34;) = &#34;</span> + ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hello&#34;</span>));
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>StringRedisTemplate stringRedisTemplate;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test1</span>() {
+</span></span><span style="display:flex;"><span>    ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
+</span></span><span style="display:flex;"><span>    ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;hello&#34;</span>, <span style="color:#cd5555">&#34;world_&#34;</span> + UUID.<span style="color:#658b00">randomUUID</span>());
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;ops.get(\&#34;hello\&#34;) = &#34;</span> + ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hello&#34;</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>推薦使用這個小軟體來查看管理Redis</li>
 </ul>
 <blockquote>
@@ -958,28 +958,28 @@ StringRedisTemplate stringRedisTemplate;
 <ul>
 <li>回到之前的CategoryServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 從redis獲取所有分類
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
-    <span style="color:#228b22">// 先去緩存拿
-</span><span style="color:#228b22"></span>    ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
-    String catalogJson = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>);
-    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isBlank</span>(catalogJson)) {
-        <span style="color:#228b22">// 緩存沒資料，去DB拿，且存到緩存中
-</span><span style="color:#228b22"></span>        Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; catalogJsonFromDb = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getCatalogJsonFromDb</span>();
-        <span style="color:#228b22">// 為了方便統一交流，redis放的都是JSON序列化後的
-</span><span style="color:#228b22"></span>        String s = JSON.<span style="color:#658b00">toJSONString</span>(catalogJsonFromDb);
-        <span style="color:#228b22">// 設定過期時間
-</span><span style="color:#228b22"></span>        ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>, s, 10, TimeUnit.<span style="color:#658b00">MINUTES</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> catalogJsonFromDb;
-    }
-    <span style="color:#228b22">// 把取出的JSONstring反序列化，使用TypeReference指名泛型
-</span><span style="color:#228b22"></span>    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; stringListMap = JSON.<span style="color:#658b00">parseObject</span>(catalogJson, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;Map&lt;String,
-            List&lt;Catalogs2Vo&gt;&gt;&gt;() {
-    });
-    <span style="color:#8b008b;font-weight:bold">return</span> stringListMap;
-}
-</code></pre></div><h3 id="lettuce舊版bug">lettuce舊版BUG</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 從redis獲取所有分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJson</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 先去緩存拿
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
+</span></span><span style="display:flex;"><span>    String catalogJson = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isBlank</span>(catalogJson)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 緩存沒資料，去DB拿，且存到緩存中
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; catalogJsonFromDb = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getCatalogJsonFromDb</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 為了方便統一交流，redis放的都是JSON序列化後的
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String s = JSON.<span style="color:#658b00">toJSONString</span>(catalogJsonFromDb);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 設定過期時間
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>, s, 10, TimeUnit.<span style="color:#658b00">MINUTES</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> catalogJsonFromDb;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 把取出的JSONstring反序列化，使用TypeReference指名泛型
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; stringListMap = JSON.<span style="color:#658b00">parseObject</span>(catalogJson, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;Map&lt;String,
+</span></span><span style="display:flex;"><span>            List&lt;Catalogs2Vo&gt;&gt;&gt;() {
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> stringListMap;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="lettuce舊版bug">lettuce舊版BUG</h3>
 <blockquote>
 <p>我是沒遇到，不過還是記一下，說不定哪時真遇到了</p>
 </blockquote>
@@ -1047,23 +1047,23 @@ StringRedisTemplate stringRedisTemplate;
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 從DB獲取所有分類，且二、三級分類以封裝好
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromDb</span>() {
-    <span style="color:#228b22">// spring預設是單例所以可以用this
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>) {
-        <span style="color:#228b22">// 雙重檢驗，拿到鎖也不急著查DB，先看看緩存
-</span><span style="color:#228b22"></span>        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
-        String catalogJson = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isBlank</span>(catalogJson)) {
-            <span style="color:#228b22">// 緩存有了，拿緩存的就滾吧
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> JSON.<span style="color:#658b00">parseObject</span>(catalogJson,
-                    <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;Map&lt;String,
-                            List&lt;Catalogs2Vo&gt;&gt;&gt;() {
-                    });
-        }
-        <span style="color:#228b22">// 查庫，放緩存的動作省略
-</span><span style="color:#228b22"></span>    }
-</code></pre></div><h2 id="分布式鎖">分布式鎖</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 從DB獲取所有分類，且二、三級分類以封裝好
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromDb</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// spring預設是單例所以可以用this
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 雙重檢驗，拿到鎖也不急著查DB，先看看緩存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
+</span></span><span style="display:flex;"><span>        String catalogJson = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalogJson&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isBlank</span>(catalogJson)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 緩存有了，拿緩存的就滾吧
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> JSON.<span style="color:#658b00">parseObject</span>(catalogJson,
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;Map&lt;String,
+</span></span><span style="display:flex;"><span>                            List&lt;Catalogs2Vo&gt;&gt;&gt;() {
+</span></span><span style="display:flex;"><span>                    });
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 查庫，放緩存的動作省略
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span></code></pre></div><h2 id="分布式鎖">分布式鎖</h2>
 <ul>
 <li>本地鎖的問題在於有幾個服務就有幾個容器，就有幾個單例，就有幾把鎖</li>
 <li>模擬啟動多個服務，複製然後指定不同的連接埠
@@ -1083,21 +1083,21 @@ StringRedisTemplate stringRedisTemplate;
 <li>在spring中是<code>setIfAbsent()</code></li>
 <li>佔完辦好事出去記得要把鎖給刪了，例如:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 分布式鎖
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromRedisLock</span>() {
-    Boolean lock = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">setIfAbsent</span>(<span style="color:#cd5555">&#34;lock&#34;</span>, <span style="color:#cd5555">&#34;123&#34;</span>, 30, TimeUnit.<span style="color:#658b00">SECONDS</span>);
-    <span style="color:#8b008b;font-weight:bold">if</span> (lock) {
-        <span style="color:#228b22">// 能放到值，相當於搶到鎖了，執行業務，並且走之前要刪掉值
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// stringRedisTemplate.expire(&#34;lock&#34;,30,TimeUnit.SECONDS); 不保險，沒原子性，如果在這之前斷電就GG
-</span><span style="color:#228b22"></span>        stringRedisTemplate.<span style="color:#658b00">delete</span>(<span style="color:#cd5555">&#34;lock&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromDb();
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">// 沒搶到，等會重試
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromRedisLock(); <span style="color:#228b22">// 自旋
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 等待一段時間之類的操作
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 分布式鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromRedisLock</span>() {
+</span></span><span style="display:flex;"><span>    Boolean lock = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">setIfAbsent</span>(<span style="color:#cd5555">&#34;lock&#34;</span>, <span style="color:#cd5555">&#34;123&#34;</span>, 30, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (lock) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 能放到值，相當於搶到鎖了，執行業務，並且走之前要刪掉值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// stringRedisTemplate.expire(&#34;lock&#34;,30,TimeUnit.SECONDS); 不保險，沒原子性，如果在這之前斷電就GG
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        stringRedisTemplate.<span style="color:#658b00">delete</span>(<span style="color:#cd5555">&#34;lock&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromDb();
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 沒搶到，等會重試
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromRedisLock(); <span style="color:#228b22">// 自旋
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 等待一段時間之類的操作
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>
 <p><code>.expire()</code>方法可以給指定的key設定過期時間，但不保險，最好還是在放值的同時就設定過期時間</p>
 </li>
@@ -1114,34 +1114,34 @@ StringRedisTemplate stringRedisTemplate;
 <p>就要使用LUA腳本保證刪除也是原子性操作</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 分布式鎖
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromRedisLock</span>() {
-    String uuid = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>();
-    Boolean lock = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">setIfAbsent</span>(<span style="color:#cd5555">&#34;lock&#34;</span>, uuid, 30, TimeUnit.<span style="color:#658b00">SECONDS</span>);
-    <span style="color:#8b008b;font-weight:bold">if</span> (lock) {
-        <span style="color:#228b22">// 能放到值，相當於搶到鎖了，執行業務，並且走之前要刪掉值
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">try</span> {
-            <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromDb();
-        } <span style="color:#8b008b;font-weight:bold">finally</span> {
-            <span style="color:#228b22">// 刪除鎖的lua腳本，不用太在意複製貼上就好
-</span><span style="color:#228b22"></span>            String script = <span style="color:#cd5555">&#34;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else&#34;</span> +
-                    <span style="color:#cd5555">&#34; &#34;</span> +
-                    <span style="color:#cd5555">&#34;return 0 end&#34;</span>;
-            stringRedisTemplate.<span style="color:#658b00">execute</span>(<span style="color:#8b008b;font-weight:bold">new</span> DefaultRedisScript&lt;Long&gt;(script, Long.<span style="color:#658b00">class</span>), Arrays.<span style="color:#658b00">asList</span>(<span style="color:#cd5555">&#34;lock&#34;</span>),
-                    uuid);
-        }
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">// 沒搶到，等會重試
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 等待一段時間
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">try</span> {
-            Thread.<span style="color:#658b00">sleep</span>(2000);
-        } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
-            e.<span style="color:#658b00">printStackTrace</span>();
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromRedisLock(); <span style="color:#228b22">// 自旋
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><h3 id="小結">小結</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 分布式鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> Map&lt;String, List&lt;Catalogs2Vo&gt;&gt; <span style="color:#008b45">getCatalogJsonFromRedisLock</span>() {
+</span></span><span style="display:flex;"><span>    String uuid = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>();
+</span></span><span style="display:flex;"><span>    Boolean lock = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">setIfAbsent</span>(<span style="color:#cd5555">&#34;lock&#34;</span>, uuid, 30, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (lock) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 能放到值，相當於搶到鎖了，執行業務，並且走之前要刪掉值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromDb();
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">finally</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 刪除鎖的lua腳本，不用太在意複製貼上就好
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            String script = <span style="color:#cd5555">&#34;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else&#34;</span> +
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#34; &#34;</span> +
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#34;return 0 end&#34;</span>;
+</span></span><span style="display:flex;"><span>            stringRedisTemplate.<span style="color:#658b00">execute</span>(<span style="color:#8b008b;font-weight:bold">new</span> DefaultRedisScript&lt;Long&gt;(script, Long.<span style="color:#658b00">class</span>), Arrays.<span style="color:#658b00">asList</span>(<span style="color:#cd5555">&#34;lock&#34;</span>),
+</span></span><span style="display:flex;"><span>                    uuid);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 沒搶到，等會重試
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 等待一段時間
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            Thread.<span style="color:#658b00">sleep</span>(2000);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#658b00">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> getCatalogJsonFromRedisLock(); <span style="color:#228b22">// 自旋
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="小結">小結</h3>
 <ul>
 <li>設置鎖沒同步指定過期時間: 可能造成死鎖</li>
 <li>不用UUID做Token: 鎖可能被別人誤刪</li>

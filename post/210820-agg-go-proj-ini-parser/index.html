@@ -343,28 +343,28 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <pre tabindex="0"><code>package main
 
 import (
-	&quot;fmt&quot;
-	&quot;io/ioutil&quot;
-	&quot;reflect&quot;
-	&quot;strings&quot;
+	&#34;fmt&#34;
+	&#34;io/ioutil&#34;
+	&#34;reflect&#34;
+	&#34;strings&#34;
 )
 
 type RedisConfig struct {
-	Host     string `ini:&quot;host&quot;`
-	Port     int    `ini:&quot;port&quot;`
-	Password string `ini:&quot;password&quot;`
-	Database int    `ini:&quot;database&quot;`
+	Host     string `ini:&#34;host&#34;`
+	Port     int    `ini:&#34;port&#34;`
+	Password string `ini:&#34;password&#34;`
+	Database int    `ini:&#34;database&#34;`
 }
 type MysqlConfig struct {
-	Address  string `ini:&quot;address&quot;`
-	Port     int    `ini:&quot;port&quot;`
-	Password string `ini:&quot;password&quot;`
-	Username string `ini:&quot;username&quot;`
+	Address  string `ini:&#34;address&#34;`
+	Port     int    `ini:&#34;port&#34;`
+	Password string `ini:&#34;password&#34;`
+	Username string `ini:&#34;username&#34;`
 }
 
 type Config struct {
-	MysqlConfig `ini:&quot;mysql&quot;`
-	RedisConfig `ini:&quot;redis&quot;`
+	MysqlConfig `ini:&#34;mysql&#34;`
+	RedisConfig `ini:&#34;redis&#34;`
 }
 
 func loadIni(fileName string, data interface{}) (err error) {
@@ -373,11 +373,11 @@ func loadIni(fileName string, data interface{}) (err error) {
 	t := reflect.TypeOf(data)
 	// fmt.Println(t.Kind())
 	if t.Kind() != reflect.Ptr {
-		err = fmt.Errorf(&quot;傳來的data必須是指針&quot;)
+		err = fmt.Errorf(&#34;傳來的data必須是指針&#34;)
 		return
 	}
 	if t.Elem().Kind() != reflect.Struct {
-		err = fmt.Errorf(&quot;傳來的data必須是結構體類型指針&quot;)
+		err = fmt.Errorf(&#34;傳來的data必須是結構體類型指針&#34;)
 		return
 	}
 	// 1. 讀取文件~&gt;Byte類型
@@ -386,14 +386,14 @@ func loadIni(fileName string, data interface{}) (err error) {
 		return
 	}
 	//轉成字符串
-	lineSlice := strings.Split(string(b), &quot;\r\n&quot;)
+	lineSlice := strings.Split(string(b), &#34;\r\n&#34;)
 	// fmt.Println(lineSlice)
 	// 2. 一行一行讀取數據
 	var structName string
 	for idx, line := range lineSlice {
 		line = strings.TrimSpace(line) //去除多餘空格
 		// 2.1 如果是註釋就跳過
-		if strings.HasPrefix(line, &quot;;&quot;) || strings.HasPrefix(line, &quot;#&quot;) {
+		if strings.HasPrefix(line, &#34;;&#34;) || strings.HasPrefix(line, &#34;#&#34;) {
 			continue
 		}
 		//純空行就跳過
@@ -401,21 +401,21 @@ func loadIni(fileName string, data interface{}) (err error) {
 			continue
 		}
 		// 2.2 如果是[]開頭表示是節
-		if strings.HasPrefix(line, &quot;[&quot;) {
-			if line[0] != '[' || line[len(line)-1] != ']' {
-				err = fmt.Errorf(&quot;line:%d syntax error&quot;, idx+1)
+		if strings.HasPrefix(line, &#34;[&#34;) {
+			if line[0] != &#39;[&#39; || line[len(line)-1] != &#39;]&#39; {
+				err = fmt.Errorf(&#34;line:%d syntax error&#34;, idx+1)
 				return
 			}
 			//去掉這行的首尾跟空格拿到內容
 			section := strings.TrimSpace(line[1 : len(line)-1])
 			if len(section) == 0 {
-				err = fmt.Errorf(&quot;line:%d syntax error&quot;, idx+1)
+				err = fmt.Errorf(&#34;line:%d syntax error&#34;, idx+1)
 				return
 			}
 			//根據section去data反射對應的結構體
 			for i := 0; i &lt; t.Elem().NumField(); i++ {
 				field := t.Elem().Field(i)
-				if section == field.Tag.Get(&quot;ini&quot;) {
+				if section == field.Tag.Get(&#34;ini&#34;) {
 					//說明找到了，把字段名記下
 					structName = field.Name
 					fmt.Println(section, structName)
@@ -426,25 +426,25 @@ func loadIni(fileName string, data interface{}) (err error) {
 		} else {
 			// 2.3 剩下的就是分割的鍵值對
 			//先排除異常的行
-			if strings.Index(line, &quot;=&quot;) == -1 || strings.HasPrefix(line, &quot;=&quot;) {
-				err = fmt.Errorf(&quot;line:%d syntax error&quot;, idx+1)
+			if strings.Index(line, &#34;=&#34;) == -1 || strings.HasPrefix(line, &#34;=&#34;) {
+				err = fmt.Errorf(&#34;line:%d syntax error&#34;, idx+1)
 				return
 			}
-			index := strings.Index(line, &quot;=&quot;)
+			index := strings.Index(line, &#34;=&#34;)
 			key := strings.TrimSpace(line[:index])
 			// value := strings.TrimSpace(line[:index+1])
 			v := reflect.ValueOf(data)
 			sValue := v.Elem().FieldByName(structName) //拿到嵌套結構體的值信息
 			sType := sValue.Type()                     //拿到嵌套結構體的類型信息
 			if sType.Kind() != reflect.Struct {
-				err = fmt.Errorf(&quot;%s應該為一個結構體&quot;, structName)
+				err = fmt.Errorf(&#34;%s應該為一個結構體&#34;, structName)
 				return
 			}
 			var fieldName string
 			//遍歷嵌套結構體每一個字段 判斷tag是否=key
 			for i := 0; i &lt; sValue.NumField(); i++ {
 				field := sType.Field(i)
-				if field.Tag.Get(&quot;ini&quot;) == key {
+				if field.Tag.Get(&#34;ini&#34;) == key {
 					fieldName = field.Name
 					break
 				}
@@ -460,12 +460,11 @@ func loadIni(fileName string, data interface{}) (err error) {
 
 func main() {
 	var cfg Config
-	err := loadIni(&quot;C:/config.ini&quot;, &amp;cfg)
+	err := loadIni(&#34;C:/config.ini&#34;, &amp;cfg)
 	if err != nil {
 		panic(err)
 	}
 }
-
 </code></pre>
                     
                     <HR width="100%" id="EOF">

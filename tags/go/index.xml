@@ -18,8 +18,8 @@
  對.proto文件使用轉譯指令:
 protoc --go_out=plugins=grpc:. *.proto  案例:透過grpc遠程傳遞一個調用teacher資料類型的服務
  .proto:
-syntax=&amp;quot;proto3&amp;quot;; option go_package=&amp;quot;/.;pb&amp;quot;; message Teacher{ int32 age=1; string name=2; } service SayName{ rpc SayHello(Teacher) returns(Teacher); } server:
-type Children struct{} // 綁定類方法 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) { t.Name += &amp;quot;is sleeping&amp;quot; return t, nil } func main() { // 初始一個grpc對象 grpcServer := grpc.NewServer() // 註冊服務 pb.RegisterSayNameServer(grpcServer, new(Children)) // 監聽 listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.</description>
+syntax=&amp;#34;proto3&amp;#34;; option go_package=&amp;#34;/.;pb&amp;#34;; message Teacher{ int32 age=1; string name=2; } service SayName{ rpc SayHello(Teacher) returns(Teacher); } server:
+type Children struct{} // 綁定類方法 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) { t.Name += &amp;#34;is sleeping&amp;#34; return t, nil } func main() { // 初始一個grpc對象 grpcServer := grpc.NewServer() // 註冊服務 pb.RegisterSayNameServer(grpcServer, new(Children)) // 監聽 listener, err := net.Listen(&amp;#34;tcp&amp;#34;, &amp;#34;127.</description>
     </item>
     
     <item>
@@ -35,7 +35,7 @@ https://github.com/protocolbuffers/protobuf/releases   安裝golang對應的庫�
 go get github.com/golang/protobuf/proto go get github.com/golang/protobuf/protoc-gen-go   測試
 protoc -h 或 protoc --version 沒報錯就是成功
   消息體舉例，xxx.proto
-// 指定版本，不打3就會是2 syntax=&amp;quot;proto3&amp;quot;; // 指定輸出位置&amp;amp;go包名，沒寫轉換不了 // option go_package =&amp;quot;path;name&amp;quot;; option go_package =&amp;quot;/.&amp;quot;; // 放在同一目錄下包名為__(空) // 定義消息體，分配唯一編號 (不能用19000~19999) message Student{ int32 age = 1; // 可以不從1開始，但不可重複 string name = 2; People p=3; repeated int32 score=4; // 數組 Week w=5; // 聯合體 oneof data{ string teacher=6; string class=7; } } // 消息體可以嵌套 message People{ int32 weight=1; } // 定義枚舉類型 enum Week{ Monday=0; // 必須從0開始 Turesday=1; }   生成go文件</description>
+// 指定版本，不打3就會是2 syntax=&amp;#34;proto3&amp;#34;; // 指定輸出位置&amp;amp;go包名，沒寫轉換不了 // option go_package =&amp;#34;path;name&amp;#34;; option go_package =&amp;#34;/.&amp;#34;; // 放在同一目錄下包名為__(空) // 定義消息體，分配唯一編號 (不能用19000~19999) message Student{ int32 age = 1; // 可以不從1開始，但不可重複 string name = 2; People p=3; repeated int32 score=4; // 數組 Week w=5; // 聯合體 oneof data{ string teacher=6; string class=7; } } // 消息體可以嵌套 message People{ int32 weight=1; } // 定義枚舉類型 enum Week{ Monday=0; // 必須從0開始 Turesday=1; }   生成go文件</description>
     </item>
     
     <item>
@@ -44,7 +44,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-queue/</guid>
-      <description>一次性隊列 //用結構體管理隊列 type Queue struct { maxSize int array [3]int front int //隊列首(不包含) rear int //隊尾(含) } //添加數據val到隊列 func (q *Queue) AddQueue(val int) (err error) { //先判斷是否已滿 if q.rear == q.maxSize-1 { return errors.New(&amp;quot;queue full&amp;quot;) } q.rear++ q.array[q.rear] = val return } //取出數據 func (q *Queue) GetQueue() (val int, err error) { //先判斷是否為空 if q.rear == q.front { return -1, errors.New(&amp;quot;queue empty&amp;quot;) } q.front++ val = q.array[q.front] return val, err } //顯示隊列 func (q *Queue) ShowQueue() { fmt.</description>
+      <description>一次性隊列 //用結構體管理隊列 type Queue struct { maxSize int array [3]int front int //隊列首(不包含) rear int //隊尾(含) } //添加數據val到隊列 func (q *Queue) AddQueue(val int) (err error) { //先判斷是否已滿 if q.rear == q.maxSize-1 { return errors.New(&amp;#34;queue full&amp;#34;) } q.rear++ q.array[q.rear] = val return } //取出數據 func (q *Queue) GetQueue() (val int, err error) { //先判斷是否為空 if q.rear == q.front { return -1, errors.New(&amp;#34;queue empty&amp;#34;) } q.front++ val = q.array[q.front] return val, err } //顯示隊列 func (q *Queue) ShowQueue() { fmt.</description>
     </item>
     
     <item>
@@ -53,7 +53,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-bi-tree/</guid>
-      <description>二分樹的3種遍歷 package main import &amp;quot;fmt&amp;quot; type Hero struct { No int Name string Left *Hero Right *Hero } //前序遍歷 先輸出root 再輸出左子樹 再輸出右子樹，會中左右一層層往下 func PreOrder(node *Hero) { if node != nil { fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name) PreOrder(node.Left) PreOrder(node.Right) } } //中序遍歷 左子樹 root 右子樹 func InfixOrder(node *Hero) { if node != nil { InfixOrder(node.Left) fmt.Printf(&amp;quot;no=%d name=%s\n&amp;quot;, node.No, node.Name) InfixOrder(node.Right) } } //後序遍歷 左子樹 右子樹 root，會一路到最左最下開始打 func PostOrder(node *Hero) { if node !</description>
+      <description>二分樹的3種遍歷 package main import &amp;#34;fmt&amp;#34; type Hero struct { No int Name string Left *Hero Right *Hero } //前序遍歷 先輸出root 再輸出左子樹 再輸出右子樹，會中左右一層層往下 func PreOrder(node *Hero) { if node != nil { fmt.Printf(&amp;#34;no=%d name=%s\n&amp;#34;, node.No, node.Name) PreOrder(node.Left) PreOrder(node.Right) } } //中序遍歷 左子樹 root 右子樹 func InfixOrder(node *Hero) { if node != nil { InfixOrder(node.Left) fmt.Printf(&amp;#34;no=%d name=%s\n&amp;#34;, node.No, node.Name) InfixOrder(node.Right) } } //後序遍歷 左子樹 右子樹 root，會一路到最左最下開始打 func PostOrder(node *Hero) { if node !</description>
     </item>
     
     <item>
@@ -62,7 +62,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-hash/</guid>
-      <description>哈希表數據結構 package main import ( &amp;quot;fmt&amp;quot; &amp;quot;os&amp;quot; ) type Emp struct { Id int Name string Next *Emp } func (e *Emp) ShowMe() { fmt.Printf(&amp;quot;链表%d 找到该雇员 %d\n&amp;quot;, e.Id%7, e.Id) } //不帶表頭，即第一個節點就放雇員資料 type EmpLink struct { Head *Emp } func (e *EmpLink) FindByIdEmpLink(id int) *Emp { cur := e.Head for { if cur != nil &amp;amp;&amp;amp; cur.Id == id { return cur } else if cur == nil { break } cur = cur.</description>
+      <description>哈希表數據結構 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;os&amp;#34; ) type Emp struct { Id int Name string Next *Emp } func (e *Emp) ShowMe() { fmt.Printf(&amp;#34;链表%d 找到该雇员 %d\n&amp;#34;, e.Id%7, e.Id) } //不帶表頭，即第一個節點就放雇員資料 type EmpLink struct { Head *Emp } func (e *EmpLink) FindByIdEmpLink(id int) *Emp { cur := e.Head for { if cur != nil &amp;amp;&amp;amp; cur.Id == id { return cur } else if cur == nil { break } cur = cur.</description>
     </item>
     
     <item>
@@ -80,7 +80,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-quick-sort/</guid>
-      <description>插入&amp;amp;選擇&amp;amp;快速排序 //選擇排序 func SelectSort(array *[6]int) { for j := 0; j &amp;lt; len(array)-1; j++ { min := array[j] minIndex := j //尋找最小的下標 for i := j + 1; i &amp;lt; len(array); i++ { if min &amp;gt; array[i] { min = array[i] minIndex = i } } if minIndex != j { array[j], array[minIndex] = array[minIndex], array[j] } fmt.Printf(&amp;quot;第%d次交換後 %v\n&amp;quot;, j+1, *array) } } //插入排序 func InsertSort(arr *[6]int) { for j := 1; j &amp;lt; len(arr); j++ { //給第二個元素找位置 insertVal := arr[j] insertIndex := j - 1 //下標 //由大到小 for insertIndex &amp;gt;= 0 &amp;amp;&amp;amp; arr[insertIndex] &amp;lt; insertVal { arr[insertIndex+1] = arr[insertIndex] //數據後移 insertIndex-- } //插入 if insertIndex+1 !</description>
+      <description>插入&amp;amp;選擇&amp;amp;快速排序 //選擇排序 func SelectSort(array *[6]int) { for j := 0; j &amp;lt; len(array)-1; j++ { min := array[j] minIndex := j //尋找最小的下標 for i := j + 1; i &amp;lt; len(array); i++ { if min &amp;gt; array[i] { min = array[i] minIndex = i } } if minIndex != j { array[j], array[minIndex] = array[minIndex], array[j] } fmt.Printf(&amp;#34;第%d次交換後 %v\n&amp;#34;, j+1, *array) } } //插入排序 func InsertSort(arr *[6]int) { for j := 1; j &amp;lt; len(arr); j++ { //給第二個元素找位置 insertVal := arr[j] insertIndex := j - 1 //下標 //由大到小 for insertIndex &amp;gt;= 0 &amp;amp;&amp;amp; arr[insertIndex] &amp;lt; insertVal { arr[insertIndex+1] = arr[insertIndex] //數據後移 insertIndex-- } //插入 if insertIndex+1 !</description>
     </item>
     
     <item>
@@ -89,7 +89,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-stack/</guid>
-      <description>模擬棧&amp;amp;四則運算 //模擬棧的使用 type Stack struct { MaxTop int //最大可存個數 Top int //頂 arr [20]int } func (s *Stack) Push(val int) (err error) { //先判斷是否滿 if s.Top == s.MaxTop-1 { fmt.Println(&amp;quot;stack full&amp;quot;) return errors.New(&amp;quot;stack full&amp;quot;) } //放入數據 s.Top++ s.arr[s.Top] = val return } func (s *Stack) Pop() (val int, err error) { //先判斷是否空 if s.Top == -1 { fmt.Println(&amp;quot;stack empty&amp;quot;) return 0, errors.New(&amp;quot;stack empty&amp;quot;) } //彈出數據 val = s.arr[s.Top] s.Top-- return val, nil } //遍歷 func (s *Stack) List() { //先判斷是否空 if s.</description>
+      <description>模擬棧&amp;amp;四則運算 //模擬棧的使用 type Stack struct { MaxTop int //最大可存個數 Top int //頂 arr [20]int } func (s *Stack) Push(val int) (err error) { //先判斷是否滿 if s.Top == s.MaxTop-1 { fmt.Println(&amp;#34;stack full&amp;#34;) return errors.New(&amp;#34;stack full&amp;#34;) } //放入數據 s.Top++ s.arr[s.Top] = val return } func (s *Stack) Pop() (val int, err error) { //先判斷是否空 if s.Top == -1 { fmt.Println(&amp;#34;stack empty&amp;#34;) return 0, errors.New(&amp;#34;stack empty&amp;#34;) } //彈出數據 val = s.arr[s.Top] s.Top-- return val, nil } //遍歷 func (s *Stack) List() { //先判斷是否空 if s.</description>
     </item>
     
     <item>
@@ -98,7 +98,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-circle-list/</guid>
-      <description>環形單向鏈表 type CatNode struct { no int name string next *CatNode } func Insert(head *CatNode, newCatNode *CatNode) { //判斷是否第一隻貓 if head.next == nil { head.no = newCatNode.no head.name = newCatNode.name head.next = head //構成環形 fmt.Println(*newCatNode, &amp;quot;已初始化並加入環形鏈表&amp;quot;) return } //定義一個變量找到環形最後一個 temp := head for { if temp.next == head { break } temp = temp.next } temp.next = newCatNode fmt.Println(*newCatNode, &amp;quot;已加入環形鏈表&amp;quot;) newCatNode.next = head } func Del(head *CatNode, id int) *CatNode { temp := head helper := head if temp.</description>
+      <description>環形單向鏈表 type CatNode struct { no int name string next *CatNode } func Insert(head *CatNode, newCatNode *CatNode) { //判斷是否第一隻貓 if head.next == nil { head.no = newCatNode.no head.name = newCatNode.name head.next = head //構成環形 fmt.Println(*newCatNode, &amp;#34;已初始化並加入環形鏈表&amp;#34;) return } //定義一個變量找到環形最後一個 temp := head for { if temp.next == head { break } temp = temp.next } temp.next = newCatNode fmt.Println(*newCatNode, &amp;#34;已加入環形鏈表&amp;#34;) newCatNode.next = head } func Del(head *CatNode, id int) *CatNode { temp := head helper := head if temp.</description>
     </item>
     
     <item>
@@ -107,7 +107,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-array3/</guid>
-      <description>稀疏數組 type ValNode struct { row int //橫的 col int //直的 val int } func main() { //創建數組範例 var chessMap [11][11]int chessMap[1][2] = 1 chessMap[2][3] = 2 //輸出看樣子 for _, v := range chessMap { for _, v2 := range v { fmt.Printf(&amp;quot;%d\t&amp;quot;, v2) } fmt.Println() } //轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片 var sparseArr []ValNode //紀錄規模跟預設值 valNode0 := ValNode{ row: 11, col: 11, val: 0, } sparseArr = append(sparseArr, valNode0) for i, v := range chessMap { for j, k := range v { if k !</description>
+      <description>稀疏數組 type ValNode struct { row int //橫的 col int //直的 val int } func main() { //創建數組範例 var chessMap [11][11]int chessMap[1][2] = 1 chessMap[2][3] = 2 //輸出看樣子 for _, v := range chessMap { for _, v2 := range v { fmt.Printf(&amp;#34;%d\t&amp;#34;, v2) } fmt.Println() } //轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片 var sparseArr []ValNode //紀錄規模跟預設值 valNode0 := ValNode{ row: 11, col: 11, val: 0, } sparseArr = append(sparseArr, valNode0) for i, v := range chessMap { for j, k := range v { if k !</description>
     </item>
     
     <item>
@@ -116,7 +116,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-josephus/</guid>
-      <description>約瑟夫問題 type Boy struct { No int Next *Boy //指向下一個小孩的指針 } func addBoy(num int) *Boy { //num表示小孩的個數，*Boy返回第一個小孩的指針 first := &amp;amp;Boy{} temp := &amp;amp;Boy{} if num &amp;lt; 1 { fmt.Println(&amp;quot;num值錯誤&amp;quot;) return first } for i := 1; i &amp;lt;= num; i++ { boy := &amp;amp;Boy{ No: i, } if i == 1 { first = boy //不變 temp = boy temp.Next = first } else { temp.Next = boy temp = boy temp.</description>
+      <description>約瑟夫問題 type Boy struct { No int Next *Boy //指向下一個小孩的指針 } func addBoy(num int) *Boy { //num表示小孩的個數，*Boy返回第一個小孩的指針 first := &amp;amp;Boy{} temp := &amp;amp;Boy{} if num &amp;lt; 1 { fmt.Println(&amp;#34;num值錯誤&amp;#34;) return first } for i := 1; i &amp;lt;= num; i++ { boy := &amp;amp;Boy{ No: i, } if i == 1 { first = boy //不變 temp = boy temp.Next = first } else { temp.Next = boy temp = boy temp.</description>
     </item>
     
     <item>
@@ -163,7 +163,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       
       <guid>https://yoziming.github.io/post/210810-agg-go-defer/</guid>
       <description>defer臨走前啟用  退出函數前才執行
- func sum(n1, n2 int) int { defer fmt.Println(&amp;quot;ok1&amp;quot;, n1) defer fmt.Println(&amp;quot;ok2&amp;quot;, n2) //defer棧先入後出 n1++ n2++ res := n1 + n2 fmt.Println(&amp;quot;ok3 res=&amp;quot;, res) return res } func main() { res := sum(10, 20) fmt.Println(&amp;quot;res=&amp;quot;, res) } </description>
+ func sum(n1, n2 int) int { defer fmt.Println(&amp;#34;ok1&amp;#34;, n1) defer fmt.Println(&amp;#34;ok2&amp;#34;, n2) //defer棧先入後出 n1++ n2++ res := n1 + n2 fmt.Println(&amp;#34;ok3 res=&amp;#34;, res) return res } func main() { res := sum(10, 20) fmt.Println(&amp;#34;res=&amp;#34;, res) } </description>
     </item>
     
     <item>
@@ -175,7 +175,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <description>goroutine  進程=程序在操作系統中的一次進行過程
 線程=執行實例的最小單位
   一個進程可以創建多個線程且併發執行 一個程序至少包含一個進程，一個進程至少包含一個線程 併發=多線程程序在單核上運行 併行=多線程程序在多核上運行  GO的主線程(可以理解為進程)，一個GO進程上可以起很多協程，協程可以理解為輕量級的線程，協程特點:
- 有獨立的棧空間 共享程序堆空間 調度由用戶控制 為輕量級的線程  func test() { for i := 0; i &amp;lt; 10; i++ { fmt.Println(&amp;quot;test()Hello,world&amp;quot; + strconv.Itoa(i)) time.Sleep(time.Second / 10) } } func main() { go test() //開啟一個協程 //如果主線程退出了，即使協程還沒執行完，也會退出 //協程可以自己先結束 for i := 0; i &amp;lt; 10; i++ { fmt.Println(&amp;quot;main()Hello,go&amp;quot; + strconv.Itoa(i)) time.Sleep(time.Second / 10) } go test() //開啟一個協程，主線程退出了，即使協程還沒執行完，也會退出 //查邏輯CPU數量 cpuNum := runtime.NumCPU() fmt.Println(cpuNum) //設置最大線程數量 runtime.</description>
+ 有獨立的棧空間 共享程序堆空間 調度由用戶控制 為輕量級的線程  func test() { for i := 0; i &amp;lt; 10; i++ { fmt.Println(&amp;#34;test()Hello,world&amp;#34; + strconv.Itoa(i)) time.Sleep(time.Second / 10) } } func main() { go test() //開啟一個協程 //如果主線程退出了，即使協程還沒執行完，也會退出 //協程可以自己先結束 for i := 0; i &amp;lt; 10; i++ { fmt.Println(&amp;#34;main()Hello,go&amp;#34; + strconv.Itoa(i)) time.Sleep(time.Second / 10) } go test() //開啟一個協程，主線程退出了，即使協程還沒執行完，也會退出 //查邏輯CPU數量 cpuNum := runtime.NumCPU() fmt.Println(cpuNum) //設置最大線程數量 runtime.</description>
     </item>
     
     <item>
@@ -184,7 +184,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-mysql/</guid>
-      <description>Go使用mysql與事務操作 基本操作 import ( &amp;quot;database/sql&amp;quot; &amp;quot;fmt&amp;quot; _ &amp;quot;github.com/go-sql-driver/mysql&amp;quot; ) var db *sql.DB // 是一個連接池對象 // user 接收數據 type user struct { id int name string age int } func initDB() (err error) { dsn := &amp;quot;root:root@tcp(127.0.0.1:3306)/sql_test&amp;quot; db, err = sql.Open(&amp;quot;mysql&amp;quot;, dsn) // 這個db要用全局的，重要! if err != nil { return } err = db.Ping() if err != nil { return } else { fmt.Println(&amp;quot;連接成功&amp;quot;) } return } // 查詢一個 func find1() { var u1 user sqlStr := `select id, name, age from user where id=?</description>
+      <description>Go使用mysql與事務操作 基本操作 import ( &amp;#34;database/sql&amp;#34; &amp;#34;fmt&amp;#34; _ &amp;#34;github.com/go-sql-driver/mysql&amp;#34; ) var db *sql.DB // 是一個連接池對象 // user 接收數據 type user struct { id int name string age int } func initDB() (err error) { dsn := &amp;#34;root:root@tcp(127.0.0.1:3306)/sql_test&amp;#34; db, err = sql.Open(&amp;#34;mysql&amp;#34;, dsn) // 這個db要用全局的，重要! if err != nil { return } err = db.Ping() if err != nil { return } else { fmt.Println(&amp;#34;連接成功&amp;#34;) } return } // 查詢一個 func find1() { var u1 user sqlStr := `select id, name, age from user where id=?</description>
     </item>
     
     <item>
@@ -194,7 +194,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       
       <guid>https://yoziming.github.io/post/210810-agg-go-json/</guid>
       <description>JSON序列化  JSON 格式 {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;} {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;,&amp;ldquo;鍵2&amp;rdquo;:&amp;ldquo;值2&amp;rdquo;} {&amp;ldquo;鍵&amp;rdquo;:&amp;ldquo;值&amp;rdquo;,&amp;ldquo;鍵2&amp;rdquo;:[&amp;ldquo;值2數組&amp;rdquo;,值2數組]}
- type Monster struct { Name string `json:&amp;quot;name&amp;quot;` //反射機制 Age int `json:&amp;quot;age&amp;quot;` Sal float64 `json:&amp;quot;sal&amp;quot;` } func test1() { monster1 := Monster{ Name: &amp;quot;牛魔王&amp;quot;, Age: 50, Sal: 8000.0, } data, err := json.Marshal(&amp;amp;monster1) if err != nil { fmt.Println(err) } fmt.Println(string(data)) } //把map序列化 func testMap() { var mapA map[string]interface{} = make(map[string]interface{}) mapA[&amp;quot;name&amp;quot;] = &amp;quot;紅孩兒&amp;quot; mapA[&amp;quot;age&amp;quot;] = 18 data, err := json.Marshal(&amp;amp;mapA) if err !</description>
+ type Monster struct { Name string `json:&amp;#34;name&amp;#34;` //反射機制 Age int `json:&amp;#34;age&amp;#34;` Sal float64 `json:&amp;#34;sal&amp;#34;` } func test1() { monster1 := Monster{ Name: &amp;#34;牛魔王&amp;#34;, Age: 50, Sal: 8000.0, } data, err := json.Marshal(&amp;amp;monster1) if err != nil { fmt.Println(err) } fmt.Println(string(data)) } //把map序列化 func testMap() { var mapA map[string]interface{} = make(map[string]interface{}) mapA[&amp;#34;name&amp;#34;] = &amp;#34;紅孩兒&amp;#34; mapA[&amp;#34;age&amp;#34;] = 18 data, err := json.Marshal(&amp;amp;mapA) if err !</description>
     </item>
     
     <item>
@@ -203,7 +203,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-map/</guid>
-      <description>Map集合 func main() { // map[key類型] value類型 var m1 map[int]int = make(map[int]int) //key類型通常是int or string //value 通常是數字 or string or map or struct //只聲明不會給內存，要make才初始化才能用(跟切片一樣) m1[1] = 100 m1[2] = 200 m1[3] = 300 m1[1] = 1000 //key不能重複，後賦予的頂掉前面 fmt.Println(m1) var m2 = make(map[string]string) m2[&amp;quot;AV&amp;quot;] = &amp;quot;sss&amp;quot; fmt.Println(m2) //推薦寫法 m3 := make(map[string]string) m3[&amp;quot;一號&amp;quot;] = &amp;quot;台北&amp;quot; m3[&amp;quot;二奧&amp;quot;] = &amp;quot;桃園&amp;quot; fmt.Println(m3) m4 := map[int]int{1: 10, 2: 20, 3: 30} fmt.Println(m4) //學生姓名+性別 m5 := make(map[string](map[string]string)) m5[&amp;quot;stu01&amp;quot;] = make(map[string]string) //不能少 m5[&amp;quot;stu01&amp;quot;][&amp;quot;name&amp;quot;] = &amp;quot;tom&amp;quot; m5[&amp;quot;stu01&amp;quot;][&amp;quot;sex&amp;quot;] = &amp;quot;男&amp;quot; m5[&amp;quot;stu02&amp;quot;] = make(map[string]string) //不能少 m5[&amp;quot;stu02&amp;quot;][&amp;quot;name&amp;quot;] = &amp;quot;mary&amp;quot; m5[&amp;quot;stu02&amp;quot;][&amp;quot;sex&amp;quot;] = &amp;quot;女&amp;quot; fmt.</description>
+      <description>Map集合 func main() { // map[key類型] value類型 var m1 map[int]int = make(map[int]int) //key類型通常是int or string //value 通常是數字 or string or map or struct //只聲明不會給內存，要make才初始化才能用(跟切片一樣) m1[1] = 100 m1[2] = 200 m1[3] = 300 m1[1] = 1000 //key不能重複，後賦予的頂掉前面 fmt.Println(m1) var m2 = make(map[string]string) m2[&amp;#34;AV&amp;#34;] = &amp;#34;sss&amp;#34; fmt.Println(m2) //推薦寫法 m3 := make(map[string]string) m3[&amp;#34;一號&amp;#34;] = &amp;#34;台北&amp;#34; m3[&amp;#34;二奧&amp;#34;] = &amp;#34;桃園&amp;#34; fmt.Println(m3) m4 := map[int]int{1: 10, 2: 20, 3: 30} fmt.Println(m4) //學生姓名+性別 m5 := make(map[string](map[string]string)) m5[&amp;#34;stu01&amp;#34;] = make(map[string]string) //不能少 m5[&amp;#34;stu01&amp;#34;][&amp;#34;name&amp;#34;] = &amp;#34;tom&amp;#34; m5[&amp;#34;stu01&amp;#34;][&amp;#34;sex&amp;#34;] = &amp;#34;男&amp;#34; m5[&amp;#34;stu02&amp;#34;] = make(map[string]string) //不能少 m5[&amp;#34;stu02&amp;#34;][&amp;#34;name&amp;#34;] = &amp;#34;mary&amp;#34; m5[&amp;#34;stu02&amp;#34;][&amp;#34;sex&amp;#34;] = &amp;#34;女&amp;#34; fmt.</description>
     </item>
     
     <item>
@@ -212,7 +212,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-new-make/</guid>
-      <description>func main() { num1 := 100 fmt.Printf(&amp;quot;類型=%T,值=%v,地址=%v\n&amp;quot;, num1, num1, &amp;amp;num1) num2 := new(int) //*int fmt.Printf(&amp;quot;類型=%T,值=%v,地址=%v\n&amp;quot;, num2, num2, &amp;amp;num2) //new用來分配類型 //make用來分配內存 } </description>
+      <description>func main() { num1 := 100 fmt.Printf(&amp;#34;類型=%T,值=%v,地址=%v\n&amp;#34;, num1, num1, &amp;amp;num1) num2 := new(int) //*int fmt.Printf(&amp;#34;類型=%T,值=%v,地址=%v\n&amp;#34;, num2, num2, &amp;amp;num2) //new用來分配類型 //make用來分配內存 } </description>
     </item>
     
     <item>
@@ -221,7 +221,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-reflect/</guid>
-      <description>reflect反射 func reflectTest01(b interface{}) { //通過反射獲取傳入的各種訊息 //先拿reflect.Type rType := reflect.TypeOf(b) fmt.Println(&amp;quot;rType=&amp;quot;, rType) rVal := reflect.ValueOf(b) fmt.Println(&amp;quot;rVal=&amp;quot;, rVal) // n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value n1 := 10 + rVal.Int() //用.Int()轉換後就可以了 // n3 := rVal.Float()//像這樣也不行的，一定要確認類型 fmt.Println(&amp;quot;n1=&amp;quot;, n1) // fmt.Println(&amp;quot;n3=&amp;quot;, n3) //把rVal轉回interface{} iV := rVal.Interface() n2 := iV.(int) fmt.Println(&amp;quot;n2=&amp;quot;, n2) } func reflectTest02(b interface{}) { //通過反射獲取傳入的各種訊息 //先拿reflect.Type rType := reflect.TypeOf(b) fmt.Println(&amp;quot;rType=&amp;quot;, rType) rVal := reflect.ValueOf(b) fmt.Println(&amp;quot;rVal=&amp;quot;, rVal) //把rVal轉回interface{} iV := rVal.Interface() //斷言回來 n2, ok := iV.</description>
+      <description>reflect反射 func reflectTest01(b interface{}) { //通過反射獲取傳入的各種訊息 //先拿reflect.Type rType := reflect.TypeOf(b) fmt.Println(&amp;#34;rType=&amp;#34;, rType) rVal := reflect.ValueOf(b) fmt.Println(&amp;#34;rVal=&amp;#34;, rVal) // n1:=10+rVal //rVal他看起來是int但其實是type reflect.Value n1 := 10 + rVal.Int() //用.Int()轉換後就可以了 // n3 := rVal.Float()//像這樣也不行的，一定要確認類型 fmt.Println(&amp;#34;n1=&amp;#34;, n1) // fmt.Println(&amp;#34;n3=&amp;#34;, n3) //把rVal轉回interface{} iV := rVal.Interface() n2 := iV.(int) fmt.Println(&amp;#34;n2=&amp;#34;, n2) } func reflectTest02(b interface{}) { //通過反射獲取傳入的各種訊息 //先拿reflect.Type rType := reflect.TypeOf(b) fmt.Println(&amp;#34;rType=&amp;#34;, rType) rVal := reflect.ValueOf(b) fmt.Println(&amp;#34;rVal=&amp;#34;, rVal) //把rVal轉回interface{} iV := rVal.Interface() //斷言回來 n2, ok := iV.</description>
     </item>
     
     <item>
@@ -230,7 +230,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210927-rpc/</guid>
-      <description>server / 用接口，讓服務端註冊RPC的時候，就能確保他合法 type World struct{} func (w *World) HelloWorld(name string, resp *string) error { *resp = name + &amp;quot;你好&amp;quot; return nil // 如果這個return的返回值不為空， // 那無論傳出的參數是否有值，服務端都不會給東西 // (就你給你error) } // 用接口，讓服務端註冊RPC的時候，就能確保他合法 type MyInerface interface { HelloWorld(string *string) error } // 調用方法時，給i傳參，參數是實現HelloWorld方法的對象 func RegsiterService(i MyInerface) { rpc.RegisterName(&amp;quot;hello&amp;quot;, i) } func main() { // 1.註冊RPC服務 綁定對象方法 err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World)) if err != nil { fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err) } // 2.開始監聽 listener, err := net.</description>
+      <description>server / 用接口，讓服務端註冊RPC的時候，就能確保他合法 type World struct{} func (w *World) HelloWorld(name string, resp *string) error { *resp = name + &amp;#34;你好&amp;#34; return nil // 如果這個return的返回值不為空， // 那無論傳出的參數是否有值，服務端都不會給東西 // (就你給你error) } // 用接口，讓服務端註冊RPC的時候，就能確保他合法 type MyInerface interface { HelloWorld(string *string) error } // 調用方法時，給i傳參，參數是實現HelloWorld方法的對象 func RegsiterService(i MyInerface) { rpc.RegisterName(&amp;#34;hello&amp;#34;, i) } func main() { // 1.註冊RPC服務 綁定對象方法 err := rpc.RegisterName(&amp;#34;hello&amp;#34;, new(World)) if err != nil { fmt.Println(&amp;#34;註冊RPC服務失敗&amp;#34;, err) } // 2.開始監聽 listener, err := net.</description>
     </item>
     
     <item>
@@ -239,7 +239,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-split/</guid>
-      <description>Split切分字串 // abc,b=&amp;gt;[a c] func Split(str, sep string) []string { // str=&amp;quot;bsfcvjkhbafs&amp;quot; sep=&amp;quot;b&amp;quot; var ret = make([]string, 0, strings.Count(str, sep)+1) index := strings.Index(str, sep) for index &amp;gt;= 0 { ret = append(ret, str[:index]) str = str[index+len(sep):] index = strings.Index(str, sep) } ret = append(ret, str) return ret } </description>
+      <description>Split切分字串 // abc,b=&amp;gt;[a c] func Split(str, sep string) []string { // str=&amp;#34;bsfcvjkhbafs&amp;#34; sep=&amp;#34;b&amp;#34; var ret = make([]string, 0, strings.Count(str, sep)+1) index := strings.Index(str, sep) for index &amp;gt;= 0 { ret = append(ret, str[:index]) str = str[index+len(sep):] index = strings.Index(str, sep) } ret = append(ret, str) return ret } </description>
     </item>
     
     <item>
@@ -267,7 +267,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-array/</guid>
-      <description>// 000000 // 001000 // 020300 // 000000 func main() { var arr [4][6]int arr[1][2] = 1 arr[2][1] = 2 arr[2][3] = 3 //遍歷 for i := 0; i &amp;lt; len(arr); i++ { for j := 0; j &amp;lt; len(arr[i]); j++ { fmt.Print(arr[i][j], &amp;quot; &amp;quot;) } fmt.Println() } //遍歷range for i, v := range arr { for j, v2 := range v { fmt.Printf(&amp;quot;arr[%v][%v]=%v \t&amp;quot;, i, j, v2) } fmt.</description>
+      <description>// 000000 // 001000 // 020300 // 000000 func main() { var arr [4][6]int arr[1][2] = 1 arr[2][1] = 2 arr[2][3] = 3 //遍歷 for i := 0; i &amp;lt; len(arr); i++ { for j := 0; j &amp;lt; len(arr[i]); j++ { fmt.Print(arr[i][j], &amp;#34; &amp;#34;) } fmt.Println() } //遍歷range for i, v := range arr { for j, v2 := range v { fmt.Printf(&amp;#34;arr[%v][%v]=%v \t&amp;#34;, i, j, v2) } fmt.</description>
     </item>
     
     <item>
@@ -285,7 +285,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-pyramid/</guid>
-      <description>package main import ( &amp;quot;fmt&amp;quot; ) var input int func jin(input int) { for i := 1; i &amp;lt;= input; i++ { for k := 1; k &amp;lt;= input-i; k++ { fmt.Print(&amp;quot; &amp;quot;) } for j := 1; j &amp;lt;= 2*i-1; j++ { if j == 1 || j == 2*i-1 || i == input { fmt.Print(&amp;quot;*&amp;quot;) } else { fmt.Print(&amp;quot; &amp;quot;) } } fmt.Println() } } func main() { fmt.</description>
+      <description>package main import ( &amp;#34;fmt&amp;#34; ) var input int func jin(input int) { for i := 1; i &amp;lt;= input; i++ { for k := 1; k &amp;lt;= input-i; k++ { fmt.Print(&amp;#34; &amp;#34;) } for j := 1; j &amp;lt;= 2*i-1; j++ { if j == 1 || j == 2*i-1 || i == input { fmt.Print(&amp;#34;*&amp;#34;) } else { fmt.Print(&amp;#34; &amp;#34;) } } fmt.Println() } } func main() { fmt.</description>
     </item>
     
     <item>
@@ -299,7 +299,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
 定義方法時候寫的是func(a ABC) //後面怎樣調用都是值拷貝
 定義方法時候寫的是func(a *ABC)//後面怎樣調用都是真實地址
 要調用方法，只能透過那種類型的的數據變量 例如a1.ABC
- package main import ( &amp;quot;fmt&amp;quot; ) type Person struct { Name string } //給Person類型綁定一個方法 func (p Person) test() { p.Name = &amp;quot;jack&amp;quot; fmt.Println(&amp;quot;test()=&amp;quot;, p.Name) } //給Person類型添加一個speak方法，輸出xxx是好人 func (p Person) speak() { fmt.Println(p.Name, &amp;quot;是一個好人&amp;quot;) } //添加一個計算方法算+1...+100 func (p Person) count() { res := 0 for i := 1; i &amp;lt;= 100; i++ { res += i } fmt.Println(p.Name, &amp;quot;計算的結果是&amp;quot;, res) } //添加一個計算方法算+1.</description>
+ package main import ( &amp;#34;fmt&amp;#34; ) type Person struct { Name string } //給Person類型綁定一個方法 func (p Person) test() { p.Name = &amp;#34;jack&amp;#34; fmt.Println(&amp;#34;test()=&amp;#34;, p.Name) } //給Person類型添加一個speak方法，輸出xxx是好人 func (p Person) speak() { fmt.Println(p.Name, &amp;#34;是一個好人&amp;#34;) } //添加一個計算方法算+1...+100 func (p Person) count() { res := 0 for i := 1; i &amp;lt;= 100; i++ { res += i } fmt.Println(p.Name, &amp;#34;計算的結果是&amp;#34;, res) } //添加一個計算方法算+1.</description>
     </item>
     
     <item>
@@ -308,7 +308,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-slice/</guid>
-      <description>func main() { //切片的類型是引用(傳遞的時候也是引用地址) //切片長度可變(不像數組) var arr1 = [5]int{1, 2, 3, 4, 5} s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右) //var slice=arr[0:end]簡寫[:end] //[start:len(arr)]=[start:] //[0:len(arr)]=[:] fmt.Println(&amp;quot;s1內容是&amp;quot;, s1) fmt.Println(&amp;quot;s1長度是&amp;quot;, len(s1)) fmt.Println(&amp;quot;s1容量是&amp;quot;, cap(s1)) fmt.Printf(&amp;quot;s1第一個地址是%p\n&amp;quot;, &amp;amp;s1[0]) fmt.Printf(&amp;quot;arr1[1]地址是%p\n&amp;quot;, &amp;amp;arr1[1]) s1[0] = 33 fmt.Println(&amp;quot;arr1內容是&amp;quot;, arr1) //var 切片名[]type=make([]type,len,cap) var s2 []float64 = make([]float64, 5, 10) fmt.Println(s2) //var 變量=make(類型) var s22 = make([]float64, 5, 10) fmt.Println(s22) var s3 []int = []int{1, 2, 3, 4, 5} fmt.Println(s3) //用append動態追加 s3 = append(s3, 6, 7, 8, 9) fmt.</description>
+      <description>func main() { //切片的類型是引用(傳遞的時候也是引用地址) //切片長度可變(不像數組) var arr1 = [5]int{1, 2, 3, 4, 5} s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右) //var slice=arr[0:end]簡寫[:end] //[start:len(arr)]=[start:] //[0:len(arr)]=[:] fmt.Println(&amp;#34;s1內容是&amp;#34;, s1) fmt.Println(&amp;#34;s1長度是&amp;#34;, len(s1)) fmt.Println(&amp;#34;s1容量是&amp;#34;, cap(s1)) fmt.Printf(&amp;#34;s1第一個地址是%p\n&amp;#34;, &amp;amp;s1[0]) fmt.Printf(&amp;#34;arr1[1]地址是%p\n&amp;#34;, &amp;amp;arr1[1]) s1[0] = 33 fmt.Println(&amp;#34;arr1內容是&amp;#34;, arr1) //var 切片名[]type=make([]type,len,cap) var s2 []float64 = make([]float64, 5, 10) fmt.Println(s2) //var 變量=make(類型) var s22 = make([]float64, 5, 10) fmt.Println(s22) var s3 []int = []int{1, 2, 3, 4, 5} fmt.Println(s3) //用append動態追加 s3 = append(s3, 6, 7, 8, 9) fmt.</description>
     </item>
     
     <item>
@@ -326,7 +326,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-args-flag/</guid>
-      <description>命令行參數Args&amp;amp;Flag func main() { fmt.Println(&amp;quot;命令行參數有&amp;quot;, len(os.Args)) //遍歷os.Args切片 得到所有輸入的參數值 for i, v := range os.Args { fmt.Printf(&amp;quot;args[%v]=%v\n&amp;quot;, i, v) } fmt.Println(&amp;quot;=====================&amp;quot;) //flag方法 先定義幾個變量用於接收參數值 var user string var pwd string var host string var port int flag.StringVar(&amp;amp;user, &amp;quot;u&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;帳號 預設為空&amp;quot;) flag.StringVar(&amp;amp;pwd, &amp;quot;pwd&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;密碼 預設為空&amp;quot;) flag.StringVar(&amp;amp;host, &amp;quot;h&amp;quot;, &amp;quot;localhost&amp;quot;, &amp;quot;主機 預設為localhost&amp;quot;) flag.IntVar(&amp;amp;port, &amp;quot;port&amp;quot;, 3306, &amp;quot;端口 預設為3306&amp;quot;) //前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設 flag.Parse() //這個一定要調用 //輸出結果 fmt.Printf(&amp;quot;user=%v pwd=%v host=%v port=%v&amp;quot;, user, pwd, host, port) } </description>
+      <description>命令行參數Args&amp;amp;Flag func main() { fmt.Println(&amp;#34;命令行參數有&amp;#34;, len(os.Args)) //遍歷os.Args切片 得到所有輸入的參數值 for i, v := range os.Args { fmt.Printf(&amp;#34;args[%v]=%v\n&amp;#34;, i, v) } fmt.Println(&amp;#34;=====================&amp;#34;) //flag方法 先定義幾個變量用於接收參數值 var user string var pwd string var host string var port int flag.StringVar(&amp;amp;user, &amp;#34;u&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;帳號 預設為空&amp;#34;) flag.StringVar(&amp;amp;pwd, &amp;#34;pwd&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;密碼 預設為空&amp;#34;) flag.StringVar(&amp;amp;host, &amp;#34;h&amp;#34;, &amp;#34;localhost&amp;#34;, &amp;#34;主機 預設為localhost&amp;#34;) flag.IntVar(&amp;amp;port, &amp;#34;port&amp;#34;, 3306, &amp;#34;端口 預設為3306&amp;#34;) //前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設 flag.Parse() //這個一定要調用 //輸出結果 fmt.Printf(&amp;#34;user=%v pwd=%v host=%v port=%v&amp;#34;, user, pwd, host, port) } </description>
     </item>
     
     <item>
@@ -335,7 +335,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-string-conver/</guid>
-      <description>字串轉換常用函數  var str string = &amp;quot;abc123中文&amp;quot; func main() { fmt.Println(&amp;quot;長度=&amp;quot;, len(str)) r := []rune(str) for i := 0; i &amp;lt; len(r); i++ { fmt.Printf(&amp;quot;遍歷=%q\n&amp;quot;, r[i]) } //轉成整數 Atoi n, err := strconv.Atoi(&amp;quot;5421&amp;quot;) if err != nil { fmt.Println(&amp;quot;錯誤,err&amp;quot;) } else { fmt.Println(&amp;quot;轉換成&amp;quot;, n) //整數轉字串 str2 := strconv.Itoa(654231) fmt.Printf(&amp;quot;類型是%T\n&amp;quot;, str2) //轉byte var bytes = []byte(&amp;quot;hello&amp;quot;) fmt.Printf(&amp;quot;bytes=%v \n&amp;quot;, bytes) //byte轉回字串 str3 := string([]byte{97, 98, 99}) fmt.Printf(&amp;quot;str3=%v \n&amp;quot;, str3) //10進制轉2,8,16返回字串 str4 := strconv.</description>
+      <description>字串轉換常用函數  var str string = &amp;#34;abc123中文&amp;#34; func main() { fmt.Println(&amp;#34;長度=&amp;#34;, len(str)) r := []rune(str) for i := 0; i &amp;lt; len(r); i++ { fmt.Printf(&amp;#34;遍歷=%q\n&amp;#34;, r[i]) } //轉成整數 Atoi n, err := strconv.Atoi(&amp;#34;5421&amp;#34;) if err != nil { fmt.Println(&amp;#34;錯誤,err&amp;#34;) } else { fmt.Println(&amp;#34;轉換成&amp;#34;, n) //整數轉字串 str2 := strconv.Itoa(654231) fmt.Printf(&amp;#34;類型是%T\n&amp;#34;, str2) //轉byte var bytes = []byte(&amp;#34;hello&amp;#34;) fmt.Printf(&amp;#34;bytes=%v \n&amp;#34;, bytes) //byte轉回字串 str3 := string([]byte{97, 98, 99}) fmt.Printf(&amp;#34;str3=%v \n&amp;#34;, str3) //10進制轉2,8,16返回字串 str4 := strconv.</description>
     </item>
     
     <item>
@@ -345,7 +345,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       
       <guid>https://yoziming.github.io/post/210820-agg-go-proj-ini-parser/</guid>
       <description>用來解析.ini文檔格式是否有問題
- package main import ( &amp;quot;fmt&amp;quot; &amp;quot;io/ioutil&amp;quot; &amp;quot;reflect&amp;quot; &amp;quot;strings&amp;quot; ) type RedisConfig struct { Host string `ini:&amp;quot;host&amp;quot;` Port int `ini:&amp;quot;port&amp;quot;` Password string `ini:&amp;quot;password&amp;quot;` Database int `ini:&amp;quot;database&amp;quot;` } type MysqlConfig struct { Address string `ini:&amp;quot;address&amp;quot;` Port int `ini:&amp;quot;port&amp;quot;` Password string `ini:&amp;quot;password&amp;quot;` Username string `ini:&amp;quot;username&amp;quot;` } type Config struct { MysqlConfig `ini:&amp;quot;mysql&amp;quot;` RedisConfig `ini:&amp;quot;redis&amp;quot;` } func loadIni(fileName string, data interface{}) (err error) { // 0. 參數校驗 // 0.1 傳來的data必須是結構體類型指針 t := reflect.</description>
+ package main import ( &amp;#34;fmt&amp;#34; &amp;#34;io/ioutil&amp;#34; &amp;#34;reflect&amp;#34; &amp;#34;strings&amp;#34; ) type RedisConfig struct { Host string `ini:&amp;#34;host&amp;#34;` Port int `ini:&amp;#34;port&amp;#34;` Password string `ini:&amp;#34;password&amp;#34;` Database int `ini:&amp;#34;database&amp;#34;` } type MysqlConfig struct { Address string `ini:&amp;#34;address&amp;#34;` Port int `ini:&amp;#34;port&amp;#34;` Password string `ini:&amp;#34;password&amp;#34;` Username string `ini:&amp;#34;username&amp;#34;` } type Config struct { MysqlConfig `ini:&amp;#34;mysql&amp;#34;` RedisConfig `ini:&amp;#34;redis&amp;#34;` } func loadIni(fileName string, data interface{}) (err error) { // 0. 參數校驗 // 0.1 傳來的data必須是結構體類型指針 t := reflect.</description>
     </item>
     
     <item>
@@ -355,7 +355,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       
       <guid>https://yoziming.github.io/post/210820-agg-go-proj-txt-replace/</guid>
       <description>實作練習-txt文本批次取代器  自己寫用來一次取代多個名詞，去除多餘空格或符號等等
- package main import ( &amp;quot;bufio&amp;quot; &amp;quot;fmt&amp;quot; &amp;quot;io&amp;quot; &amp;quot;os&amp;quot; &amp;quot;strings&amp;quot; ) var data []string = make([]string, 128) func main() { readByBufio() for _, v := range data { if v == &amp;quot;&amp;quot; { break } fmt.Print(v) } } func readByBufio() { file, err := os.Open(&amp;quot;C:/test.txt&amp;quot;) if err != nil { fmt.Printf(&amp;quot;os.Open err %s\n&amp;quot;, err) return } defer file.Close() reader := bufio.NewReader(file) for i := 0; ; i++ { line, err := reader.</description>
+ package main import ( &amp;#34;bufio&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;io&amp;#34; &amp;#34;os&amp;#34; &amp;#34;strings&amp;#34; ) var data []string = make([]string, 128) func main() { readByBufio() for _, v := range data { if v == &amp;#34;&amp;#34; { break } fmt.Print(v) } } func readByBufio() { file, err := os.Open(&amp;#34;C:/test.txt&amp;#34;) if err != nil { fmt.Printf(&amp;#34;os.Open err %s\n&amp;#34;, err) return } defer file.Close() reader := bufio.NewReader(file) for i := 0; ; i++ { line, err := reader.</description>
     </item>
     
     <item>
@@ -374,7 +374,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210820-agg-go-proj-user-list/</guid>
-      <description>實作練習-客戶名單管理系統 model type Customer struct { Id int Name string Gender string Age int Phone string Email string } //使用工廠模式返回一個實例 func NewCustomer(id int, name string, gender string, age int, phone string, email string) Customer { return Customer{ Id: id, Name: name, Gender: gender, Age: age, Phone: phone, Email: email, } } //返回用戶訊息 func (c Customer) GetInfo() string { info := fmt.Sprintf(&amp;quot;%v	%v	%v	%v	%v	%v&amp;quot;, c.Id, c.Name, c.Gender, c.Age, c.</description>
+      <description>實作練習-客戶名單管理系統 model type Customer struct { Id int Name string Gender string Age int Phone string Email string } //使用工廠模式返回一個實例 func NewCustomer(id int, name string, gender string, age int, phone string, email string) Customer { return Customer{ Id: id, Name: name, Gender: gender, Age: age, Phone: phone, Email: email, } } //返回用戶訊息 func (c Customer) GetInfo() string { info := fmt.Sprintf(&amp;#34;%v	%v	%v	%v	%v	%v&amp;#34;, c.Id, c.Name, c.Gender, c.Age, c.</description>
     </item>
     
     <item>
@@ -383,7 +383,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210820-agg-go-proj-family-count/</guid>
-      <description>實作練習-家庭收支小app type MyMoney struct { key string //鍵入值 note string //收支說明 balance float64 //餘額 money float64 //收支 flag bool //判斷是否有明細 details string //詳細 loop bool //循環 } //綁定方法 func (mm *MyMoney) MainMenu() { for { if !mm.loop { break } fmt.Println(&amp;quot;\n-----------------家庭收支记账软件-----------------&amp;quot;) fmt.Println(&amp;quot; 1 收支明细&amp;quot;) fmt.Println(&amp;quot; 2 登记收入&amp;quot;) fmt.Println(&amp;quot; 3 登记支出&amp;quot;) fmt.Println(&amp;quot; 4 退出软件&amp;quot;) fmt.Print(&amp;quot;請選擇(1-4)...&amp;quot;) fmt.Scanln(&amp;amp;mm.key) switch mm.key { case &amp;quot;1&amp;quot;: mm.showDetails() case &amp;quot;2&amp;quot;: mm.income() case &amp;quot;3&amp;quot;: mm.outcome() case &amp;quot;4&amp;quot;: mm.exit() default: fmt.</description>
+      <description>實作練習-家庭收支小app type MyMoney struct { key string //鍵入值 note string //收支說明 balance float64 //餘額 money float64 //收支 flag bool //判斷是否有明細 details string //詳細 loop bool //循環 } //綁定方法 func (mm *MyMoney) MainMenu() { for { if !mm.loop { break } fmt.Println(&amp;#34;\n-----------------家庭收支记账软件-----------------&amp;#34;) fmt.Println(&amp;#34; 1 收支明细&amp;#34;) fmt.Println(&amp;#34; 2 登记收入&amp;#34;) fmt.Println(&amp;#34; 3 登记支出&amp;#34;) fmt.Println(&amp;#34; 4 退出软件&amp;#34;) fmt.Print(&amp;#34;請選擇(1-4)...&amp;#34;) fmt.Scanln(&amp;amp;mm.key) switch mm.key { case &amp;#34;1&amp;#34;: mm.showDetails() case &amp;#34;2&amp;#34;: mm.income() case &amp;#34;3&amp;#34;: mm.outcome() case &amp;#34;4&amp;#34;: mm.exit() default: fmt.</description>
     </item>
     
     <item>
@@ -392,7 +392,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210820-agg-go-proj-p2pchat/</guid>
-      <description>實作練習-點對點聊天 server.go func main() { fmt.Println(&amp;quot;伺服器開始監聽&amp;quot;) listen, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;0.0.0.0:8888&amp;quot;) //0.0.0.0 寫4位ip v4 v6都能用 if err != nil { fmt.Println(&amp;quot;監聽失敗&amp;quot;, err) return } defer listen.Close() //主程式退出後就關閉監聽 // fmt.Printf(&amp;quot;listen succes=%v\n&amp;quot;, listen) for { //開啟監聽端口8888 time.Sleep(time.Microsecond) fmt.Println(&amp;quot;等待連接中...&amp;quot;) conn, err := listen.Accept() if err != nil { fmt.Println(&amp;quot;Accept()err=&amp;quot;, err) } else { fmt.Printf(&amp;quot;conn suc con=%v 客戶端ip=%v\n&amp;quot;, conn, conn.RemoteAddr().String()) } //準備啟動一個協程 go process(conn) } } func process(conn net.Conn) { //循環接收客戶端送來的數據 defer conn.Close() fmt.Printf(&amp;quot;伺服器等待%s客戶端輸入...\n&amp;quot;, conn.</description>
+      <description>實作練習-點對點聊天 server.go func main() { fmt.Println(&amp;#34;伺服器開始監聽&amp;#34;) listen, err := net.Listen(&amp;#34;tcp&amp;#34;, &amp;#34;0.0.0.0:8888&amp;#34;) //0.0.0.0 寫4位ip v4 v6都能用 if err != nil { fmt.Println(&amp;#34;監聽失敗&amp;#34;, err) return } defer listen.Close() //主程式退出後就關閉監聽 // fmt.Printf(&amp;#34;listen succes=%v\n&amp;#34;, listen) for { //開啟監聽端口8888 time.Sleep(time.Microsecond) fmt.Println(&amp;#34;等待連接中...&amp;#34;) conn, err := listen.Accept() if err != nil { fmt.Println(&amp;#34;Accept()err=&amp;#34;, err) } else { fmt.Printf(&amp;#34;conn suc con=%v 客戶端ip=%v\n&amp;#34;, conn, conn.RemoteAddr().String()) } //準備啟動一個協程 go process(conn) } } func process(conn net.Conn) { //循環接收客戶端送來的數據 defer conn.Close() fmt.Printf(&amp;#34;伺服器等待%s客戶端輸入...\n&amp;#34;, conn.</description>
     </item>
     
     <item>
@@ -410,7 +410,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-factory/</guid>
-      <description>//工廠模式 // 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等 // 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意 // 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品 import ( &amp;quot;fmt&amp;quot; ) type Student struct { Name string Age int Score float64 } func (s *Student) Say() string { infoStr := fmt.Sprintf(&amp;quot;信息 name=[%v] age=[%v] score=[%v]&amp;quot;, s.Name, s.Age, s.Score) return infoStr } func main() { var s1 = Student{ Name: &amp;quot;tom&amp;quot;, Score: 98, Age: 18, //不依賴順序 } res := s1.Say() fmt.Println(res) //其他創建結構變量同時指定值的方法: stu2 := Student{&amp;quot;Jack&amp;quot;, 20, 100} //項目順序都要有對應 fmt.Println(stu2) //返回結構的指針 var stu3 = &amp;amp;Student{&amp;quot;Mary&amp;quot;, 28, 5} fmt.</description>
+      <description>//工廠模式 // 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等 // 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意 // 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品 import ( &amp;#34;fmt&amp;#34; ) type Student struct { Name string Age int Score float64 } func (s *Student) Say() string { infoStr := fmt.Sprintf(&amp;#34;信息 name=[%v] age=[%v] score=[%v]&amp;#34;, s.Name, s.Age, s.Score) return infoStr } func main() { var s1 = Student{ Name: &amp;#34;tom&amp;#34;, Score: 98, Age: 18, //不依賴順序 } res := s1.Say() fmt.Println(res) //其他創建結構變量同時指定值的方法: stu2 := Student{&amp;#34;Jack&amp;#34;, 20, 100} //項目順序都要有對應 fmt.Println(stu2) //返回結構的指針 var stu3 = &amp;amp;Student{&amp;#34;Mary&amp;#34;, 28, 5} fmt.</description>
     </item>
     
     <item>
@@ -419,7 +419,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-io-copy/</guid>
-      <description>拷貝一個檔案 //定義一個函數接收2個路徑 func CopyFile(dstFileName, srcFileName string) (written int64, err error) { srcFile, err := os.Open(srcFileName) if err != nil { fmt.Println(err) } defer srcFile.Close() //通過srcFile獲取到reader reader := bufio.NewReader(srcFile) //打開dstFileName dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666) if err != nil { fmt.Println(err) } //通過dstFile獲取到writer writer := bufio.NewWriter(dstFile) defer dstFile.Close() return io.Copy(writer, reader) } func main() { src := &amp;quot;C:/01.mkv&amp;quot; //原始檔 dst := &amp;quot;C:/food2.mkv&amp;quot; _, err := CopyFile(dst, src) if err == nil { fmt.</description>
+      <description>拷貝一個檔案 //定義一個函數接收2個路徑 func CopyFile(dstFileName, srcFileName string) (written int64, err error) { srcFile, err := os.Open(srcFileName) if err != nil { fmt.Println(err) } defer srcFile.Close() //通過srcFile獲取到reader reader := bufio.NewReader(srcFile) //打開dstFileName dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666) if err != nil { fmt.Println(err) } //通過dstFile獲取到writer writer := bufio.NewWriter(dstFile) defer dstFile.Close() return io.Copy(writer, reader) } func main() { src := &amp;#34;C:/01.mkv&amp;#34; //原始檔 dst := &amp;#34;C:/food2.mkv&amp;#34; _, err := CopyFile(dst, src) if err == nil { fmt.</description>
     </item>
     
     <item>
@@ -430,7 +430,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <guid>https://yoziming.github.io/post/210810-agg-go-interface/</guid>
       <description>接口interface  例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，
 那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用
- //接口內不能有變量，方法也不能實現 type Usb interface { //聲明兩個沒實現的方法 Start() Stop() } type Usb2 interface { //接口是不需要顯示聲明，只要能實現就都能調用 Start() Stop() //假如我多聲明一個沒實現的方法在接口內就不能調用 Test() //有方法沒實現，導致Usb2這個接口不能用 } type Phone struct { } //讓Phone實現USB接口的方法 func (p Phone) Start() { fmt.Println(&amp;quot;手機啟動&amp;quot;) } func (p Phone) Stop() { fmt.Println(&amp;quot;手機停止&amp;quot;) } type Camera struct { } func (c Camera) Start() { fmt.Println(&amp;quot;相機啟動~~&amp;quot;) } func (c Camera) Stop() { fmt.Println(&amp;quot;相機停止&amp;quot;) } //電腦 type Computer struct { } func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型 //通過usb變量來調用Start等方法 fmt.</description>
+ //接口內不能有變量，方法也不能實現 type Usb interface { //聲明兩個沒實現的方法 Start() Stop() } type Usb2 interface { //接口是不需要顯示聲明，只要能實現就都能調用 Start() Stop() //假如我多聲明一個沒實現的方法在接口內就不能調用 Test() //有方法沒實現，導致Usb2這個接口不能用 } type Phone struct { } //讓Phone實現USB接口的方法 func (p Phone) Start() { fmt.Println(&amp;#34;手機啟動&amp;#34;) } func (p Phone) Stop() { fmt.Println(&amp;#34;手機停止&amp;#34;) } type Camera struct { } func (c Camera) Start() { fmt.Println(&amp;#34;相機啟動~~&amp;#34;) } func (c Camera) Stop() { fmt.Println(&amp;#34;相機停止&amp;#34;) } //電腦 type Computer struct { } func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型 //通過usb變量來調用Start等方法 fmt.</description>
     </item>
     
     <item>
@@ -439,7 +439,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-array1/</guid>
-      <description>數組 func main() { var n1 [3]int = [3]int{1, 2, 3} var n2 = [3]int{4, 5, 6} //長度聲明後就不能變化 var n3 = [...]int{7, 8, 9} //數組長度是類型的一部分 [3]int != [4]int var n4 = [...]string{0: &amp;quot;李四&amp;quot;, 1: &amp;quot;張三&amp;quot;, 5: &amp;quot;王武&amp;quot;} n5 := []int{5, 5, 5, 5, 5} //[]int 這樣定義其實是切片 fmt.Println(n1) fmt.Println(n2) fmt.Println(n3) fmt.Println(n4) fmt.Println(n5) n9 := fmt.Sprintf(&amp;quot;%.2f&amp;quot;, 9.888888) fmt.Println(n9) var score [5]float64 for i := 0; i &amp;lt; len(score); i++ { fmt.Println(&amp;quot;輸入成績&amp;quot;) fmt.Scanln(&amp;amp;score[i]) } for i := 0; i &amp;lt; len(score); i++ { fmt.</description>
+      <description>數組 func main() { var n1 [3]int = [3]int{1, 2, 3} var n2 = [3]int{4, 5, 6} //長度聲明後就不能變化 var n3 = [...]int{7, 8, 9} //數組長度是類型的一部分 [3]int != [4]int var n4 = [...]string{0: &amp;#34;李四&amp;#34;, 1: &amp;#34;張三&amp;#34;, 5: &amp;#34;王武&amp;#34;} n5 := []int{5, 5, 5, 5, 5} //[]int 這樣定義其實是切片 fmt.Println(n1) fmt.Println(n2) fmt.Println(n3) fmt.Println(n4) fmt.Println(n5) n9 := fmt.Sprintf(&amp;#34;%.2f&amp;#34;, 9.888888) fmt.Println(n9) var score [5]float64 for i := 0; i &amp;lt; len(score); i++ { fmt.Println(&amp;#34;輸入成績&amp;#34;) fmt.Scanln(&amp;amp;score[i]) } for i := 0; i &amp;lt; len(score); i++ { fmt.</description>
     </item>
     
     <item>
@@ -448,7 +448,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-io-reader/</guid>
-      <description>讀取 func main() { //打開一個文件 file, err := os.Open(&amp;quot;c:/test.txt&amp;quot;) //有人叫file對象/指針/文件句柄 if err != nil { fmt.Println(&amp;quot;open file err=&amp;quot;, err) } //看看文件是啥 fmt.Printf(&amp;quot;file=%v\n&amp;quot;, file) //退出函數就關閉文件 defer file.Close() //創建一個帶緩衝的reader，預設大小是4096 reader := bufio.NewReader(file) for { str, err := reader.ReadString(&#39;\n&#39;) //讀到換行就結束 fmt.Print(str) if err == io.EOF { //表示文件末尾 break } } fmt.Println(&amp;quot;\n讀取結束&amp;quot;) //用ioutil.ReadFile一次讀完 //這個包已經封裝了open跟close了，只適用在檔案大小不大的情境 file2 := &amp;quot;c:/test.txt&amp;quot; str2, err2 := ioutil.ReadFile(file2) if err2 != nil { fmt.Println(err) } fmt.Printf(&amp;quot;%s&amp;quot;, str2) //原本輸出是[]byte,用%s轉 //創建一個新檔案，寫入5句話 filePath := &amp;quot;c:/abc.</description>
+      <description>讀取 func main() { //打開一個文件 file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;) //有人叫file對象/指針/文件句柄 if err != nil { fmt.Println(&amp;#34;open file err=&amp;#34;, err) } //看看文件是啥 fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file) //退出函數就關閉文件 defer file.Close() //創建一個帶緩衝的reader，預設大小是4096 reader := bufio.NewReader(file) for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束 fmt.Print(str) if err == io.EOF { //表示文件末尾 break } } fmt.Println(&amp;#34;\n讀取結束&amp;#34;) //用ioutil.ReadFile一次讀完 //這個包已經封裝了open跟close了，只適用在檔案大小不大的情境 file2 := &amp;#34;c:/test.txt&amp;#34; str2, err2 := ioutil.ReadFile(file2) if err2 != nil { fmt.Println(err) } fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉 //創建一個新檔案，寫入5句話 filePath := &amp;#34;c:/abc.</description>
     </item>
     
     <item>
@@ -457,7 +457,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-txt/</guid>
-      <description>文檔字符統計 //保存結果用 type CharCount struct { ChCount int //英文字數 NumCount int // SpaceCount int OtherCount int } func main() { //思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體 fileName := &amp;quot;c:/abc.txt&amp;quot; file, err := os.Open(fileName) if err != nil { fmt.Println(err) return } defer file.Close() //來個實例 var count CharCount reader := bufio.NewReader(file) //開始讀取 for { str, err := reader.ReadString(&#39;\n&#39;) //這存在BUG 當行不換行做結尾就統計不到 if err == io.EOF { break } for _, v := range str { switch { case v &amp;gt;= &#39;a&#39; &amp;amp;&amp;amp; v &amp;lt;= &#39;z&#39;: fallthrough case v &amp;gt;= &#39;A&#39; &amp;amp;&amp;amp; v &amp;lt;= &#39;Z&#39;: count.</description>
+      <description>文檔字符統計 //保存結果用 type CharCount struct { ChCount int //英文字數 NumCount int // SpaceCount int OtherCount int } func main() { //思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體 fileName := &amp;#34;c:/abc.txt&amp;#34; file, err := os.Open(fileName) if err != nil { fmt.Println(err) return } defer file.Close() //來個實例 var count CharCount reader := bufio.NewReader(file) //開始讀取 for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //這存在BUG 當行不換行做結尾就統計不到 if err == io.EOF { break } for _, v := range str { switch { case v &amp;gt;= &amp;#39;a&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;z&amp;#39;: fallthrough case v &amp;gt;= &amp;#39;A&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;Z&amp;#39;: count.</description>
     </item>
     
     <item>
@@ -466,7 +466,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-date-time/</guid>
-      <description>日期時間 func main() { //1.獲取當前本地時間 now := time.Now() fmt.Printf(&amp;quot;now=%v,type=%T&amp;quot;, now, now) //返回的類型是struct //2.通過now獲取各種詳細 fmt.Printf(&amp;quot;年=%v,type=%T\n&amp;quot;, now.Year(), now.Year()) fmt.Printf(&amp;quot;月=%v,type=%T\n&amp;quot;, now.Month(), now.Month()) fmt.Printf(&amp;quot;月=%v,type=%T\n&amp;quot;, int(now.Month()), int(now.Month())) fmt.Printf(&amp;quot;日=%v,type=%T\n&amp;quot;, now.Day(), now.Day()) fmt.Printf(&amp;quot;時=%v,type=%T\n&amp;quot;, now.Hour(), now.Hour()) fmt.Printf(&amp;quot;分=%v,type=%T\n&amp;quot;, now.Minute(), now.Minute()) fmt.Printf(&amp;quot;秒=%v,type=%T\n&amp;quot;, now.Second(), now.Second()) fmt.Printf(&amp;quot;星期=%v,type=%T\n&amp;quot;, now.Weekday(), now.Weekday()) fmt.Printf(&amp;quot;星期=%v\n&amp;quot;, int(now.Weekday())) //3.格式化日期時間 dateStr := fmt.Sprintf(&amp;quot;年月日時分=%d-%d-%d %d:%d\n&amp;quot;, now.Year(), now.Month(), now.Day(), now.Minute(), now.Second()) fmt.Println(dateStr) //4.蛋疼的指定格式 fmt.Println(now.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)) fmt.Println(now.Format(&amp;quot;2006-01-02&amp;quot;)) fmt.Println(now.Format(&amp;quot;06&amp;quot;)) fmt.Println(now.Format(&amp;quot;01&amp;quot;)) fmt.Println(now.Format(&amp;quot;03&amp;quot;)) fmt.Println(now.Format(&amp;quot;01-02-06 03 04 05&amp;quot;)) //123456=月日時分秒年 //5.時間常量&amp;amp;休眠 //每隔固定時間打印數字，打到100退出 for i := 0; i &amp;lt;= 100; i++ { fmt.</description>
+      <description>日期時間 func main() { //1.獲取當前本地時間 now := time.Now() fmt.Printf(&amp;#34;now=%v,type=%T&amp;#34;, now, now) //返回的類型是struct //2.通過now獲取各種詳細 fmt.Printf(&amp;#34;年=%v,type=%T\n&amp;#34;, now.Year(), now.Year()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, now.Month(), now.Month()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, int(now.Month()), int(now.Month())) fmt.Printf(&amp;#34;日=%v,type=%T\n&amp;#34;, now.Day(), now.Day()) fmt.Printf(&amp;#34;時=%v,type=%T\n&amp;#34;, now.Hour(), now.Hour()) fmt.Printf(&amp;#34;分=%v,type=%T\n&amp;#34;, now.Minute(), now.Minute()) fmt.Printf(&amp;#34;秒=%v,type=%T\n&amp;#34;, now.Second(), now.Second()) fmt.Printf(&amp;#34;星期=%v,type=%T\n&amp;#34;, now.Weekday(), now.Weekday()) fmt.Printf(&amp;#34;星期=%v\n&amp;#34;, int(now.Weekday())) //3.格式化日期時間 dateStr := fmt.Sprintf(&amp;#34;年月日時分=%d-%d-%d %d:%d\n&amp;#34;, now.Year(), now.Month(), now.Day(), now.Minute(), now.Second()) fmt.Println(dateStr) //4.蛋疼的指定格式 fmt.Println(now.Format(&amp;#34;2006-01-02 15:04:05&amp;#34;)) fmt.Println(now.Format(&amp;#34;2006-01-02&amp;#34;)) fmt.Println(now.Format(&amp;#34;06&amp;#34;)) fmt.Println(now.Format(&amp;#34;01&amp;#34;)) fmt.Println(now.Format(&amp;#34;03&amp;#34;)) fmt.Println(now.Format(&amp;#34;01-02-06 03 04 05&amp;#34;)) //123456=月日時分秒年 //5.時間常量&amp;amp;休眠 //每隔固定時間打印數字，打到100退出 for i := 0; i &amp;lt;= 100; i++ { fmt.</description>
     </item>
     
     <item>
@@ -475,7 +475,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-struct/</guid>
-      <description>結構體 type Cat struct { Name string Age int Color string // S1 []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用) } //結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間 func main() { //創建Cat的變量 var cat1 Cat cat1.Name = &amp;quot;小花&amp;quot; cat1.Age = 18 cat1.Color = &amp;quot;花&amp;quot; fmt.Println(&amp;quot;cat1=&amp;quot;, cat1) // cat1.S1 = make([]int, 10) // cat1.S1[0] = 100 // fmt.Println(&amp;quot;cat1=&amp;quot;, cat1) //推薦方式 cat2 := Cat{&amp;quot;小黑&amp;quot;, 5, &amp;quot;black&amp;quot;} fmt.Println(cat2) //方法3 //var c *C=new(C) var cat3 *Cat = new(Cat) //因為cat3是一個指針 (*cat3).Name = &amp;quot;小白&amp;quot; //語法糖 cat3.Age也可以 ，不建議 cat3.</description>
+      <description>結構體 type Cat struct { Name string Age int Color string // S1 []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用) } //結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間 func main() { //創建Cat的變量 var cat1 Cat cat1.Name = &amp;#34;小花&amp;#34; cat1.Age = 18 cat1.Color = &amp;#34;花&amp;#34; fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) // cat1.S1 = make([]int, 10) // cat1.S1[0] = 100 // fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) //推薦方式 cat2 := Cat{&amp;#34;小黑&amp;#34;, 5, &amp;#34;black&amp;#34;} fmt.Println(cat2) //方法3 //var c *C=new(C) var cat3 *Cat = new(Cat) //因為cat3是一個指針 (*cat3).Name = &amp;#34;小白&amp;#34; //語法糖 cat3.Age也可以 ，不建議 cat3.</description>
     </item>
     
     <item>
@@ -484,7 +484,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-inherit/</guid>
-      <description>繼承 type Student struct { Name string Age int Score int //共有的字段 } type Pupil struct { Student //套入 Covid19 bool } type College struct { Student //套入指針效率更好 SexExp bool } func (stu *Student) ShowInfo() { fmt.Printf(&amp;quot;姓名=%v 年齡=%v 成績=%v\n&amp;quot;, stu.Name, stu.Age, stu.Score) } func (stu *Student) SetScore(s int) { stu.Score = s } func (p *Pupil) Test() { fmt.Println(&amp;quot;小學生考試&amp;quot;) } func main() { pupilA := &amp;amp;Pupil{} pupilA.Student.Name = &amp;quot;tome&amp;quot; pupilA.Student.Age = 8 pupilA.</description>
+      <description>繼承 type Student struct { Name string Age int Score int //共有的字段 } type Pupil struct { Student //套入 Covid19 bool } type College struct { Student //套入指針效率更好 SexExp bool } func (stu *Student) ShowInfo() { fmt.Printf(&amp;#34;姓名=%v 年齡=%v 成績=%v\n&amp;#34;, stu.Name, stu.Age, stu.Score) } func (stu *Student) SetScore(s int) { stu.Score = s } func (p *Pupil) Test() { fmt.Println(&amp;#34;小學生考試&amp;#34;) } func main() { pupilA := &amp;amp;Pupil{} pupilA.Student.Name = &amp;#34;tome&amp;#34; pupilA.Student.Age = 8 pupilA.</description>
     </item>
     
     <item>
@@ -493,7 +493,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-err/</guid>
-      <description>錯誤處理 func test() { //捕捉異常 	defer func() { //內置函數recover就是找是否異常 	if err := recover(); err != nil { //err不為空=有錯 	fmt.Println(&amp;#34;錯誤&amp;#34;, err) } }() n1 := 10 n2 := 0 res := n1 / n2 fmt.Println(res) } //讀取文件名稱，錯誤就報錯 func readConf(name string) (err error) { if name == &amp;#34;config.ini&amp;#34; { return nil } else { //返回自訂錯誤 	return errors.New(&amp;#34;文件錯誤&amp;#34;) } } func test02() { err := readConf(&amp;#34;config.in564&amp;#34;) if err != nil { panic(err) } fmt.</description>
+      <description>錯誤處理 func test() { 	//捕捉異常 	defer func() { 	//內置函數recover就是找是否異常 	if err := recover(); err != nil { //err不為空=有錯 	fmt.Println(&amp;#34;錯誤&amp;#34;, err) 	} 	}() 	n1 := 10 	n2 := 0 	res := n1 / n2 	fmt.Println(res) }  //讀取文件名稱，錯誤就報錯 func readConf(name string) (err error) { 	if name == &amp;#34;config.ini&amp;#34; { 	return nil 	} else { 	//返回自訂錯誤 	return errors.</description>
     </item>
     
     <item>
@@ -502,7 +502,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-sequential-search/</guid>
-      <description>順序查找 func main() { names := [4]string{&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;} var input = &amp;quot;&amp;quot; fmt.Println(&amp;quot;輸入...&amp;quot;) fmt.Scanln(&amp;amp;input) //順序查找 // for i := 0; i &amp;lt; len(names); i++ { // if input == names[i] { // fmt.Printf(&amp;quot;找到%v,下標=%v \n&amp;quot;, input, i) // break // } else if i == len(names)-1 { // fmt.Println(&amp;quot;比對失敗...&amp;quot;) // } //順序查找2 index := -1 for i := 0; i &amp;lt; len(names); i++ { if input == names[i] { index = i break } } if index !</description>
+      <description>順序查找 func main() { names := [4]string{&amp;#34;A&amp;#34;, &amp;#34;B&amp;#34;, &amp;#34;C&amp;#34;, &amp;#34;D&amp;#34;} var input = &amp;#34;&amp;#34; fmt.Println(&amp;#34;輸入...&amp;#34;) fmt.Scanln(&amp;amp;input) //順序查找 // for i := 0; i &amp;lt; len(names); i++ { // if input == names[i] { // fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, i) // break // } else if i == len(names)-1 { // fmt.Println(&amp;#34;比對失敗...&amp;#34;) // } //順序查找2 index := -1 for i := 0; i &amp;lt; len(names); i++ { if input == names[i] { index = i break } } if index !</description>
     </item>
     
   </channel>

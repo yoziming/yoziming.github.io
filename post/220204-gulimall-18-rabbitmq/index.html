@@ -1356,42 +1356,42 @@ spring.rabbitmq.virtual-host=/
 <li>創建Exchanger、Queue、Binding這些參數與邏輯都跟在網頁上操作一樣</li>
 <li>先注入一個<code>AmqpAdmin</code>，由它<code>declare</code>完成創建</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Slf4j</span>
-<span style="color:#707a7c">@SpringBootTest</span>
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderApplicationTests</span> {
-
-    <span style="color:#707a7c">@Autowired</span>
-    AmqpAdmin amqpAdmin;
-
-    <span style="color:#707a7c">@Test</span>
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createExchange</span>() {
-        <span style="color:#228b22">// 名稱, 持久, 自動刪
-</span><span style="color:#228b22"></span>        DirectExchange directExchange = <span style="color:#8b008b;font-weight:bold">new</span> DirectExchange(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-        amqpAdmin.<span style="color:#658b00">declareExchange</span>(directExchange);
-        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Exchange[{}]創建成功&#34;</span>, <span style="color:#cd5555">&#34;hello-exchange&#34;</span>);
-    }
-
-    <span style="color:#707a7c">@Test</span>
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createQueue</span>() {
-        <span style="color:#228b22">// import org.springframework.amqp.core.Queue;
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 第三個參數 排他，若true表示隊列只能被聲明的連接綁定，其他人綁不上
-</span><span style="color:#228b22"></span>        amqpAdmin.<span style="color:#658b00">declareQueue</span>(<span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;hello-queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>));
-        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Queue創建[{}]成功&#34;</span>, <span style="color:#cd5555">&#34;hello-queue&#34;</span>);
-    }
-
-    <span style="color:#707a7c">@Test</span>
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createBinding</span>() {
-        <span style="color:#228b22">// String destination目的地，隊列name或 交換機name
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// Binding.DestinationType destinationType目的地類型 queue還是exchange
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// String exchange 交換機
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// String routingKey 路由鍵
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// @Nullable Map&lt;String, Object&gt; arguments 自定義參數
-</span><span style="color:#228b22"></span>        amqpAdmin.<span style="color:#658b00">declareBinding</span>(<span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;hello-queue&#34;</span>, Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,<span style="color:#cd5555">&#34;hello-exchange&#34;</span>,
-                <span style="color:#cd5555">&#34;hello.java&#34;</span>, <span style="color:#8b008b;font-weight:bold">null</span>));
-        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Binding創建[{}]成功&#34;</span>, <span style="color:#cd5555">&#34;hello-binding&#34;</span>);
-    }
-}
-</code></pre></div><h2 id="發訊息">發訊息</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@SpringBootTest</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderApplicationTests</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>    AmqpAdmin amqpAdmin;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createExchange</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 名稱, 持久, 自動刪
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DirectExchange directExchange = <span style="color:#8b008b;font-weight:bold">new</span> DirectExchange(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        amqpAdmin.<span style="color:#658b00">declareExchange</span>(directExchange);
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Exchange[{}]創建成功&#34;</span>, <span style="color:#cd5555">&#34;hello-exchange&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createQueue</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// import org.springframework.amqp.core.Queue;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 第三個參數 排他，若true表示隊列只能被聲明的連接綁定，其他人綁不上
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        amqpAdmin.<span style="color:#658b00">declareQueue</span>(<span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;hello-queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>));
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Queue創建[{}]成功&#34;</span>, <span style="color:#cd5555">&#34;hello-queue&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">createBinding</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// String destination目的地，隊列name或 交換機name
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// Binding.DestinationType destinationType目的地類型 queue還是exchange
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// String exchange 交換機
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// String routingKey 路由鍵
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// @Nullable Map&lt;String, Object&gt; arguments 自定義參數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        amqpAdmin.<span style="color:#658b00">declareBinding</span>(<span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;hello-queue&#34;</span>, Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,<span style="color:#cd5555">&#34;hello-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;hello.java&#34;</span>, <span style="color:#8b008b;font-weight:bold">null</span>));
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;Binding創建[{}]成功&#34;</span>, <span style="color:#cd5555">&#34;hello-binding&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="發訊息">發訊息</h2>
 <ul>
 <li>注入<code>RabbitTemplate</code>，使用<code>convertAndSend</code>方法
 <ul>
@@ -1400,42 +1400,42 @@ spring.rabbitmq.virtual-host=/
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
-RabbitTemplate rabbitTemplate;
-
-<span style="color:#707a7c">@Test</span>
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">send</span>() {
-    String msg = <span style="color:#cd5555">&#34;一條訊息&#34;</span>;
-    rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#cd5555">&#34;hello.java&#34;</span>, msg);
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>RabbitTemplate rabbitTemplate;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">send</span>() {
+</span></span><span style="display:flex;"><span>    String msg = <span style="color:#cd5555">&#34;一條訊息&#34;</span>;
+</span></span><span style="display:flex;"><span>    rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#cd5555">&#34;hello.java&#34;</span>, msg);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>實務上還是轉JSON吧，需要一個配置類
 <ul>
 <li>注意引的包是<code>amqp.support.converter</code></li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">org.springframework.amqp.support.converter.MessageConverter</span>;
-
-<span style="color:#707a7c">@Configuration</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyRabbitConfig</span> {
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> MessageConverter <span style="color:#008b45">messageConverter</span>() {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Jackson2JsonMessageConverter();
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">org.springframework.amqp.support.converter.MessageConverter</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyRabbitConfig</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> MessageConverter <span style="color:#008b45">messageConverter</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Jackson2JsonMessageConverter();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>發送一個自訂類RefundInfoEntity</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Test</span>
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">send</span>() {
-      <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 5; i++) {
-        RefundInfoEntity refundInfoEntity = <span style="color:#8b008b;font-weight:bold">new</span> RefundInfoEntity();
-        refundInfoEntity.<span style="color:#658b00">setRefundContent</span>(<span style="color:#cd5555">&#34;test&#34;</span> + i);
-        rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#cd5555">&#34;hello.java&#34;</span>, refundInfoEntity);
-    }
-}
-</code></pre></div><h2 id="接收訊息">接收訊息</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">send</span>() {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 5; i++) {
+</span></span><span style="display:flex;"><span>        RefundInfoEntity refundInfoEntity = <span style="color:#8b008b;font-weight:bold">new</span> RefundInfoEntity();
+</span></span><span style="display:flex;"><span>        refundInfoEntity.<span style="color:#658b00">setRefundContent</span>(<span style="color:#cd5555">&#34;test&#34;</span> + i);
+</span></span><span style="display:flex;"><span>        rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;hello-exchange&#34;</span>, <span style="color:#cd5555">&#34;hello.java&#34;</span>, refundInfoEntity);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="接收訊息">接收訊息</h2>
 <ul>
 <li>
 <p>必須先在啟動類 <code>@EnableRabbit</code>，接著在要收訊息的方法或類上註解<code>@RabbitListener(queues={&quot;hello-queue&quot;})</code></p>
@@ -1454,35 +1454,35 @@ RabbitTemplate rabbitTemplate;
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(Message message) {
-    <span style="color:#00688b;font-weight:bold">byte</span>[] body = message.<span style="color:#658b00">getBody</span>();
-    MessageProperties messageProperties = message.<span style="color:#658b00">getMessageProperties</span>();
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(body);
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;訊息頭=&#34;</span> + messageProperties);
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(Message message) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">byte</span>[] body = message.<span style="color:#658b00">getBody</span>();
+</span></span><span style="display:flex;"><span>    MessageProperties messageProperties = message.<span style="color:#658b00">getMessageProperties</span>();
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(body);
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;訊息頭=&#34;</span> + messageProperties);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>可以把body取出來，然後從頭的資訊中找<code>__TypeId__</code>確定類，再自己JSON.parse回去成為一個物件</li>
 </ul>
 <p><img src="image-20220127195128933.png" alt="image-20220127195128933"></p>
 <ul>
 <li>但其實在方法的入參聲明類就可以直接取到反射包好的物件了</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(RefundInfoEntity content,
-                Channel channel) {
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(content);
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(RefundInfoEntity content,
+</span></span><span style="display:flex;"><span>                Channel channel) {
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(content);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li><code>@RabbitListener</code>可以用在類或方法，還有一個<code>@RabbitHandler</code>只能用在方法上，可以細分處理不同的訊息</li>
 <li>例如一個queue中有多種訊息，A類去方法1，B類去方法2</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RabbitHandler</span>
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">方法1</span>(A類 a){...}
-
-<span style="color:#707a7c">@RabbitHandler</span>
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">方法2</span>(B類 b){...}
-</code></pre></div><h1 id="訊息確認">訊息確認</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@RabbitHandler</span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">方法1</span>(A類 a){...}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@RabbitHandler</span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">方法2</span>(B類 b){...}
+</span></span></code></pre></div><h1 id="訊息確認">訊息確認</h1>
 <ul>
 <li>保證消息不丟失，可以使用事務包住整條傳遞序列，但性能下降250倍</li>
 </ul>
@@ -1501,26 +1501,26 @@ spring.rabbitmq.publisher-confirm-type=correlated
 <li>可以自訂RabbitTemplate中的confirm方法</li>
 <li>MyRabbitConfig.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Autowired</span>
-RabbitTemplate rabbitTemplate;
-
-<span style="color:#707a7c">@PostConstruct</span> <span style="color:#228b22">// RabbitTemplate物件創建之後執行此方法
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">initRabbitTemplate</span>() {
-    rabbitTemplate.<span style="color:#658b00">setConfirmCallback</span>(<span style="color:#8b008b;font-weight:bold">new</span> RabbitTemplate.<span style="color:#658b00">ConfirmCallback</span>() {
-        <span style="color:#228b22">/**
-</span><span style="color:#228b22">         * 訊息有送到訊息中心就執行此方法
-</span><span style="color:#228b22">         * @param correlationData 消息的唯一關聯數據，可以視為消息id
-</span><span style="color:#228b22">         * @param b 是否送達
-</span><span style="color:#228b22">         * @param s 失敗原因
-</span><span style="color:#228b22">         */</span>
-        <span style="color:#707a7c">@Override</span>
-        <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">confirm</span>(CorrelationData correlationData, <span style="color:#00688b;font-weight:bold">boolean</span> b, String s) {
-            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;訊息&#34;</span>+correlationData+<span style="color:#cd5555">&#34;已送達中心&#34;</span>);
-
-        }
-    });
-}
-</code></pre></div><h2 id="第二段eq">第二段E&gt;Q</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>RabbitTemplate rabbitTemplate;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@PostConstruct</span> <span style="color:#228b22">// RabbitTemplate物件創建之後執行此方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">initRabbitTemplate</span>() {
+</span></span><span style="display:flex;"><span>    rabbitTemplate.<span style="color:#658b00">setConfirmCallback</span>(<span style="color:#8b008b;font-weight:bold">new</span> RabbitTemplate.<span style="color:#658b00">ConfirmCallback</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         * 訊息有送到訊息中心就執行此方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         * @param correlationData 消息的唯一關聯數據，可以視為消息id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         * @param b 是否送達
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         * @param s 失敗原因
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">confirm</span>(CorrelationData correlationData, <span style="color:#00688b;font-weight:bold">boolean</span> b, String s) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;訊息&#34;</span>+correlationData+<span style="color:#cd5555">&#34;已送達中心&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="第二段eq">第二段E&gt;Q</h2>
 <ul>
 <li>
 <p>publisher returnCallback: 告訴你訊息在交換機要去隊列時出事了</p>
@@ -1541,13 +1541,13 @@ spring.rabbitmq.template.mandatory=true
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">rabbitTemplate.<span style="color:#658b00">setReturnCallback</span>(<span style="color:#8b008b;font-weight:bold">new</span> RabbitTemplate.<span style="color:#658b00">ReturnCallback</span>() {
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">returnedMessage</span>(Message message, <span style="color:#00688b;font-weight:bold">int</span> i, String s, String s1, String s2) {
-        <span style="color:#228b22">// 如果沒有到queue，要返回這些訊息
-</span><span style="color:#228b22"></span>    }
-});
-</code></pre></div><h2 id="第三段-消費端">第三段 消費端</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>rabbitTemplate.<span style="color:#658b00">setReturnCallback</span>(<span style="color:#8b008b;font-weight:bold">new</span> RabbitTemplate.<span style="color:#658b00">ReturnCallback</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">returnedMessage</span>(Message message, <span style="color:#00688b;font-weight:bold">int</span> i, String s, String s1, String s2) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 如果沒有到queue，要返回這些訊息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="第三段-消費端">第三段 消費端</h2>
 <ul>
 <li>
 <p>消費端確認機制: 消費者收到消息，給伺服器發送確認，伺服器刪除該消息</p>
@@ -1573,31 +1573,31 @@ spring.rabbitmq.listener.simple.acknowledge-mode=manual
 <ul>
 <li>使用<code>channel.basicAck(deliveryTag, false)</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(Message message,
-                RefundInfoEntity content,
-                Channel channel) {
-    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(content);
-    <span style="color:#228b22">// deliveryTag在channel內按順序自增
-</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">long</span> deliveryTag = message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>();
-    <span style="color:#228b22">// 手動簽收，後面的false = 非批量模式
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">try</span> {
-        channel.<span style="color:#658b00">basicAck</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;簽收，單據流水號=&#34;</span> + deliveryTag);
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-        <span style="color:#228b22">// 簽收失敗，例如網路異常
-</span><span style="color:#228b22"></span>        e.<span style="color:#658b00">printStackTrace</span>();
-    }
-}
-</code></pre></div><h3 id="拒收">拒收</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 拒收，參數是: 流水號, 批次, 重新入隊列
-</span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicNack</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>); <span style="color:#228b22">// 這樣會丟棄
-</span><span style="color:#228b22"></span>
-<span style="color:#228b22">// 重新入隊列=true的話，訊息會重新回到隊列
-</span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicNack</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">true</span>);
-<span style="color:#228b22">// 等同於
-</span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicReject</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>);
-</code></pre></div><h2 id="最終方案">最終方案</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@RabbitListener</span>(queues = {<span style="color:#cd5555">&#34;hello-queue&#34;</span>})
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiveMsg</span>(Message message,
+</span></span><span style="display:flex;"><span>                RefundInfoEntity content,
+</span></span><span style="display:flex;"><span>                Channel channel) {
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(content);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// deliveryTag在channel內按順序自增
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">long</span> deliveryTag = message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 手動簽收，後面的false = 非批量模式
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        channel.<span style="color:#658b00">basicAck</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;簽收，單據流水號=&#34;</span> + deliveryTag);
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 簽收失敗，例如網路異常
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        e.<span style="color:#658b00">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="拒收">拒收</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 拒收，參數是: 流水號, 批次, 重新入隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicNack</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>); <span style="color:#228b22">// 這樣會丟棄
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 重新入隊列=true的話，訊息會重新回到隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicNack</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 等同於
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>channel.<span style="color:#658b00">basicReject</span>(deliveryTag, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span></code></pre></div><h2 id="最終方案">最終方案</h2>
 <ul>
 <li>
 <p>確認機制 + 本地事務表</p>

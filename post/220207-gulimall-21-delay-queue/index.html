@@ -1038,154 +1038,154 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </li>
 <li>MyMQConfig.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyMQConfig</span> {
-
-<span style="color:#228b22">// 延遲隊列
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderDelayQueue</span>() {
-    <span style="color:#228b22">/*
-</span><span style="color:#228b22">        Queue(String name,  隊列名字
-</span><span style="color:#228b22">        boolean durable,  是否持久化
-</span><span style="color:#228b22">        boolean exclusive,  是否排他
-</span><span style="color:#228b22">        boolean autoDelete, 是否自動刪除
-</span><span style="color:#228b22">        Map&lt;String, Object&gt; arguments) 屬性【TTL、死信路由、死信路由鍵】
-</span><span style="color:#228b22">     */</span>
-    HashMap&lt;String, Object&gt; arguments = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>);<span style="color:#228b22">// 死信路由
-</span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;order.release.order&#34;</span>);<span style="color:#228b22">// 死信路由鍵
-</span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 60000); <span style="color:#228b22">// 消息過期時間 1分鐘
-</span><span style="color:#228b22"></span>    Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
-
-    <span style="color:#8b008b;font-weight:bold">return</span> queue;
-}
-
-<span style="color:#228b22">// 死信隊列
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderReleaseQueue</span>() {
-
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-}
-
-<span style="color:#228b22">// 普通路由【死信路由】
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Exchange <span style="color:#008b45">orderEventExchange</span>() {
-    <span style="color:#228b22">/*
-</span><span style="color:#228b22">     *   String name,
-</span><span style="color:#228b22">     *   boolean durable,
-</span><span style="color:#228b22">     *   boolean autoDelete,
-</span><span style="color:#228b22">     *   Map&lt;String, Object&gt; arguments
-</span><span style="color:#228b22">     * */</span>
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> TopicExchange(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-
-}
-
-<span style="color:#228b22">// 交換機與延遲隊列的綁定
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderCreateBinding</span>() {
-    <span style="color:#228b22">/*
-</span><span style="color:#228b22">     * String destination, 目的地（隊列名或者交換機名字）
-</span><span style="color:#228b22">     * DestinationType destinationType, 目的地類型（Queue、Exhcange）
-</span><span style="color:#228b22">     * String exchange,
-</span><span style="color:#228b22">     * String routingKey,
-</span><span style="color:#228b22">     * Map&lt;String, Object&gt; arguments
-</span><span style="color:#228b22">     * */</span>
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;order.delay.queue&#34;</span>,
-            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
-            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
-            <span style="color:#cd5555">&#34;order.create.order&#34;</span>,
-            <span style="color:#8b008b;font-weight:bold">null</span>);
-}
-
-<span style="color:#228b22">// 死信路由與普通隊列的綁定
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderReleaseBinding</span>() {
-
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>,
-            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
-            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
-            <span style="color:#cd5555">&#34;order.release.order&#34;</span>,
-            <span style="color:#8b008b;font-weight:bold">null</span>);
-}
-
-<span style="color:#228b22">// 訂單釋放直接和庫存釋放進行綁定
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
-<span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderReleaseOtherBinding</span>() {
-
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>,
-            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
-            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
-            <span style="color:#cd5555">&#34;order.release.other.#&#34;</span>,
-            <span style="color:#8b008b;font-weight:bold">null</span>);
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyMQConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 延遲隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderDelayQueue</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">        Queue(String name,  隊列名字
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">        boolean durable,  是否持久化
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">        boolean exclusive,  是否排他
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">        boolean autoDelete, 是否自動刪除
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">        Map&lt;String, Object&gt; arguments) 屬性【TTL、死信路由、死信路由鍵】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    HashMap&lt;String, Object&gt; arguments = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+</span></span><span style="display:flex;"><span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>);<span style="color:#228b22">// 死信路由
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;order.release.order&#34;</span>);<span style="color:#228b22">// 死信路由鍵
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 60000); <span style="color:#228b22">// 消息過期時間 1分鐘
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> queue;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 死信隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">orderReleaseQueue</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 普通路由【死信路由】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Exchange <span style="color:#008b45">orderEventExchange</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *   String name,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *   boolean durable,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *   boolean autoDelete,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *   Map&lt;String, Object&gt; arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> TopicExchange(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 交換機與延遲隊列的綁定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderCreateBinding</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * String destination, 目的地（隊列名或者交換機名字）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * DestinationType destinationType, 目的地類型（Queue、Exhcange）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * String exchange,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * String routingKey,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * Map&lt;String, Object&gt; arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;order.delay.queue&#34;</span>,
+</span></span><span style="display:flex;"><span>            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order.create.order&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 死信路由與普通隊列的綁定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderReleaseBinding</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>,
+</span></span><span style="display:flex;"><span>            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order.release.order&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 訂單釋放直接和庫存釋放進行綁定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">orderReleaseOtherBinding</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>,
+</span></span><span style="display:flex;"><span>            Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;order.release.other.#&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>庫存區的MQ</li>
 </ul>
 <p><img src="image-20220130201936776.png" alt="image-20220130201936776"></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 庫存服務預設的交換機
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Exchange <span style="color:#008b45">stockEventExchange</span>() {
-        <span style="color:#228b22">//String name, boolean durable, boolean autoDelete, Map&lt;String, Object&gt; arguments
-</span><span style="color:#228b22"></span>        TopicExchange topicExchange = <span style="color:#8b008b;font-weight:bold">new</span> TopicExchange(<span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> topicExchange;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 普通隊列
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">stockReleaseStockQueue</span>() {
-        <span style="color:#228b22">//String name, boolean durable, boolean exclusive, boolean autoDelete, Map&lt;String, Object&gt; arguments
-</span><span style="color:#228b22"></span>        Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> queue;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 延遲隊列
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">stockDelay</span>() {
-
-        HashMap&lt;String, Object&gt; arguments = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>);
-        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;stock.release&#34;</span>);
-        <span style="color:#228b22">// 消息過期時間 2分鐘
-</span><span style="color:#228b22"></span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 120000);
-
-        Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;stock.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
-        <span style="color:#8b008b;font-weight:bold">return</span> queue;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 交換機與普通隊列綁定
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">stockLocked</span>() {
-        <span style="color:#228b22">//String destination, DestinationType destinationType, String exchange, String routingKey,
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 			Map&lt;String, Object&gt; arguments
-</span><span style="color:#228b22"></span>        Binding binding = <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>,
-                Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
-                <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>,
-                <span style="color:#cd5555">&#34;stock.release.#&#34;</span>,
-                <span style="color:#8b008b;font-weight:bold">null</span>);
-
-        <span style="color:#8b008b;font-weight:bold">return</span> binding;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 交換機與延遲隊列綁定
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">stockLockedBinding</span>() {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.delay.queue&#34;</span>,
-                Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
-                <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>,
-                <span style="color:#cd5555">&#34;stock.locked&#34;</span>,
-                <span style="color:#8b008b;font-weight:bold">null</span>);
-    }
-</code></pre></div><h3 id="鎖定庫存">鎖定庫存</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 庫存服務預設的交換機
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Exchange <span style="color:#008b45">stockEventExchange</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//String name, boolean durable, boolean autoDelete, Map&lt;String, Object&gt; arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        TopicExchange topicExchange = <span style="color:#8b008b;font-weight:bold">new</span> TopicExchange(<span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> topicExchange;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 普通隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">stockReleaseStockQueue</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//String name, boolean durable, boolean exclusive, boolean autoDelete, Map&lt;String, Object&gt; arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> queue;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 延遲隊列
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Queue <span style="color:#008b45">stockDelay</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        HashMap&lt;String, Object&gt; arguments = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+</span></span><span style="display:flex;"><span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>);
+</span></span><span style="display:flex;"><span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;stock.release&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 消息過期時間 2分鐘
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 120000);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;stock.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> queue;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 交換機與普通隊列綁定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">stockLocked</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//String destination, DestinationType destinationType, String exchange, String routingKey,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 			Map&lt;String, Object&gt; arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Binding binding = <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>,
+</span></span><span style="display:flex;"><span>                Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;stock.release.#&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> binding;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 交換機與延遲隊列綁定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Binding <span style="color:#008b45">stockLockedBinding</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> Binding(<span style="color:#cd5555">&#34;stock.delay.queue&#34;</span>,
+</span></span><span style="display:flex;"><span>                Binding.<span style="color:#658b00">DestinationType</span>.<span style="color:#658b00">QUEUE</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;stock.locked&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h3 id="鎖定庫存">鎖定庫存</h3>
 <blockquote>
 <p>鎖定成功給mq發送一條消息</p>
 </blockquote>
@@ -1214,91 +1214,91 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 為某個訂單鎖定庫存
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
-<span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">orderLockStock</span>(WareSkuLockVo vo) {
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 保存庫存工作單詳情信息
-</span><span style="color:#228b22">     * 追溯
-</span><span style="color:#228b22">     * 如果沒有庫存，就不會發送消息給mq
-</span><span style="color:#228b22">     * 【不會進入save(WareOrderTaskDetailEntity)邏輯，也不會發送消息給mq，也不會鎖定庫存，也不會監聽到解鎖服務】
-</span><span style="color:#228b22">     */</span>
-    WareOrderTaskEntity wareOrderTaskEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareOrderTaskEntity();
-    wareOrderTaskEntity.<span style="color:#658b00">setOrderSn</span>(vo.<span style="color:#658b00">getOrderSn</span>());
-    wareOrderTaskEntity.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-    wareOrderTaskService.<span style="color:#658b00">save</span>(wareOrderTaskEntity);
-
-    <span style="color:#228b22">//1、按照下單的收貨地址，找到一個就近倉庫，鎖定庫存
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">//2、找到每個商品在哪個倉庫都有庫存
-</span><span style="color:#228b22"></span>    List&lt;OrderItemVo&gt; locks = vo.<span style="color:#658b00">getLocks</span>();
-
-    List&lt;SkuWareHasStock&gt; collect = locks.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((item) -&gt; {
-        SkuWareHasStock stock = <span style="color:#8b008b;font-weight:bold">new</span> SkuWareHasStock();
-        Long skuId = item.<span style="color:#658b00">getSkuId</span>();
-        stock.<span style="color:#658b00">setSkuId</span>(skuId);
-        stock.<span style="color:#658b00">setNum</span>(item.<span style="color:#658b00">getCount</span>());
-        <span style="color:#228b22">//查詢這個商品在哪個倉庫有庫存 stock-鎖定num &gt; 0
-</span><span style="color:#228b22"></span>        List&lt;Long&gt; wareIdList = wareSkuDao.<span style="color:#658b00">listWareIdHasSkuStock</span>(skuId);
-        stock.<span style="color:#658b00">setWareId</span>(wareIdList);
-
-        <span style="color:#8b008b;font-weight:bold">return</span> stock;
-    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-    <span style="color:#228b22">//2、鎖定庫存
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span> (SkuWareHasStock hasStock : collect) {
-        <span style="color:#00688b;font-weight:bold">boolean</span> skuStocked = <span style="color:#8b008b;font-weight:bold">false</span>;
-        Long skuId = hasStock.<span style="color:#658b00">getSkuId</span>();
-        List&lt;Long&gt; wareIds = hasStock.<span style="color:#658b00">getWareId</span>();
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (CollectionUtils.<span style="color:#658b00">isEmpty</span>(wareIds)) {
-            <span style="color:#228b22">//沒有任何倉庫有這個商品的庫存
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(skuId);
-        }
-
-        <span style="color:#228b22">//1、如果每一個商品都鎖定成功,將當前商品鎖定了幾件的工作單記錄發給MQ
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">//2、鎖定失敗。前面保存的工作單信息都回滾了。發送出去的消息，即使要解鎖庫存，由於在數據庫查不到指定的id，就不用解鎖
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (Long wareId : wareIds) {
-            <span style="color:#228b22">//鎖定成功就返回1，失敗就返回0
-</span><span style="color:#228b22"></span>            Long count = wareSkuDao.<span style="color:#658b00">lockSkuStock</span>(skuId, wareId, hasStock.<span style="color:#658b00">getNum</span>());
-            <span style="color:#228b22">// count==1表示鎖定成功
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count == 1) {
-                skuStocked = <span style="color:#8b008b;font-weight:bold">true</span>;
-                WareOrderTaskDetailEntity taskDetailEntity = WareOrderTaskDetailEntity.<span style="color:#658b00">builder</span>()
-                        .<span style="color:#658b00">skuId</span>(skuId)
-                        .<span style="color:#658b00">skuName</span>(<span style="color:#cd5555">&#34;&#34;</span>)
-                        .<span style="color:#658b00">skuNum</span>(hasStock.<span style="color:#658b00">getNum</span>())
-                        .<span style="color:#658b00">taskId</span>(wareOrderTaskEntity.<span style="color:#658b00">getId</span>())
-                        .<span style="color:#658b00">wareId</span>(wareId)
-                        .<span style="color:#658b00">lockStatus</span>(1)
-                        .<span style="color:#658b00">build</span>();
-                wareOrderTaskDetailService.<span style="color:#658b00">save</span>(taskDetailEntity);
-
-                <span style="color:#228b22">// 告訴MQ庫存鎖定成功
-</span><span style="color:#228b22"></span>                StockLockedTo lockedTo = <span style="color:#8b008b;font-weight:bold">new</span> StockLockedTo();
-                lockedTo.<span style="color:#658b00">setId</span>(wareOrderTaskEntity.<span style="color:#658b00">getId</span>());
-                StockDetailTo detailTo = <span style="color:#8b008b;font-weight:bold">new</span> StockDetailTo();
-                BeanUtils.<span style="color:#658b00">copyProperties</span>(taskDetailEntity, detailTo);<span style="color:#228b22">// 這裏直接存entity。但是應該存id更好，數據最好來自DB
-</span><span style="color:#228b22"></span>                lockedTo.<span style="color:#658b00">setDetailTo</span>(detailTo);
-                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;stock.locked&#34;</span>, lockedTo);
-                <span style="color:#228b22">// 鎖定成功返回
-</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">break</span>;
-            } <span style="color:#8b008b;font-weight:bold">else</span> {
-                <span style="color:#228b22">//當前倉庫鎖失敗，重試下一個倉庫
-</span><span style="color:#228b22"></span>            }
-        }
-        <span style="color:#8b008b;font-weight:bold">if</span> (skuStocked == <span style="color:#8b008b;font-weight:bold">false</span>) {
-            <span style="color:#228b22">//當前商品所有倉庫都沒有鎖住
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(skuId);
-        }
-    }
-    <span style="color:#228b22">//3、肯定全部都是鎖定成功的
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-}
-</code></pre></div><h3 id="解鎖庫存">解鎖庫存</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 為某個訂單鎖定庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Transactional</span>(rollbackFor = Exception.<span style="color:#658b00">class</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">orderLockStock</span>(WareSkuLockVo vo) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 保存庫存工作單詳情信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 追溯
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 如果沒有庫存，就不會發送消息給mq
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 【不會進入save(WareOrderTaskDetailEntity)邏輯，也不會發送消息給mq，也不會鎖定庫存，也不會監聽到解鎖服務】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    WareOrderTaskEntity wareOrderTaskEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareOrderTaskEntity();
+</span></span><span style="display:flex;"><span>    wareOrderTaskEntity.<span style="color:#658b00">setOrderSn</span>(vo.<span style="color:#658b00">getOrderSn</span>());
+</span></span><span style="display:flex;"><span>    wareOrderTaskEntity.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+</span></span><span style="display:flex;"><span>    wareOrderTaskService.<span style="color:#658b00">save</span>(wareOrderTaskEntity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//1、按照下單的收貨地址，找到一個就近倉庫，鎖定庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">//2、找到每個商品在哪個倉庫都有庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;OrderItemVo&gt; locks = vo.<span style="color:#658b00">getLocks</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    List&lt;SkuWareHasStock&gt; collect = locks.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((item) -&gt; {
+</span></span><span style="display:flex;"><span>        SkuWareHasStock stock = <span style="color:#8b008b;font-weight:bold">new</span> SkuWareHasStock();
+</span></span><span style="display:flex;"><span>        Long skuId = item.<span style="color:#658b00">getSkuId</span>();
+</span></span><span style="display:flex;"><span>        stock.<span style="color:#658b00">setSkuId</span>(skuId);
+</span></span><span style="display:flex;"><span>        stock.<span style="color:#658b00">setNum</span>(item.<span style="color:#658b00">getCount</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//查詢這個商品在哪個倉庫有庫存 stock-鎖定num &gt; 0
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;Long&gt; wareIdList = wareSkuDao.<span style="color:#658b00">listWareIdHasSkuStock</span>(skuId);
+</span></span><span style="display:flex;"><span>        stock.<span style="color:#658b00">setWareId</span>(wareIdList);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> stock;
+</span></span><span style="display:flex;"><span>    }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//2、鎖定庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span> (SkuWareHasStock hasStock : collect) {
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">boolean</span> skuStocked = <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>        Long skuId = hasStock.<span style="color:#658b00">getSkuId</span>();
+</span></span><span style="display:flex;"><span>        List&lt;Long&gt; wareIds = hasStock.<span style="color:#658b00">getWareId</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (CollectionUtils.<span style="color:#658b00">isEmpty</span>(wareIds)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//沒有任何倉庫有這個商品的庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(skuId);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//1、如果每一個商品都鎖定成功,將當前商品鎖定了幾件的工作單記錄發給MQ
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">//2、鎖定失敗。前面保存的工作單信息都回滾了。發送出去的消息，即使要解鎖庫存，由於在數據庫查不到指定的id，就不用解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (Long wareId : wareIds) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//鎖定成功就返回1，失敗就返回0
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            Long count = wareSkuDao.<span style="color:#658b00">lockSkuStock</span>(skuId, wareId, hasStock.<span style="color:#658b00">getNum</span>());
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// count==1表示鎖定成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count == 1) {
+</span></span><span style="display:flex;"><span>                skuStocked = <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>                WareOrderTaskDetailEntity taskDetailEntity = WareOrderTaskDetailEntity.<span style="color:#658b00">builder</span>()
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">skuId</span>(skuId)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">skuName</span>(<span style="color:#cd5555">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">skuNum</span>(hasStock.<span style="color:#658b00">getNum</span>())
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">taskId</span>(wareOrderTaskEntity.<span style="color:#658b00">getId</span>())
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">wareId</span>(wareId)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">lockStatus</span>(1)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>                wareOrderTaskDetailService.<span style="color:#658b00">save</span>(taskDetailEntity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 告訴MQ庫存鎖定成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                StockLockedTo lockedTo = <span style="color:#8b008b;font-weight:bold">new</span> StockLockedTo();
+</span></span><span style="display:flex;"><span>                lockedTo.<span style="color:#658b00">setId</span>(wareOrderTaskEntity.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>                StockDetailTo detailTo = <span style="color:#8b008b;font-weight:bold">new</span> StockDetailTo();
+</span></span><span style="display:flex;"><span>                BeanUtils.<span style="color:#658b00">copyProperties</span>(taskDetailEntity, detailTo);<span style="color:#228b22">// 這裏直接存entity。但是應該存id更好，數據最好來自DB
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                lockedTo.<span style="color:#658b00">setDetailTo</span>(detailTo);
+</span></span><span style="display:flex;"><span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;stock.locked&#34;</span>, lockedTo);
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 鎖定成功返回
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//當前倉庫鎖失敗，重試下一個倉庫
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuStocked == <span style="color:#8b008b;font-weight:bold">false</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//當前商品所有倉庫都沒有鎖住
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(skuId);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//3、肯定全部都是鎖定成功的
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="解鎖庫存">解鎖庫存</h3>
 <blockquote>
 <p>不使用分佈式事務，每一個sku 產生一條消息</p>
 </blockquote>
@@ -1337,109 +1337,109 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 解鎖庫存
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">unlockStock</span>(StockLockedTo to) {
-    <span style="color:#228b22">//庫存工作單的id
-</span><span style="color:#228b22"></span>    StockDetailTo detail = to.<span style="color:#658b00">getDetailTo</span>();
-    Long detailId = detail.<span style="color:#658b00">getId</span>();
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 解鎖
-</span><span style="color:#228b22">     * 1、查詢數據庫關於這個訂單鎖定庫存信息
-</span><span style="color:#228b22">     *   有：證明庫存鎖定成功了
-</span><span style="color:#228b22">     *      解鎖：訂單狀況
-</span><span style="color:#228b22">     *          1、沒有這個訂單，必須解鎖庫存
-</span><span style="color:#228b22">     *          2、有這個訂單，不一定解鎖庫存
-</span><span style="color:#228b22">     *              訂單狀態：已取消：解鎖庫存
-</span><span style="color:#228b22">     *                      已支付：不能解鎖庫存
-</span><span style="color:#228b22">     */</span>
-    WareOrderTaskDetailEntity taskDetailInfo = wareOrderTaskDetailService.<span style="color:#658b00">getById</span>(detailId);
-    <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo != <span style="color:#8b008b;font-weight:bold">null</span>) {
-        <span style="color:#228b22">//查出wms_ware_order_task工作單的信息
-</span><span style="color:#228b22"></span>        Long id = to.<span style="color:#658b00">getId</span>();
-        WareOrderTaskEntity orderTaskInfo = wareOrderTaskService.<span style="color:#658b00">getById</span>(id);
-        <span style="color:#228b22">//獲取訂單號查詢訂單狀態
-</span><span style="color:#228b22"></span>        String orderSn = orderTaskInfo.<span style="color:#658b00">getOrderSn</span>();
-        <span style="color:#228b22">//遠程查詢訂單信息
-</span><span style="color:#228b22"></span>        R orderData = orderFeignService.<span style="color:#658b00">getOrderStatus</span>(orderSn);
-        <span style="color:#8b008b;font-weight:bold">if</span> (orderData.<span style="color:#658b00">getCode</span>() == 0) {
-            <span style="color:#228b22">//訂單數據返回成功
-</span><span style="color:#228b22"></span>            OrderVo orderInfo = orderData.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;OrderVo&gt;() {
-            });
-            <span style="color:#228b22">//判斷訂單狀態是否已取消或者支付或者訂單不存在
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 1、訂單不存在：解鎖
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 2、訂單存在，且訂單狀態是取消狀態：解鎖
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo == <span style="color:#8b008b;font-weight:bold">null</span> || orderInfo.<span style="color:#658b00">getStatus</span>() == 4) {
-                <span style="color:#228b22">// 工作單狀態必須是 已鎖定 才可以解鎖【因為解鎖方法沒有加事務】
-</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo.<span style="color:#658b00">getLockStatus</span>() == 1) {
-                    unLockStock(detail.<span style="color:#658b00">getSkuId</span>(), detail.<span style="color:#658b00">getWareId</span>(), detail.<span style="color:#658b00">getSkuNum</span>(), detailId);
-                }
-            }
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            <span style="color:#228b22">//消息拒絕以後重新放在隊列裏面，讓別人繼續消費解鎖
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">//遠程調用服務失敗
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> RuntimeException(<span style="color:#cd5555">&#34;遠程調用服務失敗&#34;</span>);
-        }
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">//無需解鎖【回滾狀態】
-</span><span style="color:#228b22"></span>    }
-}
-
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 解鎖庫存的方法【設計DB，沒加事務】
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">unLockStock</span>(Long skuId, Long wareId, Integer num, Long taskDetailId) {
-        <span style="color:#228b22">// 1、庫存解鎖
-</span><span style="color:#228b22"></span>        wareSkuDao.<span style="color:#658b00">unLockStock</span>(skuId, wareId, num);
-
-        <span style="color:#228b22">// 2、更新工作單的狀態 為已解鎖 2
-</span><span style="color:#228b22"></span>        WareOrderTaskDetailEntity taskDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareOrderTaskDetailEntity();
-        taskDetailEntity.<span style="color:#658b00">setId</span>(taskDetailId);
-        taskDetailEntity.<span style="color:#658b00">setLockStatus</span>(2);
-        wareOrderTaskDetailService.<span style="color:#658b00">updateById</span>(taskDetailEntity);
-    }
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">unlockStock</span>(StockLockedTo to) {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//庫存工作單的id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    StockDetailTo detail = to.<span style="color:#658b00">getDetailTo</span>();
+</span></span><span style="display:flex;"><span>    Long detailId = detail.<span style="color:#658b00">getId</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 1、查詢數據庫關於這個訂單鎖定庫存信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *   有：證明庫存鎖定成功了
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *      解鎖：訂單狀況
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *          1、沒有這個訂單，必須解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *          2、有這個訂單，不一定解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *              訂單狀態：已取消：解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *                      已支付：不能解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    WareOrderTaskDetailEntity taskDetailInfo = wareOrderTaskDetailService.<span style="color:#658b00">getById</span>(detailId);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//查出wms_ware_order_task工作單的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Long id = to.<span style="color:#658b00">getId</span>();
+</span></span><span style="display:flex;"><span>        WareOrderTaskEntity orderTaskInfo = wareOrderTaskService.<span style="color:#658b00">getById</span>(id);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//獲取訂單號查詢訂單狀態
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String orderSn = orderTaskInfo.<span style="color:#658b00">getOrderSn</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//遠程查詢訂單信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R orderData = orderFeignService.<span style="color:#658b00">getOrderStatus</span>(orderSn);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (orderData.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//訂單數據返回成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            OrderVo orderInfo = orderData.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;OrderVo&gt;() {
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//判斷訂單狀態是否已取消或者支付或者訂單不存在
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 1、訂單不存在：解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 2、訂單存在，且訂單狀態是取消狀態：解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo == <span style="color:#8b008b;font-weight:bold">null</span> || orderInfo.<span style="color:#658b00">getStatus</span>() == 4) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 工作單狀態必須是 已鎖定 才可以解鎖【因為解鎖方法沒有加事務】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo.<span style="color:#658b00">getLockStatus</span>() == 1) {
+</span></span><span style="display:flex;"><span>                    unLockStock(detail.<span style="color:#658b00">getSkuId</span>(), detail.<span style="color:#658b00">getWareId</span>(), detail.<span style="color:#658b00">getSkuNum</span>(), detailId);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//消息拒絕以後重新放在隊列裏面，讓別人繼續消費解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">//遠程調用服務失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> RuntimeException(<span style="color:#cd5555">&#34;遠程調用服務失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//無需解鎖【回滾狀態】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 解鎖庫存的方法【設計DB，沒加事務】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">unLockStock</span>(Long skuId, Long wareId, Integer num, Long taskDetailId) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 1、庫存解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        wareSkuDao.<span style="color:#658b00">unLockStock</span>(skuId, wareId, num);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 2、更新工作單的狀態 為已解鎖 2
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        WareOrderTaskDetailEntity taskDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareOrderTaskDetailEntity();
+</span></span><span style="display:flex;"><span>        taskDetailEntity.<span style="color:#658b00">setId</span>(taskDetailId);
+</span></span><span style="display:flex;"><span>        taskDetailEntity.<span style="color:#658b00">setLockStatus</span>(2);
+</span></span><span style="display:flex;"><span>        wareOrderTaskDetailService.<span style="color:#658b00">updateById</span>(taskDetailEntity);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
 <li>抽出StockReleaseListener.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 監聽死信隊列，解鎖庫存
-</span><span style="color:#228b22"> **/</span>
-<span style="color:#707a7c">@Slf4j</span>
-<span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>)
-<span style="color:#707a7c">@Service</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">StockReleaseListener</span> {
-
-    <span style="color:#707a7c">@Autowired</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> WareSkuService wareSkuService;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 這個是監聽死信消息
-</span><span style="color:#228b22">     * 1、庫存自動解鎖
-</span><span style="color:#228b22">     * 下訂單成功，庫存鎖定成功，接下來的業務調用失敗，導致訂單回滾。之前鎖定的庫存就要自動解鎖
-</span><span style="color:#228b22">     * 2、訂單失敗
-</span><span style="color:#228b22">     * 庫存鎖定失敗
-</span><span style="color:#228b22">     * 只要解鎖庫存的消息失敗，一定要告訴服務解鎖失敗
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@RabbitHandler</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">handleStockLockedRelease</span>(StockLockedTo to, Message message, Channel channel) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;******收到解鎖庫存的延時信息******，準備解鎖&#34;</span> + to.<span style="color:#658b00">getDetailTo</span>().<span style="color:#658b00">getId</span>());
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            <span style="color:#228b22">//當前消息是否被第二次及以後（重新）派發過來了
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// Boolean redelivered = message.getMessageProperties().getRedelivered();
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">//解鎖庫存
-</span><span style="color:#228b22"></span>            wareSkuService.<span style="color:#658b00">unlockStock</span>(to);
-            <span style="color:#228b22">// 手動刪除消息
-</span><span style="color:#228b22"></span>            channel.<span style="color:#658b00">basicAck</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">false</span>);
-        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-            <span style="color:#228b22">// 解鎖失敗 將消息重新放回隊列，讓別人消費
-</span><span style="color:#228b22"></span>            channel.<span style="color:#658b00">basicReject</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">true</span>);
-        }
-    }
-</code></pre></div><h4 id="登入攔截放行">登入攔截放行</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 監聽死信隊列，解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> **/</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;stock.release.stock.queue&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">StockReleaseListener</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> WareSkuService wareSkuService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 這個是監聽死信消息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 1、庫存自動解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 下訂單成功，庫存鎖定成功，接下來的業務調用失敗，導致訂單回滾。之前鎖定的庫存就要自動解鎖
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 2、訂單失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 庫存鎖定失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 只要解鎖庫存的消息失敗，一定要告訴服務解鎖失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RabbitHandler</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">handleStockLockedRelease</span>(StockLockedTo to, Message message, Channel channel) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;******收到解鎖庫存的延時信息******，準備解鎖&#34;</span> + to.<span style="color:#658b00">getDetailTo</span>().<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//當前消息是否被第二次及以後（重新）派發過來了
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// Boolean redelivered = message.getMessageProperties().getRedelivered();
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">//解鎖庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            wareSkuService.<span style="color:#658b00">unlockStock</span>(to);
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 手動刪除消息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            channel.<span style="color:#658b00">basicAck</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 解鎖失敗 將消息重新放回隊列，讓別人消費
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            channel.<span style="color:#658b00">basicReject</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(), <span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h4 id="登入攔截放行">登入攔截放行</h4>
 <ul>
 <li>
 <p>遠程調用查訂單狀態時，又被之前的攔截器認為是沒登入，導致被跳轉到登入頁，使feign調用失敗</p>
@@ -1451,82 +1451,82 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>LoginUserInterceptor.java</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 登入攔截器
-</span><span style="color:#228b22"> * 從session中獲取了登入信息（redis中），封裝到了ThreadLocal中
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Component</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LoginUserInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;MemberResponseTo&gt; loginUser = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-
-        String uri = request.<span style="color:#658b00">getRequestURI</span>();
-        AntPathMatcher antPathMatcher = <span style="color:#8b008b;font-weight:bold">new</span> AntPathMatcher();
-        <span style="color:#00688b;font-weight:bold">boolean</span> match = antPathMatcher.<span style="color:#658b00">match</span>(<span style="color:#cd5555">&#34;/order/order/status/**&#34;</span>, uri);
-        <span style="color:#8b008b;font-weight:bold">if</span> (match) {
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-        }
-</code></pre></div><h3 id="關閉訂單">關閉訂單</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">訂單創建成功<span style="color:#a61717;background-color:#e3d2d2">，</span>發送一條消息給mq的延時隊列
-1<span style="color:#a61717;background-color:#e3d2d2">、</span>當 訂單數據是 0 待付款<span style="color:#a61717;background-color:#e3d2d2">，</span>修改DB 訂單狀態為 4 取消狀態
-2<span style="color:#a61717;background-color:#e3d2d2">、</span>關單比解鎖早<span style="color:#a61717;background-color:#e3d2d2">，</span>所以解鎖的時候檢查訂單狀態為4的就可以解鎖掉了
-<span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 定時關閉訂單
-</span><span style="color:#228b22"> *
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>)
-<span style="color:#707a7c">@Service</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderCloseListener</span> {
-
-    <span style="color:#707a7c">@Autowired</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> OrderService orderService;
-
-    <span style="color:#707a7c">@RabbitHandler</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">listener</span>(OrderEntity orderEntity, Channel channel, Message message) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;收到過期的訂單信息，準備關閉訂單&#34;</span> + orderEntity.<span style="color:#658b00">getOrderSn</span>());
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            orderService.<span style="color:#658b00">closeOrder</span>(orderEntity);
-            channel.<span style="color:#658b00">basicAck</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(),<span style="color:#8b008b;font-weight:bold">false</span>);
-        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-            channel.<span style="color:#658b00">basicReject</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(),<span style="color:#8b008b;font-weight:bold">true</span>);
-        }
-    }
-}
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 關閉訂單
-</span><span style="color:#228b22">     * @param orderEntity
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">closeOrder</span>(OrderEntity orderEntity) {
-
-        <span style="color:#228b22">//關閉訂單之前先查詢一下數據庫，判斷此訂單狀態是否已支付
-</span><span style="color:#228b22"></span>        OrderEntity orderInfo = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getOne</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;OrderEntity&gt;().
-                eq(<span style="color:#cd5555">&#34;order_sn&#34;</span>,orderEntity.<span style="color:#658b00">getOrderSn</span>()));
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo.<span style="color:#658b00">getStatus</span>().<span style="color:#658b00">equals</span>(OrderStatusEnum.<span style="color:#658b00">CREATE_NEW</span>.<span style="color:#658b00">getCode</span>())) {
-            <span style="color:#228b22">//代付款狀態進行關單
-</span><span style="color:#228b22"></span>            OrderEntity orderUpdate = <span style="color:#8b008b;font-weight:bold">new</span> OrderEntity();
-            orderUpdate.<span style="color:#658b00">setId</span>(orderInfo.<span style="color:#658b00">getId</span>());
-            orderUpdate.<span style="color:#658b00">setStatus</span>(OrderStatusEnum.<span style="color:#658b00">CANCLED</span>.<span style="color:#658b00">getCode</span>());
-            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(orderUpdate);
-
-            <span style="color:#228b22">// 發送消息給MQ
-</span><span style="color:#228b22"></span>            OrderTo orderTo = <span style="color:#8b008b;font-weight:bold">new</span> OrderTo();
-            BeanUtils.<span style="color:#658b00">copyProperties</span>(orderInfo, orderTo);
-
-            <span style="color:#8b008b;font-weight:bold">try</span> {
-                <span style="color:#228b22">//TODO 確保每個消息發送成功，給每個消息做好日誌記錄，(給數據庫保存每一個詳細信息)保存每個消息的詳細信息
-</span><span style="color:#228b22"></span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.release.other&#34;</span>, orderTo);
-            } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-                <span style="color:#228b22">//TODO 定期掃描數據庫，重新發送失敗的消息
-</span><span style="color:#228b22"></span>            }
-        }
-    }
-</code></pre></div><h4 id="修復bug">修復BUG</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 登入攔截器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 從session中獲取了登入信息（redis中），封裝到了ThreadLocal中
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LoginUserInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;MemberResponseTo&gt; loginUser = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String uri = request.<span style="color:#658b00">getRequestURI</span>();
+</span></span><span style="display:flex;"><span>        AntPathMatcher antPathMatcher = <span style="color:#8b008b;font-weight:bold">new</span> AntPathMatcher();
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">boolean</span> match = antPathMatcher.<span style="color:#658b00">match</span>(<span style="color:#cd5555">&#34;/order/order/status/**&#34;</span>, uri);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (match) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><h3 id="關閉訂單">關閉訂單</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>訂單創建成功<span style="color:#a61717;background-color:#e3d2d2">，</span>發送一條消息給mq的延時隊列
+</span></span><span style="display:flex;"><span>1<span style="color:#a61717;background-color:#e3d2d2">、</span>當 訂單數據是 0 待付款<span style="color:#a61717;background-color:#e3d2d2">，</span>修改DB 訂單狀態為 4 取消狀態
+</span></span><span style="display:flex;"><span>2<span style="color:#a61717;background-color:#e3d2d2">、</span>關單比解鎖早<span style="color:#a61717;background-color:#e3d2d2">，</span>所以解鎖的時候檢查訂單狀態為4的就可以解鎖掉了
+</span></span><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 定時關閉訂單
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@RabbitListener</span>(queues = <span style="color:#cd5555">&#34;order.release.order.queue&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderCloseListener</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> OrderService orderService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RabbitHandler</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">listener</span>(OrderEntity orderEntity, Channel channel, Message message) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;收到過期的訂單信息，準備關閉訂單&#34;</span> + orderEntity.<span style="color:#658b00">getOrderSn</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            orderService.<span style="color:#658b00">closeOrder</span>(orderEntity);
+</span></span><span style="display:flex;"><span>            channel.<span style="color:#658b00">basicAck</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(),<span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            channel.<span style="color:#658b00">basicReject</span>(message.<span style="color:#658b00">getMessageProperties</span>().<span style="color:#658b00">getDeliveryTag</span>(),<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 關閉訂單
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * @param orderEntity
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">closeOrder</span>(OrderEntity orderEntity) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//關閉訂單之前先查詢一下數據庫，判斷此訂單狀態是否已支付
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        OrderEntity orderInfo = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">getOne</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;OrderEntity&gt;().
+</span></span><span style="display:flex;"><span>                eq(<span style="color:#cd5555">&#34;order_sn&#34;</span>,orderEntity.<span style="color:#658b00">getOrderSn</span>()));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo.<span style="color:#658b00">getStatus</span>().<span style="color:#658b00">equals</span>(OrderStatusEnum.<span style="color:#658b00">CREATE_NEW</span>.<span style="color:#658b00">getCode</span>())) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//代付款狀態進行關單
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            OrderEntity orderUpdate = <span style="color:#8b008b;font-weight:bold">new</span> OrderEntity();
+</span></span><span style="display:flex;"><span>            orderUpdate.<span style="color:#658b00">setId</span>(orderInfo.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>            orderUpdate.<span style="color:#658b00">setStatus</span>(OrderStatusEnum.<span style="color:#658b00">CANCLED</span>.<span style="color:#658b00">getCode</span>());
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">updateById</span>(orderUpdate);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 發送消息給MQ
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            OrderTo orderTo = <span style="color:#8b008b;font-weight:bold">new</span> OrderTo();
+</span></span><span style="display:flex;"><span>            BeanUtils.<span style="color:#658b00">copyProperties</span>(orderInfo, orderTo);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//TODO 確保每個消息發送成功，給每個消息做好日誌記錄，(給數據庫保存每一個詳細信息)保存每個消息的詳細信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.release.other&#34;</span>, orderTo);
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//TODO 定期掃描數據庫，重新發送失敗的消息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h4 id="修復bug">修復BUG</h4>
 <ul>
 <li>訂單關閉延遲導致庫存未解鎖，並且消息也消費掉了</li>
 </ul>

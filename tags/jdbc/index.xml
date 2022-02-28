@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Thu, 30 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/jdbc/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/tags/jdbc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JSP、Hibernate、Spring Data JPA</title>
+      <link>https://yoziming.github.io/post/220301-jsp-jpa/</link>
+      <pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220301-jsp-jpa/</guid>
+      <description>JSP  萬萬沒想到JSP這種我以為早就被淘汰的東西，在台灣還有很多企業在用
+  JSP的本質其實是Servlet，當它第一次被訪問，透過Web容器(Tomcat)的JSP引擎編譯成Servlet，然後一樣執行init()方法一次，之後開始service()，直到最後被卸載destroy() Servlet在Web容器中其實也是編譯成Java，產生.class檔案，當有請求過來就動態的處理一些業務邏輯(例如從request拿參數、去DB撈出對應的資料)，最後這個.class用out.print()拼接出封裝好的html的靜態頁面，返回給使用者 確實可以在JSP中寫出一個直接捅到JDBC撈資料然後返回的程式碼，但一般來說不會這麼做，而是使用MVC架構 MVC架構下，訪問發送一個請求過來，轉到Controller，再送到Service層處理業務邏輯，把處理完的資料(可能是某VO)放到pageContext之類的地方，而JSP是作為一個類似模板的地位，用jstl之類的標籤做簡單的邏輯控制、填充要呈現的結果頁面，最後輸出成html給使用者 在這種使用框架的情境下，通常用xx.do、xx.action、xx.html等等作為請求的網址，方便Controller區分靜態文件(例如.css或.js)與請求 JSP的缺點就是它必須依賴Web容器，部署、調試都很麻煩又慢，且Web容器Tomcat在高併發之下成為性能瓶頸，高耦合、難遷移(如果是純html模板那遷移相對容易，JSP就綁死在Java樹上)，故JSP技術被淘汰  JPA  Java Persistence API
+  「Java 持久化的 API」，JPA是一個標準規範及接口，通過註解(annotation) 如@Entity、@Table、@Column或XML描述物件－關係表的對映關係，將執行期(在記憶體中)的實體物件持久化到資料庫中 JPA只是一個標準規範，而要使用JPA的功能就需要Provider來配合，而Provider就是各種ORM框架 Database - JDBC - JPA - 各種ORM框架  Hibernate  全表映射，它把DB與開發者隔離了，可以完全不管DB類型，而使用HQL語句代替，但也是可以用native sql，壞處是性能差，有3種使用模式 Hibernate Query Language  String hql=&amp;#34;select u.uid,u.uname,u.upwd from Users u where u.uname=&amp;#39;張三&amp;#39;&amp;#34;; Query query = session.createQuery(hql); List&amp;lt;Object[]&amp;gt; list = query.list(); for (Object[] objects : list) {  System.out.println(Arrays.toString(objects)); }  原生SQL查詢，例如:  String sql = &amp;#34;select uid,uname,upwd from _users&amp;#34;; List list = session.</description>
+    </item>
+    
     <item>
       <title>事務、DAO、連接池、Dbutils工具包</title>
       <link>https://yoziming.github.io/post/211230-agg-jdbc-02/</link>
@@ -21,7 +32,7 @@
  要嘛提交Commit，要嘛回滾Rollback    數據一旦提交，就不可回滾
   那些操作會自動提交?
  DDL(刪庫建表之類的操作):必定自動提交 DML(操作某筆資料):預設會自動提交，但可以set autocommit = false 關閉連接時，預設也會自動提交    事務的相關方法  由java.sql.Connection包提供，顯然這些方法都是由Connection物件調用
- public void setAutoCommit(boolean) public boolean getAutoCommit() public void commit() public void rollback() 事務實作流程  關閉自動提交 執行事務語句，可能有多行 commit()手動提交，並還原自動提交設定 於catch (Exception e) 區塊使用rollback()回滾  // 範例 public String delete(String id) { String ID = id; db = new getConnection(); Connection con = db.</description>
+ public void setAutoCommit(boolean) public boolean getAutoCommit() public void commit() public void rollback() 事務實作流程  關閉自動提交 執行事務語句，可能有多行 commit()手動提交，並還原自動提交設定 於catch (Exception e) 區塊使用rollback()回滾  // 範例 public String delete(String id) {  String ID = id;  db = new getConnection(); 　Connection con = db.</description>
     </item>
     
     <item>

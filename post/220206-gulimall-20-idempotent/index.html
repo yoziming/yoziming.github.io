@@ -1625,128 +1625,128 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <ul>
 <li>OrderWebController.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 下單
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/submitOrder&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo, Model model, RedirectAttributes attributes) {
-
-    <span style="color:#8b008b;font-weight:bold">try</span> {
-        SubmitOrderResponseVo responseVo = orderService.<span style="color:#658b00">submitOrder</span>(vo);
-        <span style="color:#228b22">//下單成功來到支付選擇頁
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">//下單失敗回到訂單確認頁重新確定訂單信息
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (responseVo.<span style="color:#658b00">getCode</span>() == 0) {
-            <span style="color:#228b22">//成功
-</span><span style="color:#228b22"></span>            model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;submitOrderResp&#34;</span>, responseVo);
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;pay&#34;</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            String msg = <span style="color:#cd5555">&#34;下單失敗&#34;</span>;
-            <span style="color:#8b008b;font-weight:bold">switch</span> (responseVo.<span style="color:#658b00">getCode</span>()) {
-                <span style="color:#8b008b;font-weight:bold">case</span> 1:
-                    msg += <span style="color:#cd5555">&#34;令牌訂單信息過期，請刷新再次提交&#34;</span>;
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-                <span style="color:#8b008b;font-weight:bold">case</span> 2:
-                    msg += <span style="color:#cd5555">&#34;訂單商品價格發生變化，請確認后再次提交&#34;</span>;
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-                <span style="color:#8b008b;font-weight:bold">case</span> 3:
-                    msg += <span style="color:#cd5555">&#34;庫存鎖定失敗，商品庫存不足&#34;</span>;
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-            }
-            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, msg);
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
-        }
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-        <span style="color:#8b008b;font-weight:bold">if</span> (e <span style="color:#8b008b;font-weight:bold">instanceof</span> NoStockException) {
-            String message = ((NoStockException) e).<span style="color:#658b00">getMessage</span>();
-            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, message);
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 下單
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@PostMapping</span>(value = <span style="color:#cd5555">&#34;/submitOrder&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo, Model model, RedirectAttributes attributes) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        SubmitOrderResponseVo responseVo = orderService.<span style="color:#658b00">submitOrder</span>(vo);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//下單成功來到支付選擇頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">//下單失敗回到訂單確認頁重新確定訂單信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (responseVo.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;submitOrderResp&#34;</span>, responseVo);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;pay&#34;</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            String msg = <span style="color:#cd5555">&#34;下單失敗&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">switch</span> (responseVo.<span style="color:#658b00">getCode</span>()) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">case</span> 1:
+</span></span><span style="display:flex;"><span>                    msg += <span style="color:#cd5555">&#34;令牌訂單信息過期，請刷新再次提交&#34;</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">case</span> 2:
+</span></span><span style="display:flex;"><span>                    msg += <span style="color:#cd5555">&#34;訂單商品價格發生變化，請確認后再次提交&#34;</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">case</span> 3:
+</span></span><span style="display:flex;"><span>                    msg += <span style="color:#cd5555">&#34;庫存鎖定失敗，商品庫存不足&#34;</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, msg);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (e <span style="color:#8b008b;font-weight:bold">instanceof</span> NoStockException) {
+</span></span><span style="display:flex;"><span>            String message = ((NoStockException) e).<span style="color:#658b00">getMessage</span>();
+</span></span><span style="display:flex;"><span>            attributes.<span style="color:#658b00">addFlashAttribute</span>(<span style="color:#cd5555">&#34;msg&#34;</span>, message);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;redirect:http://order.mall.com/toTrade&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>OrderServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 提交訂單
-</span><span style="color:#228b22"> *
-</span><span style="color:#228b22"> * @param vo
-</span><span style="color:#228b22"> * @return
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Transactional</span>
-<span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> SubmitOrderResponseVo <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo) {
-
-    confirmVoThreadLocal.<span style="color:#658b00">set</span>(vo);
-
-    <span style="color:#228b22">// 下單後準備返回的結果
-</span><span style="color:#228b22"></span>    SubmitOrderResponseVo responseVo = <span style="color:#8b008b;font-weight:bold">new</span> SubmitOrderResponseVo();
-    responseVo.<span style="color:#658b00">setCode</span>(0); <span style="color:#228b22">// 預設返回0是成功
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 獲取當前用戶登入的信息
-</span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
-    <span style="color:#228b22">// 驗證令牌是否合法，令牌的對比和刪除必須保證原子性，LUA腳本
-</span><span style="color:#228b22"></span>    String script = <span style="color:#cd5555">&#34;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return &#34;</span> +
-            <span style="color:#cd5555">&#34;0 end&#34;</span>;
-    <span style="color:#228b22">// 拿前端傳來的token
-</span><span style="color:#228b22"></span>    String orderToken = vo.<span style="color:#658b00">getOrderToken</span>();
-    <span style="color:#228b22">// 通過腳本原子驗證令牌和刪除令牌
-</span><span style="color:#228b22"></span>    Long result = redisTemplate.<span style="color:#658b00">execute</span>(<span style="color:#8b008b;font-weight:bold">new</span> DefaultRedisScript&lt;Long&gt;(script, Long.<span style="color:#658b00">class</span>),
-            Arrays.<span style="color:#658b00">asList</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>()),
-            orderToken);
-    <span style="color:#228b22">// 若令牌驗證失敗，注意腳本0是失敗，跟前面SubmitOrderResponseVo 0=成功相反
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (result == 0L) {
-        responseVo.<span style="color:#658b00">setCode</span>(1);
-        <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">// 令牌驗證成功，創建、下訂單、驗令牌、驗價格、鎖定庫存
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 1、創建訂單、訂單項等信息
-</span><span style="color:#228b22"></span>        OrderCreateTo order = createOrder();
-        <span style="color:#228b22">// 2、驗證價格
-</span><span style="color:#228b22"></span>        BigDecimal payAmount = order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getPayAmount</span>();
-        BigDecimal payPrice = vo.<span style="color:#658b00">getPayPrice</span>();
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (Math.<span style="color:#658b00">abs</span>(payAmount.<span style="color:#658b00">subtract</span>(payPrice).<span style="color:#658b00">doubleValue</span>()) &lt; 0.<span style="color:#658b00">01</span>) {
-            <span style="color:#228b22">// 金額對比，保存
-</span><span style="color:#228b22"></span>            saveOrder(order);
-
-            <span style="color:#228b22">// 4、庫存鎖定,只要有異常，回滾訂單數據
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 訂單號、所有訂單項信息(skuId,skuNum,skuName)
-</span><span style="color:#228b22"></span>            WareSkuLockTo lockVo = <span style="color:#8b008b;font-weight:bold">new</span> WareSkuLockTo();
-            lockVo.<span style="color:#658b00">setOrderSn</span>(order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getOrderSn</span>());
-
-            <span style="color:#228b22">// 獲取出要鎖定的商品數據信息【order裡面存儲的是Entity】
-</span><span style="color:#228b22"></span>            List&lt;OrderItemTo&gt; orderItemTos = order.<span style="color:#658b00">getOrderItems</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((item) -&gt; {
-                OrderItemTo orderItemTo = <span style="color:#8b008b;font-weight:bold">new</span> OrderItemTo();
-                orderItemTo.<span style="color:#658b00">setSkuId</span>(item.<span style="color:#658b00">getSkuId</span>());
-                orderItemTo.<span style="color:#658b00">setCount</span>(item.<span style="color:#658b00">getSkuQuantity</span>());
-                orderItemTo.<span style="color:#658b00">setTitle</span>(item.<span style="color:#658b00">getSkuName</span>());
-                <span style="color:#8b008b;font-weight:bold">return</span> orderItemTo;
-            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-            lockVo.<span style="color:#658b00">setLocks</span>(orderItemTos);
-
-            <span style="color:#228b22">// 出現的問題：扣減庫存成功了，但是由於網絡原因超時，出現異常，導致訂單事務回滾，庫存事務不回滾(解決方案：seata)
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 為了保證高併發，不推薦使用seata，因為是加鎖，并行化，提升不了效率,可以發消息給庫存服務
-</span><span style="color:#228b22"></span>            R r = wareFeignService.<span style="color:#658b00">orderLockStock</span>(lockVo);
-            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
-                <span style="color:#228b22">// 鎖定成功
-</span><span style="color:#228b22"></span>                responseVo.<span style="color:#658b00">setOrder</span>(order.<span style="color:#658b00">getOrder</span>());
-                <span style="color:#228b22">//int i = 10/0;
-</span><span style="color:#228b22"></span>                <span style="color:#228b22">// 訂單創建成功，發送消息給MQ
-</span><span style="color:#228b22"></span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.create.order&#34;</span>, order.<span style="color:#658b00">getOrder</span>());
-                <span style="color:#228b22">// 刪除購物車裡的數據
-</span><span style="color:#228b22"></span>                redisTemplate.<span style="color:#658b00">delete</span>(CART_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>());
-                <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
-            } <span style="color:#8b008b;font-weight:bold">else</span> {
-                <span style="color:#228b22">//鎖定失敗
-</span><span style="color:#228b22"></span>                String msg = (String) r.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;msg&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(msg);
-                <span style="color:#228b22">// responseVo.setCode(3);
-</span><span style="color:#228b22"></span>                <span style="color:#228b22">// return responseVo;
-</span><span style="color:#228b22"></span>            }
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            responseVo.<span style="color:#658b00">setCode</span>(2);
-            <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
-        }
-    }
-}
-</code></pre></div><h1 id="複習本地事務">複習本地事務</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 提交訂單
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @param vo
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Transactional</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> SubmitOrderResponseVo <span style="color:#008b45">submitOrder</span>(OrderSubmitVo vo) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    confirmVoThreadLocal.<span style="color:#658b00">set</span>(vo);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 下單後準備返回的結果
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    SubmitOrderResponseVo responseVo = <span style="color:#8b008b;font-weight:bold">new</span> SubmitOrderResponseVo();
+</span></span><span style="display:flex;"><span>    responseVo.<span style="color:#658b00">setCode</span>(0); <span style="color:#228b22">// 預設返回0是成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 獲取當前用戶登入的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 驗證令牌是否合法，令牌的對比和刪除必須保證原子性，LUA腳本
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String script = <span style="color:#cd5555">&#34;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return &#34;</span> +
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;0 end&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 拿前端傳來的token
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String orderToken = vo.<span style="color:#658b00">getOrderToken</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 通過腳本原子驗證令牌和刪除令牌
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Long result = redisTemplate.<span style="color:#658b00">execute</span>(<span style="color:#8b008b;font-weight:bold">new</span> DefaultRedisScript&lt;Long&gt;(script, Long.<span style="color:#658b00">class</span>),
+</span></span><span style="display:flex;"><span>            Arrays.<span style="color:#658b00">asList</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>()),
+</span></span><span style="display:flex;"><span>            orderToken);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 若令牌驗證失敗，注意腳本0是失敗，跟前面SubmitOrderResponseVo 0=成功相反
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (result == 0L) {
+</span></span><span style="display:flex;"><span>        responseVo.<span style="color:#658b00">setCode</span>(1);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 令牌驗證成功，創建、下訂單、驗令牌、驗價格、鎖定庫存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 1、創建訂單、訂單項等信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        OrderCreateTo order = createOrder();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 2、驗證價格
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        BigDecimal payAmount = order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getPayAmount</span>();
+</span></span><span style="display:flex;"><span>        BigDecimal payPrice = vo.<span style="color:#658b00">getPayPrice</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (Math.<span style="color:#658b00">abs</span>(payAmount.<span style="color:#658b00">subtract</span>(payPrice).<span style="color:#658b00">doubleValue</span>()) &lt; 0.<span style="color:#658b00">01</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 金額對比，保存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            saveOrder(order);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 4、庫存鎖定,只要有異常，回滾訂單數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 訂單號、所有訂單項信息(skuId,skuNum,skuName)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            WareSkuLockTo lockVo = <span style="color:#8b008b;font-weight:bold">new</span> WareSkuLockTo();
+</span></span><span style="display:flex;"><span>            lockVo.<span style="color:#658b00">setOrderSn</span>(order.<span style="color:#658b00">getOrder</span>().<span style="color:#658b00">getOrderSn</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 獲取出要鎖定的商品數據信息【order裡面存儲的是Entity】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            List&lt;OrderItemTo&gt; orderItemTos = order.<span style="color:#658b00">getOrderItems</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>((item) -&gt; {
+</span></span><span style="display:flex;"><span>                OrderItemTo orderItemTo = <span style="color:#8b008b;font-weight:bold">new</span> OrderItemTo();
+</span></span><span style="display:flex;"><span>                orderItemTo.<span style="color:#658b00">setSkuId</span>(item.<span style="color:#658b00">getSkuId</span>());
+</span></span><span style="display:flex;"><span>                orderItemTo.<span style="color:#658b00">setCount</span>(item.<span style="color:#658b00">getSkuQuantity</span>());
+</span></span><span style="display:flex;"><span>                orderItemTo.<span style="color:#658b00">setTitle</span>(item.<span style="color:#658b00">getSkuName</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> orderItemTo;
+</span></span><span style="display:flex;"><span>            }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>            lockVo.<span style="color:#658b00">setLocks</span>(orderItemTos);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 出現的問題：扣減庫存成功了，但是由於網絡原因超時，出現異常，導致訂單事務回滾，庫存事務不回滾(解決方案：seata)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 為了保證高併發，不推薦使用seata，因為是加鎖，并行化，提升不了效率,可以發消息給庫存服務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            R r = wareFeignService.<span style="color:#658b00">orderLockStock</span>(lockVo);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 鎖定成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                responseVo.<span style="color:#658b00">setOrder</span>(order.<span style="color:#658b00">getOrder</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//int i = 10/0;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#228b22">// 訂單創建成功，發送消息給MQ
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                rabbitTemplate.<span style="color:#658b00">convertAndSend</span>(<span style="color:#cd5555">&#34;order-event-exchange&#34;</span>, <span style="color:#cd5555">&#34;order.create.order&#34;</span>, order.<span style="color:#658b00">getOrder</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 刪除購物車裡的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                redisTemplate.<span style="color:#658b00">delete</span>(CART_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//鎖定失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                String msg = (String) r.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;msg&#34;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NoStockException(msg);
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// responseVo.setCode(3);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#228b22">// return responseVo;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            responseVo.<span style="color:#658b00">setCode</span>(2);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> responseVo;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="複習本地事務">複習本地事務</h1>
 <blockquote>
 <p>參考: <a href="https://yoziming.github.io/post/211230-agg-jdbc-02/">https://yoziming.github.io/post/211230-agg-jdbc-02/</a></p>
 </blockquote>
@@ -1764,15 +1764,15 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>Spring封裝成<code>@Transactional</code></li>
 </ul>
 <h3 id="spring事務參數">spring事務參數</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 修改事務隔離級別
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(isolation = Isolation.<span style="color:#658b00">REPEATABLE</span> READ)
-
-<span style="color:#228b22">// 修改傳播級別
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>)
-
-<span style="color:#228b22">// 設定超時
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(timeout = 30)
-</code></pre></div><h4 id="事務傳播">事務傳播</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 修改事務隔離級別
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(isolation = Isolation.<span style="color:#658b00">REPEATABLE</span> READ)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 修改傳播級別
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 設定超時
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Transactional</span>(timeout = 30)
+</span></span></code></pre></div><h4 id="事務傳播">事務傳播</h4>
 <blockquote>
 <p>當事務的方法被嵌套時，例如一個事務方法被另一個事務方法調用時，這個事務方法應該如何進行</p>
 </blockquote>
@@ -1786,21 +1786,21 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li><code>PROPAGATION_NESTED</code>: 如果當前存在事務，則在嵌套事務內執行。如果當前沒有事務，則執行與 PROPAGATON_REQUIRED類似的操作</li>
 <li>重點: REQUIRED、REQUIRES_NEW</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">案例<span style="color:#a61717;background-color:#e3d2d2">：</span>b<span style="color:#a61717;background-color:#e3d2d2">、</span>c與a方法是否共用一個事務
-<span style="color:#707a7c">@Transactional</span>(timeout=30)
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">a</span>() {
-	b();<span style="color:#228b22">// a事務傳播給了b事務，並且b事務的設置失效
-</span><span style="color:#228b22"></span>	c();<span style="color:#228b22">// c單獨創建一個新事務
-</span><span style="color:#228b22"></span>}
-
-<span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>, timeout=2)
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">b</span>() {
-}
-
-<span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRES_NEW</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">c</span>() {
-}
-</code></pre></div><h4 id="坑">坑</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>案例<span style="color:#a61717;background-color:#e3d2d2">：</span>b<span style="color:#a61717;background-color:#e3d2d2">、</span>c與a方法是否共用一個事務
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Transactional</span>(timeout=30)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">a</span>() {
+</span></span><span style="display:flex;"><span>	b();<span style="color:#228b22">// a事務傳播給了b事務，並且b事務的設置失效
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	c();<span style="color:#228b22">// c單獨創建一個新事務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRED</span>, timeout=2)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">b</span>() {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Transactional</span>(propagation = Propagation.<span style="color:#658b00">REQUIRES_NEW</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">c</span>() {
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="坑">坑</h4>
 <ul>
 <li>如果方法a、b、c都在同一個service裏面，事務傳播行為不生效，共享a的事務</li>
 <li>原理: 事務是用代理對象來控制的，內部調用b()、c()就相當於直接調用沒有經過事務，繞過了代理對象</li>

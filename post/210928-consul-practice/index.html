@@ -484,17 +484,17 @@ sudo mv consul /usr/local/bin/
 <li>
 <p>註冊自訂的健康檢查服務，範例:</p>
 <p>剛剛自訂的配置檔路徑/etc/consul.d/下新增一個web.json</p>
-<pre tabindex="0"><code>{&quot;service&quot;: {
-    &quot;name&quot;: &quot;web&quot;,
-    &quot;tags&quot;: [&quot;extract&quot;, &quot;verify&quot;, &quot;compare&quot;, &quot;idcard&quot;],
-    &quot;address&quot;: &quot;192.168.234.128&quot;,
-    &quot;port&quot;: 9000,
-    &quot;check&quot;: {
-        &quot;id&quot;: &quot;api&quot;,
-        &quot;name&quot;: &quot;HTTP API on port 9000&quot;,
-        &quot;http&quot;: &quot;http://localhost:9000&quot;,
-        &quot;interval&quot;: &quot;10s&quot;,
-        &quot;timeout&quot;: &quot;1s&quot;
+<pre tabindex="0"><code>{&#34;service&#34;: {
+    &#34;name&#34;: &#34;web&#34;,
+    &#34;tags&#34;: [&#34;extract&#34;, &#34;verify&#34;, &#34;compare&#34;, &#34;idcard&#34;],
+    &#34;address&#34;: &#34;192.168.234.128&#34;,
+    &#34;port&#34;: 9000,
+    &#34;check&#34;: {
+        &#34;id&#34;: &#34;api&#34;,
+        &#34;name&#34;: &#34;HTTP API on port 9000&#34;,
+        &#34;http&#34;: &#34;http://localhost:9000&#34;,
+        &#34;interval&#34;: &#34;10s&#34;,
+        &#34;timeout&#34;: &#34;1s&#34;
         }
    }
 }
@@ -511,9 +511,9 @@ sudo mv consul /usr/local/bin/
 <ul>
 <li>person.proto</li>
 </ul>
-<pre tabindex="0"><code>syntax=&quot;proto3&quot;;
+<pre tabindex="0"><code>syntax=&#34;proto3&#34;;
 package pb;
-option go_package=&quot;/.;pb&quot;;
+option go_package=&#34;/.;pb&#34;;
 message Person{
     string name=1;
     int32 age=2;
@@ -528,11 +528,11 @@ service hello{
 <pre tabindex="0"><code>package main
 
 import (
-	&quot;context&quot;
-	&quot;fmt&quot;
+	&#34;context&#34;
+	&#34;fmt&#34;
 
-	&quot;github.com/hashicorp/consul/api&quot;
-	&quot;github.com/my/repo/consul/pb&quot;
+	&#34;github.com/hashicorp/consul/api&#34;
+	&#34;github.com/my/repo/consul/pb&#34;
 )
 
 type Children struct {
@@ -540,7 +540,7 @@ type Children struct {
 
 // 綁定方法實現接口
 func (c *Children) SayHello(ctx context.Context, p *pb.Person) (*pb.Person, error) {
-	p.Name = &quot;hello&quot; + p.Name
+	p.Name = &#34;hello&#34; + p.Name
 	return p, nil
 }
 
@@ -551,43 +551,42 @@ func main() {
 	// 2. 創建consul對象
 	consulClient, err := api.NewClient(consulConfig)
 	if err != nil {
-		fmt.Println(&quot;api.NewClient err&quot;, err)
+		fmt.Println(&#34;api.NewClient err&#34;, err)
 		return
 	}
 
 	// 3. 告訴consul將要註冊的服務消息
 	reg := api.AgentServiceRegistration{
-		ID:      &quot;bj38&quot;,
-		Tags:    []string{&quot;grpc&quot;, &quot;consul&quot;},
-		Name:    &quot;grpc And Consul&quot;,
-		Address: &quot;127.0.0.1&quot;,
+		ID:      &#34;bj38&#34;,
+		Tags:    []string{&#34;grpc&#34;, &#34;consul&#34;},
+		Name:    &#34;grpc And Consul&#34;,
+		Address: &#34;127.0.0.1&#34;,
 		Port:    8800,
 		Check: &amp;api.AgentServiceCheck{
-			CheckID:  &quot;consul grpc test&quot;,
-			TCP:      &quot;127.0.0.1:8800&quot;,
-			Timeout:  &quot;1s&quot;,
-			Interval: &quot;5s&quot;,
+			CheckID:  &#34;consul grpc test&#34;,
+			TCP:      &#34;127.0.0.1:8800&#34;,
+			Timeout:  &#34;1s&#34;,
+			Interval: &#34;5s&#34;,
 		},
 	}
 	// 4. 註冊到consul上
 	consulClient.Agent().ServiceRegister(&amp;reg)
-	fmt.Println(&quot;服務啟動...&quot;)
+	fmt.Println(&#34;服務啟動...&#34;)
 
 }
-
 </code></pre><ul>
 <li>client</li>
 </ul>
 <pre tabindex="0"><code>package main
 
 import (
-	&quot;context&quot;
-	&quot;fmt&quot;
-	&quot;strconv&quot;
+	&#34;context&#34;
+	&#34;fmt&#34;
+	&#34;strconv&#34;
 
-	&quot;github.com/hashicorp/consul/api&quot;
-	&quot;github.com/my/repo/consul/pb&quot;
-	&quot;google.golang.org/grpc&quot;
+	&#34;github.com/hashicorp/consul/api&#34;
+	&#34;github.com/my/repo/consul/pb&#34;
+	&#34;google.golang.org/grpc&#34;
 )
 
 func main() {
@@ -595,32 +594,31 @@ func main() {
 	consulConfig := api.DefaultConfig()
 	consulClient, err := api.NewClient(consulConfig)
 	if err != nil {
-		fmt.Println(&quot;api.NewClient err&quot;, err)
+		fmt.Println(&#34;api.NewClient err&#34;, err)
 	}
 
 	// 服務發現，從consul上獲取健康的服務
-	services, _, err := consulClient.Health().Service(&quot;grpc And Consul&quot;, &quot;grpc&quot;, true, nil)
+	services, _, err := consulClient.Health().Service(&#34;grpc And Consul&#34;, &#34;grpc&#34;, true, nil)
 	if err != nil {
-		fmt.Println(&quot;consulClient.Health().Service err&quot;, err)
+		fmt.Println(&#34;consulClient.Health().Service err&#34;, err)
 		return
 	}
 	// 拼接出服務的IP跟端口
 	fmt.Println(services[0].Service.Address)
 	fmt.Println(services[0].Service.Port)
-	addr := services[0].Service.Address + &quot;:&quot; + strconv.Itoa(services[0].Service.Port)
+	addr := services[0].Service.Address + &#34;:&#34; + strconv.Itoa(services[0].Service.Port)
 
 	grpcConn, _ := grpc.Dial(addr, grpc.WithInsecure())
 
 	grpcClient := pb.NewHelloClient(grpcConn)
 	var person pb.Person
-	person.Name = &quot;Tom~&quot;
+	person.Name = &#34;Tom~&#34;
 	person.Age = 18
 
 	p, err := grpcClient.SayHello(context.TODO(), &amp;person)
 	fmt.Println(p, err)
 
 }
-
 </code></pre><ul>
 <li>記得隨便用個cmd 開啟consul當橋梁</li>
 </ul>

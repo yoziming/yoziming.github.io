@@ -18,8 +18,8 @@
  對.proto文件使用轉譯指令:
 protoc --go_out=plugins=grpc:. *.proto  案例:透過grpc遠程傳遞一個調用teacher資料類型的服務
  .proto:
-syntax=&amp;quot;proto3&amp;quot;; option go_package=&amp;quot;/.;pb&amp;quot;; message Teacher{ int32 age=1; string name=2; } service SayName{ rpc SayHello(Teacher) returns(Teacher); } server:
-type Children struct{} // 綁定類方法 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) { t.Name += &amp;quot;is sleeping&amp;quot; return t, nil } func main() { // 初始一個grpc對象 grpcServer := grpc.NewServer() // 註冊服務 pb.RegisterSayNameServer(grpcServer, new(Children)) // 監聽 listener, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.</description>
+syntax=&amp;#34;proto3&amp;#34;; option go_package=&amp;#34;/.;pb&amp;#34;; message Teacher{ int32 age=1; string name=2; } service SayName{ rpc SayHello(Teacher) returns(Teacher); } server:
+type Children struct{} // 綁定類方法 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) { t.Name += &amp;#34;is sleeping&amp;#34; return t, nil } func main() { // 初始一個grpc對象 grpcServer := grpc.NewServer() // 註冊服務 pb.RegisterSayNameServer(grpcServer, new(Children)) // 監聽 listener, err := net.Listen(&amp;#34;tcp&amp;#34;, &amp;#34;127.</description>
     </item>
     
     <item>
@@ -35,7 +35,7 @@ https://github.com/protocolbuffers/protobuf/releases   安裝golang對應的庫�
 go get github.com/golang/protobuf/proto go get github.com/golang/protobuf/protoc-gen-go   測試
 protoc -h 或 protoc --version 沒報錯就是成功
   消息體舉例，xxx.proto
-// 指定版本，不打3就會是2 syntax=&amp;quot;proto3&amp;quot;; // 指定輸出位置&amp;amp;go包名，沒寫轉換不了 // option go_package =&amp;quot;path;name&amp;quot;; option go_package =&amp;quot;/.&amp;quot;; // 放在同一目錄下包名為__(空) // 定義消息體，分配唯一編號 (不能用19000~19999) message Student{ int32 age = 1; // 可以不從1開始，但不可重複 string name = 2; People p=3; repeated int32 score=4; // 數組 Week w=5; // 聯合體 oneof data{ string teacher=6; string class=7; } } // 消息體可以嵌套 message People{ int32 weight=1; } // 定義枚舉類型 enum Week{ Monday=0; // 必須從0開始 Turesday=1; }   生成go文件</description>
+// 指定版本，不打3就會是2 syntax=&amp;#34;proto3&amp;#34;; // 指定輸出位置&amp;amp;go包名，沒寫轉換不了 // option go_package =&amp;#34;path;name&amp;#34;; option go_package =&amp;#34;/.&amp;#34;; // 放在同一目錄下包名為__(空) // 定義消息體，分配唯一編號 (不能用19000~19999) message Student{ int32 age = 1; // 可以不從1開始，但不可重複 string name = 2; People p=3; repeated int32 score=4; // 數組 Week w=5; // 聯合體 oneof data{ string teacher=6; string class=7; } } // 消息體可以嵌套 message People{ int32 weight=1; } // 定義枚舉類型 enum Week{ Monday=0; // 必須從0開始 Turesday=1; }   生成go文件</description>
     </item>
     
     <item>
@@ -44,7 +44,7 @@ protoc -h 或 protoc --version 沒報錯就是成功
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210927-rpc/</guid>
-      <description>server / 用接口，讓服務端註冊RPC的時候，就能確保他合法 type World struct{} func (w *World) HelloWorld(name string, resp *string) error { *resp = name + &amp;quot;你好&amp;quot; return nil // 如果這個return的返回值不為空， // 那無論傳出的參數是否有值，服務端都不會給東西 // (就你給你error) } // 用接口，讓服務端註冊RPC的時候，就能確保他合法 type MyInerface interface { HelloWorld(string *string) error } // 調用方法時，給i傳參，參數是實現HelloWorld方法的對象 func RegsiterService(i MyInerface) { rpc.RegisterName(&amp;quot;hello&amp;quot;, i) } func main() { // 1.註冊RPC服務 綁定對象方法 err := rpc.RegisterName(&amp;quot;hello&amp;quot;, new(World)) if err != nil { fmt.Println(&amp;quot;註冊RPC服務失敗&amp;quot;, err) } // 2.開始監聽 listener, err := net.</description>
+      <description>server / 用接口，讓服務端註冊RPC的時候，就能確保他合法 type World struct{} func (w *World) HelloWorld(name string, resp *string) error { *resp = name + &amp;#34;你好&amp;#34; return nil // 如果這個return的返回值不為空， // 那無論傳出的參數是否有值，服務端都不會給東西 // (就你給你error) } // 用接口，讓服務端註冊RPC的時候，就能確保他合法 type MyInerface interface { HelloWorld(string *string) error } // 調用方法時，給i傳參，參數是實現HelloWorld方法的對象 func RegsiterService(i MyInerface) { rpc.RegisterName(&amp;#34;hello&amp;#34;, i) } func main() { // 1.註冊RPC服務 綁定對象方法 err := rpc.RegisterName(&amp;#34;hello&amp;#34;, new(World)) if err != nil { fmt.Println(&amp;#34;註冊RPC服務失敗&amp;#34;, err) } // 2.開始監聽 listener, err := net.</description>
     </item>
     
   </channel>

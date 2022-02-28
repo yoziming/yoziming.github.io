@@ -419,9 +419,9 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>案例:透過grpc遠程傳遞一個調用teacher資料類型的服務</p>
 </blockquote>
 <p>.proto:</p>
-<pre tabindex="0"><code>syntax=&quot;proto3&quot;;
+<pre tabindex="0"><code>syntax=&#34;proto3&#34;;
 
-option go_package=&quot;/.;pb&quot;;
+option go_package=&#34;/.;pb&#34;;
 
 message Teacher{
     int32 age=1;
@@ -436,7 +436,7 @@ service SayName{
 
 // 綁定類方法
 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {
-	t.Name += &quot;is sleeping&quot;
+	t.Name += &#34;is sleeping&#34;
 	return t, nil
 }
 
@@ -448,12 +448,12 @@ func main() {
 	pb.RegisterSayNameServer(grpcServer, new(Children))
 
 	// 監聽
-	listener, err := net.Listen(&quot;tcp&quot;, &quot;127.0.0.1:8899&quot;)
+	listener, err := net.Listen(&#34;tcp&#34;, &#34;127.0.0.1:8899&#34;)
 	if err != nil {
-		fmt.Println(&quot;listen err&quot;, err)
+		fmt.Println(&#34;listen err&#34;, err)
 		return
 	}
-	fmt.Println(&quot;server監聽中...&quot;)
+	fmt.Println(&#34;server監聽中...&#34;)
 	defer listener.Close()
 
 	// 啟動服務
@@ -462,9 +462,9 @@ func main() {
 </code></pre><p>client:</p>
 <pre tabindex="0"><code>func main() {
 	// 連接grpc服務
-	grpcConn, err := grpc.Dial(&quot;127.0.0.1:8899&quot;, grpc.WithInsecure())
+	grpcConn, err := grpc.Dial(&#34;127.0.0.1:8899&#34;, grpc.WithInsecure())
 	if err != nil {
-		fmt.Println(&quot;conn err&quot;, err)
+		fmt.Println(&#34;conn err&#34;, err)
 		return
 	}
 	defer grpcConn.Close()
@@ -475,7 +475,7 @@ func main() {
 	// 創建並初始化接收對象
 	var teacher pb.Teacher
 	teacher.Age = 18
-	teacher.Name = &quot;Mary&quot;
+	teacher.Name = &#34;Mary&#34;
 
 	// 調用遠程服務
 	t, err := gprcClient.SayHello(context.TODO(), &amp;teacher)

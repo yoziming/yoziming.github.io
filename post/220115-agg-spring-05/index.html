@@ -1032,22 +1032,21 @@ npm cache clean --force
 </li>
 <li>修改下面的請求方法，與後端api的URL對接</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#8b008b;font-weight:bold">import</span> request from <span style="color:#cd5555">&#39;@/utils/request&#39;</span>
-
-<span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
-  findPageHospitalSet(current, limit, searchObj) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      <span style="color:#228b22">// ES6特性，反引號包裹強化字串
-</span><span style="color:#228b22"></span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/findPageHospitalSet/</span><span style="color:#cd5555">${</span>current<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>limit<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
-      <span style="color:#228b22">// url: `/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,
-</span><span style="color:#228b22"></span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
-      <span style="color:#228b22">// data表示使用json傳遞給後端的@RequestBody
-</span><span style="color:#228b22"></span>      data: searchObj
-    })
-  }
-}
-
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> request from <span style="color:#cd5555">&#39;@/utils/request&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+</span></span><span style="display:flex;"><span>  findPageHospitalSet(current, limit, searchObj) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// ES6特性，反引號包裹強化字串
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/findPageHospitalSet/</span><span style="color:#cd5555">${</span>current<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>limit<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// url: `/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// data表示使用json傳遞給後端的@RequestBody
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      data: searchObj
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>暫時先用完整的url跳過需要關閉mock與跨域問題</li>
 </ul>
 <h2 id="修改請求端口號">修改請求端口號</h2>
@@ -1067,64 +1066,64 @@ npm cache clean --force
 </ul>
 <p><img src="image-20220107190745323.png" alt="image-20220107190745323"></p>
 <h2 id="編寫ajax請求">編寫ajax請求</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">&lt;script&gt;
-<span style="color:#228b22">// 引入接口的js
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
-<span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
-  <span style="color:#228b22">// 定義接收用的變量與初始值
-</span><span style="color:#228b22"></span>  data() {
-    <span style="color:#8b008b;font-weight:bold">return</span> {
-      current: <span style="color:#b452cd">1</span>, <span style="color:#228b22">// 當前頁
-</span><span style="color:#228b22"></span>      limit: <span style="color:#b452cd">5</span>, <span style="color:#228b22">// 每頁幾筆
-</span><span style="color:#228b22"></span>      searchObj: {}, <span style="color:#228b22">// 搜索條件
-</span><span style="color:#228b22"></span>      list: [], <span style="color:#228b22">// 每頁中的數據集合
-</span><span style="color:#228b22"></span>      total: <span style="color:#b452cd">0</span>, <span style="color:#228b22">// 總頁數
-</span><span style="color:#228b22"></span>      multipleSelection: [], <span style="color:#228b22">// 批量選擇中的記錄列表
-</span><span style="color:#228b22"></span>    };
-  },
-  created() {
-    <span style="color:#228b22">// 在頁面渲染之前，通常用來調用methods裡的方法取得數據
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.getList();
-  },
-  methods: {
-    getList(page = <span style="color:#b452cd">1</span>) {
-      <span style="color:#228b22">// 當前頁數預設是1
-</span><span style="color:#228b22"></span>      <span style="color:#228b22">// 發送axaj請求
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.current = page;
-      <span style="color:#228b22">// 對應後端條件查詢帶分頁
-</span><span style="color:#228b22"></span>      hospitalSet
-        .findPageHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.current, <span style="color:#8b008b;font-weight:bold">this</span>.limit, <span style="color:#8b008b;font-weight:bold">this</span>.searchObj)
-        .then((response) =&gt; {
-          <span style="color:#228b22">// 請求成功，取出回應資料
-</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">this</span>.list = response.data.records;
-          <span style="color:#8b008b;font-weight:bold">this</span>.total = response.data.total;
-        })
-        <span style="color:#228b22">// 請求失敗
-</span><span style="color:#228b22"></span>        .<span style="color:#8b008b;font-weight:bold">catch</span>((error) =&gt; {
-          console.log(error);
-        });
-    },
-</code></pre></div><h2 id="顯示資料">顯示資料</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>&lt;script&gt;
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 引入接口的js
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 定義接收用的變量與初始值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  data() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> {
+</span></span><span style="display:flex;"><span>      current: <span style="color:#b452cd">1</span>, <span style="color:#228b22">// 當前頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      limit: <span style="color:#b452cd">5</span>, <span style="color:#228b22">// 每頁幾筆
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      searchObj: {}, <span style="color:#228b22">// 搜索條件
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      list: [], <span style="color:#228b22">// 每頁中的數據集合
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      total: <span style="color:#b452cd">0</span>, <span style="color:#228b22">// 總頁數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      multipleSelection: [], <span style="color:#228b22">// 批量選擇中的記錄列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    };
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  created() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 在頁面渲染之前，通常用來調用methods裡的方法取得數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.getList();
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  methods: {
+</span></span><span style="display:flex;"><span>    getList(page = <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 當前頁數預設是1
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#228b22">// 發送axaj請求
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.current = page;
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 對應後端條件查詢帶分頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      hospitalSet
+</span></span><span style="display:flex;"><span>        .findPageHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.current, <span style="color:#8b008b;font-weight:bold">this</span>.limit, <span style="color:#8b008b;font-weight:bold">this</span>.searchObj)
+</span></span><span style="display:flex;"><span>        .then((response) =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 請求成功，取出回應資料
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">this</span>.list = response.data.records;
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.total = response.data.total;
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 請求失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        .<span style="color:#8b008b;font-weight:bold">catch</span>((error) =&gt; {
+</span></span><span style="display:flex;"><span>          console.log(error);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    },
+</span></span></code></pre></div><h2 id="顯示資料">顯示資料</h2>
 <ul>
 <li>到elementUI拿表格模板</li>
 <li><a href="https://element.eleme.cn/#/zh-CN/component/table">https://element.eleme.cn/#/zh-CN/component/table</a></li>
 </ul>
 <pre tabindex="0"><code>&lt;el-table
-      :data=&quot;list&quot;
+      :data=&#34;list&#34;
       stripe
-      style=&quot;width: 100%&quot;
-      @selection-change=&quot;handleSelectionChange&quot;
+      style=&#34;width: 100%&#34;
+      @selection-change=&#34;handleSelectionChange&#34;
     &gt;
-      &lt;el-table-column type=&quot;selection&quot; width=&quot;55&quot; /&gt;
-      &lt;el-table-column type=&quot;index&quot; width=&quot;50&quot; label=&quot;序號&quot; /&gt;
-      &lt;el-table-column prop=&quot;hosname&quot; label=&quot;醫院名稱&quot; /&gt;
-      &lt;el-table-column prop=&quot;hoscode&quot; label=&quot;醫院編號&quot; /&gt;
-      &lt;el-table-column prop=&quot;apiUrl&quot; label=&quot;api基礎路徑&quot; width=&quot;200&quot; /&gt;
-      &lt;el-table-column prop=&quot;contactsName&quot; label=&quot;聯繫人姓名&quot; /&gt;
-      &lt;el-table-column prop=&quot;contactsPhone&quot; label=&quot;聯繫人手機&quot; /&gt;
-      &lt;el-table-column label=&quot;狀態&quot; width=&quot;80&quot;&gt;
-        &lt;template slot-scope=&quot;scope&quot;&gt;
-          {{ scope.row.status === 1 ? &quot;可用&quot; : &quot;不可用&quot; }}
+      &lt;el-table-column type=&#34;selection&#34; width=&#34;55&#34; /&gt;
+      &lt;el-table-column type=&#34;index&#34; width=&#34;50&#34; label=&#34;序號&#34; /&gt;
+      &lt;el-table-column prop=&#34;hosname&#34; label=&#34;醫院名稱&#34; /&gt;
+      &lt;el-table-column prop=&#34;hoscode&#34; label=&#34;醫院編號&#34; /&gt;
+      &lt;el-table-column prop=&#34;apiUrl&#34; label=&#34;api基礎路徑&#34; width=&#34;200&#34; /&gt;
+      &lt;el-table-column prop=&#34;contactsName&#34; label=&#34;聯繫人姓名&#34; /&gt;
+      &lt;el-table-column prop=&#34;contactsPhone&#34; label=&#34;聯繫人手機&#34; /&gt;
+      &lt;el-table-column label=&#34;狀態&#34; width=&#34;80&#34;&gt;
+        &lt;template slot-scope=&#34;scope&#34;&gt;
+          {{ scope.row.status === 1 ? &#34;可用&#34; : &#34;不可用&#34; }}
         &lt;/template&gt;
       &lt;/el-table-column&gt;
 </code></pre><h2 id="跨域問題">跨域問題</h2>
@@ -1155,333 +1154,331 @@ npm cache clean --force
 <ul>
 <li><code>list.vue</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-  &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;app-container&#34;</span>&gt;
-    醫院設置列表
-    &lt;<span style="color:#8b008b;font-weight:bold">el-form</span> <span style="color:#658b00">:inline</span>=<span style="color:#cd5555">&#34;true&#34;</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;demo-form-inline&#34;</span>&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
-        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#658b00">v-model</span>=<span style="color:#cd5555">&#34;searchObj.hosname&#34;</span> <span style="color:#658b00">placeholder</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span> /&gt;
-      &lt;/<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
-        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#658b00">v-model</span>=<span style="color:#cd5555">&#34;searchObj.hoscode&#34;</span> <span style="color:#658b00">placeholder</span>=<span style="color:#cd5555">&#34;醫院編號&#34;</span> /&gt;
-      &lt;/<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-button</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span> <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-search&#34;</span> <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;getList()&#34;</span>
-        &gt;查詢&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
-      &gt;
-    &lt;/<span style="color:#8b008b;font-weight:bold">el-form</span>&gt;
-
-    <span style="color:#228b22">&lt;!-- 工具條 --&gt;</span>
-    &lt;<span style="color:#8b008b;font-weight:bold">div</span>&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-button</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span> <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span> <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;removeRows()&#34;</span>
-        &gt;批量刪除&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
-      &gt;
-    &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
-
-    &lt;<span style="color:#8b008b;font-weight:bold">el-table</span>
-      <span style="color:#658b00">:data</span>=<span style="color:#cd5555">&#34;list&#34;</span>
-      <span style="color:#658b00">stripe</span>
-      <span style="color:#658b00">style</span>=<span style="color:#cd5555">&#34;width: 100%&#34;</span>
-      <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">selection-change</span>=<span style="color:#cd5555">&#34;handleSelectionChange&#34;</span>
-    &gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;selection&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;55&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;index&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;50&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;序列&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;hosname&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;hoscode&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院編號&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;apiUrl&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;api基礎路徑&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;200&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;contactsName&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;聯繫人姓名&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;contactsPhone&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;聯繫人手機&#34;</span> /&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;狀態&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;80&#34;</span>&gt;
-        &lt;<span style="color:#8b008b;font-weight:bold">template</span> <span style="color:#658b00">slot-scope</span>=<span style="color:#cd5555">&#34;scope&#34;</span>&gt;
-          {{ scope.row.status === 1 ? &#34;可用&#34; : &#34;禁用&#34; }}
-        &lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-      &lt;/<span style="color:#8b008b;font-weight:bold">el-table-column</span>&gt;
-
-      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;操作&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;280&#34;</span> <span style="color:#658b00">align</span>=<span style="color:#cd5555">&#34;center&#34;</span>&gt;
-        &lt;<span style="color:#8b008b;font-weight:bold">template</span> <span style="color:#658b00">slot-scope</span>=<span style="color:#cd5555">&#34;scope&#34;</span>&gt;
-          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
-            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span>
-            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
-            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
-            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;removeDataById(scope.row.id)&#34;</span>
-            &gt;刪除&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
-          &gt;
-          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
-            <span style="color:#658b00">v-if</span>=<span style="color:#cd5555">&#34;scope.row.status == 1&#34;</span>
-            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span>
-            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
-            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
-            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;lockHospitalSet(scope.row.id, 0)&#34;</span>
-            &gt;鎖定&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
-          &gt;
-          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
-            <span style="color:#658b00">v-if</span>=<span style="color:#cd5555">&#34;scope.row.status == 0&#34;</span>
-            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span>
-            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
-            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
-            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;lockHospitalSet(scope.row.id, 1)&#34;</span>
-            &gt;解鎖&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
-          &gt;
-          &lt;<span style="color:#8b008b;font-weight:bold">router-link</span> <span style="color:#658b00">:to</span>=<span style="color:#cd5555">&#34;&#39;/hospitalSet/edit/&#39; + scope.row.id&#34;</span>&gt;
-            &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
-              <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span>
-              <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
-              <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-edit&#34;</span>
-            &gt;&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>&gt;
-          &lt;/<span style="color:#8b008b;font-weight:bold">router-link</span>&gt;
-        &lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-      &lt;/<span style="color:#8b008b;font-weight:bold">el-table-column</span>&gt;
-    &lt;/<span style="color:#8b008b;font-weight:bold">el-table</span>&gt;
-    <span style="color:#228b22">&lt;!-- 分頁 --&gt;</span>
-    &lt;<span style="color:#8b008b;font-weight:bold">el-pagination</span>
-      <span style="color:#658b00">:current-page</span>=<span style="color:#cd5555">&#34;current&#34;</span>
-      <span style="color:#658b00">:page-size</span>=<span style="color:#cd5555">&#34;limit&#34;</span>
-      <span style="color:#658b00">:total</span>=<span style="color:#cd5555">&#34;total&#34;</span>
-      <span style="color:#658b00">style</span>=<span style="color:#cd5555">&#34;padding: 30px 0; text-align: center&#34;</span>
-      <span style="color:#658b00">layout</span>=<span style="color:#cd5555">&#34;total, prev, pager, next, jumper&#34;</span>
-      <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">current-change</span>=<span style="color:#cd5555">&#34;getList&#34;</span>
-    /&gt;
-  &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
-&lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-
-&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-<span style="color:#228b22">// 引入接口的js
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
-<span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
-  <span style="color:#228b22">// 定義接收用的變量與初始值
-</span><span style="color:#228b22"></span>  data() {
-    <span style="color:#8b008b;font-weight:bold">return</span> {
-      current: <span style="color:#b452cd">1</span>, <span style="color:#228b22">// 當前頁
-</span><span style="color:#228b22"></span>      limit: <span style="color:#b452cd">5</span>, <span style="color:#228b22">// 每頁幾筆
-</span><span style="color:#228b22"></span>      searchObj: {}, <span style="color:#228b22">// 搜索條件
-</span><span style="color:#228b22"></span>      list: [], <span style="color:#228b22">// 每頁中的數據集合
-</span><span style="color:#228b22"></span>      total: <span style="color:#b452cd">0</span>, <span style="color:#228b22">// 總頁數
-</span><span style="color:#228b22"></span>      multipleSelection: [], <span style="color:#228b22">// 批量選擇中的記錄列表
-</span><span style="color:#228b22"></span>    };
-  },
-  created() {
-    <span style="color:#228b22">// 在頁面渲染之前，通常用來調用methods裡的方法取得數據
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.getList();
-  },
-  methods: {
-    getList(page = <span style="color:#b452cd">1</span>) {
-      <span style="color:#228b22">// 當前頁數預設是1
-</span><span style="color:#228b22"></span>      <span style="color:#228b22">// 發送axaj請求
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.current = page;
-      <span style="color:#228b22">// 對應後端條件查詢帶分頁
-</span><span style="color:#228b22"></span>      hospitalSet
-        .findPageHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.current, <span style="color:#8b008b;font-weight:bold">this</span>.limit, <span style="color:#8b008b;font-weight:bold">this</span>.searchObj)
-        .then((response) =&gt; {
-          <span style="color:#228b22">// 請求成功，取出回應資料
-</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">this</span>.list = response.data.records;
-          <span style="color:#8b008b;font-weight:bold">this</span>.total = response.data.total;
-        })
-        <span style="color:#228b22">// 請求失敗
-</span><span style="color:#228b22"></span>        .<span style="color:#8b008b;font-weight:bold">catch</span>((error) =&gt; {
-          console.log(error);
-        });
-    },
-    <span style="color:#228b22">// 鎖定和取消鎖定
-</span><span style="color:#228b22"></span>    lockHospitalSet(id, status) {
-      hospitalSet.lockHospitalSet(id, status).then((response) =&gt; {
-        <span style="color:#228b22">// 刷新
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
-      });
-    },
-    <span style="color:#228b22">// 獲取選擇複選框的id值
-</span><span style="color:#228b22"></span>    handleSelectionChange(selection) {
-      <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection = selection;
-    },
-    <span style="color:#228b22">// 批量刪除
-</span><span style="color:#228b22"></span>    removeRows() {
-      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
-        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
-        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
-        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-      })
-        .then(() =&gt; {
-          <span style="color:#228b22">// 確定執行then方法
-</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">var</span> idList = [];
-          <span style="color:#228b22">// 遍歷數組得到每個id值，塞到idList裏面
-</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">var</span> i = <span style="color:#b452cd">0</span>; i &lt; <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection.length; i++) {
-            <span style="color:#8b008b;font-weight:bold">var</span> obj = <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection[i];
-            <span style="color:#8b008b;font-weight:bold">var</span> id = obj.id;
-            idList.push(id);
-          }
-          <span style="color:#228b22">// 調用接口
-</span><span style="color:#228b22"></span>          hospitalSet.batchRemove(idList).then((response) =&gt; {
-            <span style="color:#228b22">//提示
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-              type: <span style="color:#cd5555">&#34;success&#34;</span>,
-              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
-            });
-            <span style="color:#228b22">// 刷新頁面
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
-          });
-        })
-        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
-          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
-          });
-        });
-    }, <span style="color:#228b22">// 刪除醫院設置的方法
-</span><span style="color:#228b22"></span>    removeDataById(id) {
-      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
-        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
-        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
-        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-      })
-        .then(() =&gt; {
-          <span style="color:#228b22">// 確定執行then方法
-</span><span style="color:#228b22"></span>          <span style="color:#228b22">// 調用接口
-</span><span style="color:#228b22"></span>          hospitalSet.removeHospitalSet(id).then((response) =&gt; {
-            <span style="color:#228b22">// 提示
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-              type: <span style="color:#cd5555">&#34;success&#34;</span>,
-              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
-            });
-            <span style="color:#228b22">// 刷新頁面
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
-          });
-        })
-        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
-          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
-          });
-        });
-    },
-  },
-};
-&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-
-&lt;<span style="color:#8b008b;font-weight:bold">style</span>&gt;
-&lt;/<span style="color:#8b008b;font-weight:bold">style</span>&gt;
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;app-container&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    醫院設置列表
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">el-form</span> <span style="color:#658b00">:inline</span>=<span style="color:#cd5555">&#34;true&#34;</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;demo-form-inline&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#658b00">v-model</span>=<span style="color:#cd5555">&#34;searchObj.hosname&#34;</span> <span style="color:#658b00">placeholder</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#658b00">v-model</span>=<span style="color:#cd5555">&#34;searchObj.hoscode&#34;</span> <span style="color:#658b00">placeholder</span>=<span style="color:#cd5555">&#34;醫院編號&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#8b008b;font-weight:bold">el-form-item</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-button</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span> <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-search&#34;</span> <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;getList()&#34;</span>
+</span></span><span style="display:flex;"><span>        &gt;查詢&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>      &gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#8b008b;font-weight:bold">el-form</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">&lt;!-- 工具條 --&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-button</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span> <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span> <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;removeRows()&#34;</span>
+</span></span><span style="display:flex;"><span>        &gt;批量刪除&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>      &gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">el-table</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">:data</span>=<span style="color:#cd5555">&#34;list&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">stripe</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">style</span>=<span style="color:#cd5555">&#34;width: 100%&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">selection-change</span>=<span style="color:#cd5555">&#34;handleSelectionChange&#34;</span>
+</span></span><span style="display:flex;"><span>    &gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;selection&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;55&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;index&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;50&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;序列&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;hosname&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;hoscode&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院編號&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;apiUrl&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;api基礎路徑&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;200&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;contactsName&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;聯繫人姓名&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">prop</span>=<span style="color:#cd5555">&#34;contactsPhone&#34;</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;聯繫人手機&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;狀態&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;80&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#8b008b;font-weight:bold">template</span> <span style="color:#658b00">slot-scope</span>=<span style="color:#cd5555">&#34;scope&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>          {{ scope.row.status === 1 ? &#34;可用&#34; : &#34;禁用&#34; }}
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#8b008b;font-weight:bold">el-table-column</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-table-column</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;操作&#34;</span> <span style="color:#658b00">width</span>=<span style="color:#cd5555">&#34;280&#34;</span> <span style="color:#658b00">align</span>=<span style="color:#cd5555">&#34;center&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#8b008b;font-weight:bold">template</span> <span style="color:#658b00">slot-scope</span>=<span style="color:#cd5555">&#34;scope&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;removeDataById(scope.row.id)&#34;</span>
+</span></span><span style="display:flex;"><span>            &gt;刪除&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>          &gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">v-if</span>=<span style="color:#cd5555">&#34;scope.row.status == 1&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;lockHospitalSet(scope.row.id, 0)&#34;</span>
+</span></span><span style="display:flex;"><span>            &gt;鎖定&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>          &gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">v-if</span>=<span style="color:#cd5555">&#34;scope.row.status == 0&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;danger&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">click</span>=<span style="color:#cd5555">&#34;lockHospitalSet(scope.row.id, 1)&#34;</span>
+</span></span><span style="display:flex;"><span>            &gt;解鎖&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>          &gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#8b008b;font-weight:bold">router-link</span> <span style="color:#658b00">:to</span>=<span style="color:#cd5555">&#34;&#39;/hospitalSet/edit/&#39; + scope.row.id&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#8b008b;font-weight:bold">el-button</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#658b00">type</span>=<span style="color:#cd5555">&#34;primary&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#658b00">size</span>=<span style="color:#cd5555">&#34;mini&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#658b00">icon</span>=<span style="color:#cd5555">&#34;el-icon-edit&#34;</span>
+</span></span><span style="display:flex;"><span>            &gt;&lt;/<span style="color:#8b008b;font-weight:bold">el-button</span>&gt;
+</span></span><span style="display:flex;"><span>          &lt;/<span style="color:#8b008b;font-weight:bold">router-link</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#8b008b;font-weight:bold">el-table-column</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#8b008b;font-weight:bold">el-table</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">&lt;!-- 分頁 --&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">el-pagination</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">:current-page</span>=<span style="color:#cd5555">&#34;current&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">:page-size</span>=<span style="color:#cd5555">&#34;limit&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">:total</span>=<span style="color:#cd5555">&#34;total&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">style</span>=<span style="color:#cd5555">&#34;padding: 30px 0; text-align: center&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#658b00">layout</span>=<span style="color:#cd5555">&#34;total, prev, pager, next, jumper&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a61717;background-color:#e3d2d2">@</span><span style="color:#658b00">current-change</span>=<span style="color:#cd5555">&#34;getList&#34;</span>
+</span></span><span style="display:flex;"><span>    /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 引入接口的js
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 定義接收用的變量與初始值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  data() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> {
+</span></span><span style="display:flex;"><span>      current: <span style="color:#b452cd">1</span>, <span style="color:#228b22">// 當前頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      limit: <span style="color:#b452cd">5</span>, <span style="color:#228b22">// 每頁幾筆
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      searchObj: {}, <span style="color:#228b22">// 搜索條件
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      list: [], <span style="color:#228b22">// 每頁中的數據集合
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      total: <span style="color:#b452cd">0</span>, <span style="color:#228b22">// 總頁數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      multipleSelection: [], <span style="color:#228b22">// 批量選擇中的記錄列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    };
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  created() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 在頁面渲染之前，通常用來調用methods裡的方法取得數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">this</span>.getList();
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  methods: {
+</span></span><span style="display:flex;"><span>    getList(page = <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 當前頁數預設是1
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#228b22">// 發送axaj請求
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.current = page;
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 對應後端條件查詢帶分頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      hospitalSet
+</span></span><span style="display:flex;"><span>        .findPageHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.current, <span style="color:#8b008b;font-weight:bold">this</span>.limit, <span style="color:#8b008b;font-weight:bold">this</span>.searchObj)
+</span></span><span style="display:flex;"><span>        .then((response) =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 請求成功，取出回應資料
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">this</span>.list = response.data.records;
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.total = response.data.total;
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 請求失敗
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        .<span style="color:#8b008b;font-weight:bold">catch</span>((error) =&gt; {
+</span></span><span style="display:flex;"><span>          console.log(error);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 鎖定和取消鎖定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    lockHospitalSet(id, status) {
+</span></span><span style="display:flex;"><span>      hospitalSet.lockHospitalSet(id, status).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 刷新
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 獲取選擇複選框的id值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    handleSelectionChange(selection) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection = selection;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 批量刪除
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    removeRows() {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
+</span></span><span style="display:flex;"><span>        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
+</span></span><span style="display:flex;"><span>        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
+</span></span><span style="display:flex;"><span>        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>        .then(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 確定執行then方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">var</span> idList = [];
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 遍歷數組得到每個id值，塞到idList裏面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">var</span> i = <span style="color:#b452cd">0</span>; i &lt; <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection.length; i++) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">var</span> obj = <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection[i];
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">var</span> id = obj.id;
+</span></span><span style="display:flex;"><span>            idList.push(id);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 調用接口
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          hospitalSet.batchRemove(idList).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>              type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 刷新頁面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }, <span style="color:#228b22">// 刪除醫院設置的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    removeDataById(id) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
+</span></span><span style="display:flex;"><span>        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
+</span></span><span style="display:flex;"><span>        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
+</span></span><span style="display:flex;"><span>        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>        .then(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 確定執行then方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#228b22">// 調用接口
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          hospitalSet.removeHospitalSet(id).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>              type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 刷新頁面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">style</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">style</span>&gt;
+</span></span></code></pre></div><ul>
 <li>到<code>hospital-set.js</code>綁定接口</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#8b008b;font-weight:bold">import</span> request from <span style="color:#cd5555">&#39;@/utils/request&#39;</span>
-
-<span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
-  findPageHospitalSet(current, limit, searchObj) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      <span style="color:#228b22">// ES6特性，反引號包裹強化字串
-</span><span style="color:#228b22"></span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/findPageHospitalSet/</span><span style="color:#cd5555">${</span>current<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>limit<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
-      <span style="color:#228b22">// url: `/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,
-</span><span style="color:#228b22"></span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
-      <span style="color:#228b22">// data表示使用json傳遞給後端的@RequestBody
-</span><span style="color:#228b22"></span>      data: searchObj
-    })
-  },
-  <span style="color:#228b22">// 刪除醫院設置
-</span><span style="color:#228b22"></span>  removeHospitalSet(id) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/removeHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
-      method: <span style="color:#cd5555">&#39;delete&#39;</span>
-    })
-  },
-  <span style="color:#228b22">// 批量刪除
-</span><span style="color:#228b22"></span>  batchRemove(idList) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/batchRemove`</span>,
-      method: <span style="color:#cd5555">&#39;delete&#39;</span>,
-      data: idList
-    })
-  },
-  <span style="color:#228b22">// 鎖定和取消鎖定
-</span><span style="color:#228b22"></span>  lockHospitalSet(id, status) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/lockHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>status<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
-      method: <span style="color:#cd5555">&#39;put&#39;</span>
-    })
-  },
-  <span style="color:#228b22">// 添加醫院設置
-</span><span style="color:#228b22"></span>  saveHospitalSet(hospitalSet) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/saveHospitalSet`</span>,
-      method: <span style="color:#cd5555">&#39;post&#39;</span>,
-      data: hospitalSet
-    })
-  },
-  <span style="color:#228b22">// 院設置id查詢
-</span><span style="color:#228b22"></span>  getHospitalSet(id) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/getHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
-      method: <span style="color:#cd5555">&#39;get&#39;</span>
-    })
-  },
-  <span style="color:#228b22">// 修改醫院設置
-</span><span style="color:#228b22"></span>  updateHospitalset(hospitalSet) {
-    <span style="color:#8b008b;font-weight:bold">return</span> request({
-      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/updateHospitalSet`</span>,
-      method: <span style="color:#cd5555">&#39;post&#39;</span>,
-      data: hospitalSet
-    })
-  }
-}
-
-</code></pre></div><h3 id="知識點">知識點</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> request from <span style="color:#cd5555">&#39;@/utils/request&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+</span></span><span style="display:flex;"><span>  findPageHospitalSet(current, limit, searchObj) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// ES6特性，反引號包裹強化字串
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/findPageHospitalSet/</span><span style="color:#cd5555">${</span>current<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>limit<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// url: `/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// data表示使用json傳遞給後端的@RequestBody
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      data: searchObj
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 刪除醫院設置
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  removeHospitalSet(id) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/removeHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;delete&#39;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 批量刪除
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  batchRemove(idList) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/batchRemove`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;delete&#39;</span>,
+</span></span><span style="display:flex;"><span>      data: idList
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 鎖定和取消鎖定
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  lockHospitalSet(id, status) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/lockHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">${</span>status<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;put&#39;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 添加醫院設置
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  saveHospitalSet(hospitalSet) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/saveHospitalSet`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
+</span></span><span style="display:flex;"><span>      data: hospitalSet
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 院設置id查詢
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  getHospitalSet(id) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/getHospitalSet/</span><span style="color:#cd5555">${</span>id<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;get&#39;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 修改醫院設置
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  updateHospitalset(hospitalSet) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> request({
+</span></span><span style="display:flex;"><span>      url: <span style="color:#cd5555">`http://localhost:8201/admin/hosp/hospitalSet/updateHospitalSet`</span>,
+</span></span><span style="display:flex;"><span>      method: <span style="color:#cd5555">&#39;post&#39;</span>,
+</span></span><span style="display:flex;"><span>      data: hospitalSet
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="知識點">知識點</h3>
 <h4 id="獲取多選框">獲取多選框</h4>
 <blockquote>
 <p>批量XX功能</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">// 先定義一個批量選擇中的記錄列表
-</span><span style="color:#228b22"></span>multipleSelection: [],
-
-<span style="color:#228b22">// 上面選框綁定@selection-change動作
-</span><span style="color:#228b22"></span>&lt;el-table-column type=<span style="color:#cd5555">&#34;selection&#34;</span> width=<span style="color:#cd5555">&#34;55&#34;</span> /&gt;
-<span style="color:#a61717;background-color:#e3d2d2">@</span>selection-change=<span style="color:#cd5555">&#34;handleSelectionChange&#34;</span>
-
-<span style="color:#228b22">// 獲取選擇複選框的id值
-</span><span style="color:#228b22"></span>handleSelectionChange(selection) {
-<span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection = selection;
-
-<span style="color:#228b22">// 遍歷數組得到每個id值，塞到idList裏面
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">var</span> i = <span style="color:#b452cd">0</span>; i &lt; <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection.length; i++) {
-<span style="color:#8b008b;font-weight:bold">var</span> obj = <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection[i];
-<span style="color:#8b008b;font-weight:bold">var</span> id = obj.id;
-idList.push(id);
-}
-
-<span style="color:#228b22">// 調用接口，拿idList當參數發請求
-</span><span style="color:#228b22"></span>
-</code></pre></div><h4 id="確認彈窗">確認彈窗</h4>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">// 上面綁一個按鈕
-</span><span style="color:#228b22"></span>&lt;el-button
-type=<span style="color:#cd5555">&#34;danger&#34;</span>
-size=<span style="color:#cd5555">&#34;mini&#34;</span>
-icon=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
-<span style="color:#a61717;background-color:#e3d2d2">@</span>click=<span style="color:#cd5555">&#34;removeDataById(scope.row.id)&#34;</span>
-&gt;刪除&lt;<span style="color:#a61717;background-color:#e3d2d2">/el-button&gt;</span>
-
-<span style="color:#228b22">// 下面寫方法
-</span><span style="color:#228b22"></span>    removeDataById(id) {
-      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
-        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
-        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
-        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-      })
-        .then(() =&gt; {
-          <span style="color:#228b22">// 確定執行then方法
-</span><span style="color:#228b22"></span>          <span style="color:#228b22">// 調用接口
-</span><span style="color:#228b22"></span>          hospitalset.removeHospitalSet(id).then((response) =&gt; {
-            <span style="color:#228b22">// 提示
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-              type: <span style="color:#cd5555">&#34;success&#34;</span>,
-              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
-            });
-            <span style="color:#228b22">// 刷新頁面
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
-          });
-        })
-        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
-          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
-          });
-        });
-    },
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#228b22">// 先定義一個批量選擇中的記錄列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>multipleSelection: [],
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 上面選框綁定@selection-change動作
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>&lt;el-table-column type=<span style="color:#cd5555">&#34;selection&#34;</span> width=<span style="color:#cd5555">&#34;55&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">@</span>selection-change=<span style="color:#cd5555">&#34;handleSelectionChange&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 獲取選擇複選框的id值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>handleSelectionChange(selection) {
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection = selection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 遍歷數組得到每個id值，塞到idList裏面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">var</span> i = <span style="color:#b452cd">0</span>; i &lt; <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection.length; i++) {
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">var</span> obj = <span style="color:#8b008b;font-weight:bold">this</span>.multipleSelection[i];
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">var</span> id = obj.id;
+</span></span><span style="display:flex;"><span>idList.push(id);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 調用接口，拿idList當參數發請求
+</span></span></span></code></pre></div><h4 id="確認彈窗">確認彈窗</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#228b22">// 上面綁一個按鈕
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>&lt;el-button
+</span></span><span style="display:flex;"><span>type=<span style="color:#cd5555">&#34;danger&#34;</span>
+</span></span><span style="display:flex;"><span>size=<span style="color:#cd5555">&#34;mini&#34;</span>
+</span></span><span style="display:flex;"><span>icon=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">@</span>click=<span style="color:#cd5555">&#34;removeDataById(scope.row.id)&#34;</span>
+</span></span><span style="display:flex;"><span>&gt;刪除&lt;<span style="color:#a61717;background-color:#e3d2d2">/el-button&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 下面寫方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    removeDataById(id) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">&#34;此操作將永久刪除醫院的設置信息, 是否繼續?&#34;</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
+</span></span><span style="display:flex;"><span>        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
+</span></span><span style="display:flex;"><span>        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
+</span></span><span style="display:flex;"><span>        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>        .then(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">// 確定執行then方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#228b22">// 調用接口
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          hospitalset.removeHospitalSet(id).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>              type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>              message: <span style="color:#cd5555">&#34;刪除成功!&#34;</span>,
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 刷新頁面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getList(<span style="color:#8b008b;font-weight:bold">this</span>.current);
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>            message: <span style="color:#cd5555">&#34;取消操作&#34;</span>,
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    },
+</span></span></code></pre></div><ul>
 <li>注意刷新可以回到當前頁<code>this.getList(this.current)</code>，教學中它統一回到第1頁，感覺會很不爽</li>
 <li><code>.catch(() =&gt; {</code>是應對選取消的，如果不寫會拋出一個錯誤沒人接，怪怪的</li>
 </ul>
@@ -1513,10 +1510,10 @@ icon=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
 </li>
 </ul>
 <pre tabindex="0"><code>      {
-        path: 'edit/:id',
-        name: '醫院設定編輯',
-        component: () =&gt; import('@/views/hospital-set/add'),
-        meta: { title: '醫院設定編輯', icon: 'table' },
+        path: &#39;edit/:id&#39;,
+        name: &#39;醫院設定編輯&#39;,
+        component: () =&gt; import(&#39;@/views/hospital-set/add&#39;),
+        meta: { title: &#39;醫院設定編輯&#39;, icon: &#39;table&#39; },
         hidden: true
       }
 </code></pre><ul>
@@ -1526,116 +1523,116 @@ icon=<span style="color:#cd5555">&#34;el-icon-delete&#34;</span>
 </ul>
 </li>
 </ul>
-<pre tabindex="0"><code>          &lt;router-link :to=&quot;'/hospital-set/edit/' + scope.row.id&quot;&gt;
+<pre tabindex="0"><code>          &lt;router-link :to=&#34;&#39;/hospital-set/edit/&#39; + scope.row.id&#34;&gt;
             &lt;el-button
-              type=&quot;primary&quot;
-              size=&quot;mini&quot;
-              icon=&quot;el-icon-edit&quot;
+              type=&#34;primary&#34;
+              size=&#34;mini&#34;
+              icon=&#34;el-icon-edit&#34;
             &gt;&lt;/el-button&gt;
           &lt;/router-link&gt;
 </code></pre><ul>
 <li>回到<code>add.vue</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue">&lt;<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-  &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;app-container&#34;</span>&gt;
-    添加醫院設置
-    &lt;<span style="color:#8b008b;font-weight:bold">el-form</span> <span style="color:#658b00">label</span><span style="color:#8b008b;font-weight:bold">-width</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">120px</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>&gt;
-      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span>&gt;
-        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#8b008b;font-weight:bold">v-model</span><span style="color:#cd5555">=&#34;hospitalSet.hosname&#34; /&gt;
-</span><span style="color:#cd5555">      &lt;/el-form-item&gt;
-</span><span style="color:#cd5555">      &lt;el-form-item label=&#34;醫院編號&#34;&gt;
-</span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.hoscode&#34; /&gt;
-</span><span style="color:#cd5555">      &lt;/el-form-item&gt;
-</span><span style="color:#cd5555">      &lt;el-form-item label=&#34;api基礎路徑&#34;&gt;
-</span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.apiUrl&#34; /&gt;
-</span><span style="color:#cd5555">      &lt;/el-form-item&gt;
-</span><span style="color:#cd5555">      &lt;el-form-item label=&#34;聯繫人姓名&#34;&gt;
-</span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.contactsName&#34; /&gt;
-</span><span style="color:#cd5555">      &lt;/el-form-item&gt;
-</span><span style="color:#cd5555">      &lt;el-form-item label=&#34;聯繫人手機&#34;&gt;
-</span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.contactsPhone&#34; /&gt;
-</span><span style="color:#cd5555">      &lt;/el-form-item&gt;
-</span><span style="color:#cd5555">      &lt;el-form-item&gt;
-</span><span style="color:#cd5555">        &lt;el-button type=&#34;primary&#34; @click=&#34;saveOrUpdate&#34;</span>&gt;<span style="color:#658b00">保存</span><span style="color:#a61717;background-color:#e3d2d2">&lt;/</span><span style="color:#658b00">el</span><span style="color:#8b008b;font-weight:bold">-button</span>&gt;
-      &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-form-item&gt;</span>
-    &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-form&gt;</span>
-  &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
-&lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
-&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-<span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
-
-<span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
-  data() {
-    <span style="color:#8b008b;font-weight:bold">return</span> {
-      hospitalSet: {},
-    };
-  },
-  created() {
-    <span style="color:#228b22">// 頁面渲染之前執行
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 獲取路由id值，如果有表示修改來的，需要先查詢回顯
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 調用接口得到醫院設置信息
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.$route.params &amp;&amp; <span style="color:#8b008b;font-weight:bold">this</span>.$route.params.id) {
-      <span style="color:#8b008b;font-weight:bold">const</span> id = <span style="color:#8b008b;font-weight:bold">this</span>.$route.params.id;
-      <span style="color:#8b008b;font-weight:bold">this</span>.getHospitalSet(id);
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-      <span style="color:#228b22">// 表單清空，為了防有人點進修改又去按新增
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet = {};
-    }
-  },
-  methods: {
-    <span style="color:#228b22">// 根據id查詢
-</span><span style="color:#228b22"></span>    getHospitalSet(id) {
-      hospitalSet.getHospitalSet(id).then((response) =&gt; {
-        <span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet = response.data;
-      });
-    },
-    <span style="color:#228b22">// 添加
-</span><span style="color:#228b22"></span>    save() {
-      hospitalSet.saveHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet).then((response) =&gt; {
-        <span style="color:#228b22">// 提示
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          type: <span style="color:#cd5555">&#34;success&#34;</span>,
-          message: <span style="color:#cd5555">&#34;添加成功!&#34;</span>,
-        });
-        <span style="color:#228b22">// 跳轉列表頁面，使用路由跳轉方式實現
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$router.push({ path: <span style="color:#cd5555">&#34;/hospital-set/list&#34;</span> });
-      });
-    },
-    <span style="color:#228b22">// 修改
-</span><span style="color:#228b22"></span>    update() {
-      hospitalSet.updateHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet).then((response) =&gt; {
-        <span style="color:#228b22">// 提示
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          type: <span style="color:#cd5555">&#34;success&#34;</span>,
-          message: <span style="color:#cd5555">&#34;修改成功!&#34;</span>,
-        });
-        <span style="color:#228b22">// 跳轉列表頁面，使用路由跳轉方式實現
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$router.push({ path: <span style="color:#cd5555">&#34;/hospital-set/list&#34;</span> });
-      });
-    },
-    saveOrUpdate() {
-      <span style="color:#228b22">// 先防空
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.hoscode || !<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.hosname) {
-        <span style="color:#228b22">// 提示
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          type: <span style="color:#cd5555">&#34;error&#34;</span>,
-          message: <span style="color:#cd5555">&#34;醫院名與編號為必填!&#34;</span>,
-        });
-        <span style="color:#8b008b;font-weight:bold">return</span>;
-      }
-      <span style="color:#228b22">// 判斷添加還是修改
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.id) {
-        <span style="color:#228b22">// 沒有id，做添加
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.save();
-      } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">// 修改
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.update();
-      }
-    },
-  },
-};
-&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#8b008b;font-weight:bold">div</span> <span style="color:#658b00">class</span>=<span style="color:#cd5555">&#34;app-container&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    添加醫院設置
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">el-form</span> <span style="color:#658b00">label</span><span style="color:#8b008b;font-weight:bold">-width</span><span style="color:#a61717;background-color:#e3d2d2">=&#34;</span><span style="color:#658b00">120px</span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#8b008b;font-weight:bold">el-form-item</span> <span style="color:#658b00">label</span>=<span style="color:#cd5555">&#34;醫院名稱&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#8b008b;font-weight:bold">el-input</span> <span style="color:#8b008b;font-weight:bold">v-model</span><span style="color:#cd5555">=&#34;hospitalSet.hosname&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;/el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;el-form-item label=&#34;醫院編號&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.hoscode&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;/el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;el-form-item label=&#34;api基礎路徑&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.apiUrl&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;/el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;el-form-item label=&#34;聯繫人姓名&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.contactsName&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;/el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;el-form-item label=&#34;聯繫人手機&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        &lt;el-input v-model=&#34;hospitalSet.contactsPhone&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;/el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">      &lt;el-form-item&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        &lt;el-button type=&#34;primary&#34; @click=&#34;saveOrUpdate&#34;</span>&gt;<span style="color:#658b00">保存</span><span style="color:#a61717;background-color:#e3d2d2">&lt;/</span><span style="color:#658b00">el</span><span style="color:#8b008b;font-weight:bold">-button</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-form-item&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#a61717;background-color:#e3d2d2">/el-form&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#8b008b;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">template</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> hospitalSet from <span style="color:#cd5555">&#34;@/api/hospital-set&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">export</span> <span style="color:#8b008b;font-weight:bold">default</span> {
+</span></span><span style="display:flex;"><span>  data() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> {
+</span></span><span style="display:flex;"><span>      hospitalSet: {},
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  created() {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 頁面渲染之前執行
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 獲取路由id值，如果有表示修改來的，需要先查詢回顯
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 調用接口得到醫院設置信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.$route.params &amp;&amp; <span style="color:#8b008b;font-weight:bold">this</span>.$route.params.id) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">const</span> id = <span style="color:#8b008b;font-weight:bold">this</span>.$route.params.id;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.getHospitalSet(id);
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 表單清空，為了防有人點進修改又去按新增
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet = {};
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  methods: {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 根據id查詢
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    getHospitalSet(id) {
+</span></span><span style="display:flex;"><span>      hospitalSet.getHospitalSet(id).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet = response.data;
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 添加
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    save() {
+</span></span><span style="display:flex;"><span>      hospitalSet.saveHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;添加成功!&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 跳轉列表頁面，使用路由跳轉方式實現
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$router.push({ path: <span style="color:#cd5555">&#34;/hospital-set/list&#34;</span> });
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 修改
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    update() {
+</span></span><span style="display:flex;"><span>      hospitalSet.updateHospitalSet(<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet).then((response) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;修改成功!&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 跳轉列表頁面，使用路由跳轉方式實現
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$router.push({ path: <span style="color:#cd5555">&#34;/hospital-set/list&#34;</span> });
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    saveOrUpdate() {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 先防空
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.hoscode || !<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.hosname) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提示
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;error&#34;</span>,
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;醫院名與編號為必填!&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 判斷添加還是修改
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.hospitalSet.id) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 沒有id，做添加
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.save();
+</span></span><span style="display:flex;"><span>      } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 修改
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.update();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span></code></pre></div><ul>
 <li>用<code>this.$route.params &amp;&amp; this.$route.params.id</code>從網址參數判斷是要新增還是修改</li>
 <li><code>this.$router.push({ path: &quot;/hospital-set/list&quot; });</code>跳轉頁面
 <ul>

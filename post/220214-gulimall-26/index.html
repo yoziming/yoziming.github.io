@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
-<title></title>
+<title>商城初級高級篇總和與展示</title>
 
 
 
@@ -11,18 +11,18 @@
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="">
+<meta name="description" content="SpringBoot微服務項目筆記-26">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
 
 
-<meta property="og:title" content="" />
-<meta property="og:description" content="柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 &#43; 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth &#43; Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器&#43;MVC框架 https://spring." />
+<meta property="og:title" content="商城初級高級篇總和與展示" />
+<meta property="og:description" content="SpringBoot微服務項目筆記-26" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yoziming.github.io/post/220214-gulimall-26/" /><meta property="article:section" content="post" />
-
-<meta property="og:site_name" content="My Blog" />
+<meta property="article:published_time" content="2022-02-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-14T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
 
 
 
@@ -30,8 +30,8 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 &#43; 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth &#43; Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器&#43;MVC框架 https://spring."/>
+<meta name="twitter:title" content="商城初級高級篇總和與展示"/>
+<meta name="twitter:description" content="SpringBoot微服務項目筆記-26"/>
 
 
 
@@ -1375,18 +1375,43 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
             
             
             
+                
+            
 
-            <div class="post-head-wrapper-text-only"
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/gulimall.png')"
+                    
                 
             >
                 <div class="post-title">
+                    商城初級高級篇總和與展示
                     
+                    <div class="post-subtitle">
+                        SpringBoot微服務項目筆記-26
+                    </div>
                     
                     <div class="post-meta">
                         
-
+                        <time itemprop="datePublished">
+                            2022-02-14 00:00
+                        </time>
                         
 
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE">Java微服務商城項目</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
                         
                         
                     </div>
@@ -1823,6 +1848,9 @@ renren-fast-vue -- 後台管理系統
 </ul>
 
                     
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-02-14</p>
+                    
                 </div>
             </div>
             
@@ -1830,14 +1858,14 @@ renren-fast-vue -- 後台管理系統
             <nav class="post-pagination">
 
                 
-                <a class="newer-posts" href="https://yoziming.github.io/post/210810-agg-go-sequential-search/">
-			下一篇<br>順序查找
+                <a class="newer-posts" href="https://yoziming.github.io/post/220216-java-interview-01/">
+			下一篇<br>Java初階面試題整理-01
                 </a>
                 
                 
                 
-                <a class="older-posts" href="https://yoziming.github.io/post/220102-java-uml/">
-			上一篇<br>Java UML類圖
+                <a class="older-posts" href="https://yoziming.github.io/post/220213-gulimall-25/">
+			上一篇<br>微服務商城之高可用集群篇
                 </a>
                 
             </nav>

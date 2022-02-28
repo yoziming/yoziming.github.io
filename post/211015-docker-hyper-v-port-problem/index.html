@@ -483,26 +483,26 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 用指令<code>netstat -ano | findstr xxx</code>查詢xxx埠被誰佔用卻又顯示沒有</p>
 <p>原來是因為在window下用docker需要依賴hyper-v技術，
 而這個hyper-v每次都會隨機搶走一部分tcp埠，使用命令可以得知應避開的範圍:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd</span>
-netsh interface ipv4 show excludedportrange protocol=tcp
-</code></pre></div><h2 id="如果避不開就手動叫hyper-v讓路">如果避不開就手動叫Hyper-V讓路</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#228b22"># powershell / cmd</span>
+</span></span><span style="display:flex;"><span>netsh interface ipv4 show excludedportrange protocol=tcp
+</span></span></code></pre></div><h2 id="如果避不開就手動叫hyper-v讓路">如果避不開就手動叫Hyper-V讓路</h2>
 <ol>
 <li>
 <p>關閉hyper-v</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd</span>
-dism.exe /Online /<span style="color:#658b00">Disable-Feature</span><span style="color:#a61717;background-color:#e3d2d2">:</span><span style="color:#658b00">Microsoft-Hyper</span>-V
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#228b22"># powershell / cmd</span>
+</span></span><span style="display:flex;"><span>dism.exe /Online /<span style="color:#658b00">Disable-Feature</span><span style="color:#a61717;background-color:#e3d2d2">:</span><span style="color:#658b00">Microsoft-Hyper</span>-V
+</span></span></code></pre></div></li>
 <li>
 <p>配置ipv4動態埠 / 或者配置需要的埠不被佔用</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#228b22"># powershell / cmd 管理員許可權</span>
-<span style="color:#228b22"># start 起始埠  num 表示可用埠數     按自己的需求來</span>
-netsh int ipv4 <span style="color:#658b00">set </span>dynamicport tcp start=30000 num=16383
-// 叫他去用30000以後的阜
-
-<span style="color:#228b22"># 排除ipv4動態埠佔用 startport 起始埠 numberofports 埠數</span>
-netsh int ipv4 add excludedportrange protocol=tcp startport=50051 numberofports=1
-// 或是指定端口50051為要讓路的
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#228b22"># powershell / cmd 管理員許可權</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># start 起始埠  num 表示可用埠數     按自己的需求來</span>
+</span></span><span style="display:flex;"><span>netsh int ipv4 <span style="color:#658b00">set </span>dynamicport tcp start=30000 num=16383
+</span></span><span style="display:flex;"><span>// 叫他去用30000以後的阜
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 排除ipv4動態埠佔用 startport 起始埠 numberofports 埠數</span>
+</span></span><span style="display:flex;"><span>netsh int ipv4 add excludedportrange protocol=tcp startport=50051 numberofports=1
+</span></span><span style="display:flex;"><span>// 或是指定端口50051為要讓路的
+</span></span></code></pre></div></li>
 <li>
 <p>重新啟動hyper-v</p>
 <pre tabindex="0"><code>dism.exe /Online /Enable-Feature:Microsoft-Hyper-V /All

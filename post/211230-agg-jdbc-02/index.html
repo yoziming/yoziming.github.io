@@ -1119,40 +1119,40 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <blockquote>
 <p>由<code>java.sql.Connection</code>包提供，顯然這些方法都是由Connection物件調用</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setAutoCommit</span>(<span style="color:#00688b;font-weight:bold">boolean</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">getAutoCommit</span>()
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">commit</span>()
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollback</span>()
-</code></pre></div><h2 id="事務實作流程">事務實作流程</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setAutoCommit</span>(<span style="color:#00688b;font-weight:bold">boolean</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">getAutoCommit</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">commit</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollback</span>()
+</span></span></code></pre></div><h2 id="事務實作流程">事務實作流程</h2>
 <ol>
 <li>關閉自動提交</li>
 <li>執行事務語句，可能有多行</li>
 <li><code>commit()</code>手動提交，並還原自動提交設定</li>
 <li>於<code>catch (Exception e)</code> 區塊使用<code>rollback()</code>回滾</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">delete</span>(String id) {
-    String ID = id;
-    db = <span style="color:#8b008b;font-weight:bold">new</span> getConnection();
-　  Connection con = db.<span style="color:#658b00">getConnection</span>();
-　  <span style="color:#8b008b;font-weight:bold">try</span> {
-        con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">false</span>);
-        db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作1
-</span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld _book where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作2
-</span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld_user where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作3
-</span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">commit</span>();<span style="color:#228b22">//提交JDBC事務
-</span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-        db.<span style="color:#658b00">close</span>();
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;success&#34;</span>;
-    }
-    <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
-    　　con.<span style="color:#658b00">rollBack</span>();<span style="color:#228b22">//回滾JDBC事務
-</span><span style="color:#228b22"></span>    　　e.<span style="color:#658b00">printStackTrace</span>();
-       db.<span style="color:#658b00">close</span>();
-       <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;fail&#34;</span>;
-　  }
-}
-</code></pre></div><h2 id="事務的acid">事務的ACID</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 範例
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">delete</span>(String id) {
+</span></span><span style="display:flex;"><span>    String ID = id;
+</span></span><span style="display:flex;"><span>    db = <span style="color:#8b008b;font-weight:bold">new</span> getConnection();
+</span></span><span style="display:flex;"><span>　  Connection con = db.<span style="color:#658b00">getConnection</span>();
+</span></span><span style="display:flex;"><span>　  <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>        db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作1
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld _book where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作2
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    　　 db.<span style="color:#658b00">executeUpdate</span>(<span style="color:#cd5555">&#34;delete from helloworld_user where ID=&#34;</span> + ID); <span style="color:#228b22">//更新操作3
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">commit</span>();<span style="color:#228b22">//提交JDBC事務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    　　 con.<span style="color:#658b00">setAutoCommit</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        db.<span style="color:#658b00">close</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;success&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>    　　con.<span style="color:#658b00">rollBack</span>();<span style="color:#228b22">//回滾JDBC事務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    　　e.<span style="color:#658b00">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>       db.<span style="color:#658b00">close</span>();
+</span></span><span style="display:flex;"><span>       <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;fail&#34;</span>;
+</span></span><span style="display:flex;"><span>　  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="事務的acid">事務的ACID</h2>
 <ul>
 <li>原子性(Atomicity):一個事務(transaction)中的所有操作不可分割，要麼全部完成，要麼全部不完成，不會結束在中間某個環節。事務在執行過程中發生錯誤，會被回滾(Rollback)到事務開始前的狀態，就像這個事務從來沒有執行過一樣</li>
 <li>一致性(Consistency):在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。</li>
@@ -1201,29 +1201,28 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>查看當前的隔離級別:</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@tx_isolation;<span style="color:#bbb">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>@@tx_isolation;<span style="color:#bbb">
+</span></span></span></code></pre></div><ul>
 <li>設置當前MySQL連接的隔離級別:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb">  </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb">  </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
+</span></span></span></code></pre></div><ul>
 <li>設置資料庫系統的全域的隔離級別:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>global<span style="color:#bbb"> </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">set</span><span style="color:#bbb"> </span>global<span style="color:#bbb"> </span>transaction<span style="color:#bbb"> </span>isolation<span style="color:#bbb"> </span>level<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">read</span><span style="color:#bbb"> </span>committed;<span style="color:#bbb">
+</span></span></span></code></pre></div><ul>
 <li>補充操作，創建MySQL資料庫使用者</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span>tom<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">user</span><span style="color:#bbb"> </span>tom<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span></span></span></code></pre></div><ul>
 <li>授予許可權</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-MySQL" data-lang="MySQL"><span style="color:#228b22">#授予通過網路方式登錄的tom使用者，對所有庫所有表的全部許可權，密碼設為abc123.
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">privileges</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>*.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@<span style="color:#cd5555">&#39;%&#39;</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#228b22">#給tom使用者使用本地命令列方式，授予atguigudb這個庫下的所有表的插刪改查的許可權。
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">select</span>,<span style="color:#8b008b;font-weight:bold">insert</span>,<span style="color:#8b008b;font-weight:bold">delete</span>,<span style="color:#8b008b;font-weight:bold">update</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>atguigudb.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@localhost<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-MySQL" data-lang="MySQL"><span style="display:flex;"><span><span style="color:#228b22">#授予通過網路方式登錄的tom使用者，對所有庫所有表的全部許可權，密碼設為abc123.
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">all</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">privileges</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>*.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@<span style="color:#cd5555">&#39;%&#39;</span><span style="color:#bbb">  </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#228b22">#給tom使用者使用本地命令列方式，授予atguigudb這個庫下的所有表的插刪改查的許可權。
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">grant</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">select</span>,<span style="color:#8b008b;font-weight:bold">insert</span>,<span style="color:#8b008b;font-weight:bold">delete</span>,<span style="color:#8b008b;font-weight:bold">update</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">on</span><span style="color:#bbb"> </span>atguigudb.*<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>tom@localhost<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">identified</span><span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#cd5555">&#39;abc123&#39;</span>;<span style="color:#bbb">
+</span></span></span></code></pre></div><hr>
 <h1 id="dao">DAO</h1>
 <blockquote>
 <p><a href="https://www.bilibili.com/video/BV1eJ411c7rf?p=45">https://www.bilibili.com/video/BV1eJ411c7rf?p=45</a></p>
@@ -1315,25 +1314,25 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>從<code>DataSource</code>物件<code>getConnection()</code></p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例，使用druid連接池
-</span><span style="color:#228b22"></span>Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
-properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
-<span style="color:#228b22">// 或是直接類名.class.getClassLoader()...
-</span><span style="color:#228b22"></span>DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
-Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
-System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(conn);
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 範例，使用druid連接池
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+</span></span><span style="display:flex;"><span>properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 或是直接類名.class.getClassLoader()...
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
+</span></span><span style="display:flex;"><span>Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
+</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(conn);
+</span></span></code></pre></div><ul>
 <li>路徑src下的設定檔<code>druid.properties</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">url=jdbc:mysql:<span style="color:#228b22">//localhost:3306/jdbc_learn?rewriteBatchedStatements=true
-</span><span style="color:#228b22"></span>username=root
-password=1234
-driverClassName=com.<span style="color:#658b00">mysql</span>.<span style="color:#658b00">cj</span>.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">Driver</span>
-initialSize=10
-maxActive=20
-maxWait=1000
-filters=wall
-</code></pre></div><h1 id="dbutils工具包">Dbutils工具包</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>url=jdbc:mysql:<span style="color:#228b22">//localhost:3306/jdbc_learn?rewriteBatchedStatements=true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>username=root
+</span></span><span style="display:flex;"><span>password=1234
+</span></span><span style="display:flex;"><span>driverClassName=com.<span style="color:#658b00">mysql</span>.<span style="color:#658b00">cj</span>.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">Driver</span>
+</span></span><span style="display:flex;"><span>initialSize=10
+</span></span><span style="display:flex;"><span>maxActive=20
+</span></span><span style="display:flex;"><span>maxWait=1000
+</span></span><span style="display:flex;"><span>filters=wall
+</span></span></code></pre></div><h1 id="dbutils工具包">Dbutils工具包</h1>
 <blockquote>
 <p>了解底層原理後，實際開發當然是拿別人造好的輪子來用</p>
 </blockquote>
@@ -1357,26 +1356,26 @@ filters=wall
 <li><code>batch</code>:批次處理</li>
 <li><code>query</code>:查詢，返回<code>ResultSet</code>，並且會自行管理用到的<code>PreparedStatement</code>與<code>ResultSet</code>資源</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 範例
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@Test</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">t03</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-    <span style="color:#228b22">// 連接池
-</span><span style="color:#228b22"></span>    Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
-    properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
-    DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
-    Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
-
-    <span style="color:#228b22">// 使用空參構造器
-</span><span style="color:#228b22"></span>    String sql = <span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>;
-    QueryRunner qr = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner();
-    qr.<span style="color:#658b00">update</span>(conn, sql, <span style="color:#cd5555">&#34;BBB&#34;</span>, 2);
-
-    <span style="color:#228b22">// 使用dataSource構造
-</span><span style="color:#228b22"></span>    QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
-    qr2.<span style="color:#658b00">update</span>(<span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>, <span style="color:#cd5555">&#34;CCC&#34;</span>, 3);
-
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 範例
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">t03</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 連接池
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Properties properties = <span style="color:#8b008b;font-weight:bold">new</span> Properties();
+</span></span><span style="display:flex;"><span>    properties.<span style="color:#658b00">load</span>(getClass().<span style="color:#658b00">getClassLoader</span>().<span style="color:#658b00">getResourceAsStream</span>(<span style="color:#cd5555">&#34;druid.properties&#34;</span>));
+</span></span><span style="display:flex;"><span>    DataSource dataSource = DruidDataSourceFactory.<span style="color:#658b00">createDataSource</span>(properties);
+</span></span><span style="display:flex;"><span>    Connection conn = dataSource.<span style="color:#658b00">getConnection</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 使用空參構造器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String sql = <span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>;
+</span></span><span style="display:flex;"><span>    QueryRunner qr = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner();
+</span></span><span style="display:flex;"><span>    qr.<span style="color:#658b00">update</span>(conn, sql, <span style="color:#cd5555">&#34;BBB&#34;</span>, 2);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 使用dataSource構造
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
+</span></span><span style="display:flex;"><span>    qr2.<span style="color:#658b00">update</span>(<span style="color:#cd5555">&#34;update customers set  name = ? where id=?&#34;</span>, <span style="color:#cd5555">&#34;CCC&#34;</span>, 3);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>創建QueryRunner物件時，構造器有沒有帶連接會決定執行操作(例如update)時第一個參數要不要傳入連接，這個差異不光在於省一個要寫的參數</li>
 <li>假如我要提交一個事務，想當然我需要在同一條連接完成，如果發生錯誤就可以整串回滾</li>
 </ul>
@@ -1405,35 +1404,35 @@ filters=wall
 <li><code>KeyedHandler(name)</code>:將結果集中的每一行資料都封裝到一個Map裡，再把這些map再存到一個map裡，其key為指定的key。</li>
 <li><code>ScalarHandler</code>:查詢單個值對象</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 一樣先造一個QueryRunner
-</span><span style="color:#228b22"></span>QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
-
-<span style="color:#228b22">// 造一個用來接收的Handler，類來自Customers的javabean
-</span><span style="color:#228b22">// 注意new的右邊()需要填入XXX.class
-</span><span style="color:#228b22"></span>BeanHandler&lt;Customers&gt; cbh = <span style="color:#8b008b;font-weight:bold">new</span> BeanHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
-Customers queryCus = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, cbh, 2);
-System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(queryCus);
-
-<span style="color:#228b22">// 接收N筆資料
-</span><span style="color:#228b22"></span>BeanListHandler&lt;Customers&gt; cusListHandler = <span style="color:#8b008b;font-weight:bold">new</span> BeanListHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
-List&lt;Customers&gt; cusList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers&#34;</span>, cusListHandler);
-cusList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
-
-<span style="color:#228b22">// 將查來的一個結果直接裝成一個map
-</span><span style="color:#228b22"></span>MapHandler mapHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapHandler();
-Map&lt;String, Object&gt; objectMap = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, mapHandler, 6);
-System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(objectMap);
-
-<span style="color:#228b22">// 將查來的多告結果裝成一個mapList ***重點用法***
-</span><span style="color:#228b22"></span>MapListHandler mapListHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapListHandler();
-List&lt;Map&lt;String, Object&gt;&gt; queryList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id &lt;= ?&#34;</span>, mapListHandler, 10);
-queryList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
-
-<span style="color:#228b22">// scalarHandler查詢一個值
-</span><span style="color:#228b22"></span>ScalarHandler scalarHandler = <span style="color:#8b008b;font-weight:bold">new</span> ScalarHandler();
-<span style="color:#00688b;font-weight:bold">long</span> count = (<span style="color:#00688b;font-weight:bold">long</span>) qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select count(*) from customers&#34;</span>, scalarHandler);
-System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(count);
-</code></pre></div><h2 id="dbutils">DbUtils</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 一樣先造一個QueryRunner
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>QueryRunner qr2 = <span style="color:#8b008b;font-weight:bold">new</span> QueryRunner(dataSource);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 造一個用來接收的Handler，類來自Customers的javabean
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">// 注意new的右邊()需要填入XXX.class
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>BeanHandler&lt;Customers&gt; cbh = <span style="color:#8b008b;font-weight:bold">new</span> BeanHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>Customers queryCus = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, cbh, 2);
+</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(queryCus);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 接收N筆資料
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>BeanListHandler&lt;Customers&gt; cusListHandler = <span style="color:#8b008b;font-weight:bold">new</span> BeanListHandler&lt;&gt;(Customers.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>List&lt;Customers&gt; cusList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers&#34;</span>, cusListHandler);
+</span></span><span style="display:flex;"><span>cusList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 將查來的一個結果直接裝成一個map
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>MapHandler mapHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapHandler();
+</span></span><span style="display:flex;"><span>Map&lt;String, Object&gt; objectMap = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id = ?&#34;</span>, mapHandler, 6);
+</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(objectMap);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 將查來的多告結果裝成一個mapList ***重點用法***
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>MapListHandler mapListHandler = <span style="color:#8b008b;font-weight:bold">new</span> MapListHandler();
+</span></span><span style="display:flex;"><span>List&lt;Map&lt;String, Object&gt;&gt; queryList = qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select * from customers where id &lt;= ?&#34;</span>, mapListHandler, 10);
+</span></span><span style="display:flex;"><span>queryList.<span style="color:#658b00">forEach</span>(System.<span style="color:#658b00">out</span>::println);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// scalarHandler查詢一個值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ScalarHandler scalarHandler = <span style="color:#8b008b;font-weight:bold">new</span> ScalarHandler();
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">long</span> count = (<span style="color:#00688b;font-weight:bold">long</span>) qr2.<span style="color:#658b00">query</span>(<span style="color:#cd5555">&#34;select count(*) from customers&#34;</span>, scalarHandler);
+</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(count);
+</span></span></code></pre></div><h2 id="dbutils">DbUtils</h2>
 <blockquote>
 <p>用於管理連接本身，所有方法都是靜態，最常就是用來關閉連接</p>
 </blockquote>

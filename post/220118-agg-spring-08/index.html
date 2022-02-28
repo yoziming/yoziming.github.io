@@ -823,19 +823,19 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳醫院&#34;</span>)
-<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveHospital&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveHospital</span>(HttpServletRequest request) {
-    Map&lt;String, String[]&gt; parameterMap = request.<span style="color:#658b00">getParameterMap</span>();
-    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
-</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; stringObjectMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap);
-    <span style="color:#228b22">// base64編碼傳送過程中把&#34;+&#34;變成了&#34; &#34;空白，要轉換回來
-</span><span style="color:#228b22"></span>    String logoData = (String) stringObjectMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>);
-    logoData = logoData.<span style="color:#658b00">replaceAll</span>(<span style="color:#cd5555">&#34; &#34;</span>, <span style="color:#cd5555">&#34;+&#34;</span>);
-    stringObjectMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>, logoData);
-    <span style="color:#8b008b;font-weight:bold">return</span> hospitalService.<span style="color:#658b00">save</span>(stringObjectMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院編號已存在，修改請聯絡工程師&#34;</span>);
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳醫院&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveHospital&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveHospital</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>    Map&lt;String, String[]&gt; parameterMap = request.<span style="color:#658b00">getParameterMap</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; stringObjectMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// base64編碼傳送過程中把&#34;+&#34;變成了&#34; &#34;空白，要轉換回來
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String logoData = (String) stringObjectMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>);
+</span></span><span style="display:flex;"><span>    logoData = logoData.<span style="color:#658b00">replaceAll</span>(<span style="color:#cd5555">&#34; &#34;</span>, <span style="color:#cd5555">&#34;+&#34;</span>);
+</span></span><span style="display:flex;"><span>    stringObjectMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>, logoData);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> hospitalService.<span style="color:#658b00">save</span>(stringObjectMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院編號已存在，修改請聯絡工程師&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>服務層
 <ul>
 <li>他教學這邊用<code>alibaba.fastjson</code>包把<code>stringObjectMap</code>轉成<code>JSON</code>，再從JSON轉回Bean，把我看暈了</li>
@@ -845,146 +845,146 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; stringObjectMap) {
-    <span style="color:#228b22">// 將map轉成Hospital實體類物件
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// String string = JSONObject.toJSONString(stringObjectMap);
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// Hospital hospital = JSONObject.parseObject(string, Hospital.class);
-</span><span style="color:#228b22"></span>    Hospital hospital = BeanUtils.<span style="color:#658b00">mapToBean</span>(stringObjectMap, Hospital.<span style="color:#658b00">class</span>);
-    <span style="color:#228b22">// 判斷是否已存在
-</span><span style="color:#228b22"></span>    String hoscode = hospital.<span style="color:#658b00">getHoscode</span>();
-    Hospital hospitalExist = hospitalRepository.<span style="color:#658b00">getHospitalByHoscode</span>(hoscode);
-    <span style="color:#228b22">/*  TODO 這裡有bug，他設定hoscode是唯一，但是又不標記成mongo的Id，物件沒有mongo的Id作為屬性，
-</span><span style="color:#228b22">    就沒辦法靠同Id視為更新的save去更新，永遠只會說重複不給存報錯，如果拿掉不重複標記，
-</span><span style="color:#228b22">    就變成一直存成新物件，修這個要從model層去改
-</span><span style="color:#228b22">    而MD5加密驗證的部分，覺得這邊他教的太混亂，應該寫在service層
-</span><span style="color:#228b22">    原理懂就好，就醫院方API把key用MD5加密傳過來，平台方去醫院設定mysql也抓那個key
-</span><span style="color:#228b22">    然後執行一樣的MD5加密，驗證是否相同，利用MD5不可逆推(暴力哈希碰撞除外)特性
-</span><span style="color:#228b22">    實現安全驗證
-</span><span style="color:#228b22">    */</span>
-    <span style="color:#8b008b;font-weight:bold">if</span> (hospitalExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
-        <span style="color:#228b22">// 新物件
-</span><span style="color:#228b22"></span>        hospital.<span style="color:#658b00">setStatus</span>(0);
-        hospital.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-        hospital.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-        hospital.<span style="color:#658b00">setIsDeleted</span>(0);
-        hospitalRepository.<span style="color:#658b00">save</span>(hospital);
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#228b22">// 已存在，要修改
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-}
-</code></pre></div><h3 id="查詢醫院">查詢醫院</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; stringObjectMap) {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 將map轉成Hospital實體類物件
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// String string = JSONObject.toJSONString(stringObjectMap);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// Hospital hospital = JSONObject.parseObject(string, Hospital.class);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Hospital hospital = BeanUtils.<span style="color:#658b00">mapToBean</span>(stringObjectMap, Hospital.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 判斷是否已存在
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String hoscode = hospital.<span style="color:#658b00">getHoscode</span>();
+</span></span><span style="display:flex;"><span>    Hospital hospitalExist = hospitalRepository.<span style="color:#658b00">getHospitalByHoscode</span>(hoscode);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/*  TODO 這裡有bug，他設定hoscode是唯一，但是又不標記成mongo的Id，物件沒有mongo的Id作為屬性，
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    就沒辦法靠同Id視為更新的save去更新，永遠只會說重複不給存報錯，如果拿掉不重複標記，
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    就變成一直存成新物件，修這個要從model層去改
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    而MD5加密驗證的部分，覺得這邊他教的太混亂，應該寫在service層
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    原理懂就好，就醫院方API把key用MD5加密傳過來，平台方去醫院設定mysql也抓那個key
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    然後執行一樣的MD5加密，驗證是否相同，利用MD5不可逆推(暴力哈希碰撞除外)特性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    實現安全驗證
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (hospitalExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 新物件
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        hospital.<span style="color:#658b00">setStatus</span>(0);
+</span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+</span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+</span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setIsDeleted</span>(0);
+</span></span><span style="display:flex;"><span>        hospitalRepository.<span style="color:#658b00">save</span>(hospital);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 已存在，要修改
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="查詢醫院">查詢醫院</h3>
 <ul>
 <li>毫無難度，利用Repository自動生成的方法，用Hoscode往mongoDB查找出對應的Hospital物件丟回去就完了</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢醫院&#34;</span>)
-<span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;hospital/show&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">showHospital</span>(HttpServletRequest request) {
-    Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
-    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
-</span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
-    String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
-    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(hospitalService.<span style="color:#658b00">showHospital</span>(hoscode));
-}
-</code></pre></div><h3 id="科室">科室</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢醫院&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;hospital/show&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">showHospital</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>    Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 調用工具類把map中的string[]轉成obj
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+</span></span><span style="display:flex;"><span>    String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(hospitalService.<span style="color:#658b00">showHospital</span>(hoscode));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="科室">科室</h3>
 <ul>
 <li>控制層，注意Page是spring框架的</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳科室&#34;</span>)
-    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveDepartment&#34;</span>)
-    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveDepartment</span>(HttpServletRequest request) {
-        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
-        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
-        <span style="color:#8b008b;font-weight:bold">return</span> departmentService.<span style="color:#658b00">save</span>(parameterMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院科室編號已存在，修改請聯絡工程師&#34;</span>);
-    }
-
-    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢科室&#34;</span>)
-    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/list&#34;</span>)
-    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">findDepartment</span>(HttpServletRequest request) {
-        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
-        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
-        <span style="color:#228b22">// 獲取醫院編號
-</span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
-        <span style="color:#228b22">// 獲取當前頁 和 每頁記錄數，沒指定(為空)就是1跟10
-</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> page = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;page&#34;</span>)) ? 1 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
-                <span style="color:#cd5555">&#34;page&#34;</span>));
-        <span style="color:#00688b;font-weight:bold">int</span> limit = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;limit&#34;</span>)) ? 10 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
-                <span style="color:#cd5555">&#34;limit&#34;</span>));
-
-        DepartmentQueryVo departmentQueryVo = <span style="color:#8b008b;font-weight:bold">new</span> DepartmentQueryVo();
-        departmentQueryVo.<span style="color:#658b00">setHoscode</span>(hoscode);
-        <span style="color:#228b22">// 調用service方法
-</span><span style="color:#228b22"></span>        Page&lt;Department&gt; pageModel = departmentService.<span style="color:#658b00">findPageDepartment</span>(page, limit, departmentQueryVo);
-        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(pageModel);
-    }
-
-    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;刪除科室&#34;</span>)
-    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/remove&#34;</span>)
-    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">removeDepartment</span>(HttpServletRequest request) {
-        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
-        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
-        <span style="color:#228b22">// 醫院編號 和 科室編號
-</span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
-        String depcode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;depcode&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">if</span> (depcode == <span style="color:#8b008b;font-weight:bold">null</span> || hoscode == <span style="color:#8b008b;font-weight:bold">null</span>) {
-            <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院或科室編號不存在&#34;</span>);
-        }
-        departmentService.<span style="color:#658b00">remove</span>(hoscode, depcode);
-        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>();
-    }
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;上傳科室&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;saveDepartment&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveDepartment</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+</span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> departmentService.<span style="color:#658b00">save</span>(parameterMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院科室編號已存在，修改請聯絡工程師&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢科室&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/list&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">findDepartment</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+</span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取醫院編號
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取當前頁 和 每頁記錄數，沒指定(為空)就是1跟10
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> page = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;page&#34;</span>)) ? 1 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;page&#34;</span>));
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> limit = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;limit&#34;</span>)) ? 10 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;limit&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        DepartmentQueryVo departmentQueryVo = <span style="color:#8b008b;font-weight:bold">new</span> DepartmentQueryVo();
+</span></span><span style="display:flex;"><span>        departmentQueryVo.<span style="color:#658b00">setHoscode</span>(hoscode);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 調用service方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Page&lt;Department&gt; pageModel = departmentService.<span style="color:#658b00">findPageDepartment</span>(page, limit, departmentQueryVo);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>(pageModel);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;刪除科室&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@PostMapping</span>(<span style="color:#cd5555">&#34;department/remove&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">removeDepartment</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
+</span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 醫院編號 和 科室編號
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
+</span></span><span style="display:flex;"><span>        String depcode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;depcode&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (depcode == <span style="color:#8b008b;font-weight:bold">null</span> || hoscode == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院或科室編號不存在&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        departmentService.<span style="color:#658b00">remove</span>(hoscode, depcode);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
 <li>服務層，知識重點在條件查詢與頁數</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Service</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DepartmentServiceImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> DepartmentService {
-    <span style="color:#707a7c">@Autowired</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> DepartmentRepository departmentRepository;
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; parameterMap) {
-        Department department = BeanUtils.<span style="color:#658b00">mapToBean</span>(parameterMap, Department.<span style="color:#658b00">class</span>);
-        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
-</span><span style="color:#228b22"></span>        Department departmentExist = departmentRepository.
-                <span style="color:#008b45">getDepartmentByHoscodeAndDepcode</span>(department.<span style="color:#658b00">getHoscode</span>(), department.<span style="color:#658b00">getDepcode</span>());
-        <span style="color:#8b008b;font-weight:bold">if</span> (departmentExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
-            department.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-            department.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-            departmentRepository.<span style="color:#658b00">save</span>(department);
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> Page&lt;Department&gt; <span style="color:#008b45">findPageDepartment</span>(<span style="color:#00688b;font-weight:bold">int</span> page, <span style="color:#00688b;font-weight:bold">int</span> limit, DepartmentQueryVo departmentQueryVo) {
-        <span style="color:#228b22">// 創建Pageable，設置當前頁和每頁記錄數，0是第一頁
-</span><span style="color:#228b22"></span>        Pageable pageable = PageRequest.<span style="color:#658b00">of</span>(page - 1, limit);
-        <span style="color:#228b22">// 查詢用VO，所以要先造一個department去承接屬性
-</span><span style="color:#228b22"></span>        Department department = <span style="color:#8b008b;font-weight:bold">new</span> Department();
-        org.<span style="color:#658b00">springframework</span>.<span style="color:#658b00">beans</span>.<span style="color:#658b00">BeanUtils</span>.<span style="color:#658b00">copyProperties</span>(departmentQueryVo, department);
-        <span style="color:#228b22">// 創建Example設定查詢條件
-</span><span style="color:#228b22"></span>        ExampleMatcher matcher = ExampleMatcher.<span style="color:#658b00">matching</span>()
-                .<span style="color:#658b00">withStringMatcher</span>(ExampleMatcher.<span style="color:#658b00">StringMatcher</span>.<span style="color:#658b00">CONTAINING</span>)
-                .<span style="color:#658b00">withIgnoreCase</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-        Example&lt;Department&gt; example = Example.<span style="color:#658b00">of</span>(department, matcher);
-
-        Page&lt;Department&gt; all = departmentRepository.<span style="color:#658b00">findAll</span>(example, pageable);
-        <span style="color:#8b008b;font-weight:bold">return</span> all;
-    }
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">remove</span>(String hoscode, String depcode) {
-        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
-</span><span style="color:#228b22"></span>        Department department = departmentRepository.<span style="color:#658b00">getDepartmentByHoscodeAndDepcode</span>(hoscode, depcode);
-        <span style="color:#8b008b;font-weight:bold">if</span> (department != <span style="color:#8b008b;font-weight:bold">null</span>) {
-            <span style="color:#228b22">// 調用方法刪除
-</span><span style="color:#228b22"></span>            departmentRepository.<span style="color:#658b00">deleteById</span>(department.<span style="color:#658b00">getId</span>());
-        }
-    }
-}
-</code></pre></div><h3 id="班表">班表</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DepartmentServiceImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> DepartmentService {
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> DepartmentRepository departmentRepository;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">save</span>(Map&lt;String, Object&gt; parameterMap) {
+</span></span><span style="display:flex;"><span>        Department department = BeanUtils.<span style="color:#658b00">mapToBean</span>(parameterMap, Department.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Department departmentExist = departmentRepository.
+</span></span><span style="display:flex;"><span>                <span style="color:#008b45">getDepartmentByHoscodeAndDepcode</span>(department.<span style="color:#658b00">getHoscode</span>(), department.<span style="color:#658b00">getDepcode</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (departmentExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            department.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+</span></span><span style="display:flex;"><span>            department.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
+</span></span><span style="display:flex;"><span>            departmentRepository.<span style="color:#658b00">save</span>(department);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Page&lt;Department&gt; <span style="color:#008b45">findPageDepartment</span>(<span style="color:#00688b;font-weight:bold">int</span> page, <span style="color:#00688b;font-weight:bold">int</span> limit, DepartmentQueryVo departmentQueryVo) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 創建Pageable，設置當前頁和每頁記錄數，0是第一頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Pageable pageable = PageRequest.<span style="color:#658b00">of</span>(page - 1, limit);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 查詢用VO，所以要先造一個department去承接屬性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Department department = <span style="color:#8b008b;font-weight:bold">new</span> Department();
+</span></span><span style="display:flex;"><span>        org.<span style="color:#658b00">springframework</span>.<span style="color:#658b00">beans</span>.<span style="color:#658b00">BeanUtils</span>.<span style="color:#658b00">copyProperties</span>(departmentQueryVo, department);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 創建Example設定查詢條件
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ExampleMatcher matcher = ExampleMatcher.<span style="color:#658b00">matching</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">withStringMatcher</span>(ExampleMatcher.<span style="color:#658b00">StringMatcher</span>.<span style="color:#658b00">CONTAINING</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">withIgnoreCase</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        Example&lt;Department&gt; example = Example.<span style="color:#658b00">of</span>(department, matcher);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Page&lt;Department&gt; all = departmentRepository.<span style="color:#658b00">findAll</span>(example, pageable);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> all;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">remove</span>(String hoscode, String depcode) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 根據醫院編號 和 科室編號查詢
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Department department = departmentRepository.<span style="color:#658b00">getDepartmentByHoscodeAndDepcode</span>(hoscode, depcode);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (department != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 調用方法刪除
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            departmentRepository.<span style="color:#658b00">deleteById</span>(department.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="班表">班表</h3>
 <ul>
 <li>類似的就不重複，小結操作MongoDB的流程:
 <ul>

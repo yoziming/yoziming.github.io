@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Sun, 13 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%95%86%E5%9F%8E%E9%A0%85%E7%9B%AE/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>商城初級高級篇總和與展示</title>
+      <link>https://yoziming.github.io/post/220214-gulimall-26/</link>
+      <pubDate>Mon, 14 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220214-gulimall-26/</guid>
+      <description>柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 + 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth + Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器+MVC框架 https://spring.</description>
+    </item>
+    
     <item>
       <title>微服務商城之高可用集群篇</title>
       <link>https://yoziming.github.io/post/220213-gulimall-25/</link>
@@ -46,7 +55,7 @@
       
       <guid>https://yoziming.github.io/post/220208-gulimall-22-pay/</guid>
       <description>商城支付 非對稱加密 RSA  加密跟解密是不同的鑰匙  我用私鑰加密，發給給你，你用公鑰解密，你不知道我的私鑰   加簽: 根據明文(例如: &amp;ldquo;我給小明100元&amp;rdquo;)用MD5生成一個簽名，如果明文任意字符修改，簽名就會天差地別(MD5特性) 驗簽: 確定 明文與簽名是否對應(明文是否被篡改)  NAT穿透  Network Address Translation Traversal
-  內部IP就是192.168.X.X開頭的那些，穿透技術就是讓外部可以透過公有IP訪問到你的內部IP 原理就是透過各種網路服務供應商幫你搭橋 使用場景:  開發測試，取得暫時的對外域名讓外部可以訪問本機 智慧家電連網，例如出門在外用手機網路可以看家裡監控那種 遠程控制，遠端桌面   以前玩Minecraft架server有用過類似的東西  支付沙盒  大部分的電子支付API都有提供一個sandbox做測試開發用  LinePay的 https://pay.line.me/jp/developers/techsupport/sandbox/creation?locale=zh_TW   但是這個申請都要有店家資格，不好弄  我研究了一下這個EcPAY的 https://www.ecpay.com.tw/Service/API_Dwnld   大致使用流程就是申請帳號，然後下載支付網站提供的API與SDK，包到自己的專案之下，填上各種授權key，串接付款與跳轉的頁面這樣  支付串接流程  PayWebController.java  這邊接收前端來的訂單號@RequestParam(&amp;quot;orderSn&amp;quot;)，用訂單號去查詢訂單內容，然後帶著訂單內容往支付的API    @GetMapping(value = &amp;#34;/payOrder&amp;#34;, produces = &amp;#34;text/html&amp;#34;) public String payOrder(@RequestParam(&amp;#34;orderSn&amp;#34;) String orderSn) throws AlipayApiException { PayVo payVo = orderService.</description>
+  內部IP就是192.168.X.X開頭的那些，穿透技術就是讓外部可以透過公有IP訪問到你的內部IP 原理就是透過各種網路服務供應商幫你搭橋 使用場景:  開發測試，取得暫時的對外域名讓外部可以訪問本機 智慧家電連網，例如出門在外用手機網路可以看家裡監控那種 遠程控制，遠端桌面   以前玩Minecraft架server有用過類似的東西  支付沙盒  大部分的電子支付API都有提供一個sandbox做測試開發用  LinePay的 https://pay.line.me/jp/developers/techsupport/sandbox/creation?locale=zh_TW   但是這個申請都要有店家資格，不好弄  我研究了一下這個EcPAY的 https://www.ecpay.com.tw/Service/API_Dwnld   大致使用流程就是申請帳號，然後下載支付網站提供的API與SDK，包到自己的專案之下，填上各種授權key，串接付款與跳轉的頁面這樣  支付串接流程  PayWebController.java  這邊接收前端來的訂單號@RequestParam(&amp;quot;orderSn&amp;quot;)，用訂單號去查詢訂單內容，然後帶著訂單內容往支付的API    @GetMapping(value = &amp;#34;/payOrder&amp;#34;, produces = &amp;#34;text/html&amp;#34;) public String payOrder(@RequestParam(&amp;#34;orderSn&amp;#34;) String orderSn) throws AlipayApiException {  	PayVo payVo = orderService.</description>
     </item>
     
     <item>
@@ -117,7 +126,7 @@
    可以把資料暫存在客戶端，例如:
  localstorage cookie WebSQL    但何種商品被放到購物車本身是一個有價值的資訊，所以選擇放到伺服端的redis
   用户購物車  一樣採用redis，優勢在於  極高的讀寫併發性能 好組織數據結構 redis也有持久化策略，AOF   登入後會將離線購物車合併  操作分析  增（添加商品到購物車） 刪（刪除某個商品） 改（修改商品數量） 查（查詢購物車中的商品）  商品是否被選中，下次進來還是選中狀態 用户可以使用購物車多件商品一起結算下單 在購物車中展示商品優惠信息 提示購物車商品價格變化    資料庫設計  Redis數據結構用Hash，造一個雙層Map來存  Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;  第一個key是用户id，value是購物車信息 第二個key是skuId，value是購物項數據  Vo設計  類似之前做的書城項目
-  CartVo是完整的一台車，這邊有CartItemVo構成的List、總件數、總價 CartItemVo略等同於Sku，就是車中的某項商品，加上件數與價格   在CartVo.java 將計算總價等等方法封裝起來  public BigDecimal getTotalAmount() { BigDecimal amount = new BigDecimal(&amp;#34;0&amp;#34;); // 計算購物項總價  if (!</description>
+  CartVo是完整的一台車，這邊有CartItemVo構成的List、總件數、總價 CartItemVo略等同於Sku，就是車中的某項商品，加上件數與價格   在CartVo.java 將計算總價等等方法封裝起來  public BigDecimal getTotalAmount() {  BigDecimal amount = new BigDecimal(&amp;#34;0&amp;#34;);  // 計算購物項總價  if (!</description>
     </item>
     
     <item>
@@ -127,8 +136,8 @@
       
       <guid>https://yoziming.github.io/post/220202-gulimall-16-spring-session/</guid>
       <description>WebMvcConfigurer  參考 https://blog.csdn.net/pan_junbiao/article/details/120039885
-  複習SpringMVC WebMvcConfigurer是一個接口，用JavaBean的方式代替web.xml，常用於: 攔截器，例如:  @Override public void addInterceptors(InterceptorRegistry registry) { super.addInterceptors(registry); registry.addInterceptor(new TestInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;).excludePathPatterns(&amp;#34;/emp/toLogin&amp;#34;,&amp;#34;/emp/login&amp;#34;,&amp;#34;/js/**&amp;#34;,&amp;#34;/css/**&amp;#34;,&amp;#34;/images/**&amp;#34;); }  跨域設定，例如:  // 跨域 @Override public void addCorsMappings(CorsRegistry registry) { registry.addMapping(&amp;#34;/**&amp;#34;) .allowedOrigins(&amp;#34;*&amp;#34;) //浏览器允许所有的域访问 / 注意 * 不能满足带有cookie的访问,Origin 必须是全匹配  .allowCredentials(true) // 允许带cookie访问  .allowedMethods(&amp;#34;GET&amp;#34;, &amp;#34;POST&amp;#34;, &amp;#34;PUT&amp;#34;, &amp;#34;DELETE&amp;#34;, &amp;#34;OPTIONS&amp;#34;) .allowedHeaders(&amp;#34;token&amp;#34;) .maxAge(3600); }  更多關於跨域，參考 https://segmentfault.com/a/1190000019485883
-  映射html頁面  前後綴一樣由thymeleaf加上    @Configuration public class MallWebConfig implements WebMvcConfigurer { // View映射，省下造controller一個一個設定  @Override public void addViewControllers(ViewControllerRegistry registry) { registry.</description>
+  複習SpringMVC WebMvcConfigurer是一個接口，用JavaBean的方式代替web.xml，常用於: 攔截器，例如:  @Override public void addInterceptors(InterceptorRegistry registry) {  super.addInterceptors(registry);  registry.addInterceptor(new TestInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;).excludePathPatterns(&amp;#34;/emp/toLogin&amp;#34;,&amp;#34;/emp/login&amp;#34;,&amp;#34;/js/**&amp;#34;,&amp;#34;/css/**&amp;#34;,&amp;#34;/images/**&amp;#34;); }  跨域設定，例如:  // 跨域 @Override public void addCorsMappings(CorsRegistry registry) {  registry.addMapping(&amp;#34;/**&amp;#34;)  .allowedOrigins(&amp;#34;*&amp;#34;) //浏览器允许所有的域访问 / 注意 * 不能满足带有cookie的访问,Origin 必须是全匹配  .allowCredentials(true) // 允许带cookie访问  .allowedMethods(&amp;#34;GET&amp;#34;, &amp;#34;POST&amp;#34;, &amp;#34;PUT&amp;#34;, &amp;#34;DELETE&amp;#34;, &amp;#34;OPTIONS&amp;#34;)  .allowedHeaders(&amp;#34;token&amp;#34;)  .maxAge(3600); }  更多關於跨域，參考 https://segmentfault.com/a/1190000019485883
+  映射html頁面  前後綴一樣由thymeleaf加上    @Configuration public class MallWebConfig implements WebMvcConfigurer {   // View映射，省下造controller一個一個設定  @Override  public void addViewControllers(ViewControllerRegistry registry) {  registry.</description>
     </item>
     
     <item>
@@ -137,8 +146,8 @@
       <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220201-gulimall-15/</guid>
-      <description>商品詳情 View  商品詳情也是子網域，設定網關:   nginx就不用改了，因為之前設的規則是*.mall.com 導入頁面item.html與靜態資源 前端頁面一樣用thymeleaf渲染 thymeleaf中動態網址的寫法，用|包住網址前後，中間${參數}  &amp;lt;a th:href=&amp;quot;|http://item.mall.com/${product.skuId}.html|&amp;quot;&amp;gt;  格式化數字，前面3是整數位，2是小數位  &amp;lt;span th:text=&amp;quot;${#numbers.formatDecimal(item.info.price,3,2)}&amp;quot;&amp;gt;  sku組合切換，太偏前端了，有用到再來學   https://www.bilibili.com/video/BV1np4y1C7Yf?p=208&amp;amp;spm_id_from=pageDriver
-  另外我發現thymeleaf是不是有病，一般的HTML註解&amp;lt;!--他竟然還是會解析，不顯示但是會解析 可以參考 https://blog.csdn.net/sun_jy2011/article/details/40299821 比如一塊代碼有問想先註解掉，整塊用快捷鍵選起來ctrl+/先註解掉還不行，他就是硬要解析，如果有BUG就會一直讀出BUG，真的是有病耶，這樣設計是腦子被門夾到嗎。一定要用下面這樣的格式包起來的才不會解析  &amp;lt;!--/*--&amp;gt; xxxx OOOO &amp;lt;!--*/--&amp;gt; Controller  ItemController.java  我才搞懂return &amp;quot;item&amp;quot;是因為前面說的thymeleaf自動會加上前後綴，就相當於templates/item.html    @GetMapping(&amp;#34;/{skuId}.html&amp;#34;) public String skuItem(@PathVariable(&amp;#34;skuId&amp;#34;) Long skuId, Model model) throws ExecutionException, InterruptedException { System.out.println(&amp;#34;準備查詢&amp;#34; + skuId + &amp;#34;詳情&amp;#34;); SkuItemVo vos = skuInfoService.item(skuId); model.addAttribute(&amp;#34;item&amp;#34;, vos); return &amp;#34;item&amp;#34;; } Model  Vo設計  /** * 1、sku基本信息【標題、副標題、價格】pms_sku_info * 2、sku圖片信息【每個sku_id對應了多個圖片】pms_sku_images * 3、spu下所有sku銷售屬性組合【不只是當前sku_id所指定的商品】 * 4、spu商品介紹【】 * 5、spu規格與包裝【參數信息】 */  SkuItemVo.</description>
+      <description>商品詳情 View  商品詳情也是子網域，設定網關:   nginx就不用改了，因為之前設的規則是*.mall.com 導入頁面item.html與靜態資源 前端頁面一樣用thymeleaf渲染 thymeleaf中動態網址的寫法，用|包住網址前後，中間${參數}  &amp;lt;a th:href=&amp;#34;|http://item.mall.com/${product.skuId}.html|&amp;#34;&amp;gt;  格式化數字，前面3是整數位，2是小數位  &amp;lt;span th:text=&amp;#34;${#numbers.formatDecimal(item.info.price,3,2)}&amp;#34;&amp;gt;  sku組合切換，太偏前端了，有用到再來學   https://www.bilibili.com/video/BV1np4y1C7Yf?p=208&amp;amp;spm_id_from=pageDriver
+  另外我發現thymeleaf是不是有病，一般的HTML註解&amp;lt;!--他竟然還是會解析，不顯示但是會解析 可以參考 https://blog.csdn.net/sun_jy2011/article/details/40299821 比如一塊代碼有問想先註解掉，整塊用快捷鍵選起來ctrl+/先註解掉還不行，他就是硬要解析，如果有BUG就會一直讀出BUG，真的是有病耶，這樣設計是腦子被門夾到嗎。一定要用下面這樣的格式包起來的才不會解析  &amp;lt;!--/*--&amp;gt; xxxx OOOO &amp;lt;!--*/--&amp;gt; Controller  ItemController.java  我才搞懂return &amp;quot;item&amp;quot;是因為前面說的thymeleaf自動會加上前後綴，就相當於templates/item.html    @GetMapping(&amp;#34;/{skuId}.html&amp;#34;) public String skuItem(@PathVariable(&amp;#34;skuId&amp;#34;) Long skuId, Model model) throws ExecutionException,  InterruptedException {  System.out.println(&amp;#34;準備查詢&amp;#34; + skuId + &amp;#34;詳情&amp;#34;);    SkuItemVo vos = skuInfoService.item(skuId);  model.</description>
     </item>
     
     <item>
@@ -163,7 +172,7 @@
   通常來說，屬於網站下的附屬小功能，用子目錄；而體量大到可以分割出去才用會用子網域
   子網域複雜了一點，反正都學學吧
   設定網段  改host模擬DNS   nginx  採了坑，改完忘記要重開服務     網關  - id: mall_search_route uri: lb://search predicates: - Host=search.mall.com 靜態資源  這邊一樣用thymeleaf渲染，引包 關閉 spring.thymeleaf.cache=false 調整 list.html，確認一下跟首頁的超連結是否正確  寫Vo  這可就複雜了，需要考慮各種搜尋條件、返回的結果&amp;hellip;
-  搜尋條件 SearchParam.java  @Data public class SearchParam { /** * 頁面傳遞過來的全文匹配關鍵字 */ private String keyword; /** * 品牌id,可以多選 */ private List&amp;lt;Long&amp;gt; brandId; /** * 三級分類id */ private Long catalog3Id; /** * 排序條件：sort=price/salecount/hotscore_desc/asc */ private String sort; /** * 是否有貨 */ private Integer hasStock; /** * 價格區間查詢 */ private String skuPrice; /** * 按照屬性進行篩選 */ private List&amp;lt;String&amp;gt; attrs; /** * 頁碼 */ private Integer pageNum = 1; /** * 原生的所有查詢條件 */ private String _queryString; }  返回的結果 SearchResult.</description>
+  搜尋條件 SearchParam.java  @Data public class SearchParam {   /** * 頁面傳遞過來的全文匹配關鍵字 */  private String keyword;   /** * 品牌id,可以多選 */  private List&amp;lt;Long&amp;gt; brandId;   /** * 三級分類id */  private Long catalog3Id;   /** * 排序條件：sort=price/salecount/hotscore_desc/asc */  private String sort;   /** * 是否有貨 */  private Integer hasStock;   /** * 價格區間查詢 */  private String skuPrice;   /** * 按照屬性進行篩選 */  private List&amp;lt;String&amp;gt; attrs;   /** * 頁碼 */  private Integer pageNum = 1;   /** * 原生的所有查詢條件 */  private String _queryString;  }  返回的結果 SearchResult.</description>
     </item>
     
     <item>
@@ -175,7 +184,7 @@
       <description>Redisson   Java操作Redis的框架，主要用他的分布式鎖的功能
   加鎖的方法與邏輯幾乎都跟java.util.concurrent包下的一樣
  JUC包: ReentrantLock那些，如果沒印象了看下面個種鎖的範例就會回想起來    前置設定  https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95
-  引包  &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;redisson&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.16.8&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  造config類  注意import org.redisson.config.Config    @Configuration public class RedissonConfig { /** * 所有對Redisson的使用都是通過RedissonClient * * @return * @throws IOException */ @Bean(destroyMethod = &amp;#34;shutdown&amp;#34;) public RedissonClient redisson() throws IOException { // 創建配置  Config config = new Config(); config.useSingleServer().setAddress(&amp;#34;redis://localhost:6379&amp;#34;); // 根據Config創建出RedissonClient實例  // Redis url should start with redis:// or rediss://  RedissonClient redissonClient = Redisson.</description>
+  引包  &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;redisson&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;3.16.8&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  造config類  注意import org.redisson.config.Config    @Configuration public class RedissonConfig {  /** * 所有對Redisson的使用都是通過RedissonClient * * @return * @throws IOException */  @Bean(destroyMethod = &amp;#34;shutdown&amp;#34;)  public RedissonClient redisson() throws IOException {  // 創建配置  Config config = new Config();  config.</description>
     </item>
     
     <item>
@@ -187,7 +196,7 @@
       <description>緩存  誰適合進緩存?  讀多寫少 即時性、一致性要求不高的   例如: 物流資訊、排行榜  實現   請求來了，緩存中是否已有資料?
  無，去DB拿一份給他，並且存到緩存中 有，直接從緩存拿給他    本地緩存: 最簡單實現就是寫一個Map，把東西存裡面。然而在分布式會有問題
  負載均衡: 每次輪到可能每個分散的機站都要去DB取一份資料 資料一致性: 某處更新了，其他處已經緩存中的不會更新    於是就會用到Redis這種noSQL
-  Spring Redis  引包: spring-boot-starter-data-redis application.properties設定端口與密碼(如果有)  spring.redis.host=localhost spring.redis.port=6379  造一個StringRedisTemplate 用.opsForXXX()方法造出操作子，XXX是要存的value類型 拿造出的操作子開始set、get  @Autowired StringRedisTemplate stringRedisTemplate; @Test void test1() { ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue(); ops.set(&amp;#34;hello&amp;#34;, &amp;#34;world_&amp;#34; + UUID.randomUUID()); System.out.println(&amp;#34;ops.get(\&amp;#34;hello\&amp;#34;) = &amp;#34; + ops.get(&amp;#34;hello&amp;#34;)); }  推薦使用這個小軟體來查看管理Redis   https://github.</description>
+  Spring Redis  引包: spring-boot-starter-data-redis application.properties設定端口與密碼(如果有)  spring.redis.host=localhost spring.redis.port=6379  造一個StringRedisTemplate 用.opsForXXX()方法造出操作子，XXX是要存的value類型 拿造出的操作子開始set、get  @Autowired StringRedisTemplate stringRedisTemplate;  @Test void test1() {  ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue();  ops.set(&amp;#34;hello&amp;#34;, &amp;#34;world_&amp;#34; + UUID.randomUUID());  System.out.println(&amp;#34;ops.get(\&amp;#34;hello\&amp;#34;) = &amp;#34; + ops.</description>
     </item>
     
     <item>
@@ -205,7 +214,7 @@
       <pubDate>Wed, 26 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220126-gulimall-09-thymeleaf/</guid>
-      <description>商品上架  上架，除了把狀態改成上架，為了商品能被快速搜索到，還要提取出關鍵訊息存到ES 簡單來說就是把該商品的sku提取出來，存到ES的index中，當用戶搜索商品時，就可以依照分組動態產生篩選條件，依照得分呈現商品屬性   很繁瑣，但是不難 SpuInfoController.java  // 上架 @PostMapping(&amp;#34;/{spuId}/up&amp;#34;) public R spuUp(@PathVariable Long spuId) { spuInfoService.up(spuId); return R.ok(); }  SpuInfoServiceImpl.java  知識點:用stream把list轉map    // 商品上架 @Override public void up(Long spuId) { // 先從spuID查出對應的所有sku  List&amp;lt;SkuInfoEntity&amp;gt; skuInfoEntities = skuInfoService.getSkusBySpuId(spuId); // 先查出當前sku的所有可以被用來檢索的規格屬性  List&amp;lt;ProductAttrValueEntity&amp;gt; baseAttrs = productAttrValueService.baseAttrListforspu(spuId); List&amp;lt;Long&amp;gt; attrIds = baseAttrs.stream().map(ProductAttrValueEntity::getAttrId).collect(Collectors.toList()); // sku當初填值時就有一欄是&amp;#34;是否能被檢索  List&amp;lt;Long&amp;gt; searchAttrIds = attrService.selectSearchAttrs(attrIds); // 轉換為Set集合  Set&amp;lt;Long&amp;gt; idSet = searchAttrIds.stream().collect(Collectors.toSet()); // 過濾留下能被檢索的Attrs  List&amp;lt;SkuEsModel.</description>
+      <description>商品上架  上架，除了把狀態改成上架，為了商品能被快速搜索到，還要提取出關鍵訊息存到ES 簡單來說就是把該商品的sku提取出來，存到ES的index中，當用戶搜索商品時，就可以依照分組動態產生篩選條件，依照得分呈現商品屬性   很繁瑣，但是不難 SpuInfoController.java  // 上架 @PostMapping(&amp;#34;/{spuId}/up&amp;#34;) public R spuUp(@PathVariable Long spuId) {  spuInfoService.up(spuId);  return R.ok(); }  SpuInfoServiceImpl.java  知識點:用stream把list轉map    // 商品上架 @Override public void up(Long spuId) {  // 先從spuID查出對應的所有sku  List&amp;lt;SkuInfoEntity&amp;gt; skuInfoEntities = skuInfoService.getSkusBySpuId(spuId);   // 先查出當前sku的所有可以被用來檢索的規格屬性  List&amp;lt;ProductAttrValueEntity&amp;gt; baseAttrs = productAttrValueService.baseAttrListforspu(spuId);  List&amp;lt;Long&amp;gt; attrIds = baseAttrs.stream().map(ProductAttrValueEntity::getAttrId).collect(Collectors.toList());  // sku當初填值時就有一欄是&amp;#34;是否能被檢索  List&amp;lt;Long&amp;gt; searchAttrIds = attrService.selectSearchAttrs(attrIds);  // 轉換為Set集合  Set&amp;lt;Long&amp;gt; idSet = searchAttrIds.</description>
     </item>
     
     <item>
@@ -216,7 +225,7 @@
       <guid>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</guid>
       <description>ElasticSearch  用來執行站內搜索(如商品查詢)的引擎
   開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作 核心觀念: Inverted Index (反向索引) 是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取 名詞對應:     RDBMS 概念 Elasticsearch     Table 表 Index   Row 一筆資料(例如:張三) Document   Column 屬性(例如:姓名) Field   Schema 架構(例如:資料類型、允許為空等等) Mapping   SQL 操作語句 DSL     以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用 個人直接把它看作表了，畢竟是概念，不用分太細  安裝  使用docker
-  教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作  mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;quot;http.</description>
+  教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作  mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;#34;http.</description>
     </item>
     
     <item>
@@ -225,7 +234,7 @@
       <pubDate>Mon, 24 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220124-gulimall-07/</guid>
-      <description>商品屬性維護 spu檢索  一個快速找到API的方法  裝上插件RestfulTool，直接貼上文檔給的URL瞬間就能定位     SpuInfoServiceImpl.java  處理多條件模糊搜索    @Override public PageUtils queryPageByKeyword(Map&amp;lt;String, Object&amp;gt; params) { /* key: &amp;#39;華為&amp;#39;,//檢索關鍵字 catelogId: 6,//三級分類id brandId: 1,//品牌id status: 0,//商品狀態 */ QueryWrapper&amp;lt;SpuInfoEntity&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;(); String key = (String) params.get(&amp;#34;key&amp;#34;); if (StringUtils.isNotBlank(key) &amp;amp;&amp;amp; !&amp;#34;0&amp;#34;.equalsIgnoreCase(key)) { wrapper.and(w -&amp;gt; { // 模糊搜索為了怕蓋掉下面的所以用and，其實也能放最後就好  // 優先 NOT&amp;gt;AND&amp;gt;OR  w.eq(&amp;#34;id&amp;#34;, key).or().like(&amp;#34;spu_name&amp;#34;, key); }); } String status = (String) params.get(&amp;#34;status&amp;#34;); if (StringUtils.isNotBlank(status)) { wrapper.</description>
+      <description>商品屬性維護 spu檢索  一個快速找到API的方法  裝上插件RestfulTool，直接貼上文檔給的URL瞬間就能定位     SpuInfoServiceImpl.java  處理多條件模糊搜索    @Override public PageUtils queryPageByKeyword(Map&amp;lt;String, Object&amp;gt; params) { /* key: &amp;#39;華為&amp;#39;,//檢索關鍵字 catelogId: 6,//三級分類id brandId: 1,//品牌id status: 0,//商品狀態 */  QueryWrapper&amp;lt;SpuInfoEntity&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;();  String key = (String) params.get(&amp;#34;key&amp;#34;);  if (StringUtils.isNotBlank(key) &amp;amp;&amp;amp; !&amp;#34;0&amp;#34;.equalsIgnoreCase(key)) {  wrapper.and(w -&amp;gt; {  // 模糊搜索為了怕蓋掉下面的所以用and，其實也能放最後就好  // 優先 NOT&amp;gt;AND&amp;gt;OR  w.eq(&amp;#34;id&amp;#34;, key).or().like(&amp;#34;spu_name&amp;#34;, key);  });  }  String status = (String) params.</description>
     </item>
     
     <item>
@@ -234,7 +243,7 @@
       <pubDate>Sun, 23 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220123-gulimall-06-feign/</guid>
-      <description>銷售屬性  AttrController.java  獲取的API跟先前幾乎一樣，所以改造之前的queryBasePageCatelogId，順便換名字    /** * 規格參數列表 */ @GetMapping(&amp;#34;/{attrType}/list/{catelogId}&amp;#34;) //@RequiresPermissions(&amp;#34;product:attr:list&amp;#34;) public R baseAttrList(@RequestParam Map&amp;lt;String, Object&amp;gt; params, @PathVariable(&amp;#34;catelogId&amp;#34;) Long catelogId, @PathVariable(&amp;#34;attrType&amp;#34;) String attrType ) { PageUtils page = attrService.queryBaseAttrPage(params, catelogId, attrType); return R.ok().put(&amp;#34;page&amp;#34;, page); }  AttrServiceImpl.java  @Override public PageUtils queryBaseAttrPage(Map&amp;lt;String, Object&amp;gt; params, Long catelogId, String attrType) { QueryWrapper&amp;lt;AttrEntity&amp;gt; qw = new QueryWrapper&amp;lt;&amp;gt;(); // 判斷是要銷售還是基本屬性，1=基本，0=銷售  qw.eq(&amp;#34;attr_type&amp;#34;, &amp;#34;base&amp;#34;.equalsIgnoreCase(attrType) ? 1 : 0);  順便修改保存方法   為了不留技術債(只有自己知道的神秘代號)，新增一個枚舉類來表示   把剛剛用的1、0都換成ProductConstant.</description>
+      <description>銷售屬性  AttrController.java  獲取的API跟先前幾乎一樣，所以改造之前的queryBasePageCatelogId，順便換名字    /** * 規格參數列表 */ @GetMapping(&amp;#34;/{attrType}/list/{catelogId}&amp;#34;) //@RequiresPermissions(&amp;#34;product:attr:list&amp;#34;) public R baseAttrList(@RequestParam Map&amp;lt;String, Object&amp;gt; params,  @PathVariable(&amp;#34;catelogId&amp;#34;) Long catelogId,  @PathVariable(&amp;#34;attrType&amp;#34;) String attrType ) {  PageUtils page = attrService.queryBaseAttrPage(params, catelogId, attrType);  return R.ok().put(&amp;#34;page&amp;#34;, page); }  AttrServiceImpl.java  @Override public PageUtils queryBaseAttrPage(Map&amp;lt;String, Object&amp;gt; params, Long catelogId, String attrType) {  QueryWrapper&amp;lt;AttrEntity&amp;gt; qw = new QueryWrapper&amp;lt;&amp;gt;();  // 判斷是要銷售還是基本屬性，1=基本，0=銷售  qw.eq(&amp;#34;attr_type&amp;#34;, &amp;#34;base&amp;#34;.equalsIgnoreCase(attrType) ? 1 : 0);  順便修改保存方法   為了不留技術債(只有自己知道的神秘代號)，新增一個枚舉類來表示   把剛剛用的1、0都換成ProductConstant.</description>
     </item>
     
     <item>
@@ -254,7 +263,7 @@
       <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220121-gulimall-04-jsr303/</guid>
-      <description>逆向生成前端頁面  首先一樣造出側邊欄   找到當初生成器產的那些，好樣的原來當初都一併造了，通通複製過去   另外去前端把權限驗證先暫時關了，全部返回true   查看效果，什麼新增修改基本的CRUD人家全做好了，哭阿  簡單修飾 顯示狀態換成開關  去餓了嗎找模板  :active-value，:是v-bind縮寫 相當於把showStatus的值在1跟0切換，而showStatus本就是pojo的屬性，所以直接傳給後端API就完事    &amp;lt;el-table-column prop=&amp;#34;showStatus&amp;#34; header-align=&amp;#34;center&amp;#34; align=&amp;#34;center&amp;#34; label=&amp;#34;顯示狀態&amp;#34; &amp;gt; &amp;lt;template slot-scope=&amp;#34;scope&amp;#34;&amp;gt; &amp;lt;el-switch v-model=&amp;#34;scope.row.showStatus&amp;#34; active-color=&amp;#34;#13ce66&amp;#34; inactive-color=&amp;#34;#ff4949&amp;#34; :active-value=&amp;#34;1&amp;#34; :inactive-value=&amp;#34;0&amp;#34; @change=&amp;#34;updateBrandStatus(scope.row)&amp;#34; &amp;gt;&amp;lt;/el-switch&amp;gt; &amp;lt;/template&amp;gt; &amp;lt;/el-table-column&amp;gt;  下面綁定一個監聽@change的方法，調用後端API更新  updateBrandStatus(data) { console.log(&amp;#34;最新信息&amp;#34;, data); let { brandId, showStatus } = data; //發送請求修改狀態  this.$http({ url: this.$http.adornUrl(&amp;#34;/product/brand/update/status&amp;#34;), method: &amp;#34;post&amp;#34;, data: this.$http.adornData({ brandId, showStatus }, false), }).then(({ data }) =&amp;gt; { this.</description>
+      <description>逆向生成前端頁面  首先一樣造出側邊欄   找到當初生成器產的那些，好樣的原來當初都一併造了，通通複製過去   另外去前端把權限驗證先暫時關了，全部返回true   查看效果，什麼新增修改基本的CRUD人家全做好了，哭阿  簡單修飾 顯示狀態換成開關  去餓了嗎找模板  :active-value，:是v-bind縮寫 相當於把showStatus的值在1跟0切換，而showStatus本就是pojo的屬性，所以直接傳給後端API就完事     &amp;lt;el-table-column  prop=&amp;#34;showStatus&amp;#34;  header-align=&amp;#34;center&amp;#34;  align=&amp;#34;center&amp;#34;  label=&amp;#34;顯示狀態&amp;#34;  &amp;gt;  &amp;lt;template slot-scope=&amp;#34;scope&amp;#34;&amp;gt;  &amp;lt;el-switch  v-model=&amp;#34;scope.row.showStatus&amp;#34;  active-color=&amp;#34;#13ce66&amp;#34;  inactive-color=&amp;#34;#ff4949&amp;#34;  :active-value=&amp;#34;1&amp;#34;  :inactive-value=&amp;#34;0&amp;#34;  @change=&amp;#34;updateBrandStatus(scope.row)&amp;#34;  &amp;gt;&amp;lt;/el-switch&amp;gt;  &amp;lt;/template&amp;gt;  &amp;lt;/el-table-column&amp;gt;  下面綁定一個監聽@change的方法，調用後端API更新   updateBrandStatus(data) {  console.log(&amp;#34;最新信息&amp;#34;, data);  let { brandId, showStatus } = data;  //發送請求修改狀態  this.</description>
     </item>
     
     <item>
@@ -265,7 +274,7 @@
       <guid>https://yoziming.github.io/post/220120-gulimall-03-gateway/</guid>
       <description>後台頁面  別的項目學過了，這邊快速跳過，只記幾個新知識
  計算屬性與監聽器 過濾器 組件化  可以復用的模板
-  沒有el屬性，不與頁面中的元素綁定 template就是他的HTML模板 data()必須是一個函數而非物件   局部組件  用componments聲明，其中的key名就是標簽名    生命週期  參考 https://book.vue.tw/CH1/1-7-lifecycle.html  腳手架創建表單  之前這邊手動要先去router創建右邊的導航欄，腳手架可以用可視化工具直接創造，非常方便 自己要實現的部分只剩接後端API的網址與資料呈現  javax問題  啟動renren-fast服務時因為引用了common模組(為了讓後台的server也能上nacos服務發現)，又出了點問題，排查了半天  package javax.validation.constraints does not exist 解法: &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-validation&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt;  我感覺人人開源這個項目已經跟不上時代了，網路上目前2022年1月比較推薦的是若依腳手架，他這個star超高全站第2，也有一直在維護，issue處理很積極，有機會嘗試看看 https://gitee.com/y_project/RuoYi  後端  現在要實現在後台檢視商品列表功能，進到product模組的controller，寫查詢的控制器與服務、實現類 要返回的資料是這種表格   三級樹形列表，老師這邊一次sql查出全部資料然後用stream工具類操作賦好值，實在太強。我想看懂就花了大半天，還是老實for循環，或是多查幾次SQL吧&amp;hellip;  /** * 三級樹型列表 * * @return */ @Override public List&amp;lt;CategoryEntity&amp;gt; listTree() { // 查所有分類  List&amp;lt;CategoryEntity&amp;gt; entities = baseMapper.</description>
+  沒有el屬性，不與頁面中的元素綁定 template就是他的HTML模板 data()必須是一個函數而非物件   局部組件  用componments聲明，其中的key名就是標簽名    生命週期  參考 https://book.vue.tw/CH1/1-7-lifecycle.html  腳手架創建表單  之前這邊手動要先去router創建右邊的導航欄，腳手架可以用可視化工具直接創造，非常方便 自己要實現的部分只剩接後端API的網址與資料呈現  javax問題  啟動renren-fast服務時因為引用了common模組(為了讓後台的server也能上nacos服務發現)，又出了點問題，排查了半天  package javax.validation.constraints does not exist 解法: &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-validation&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt;  我感覺人人開源這個項目已經跟不上時代了，網路上目前2022年1月比較推薦的是若依腳手架，他這個star超高全站第2，也有一直在維護，issue處理很積極，有機會嘗試看看 https://gitee.com/y_project/RuoYi  後端  現在要實現在後台檢視商品列表功能，進到product模組的controller，寫查詢的控制器與服務、實現類 要返回的資料是這種表格   三級樹形列表，老師這邊一次sql查出全部資料然後用stream工具類操作賦好值，實在太強。我想看懂就花了大半天，還是老實for循環，或是多查幾次SQL吧&amp;hellip;   /** * 三級樹型列表 * * @return */  @Override  public List&amp;lt;CategoryEntity&amp;gt; listTree() {  // 查所有分類  List&amp;lt;CategoryEntity&amp;gt; entities = baseMapper.</description>
     </item>
     
     <item>

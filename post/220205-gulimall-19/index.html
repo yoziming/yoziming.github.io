@@ -1128,38 +1128,38 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 登入攔截器
-</span><span style="color:#228b22"> * 從session中獲取了登入信息（redis中），封裝到了ThreadLocal中
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Component</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LoginUserInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;MemberResponseTo&gt; loginUser = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-
-        <span style="color:#228b22">// 獲取登入的用戶信息
-</span><span style="color:#228b22"></span>        MemberResponseTo attribute = (MemberResponseTo) request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(LOGIN_USER);
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (attribute != <span style="color:#8b008b;font-weight:bold">null</span>) {
-            <span style="color:#228b22">// 把登入後用戶的信息放在ThreadLocal裡面進行保存
-</span><span style="color:#228b22"></span>            loginUser.<span style="color:#658b00">set</span>(attribute);
-
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            <span style="color:#228b22">// 未登入，返回登入頁面
-</span><span style="color:#228b22"></span>            response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;text/html;charset=UTF-8&#34;</span>);
-            PrintWriter out = response.<span style="color:#658b00">getWriter</span>();
-            out.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;&lt;script&gt;alert(&#39;請先進行登入，再進行後續操作！&#39;);location.href=&#39;http://auth.mall.com/login.html&#39;&lt;/script&gt;&#34;</span>);
-            <span style="color:#228b22">// session.setAttribute(&#34;msg&#34;, &#34;請先進行登入&#34;);
-</span><span style="color:#228b22"></span>            <span style="color:#228b22">// response.sendRedirect(&#34;http://auth.mall.com/login.html&#34;);
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-        }
-    }
-}
-</code></pre></div><h2 id="訂單確認頁">訂單確認頁</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 登入攔截器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 從session中獲取了登入信息（redis中），封裝到了ThreadLocal中
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LoginUserInterceptor</span> <span style="color:#8b008b;font-weight:bold">implements</span> HandlerInterceptor {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ThreadLocal&lt;MemberResponseTo&gt; loginUser = <span style="color:#8b008b;font-weight:bold">new</span> ThreadLocal&lt;&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取登入的用戶信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        MemberResponseTo attribute = (MemberResponseTo) request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">getAttribute</span>(LOGIN_USER);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (attribute != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 把登入後用戶的信息放在ThreadLocal裡面進行保存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            loginUser.<span style="color:#658b00">set</span>(attribute);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 未登入，返回登入頁面
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;text/html;charset=UTF-8&#34;</span>);
+</span></span><span style="display:flex;"><span>            PrintWriter out = response.<span style="color:#658b00">getWriter</span>();
+</span></span><span style="display:flex;"><span>            out.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;&lt;script&gt;alert(&#39;請先進行登入，再進行後續操作！&#39;);location.href=&#39;http://auth.mall.com/login.html&#39;&lt;/script&gt;&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// session.setAttribute(&#34;msg&#34;, &#34;請先進行登入&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// response.sendRedirect(&#34;http://auth.mall.com/login.html&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="訂單確認頁">訂單確認頁</h2>
 <ul>
 <li>從購物車點了去結算，就來到這</li>
 </ul>
@@ -1167,155 +1167,155 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <ul>
 <li>OrderConfirmVo.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 訂單確認頁需要用的數據
-</span><span style="color:#228b22"> */</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderConfirmVo</span> {
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 會員收貨地址列表
-</span><span style="color:#228b22">     **/</span>
-    <span style="color:#707a7c">@Getter</span>
-    <span style="color:#707a7c">@Setter</span>
-    List&lt;MemberAddressTo&gt; memberAddressTos;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 所有選中的購物項【購物車中的所有項】
-</span><span style="color:#228b22">     **/</span>
-    <span style="color:#707a7c">@Getter</span>
-    <span style="color:#707a7c">@Setter</span>
-    List&lt;OrderItemTo&gt; items;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 優惠券（會員積分）
-</span><span style="color:#228b22">     **/</span>
-    <span style="color:#707a7c">@Getter</span>
-    <span style="color:#707a7c">@Setter</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> Integer integration;
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 防止重複提交的令牌 冪等性
-</span><span style="color:#228b22">     **/</span>
-    <span style="color:#707a7c">@Getter</span>
-    <span style="color:#707a7c">@Setter</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> String orderToken;
-
-    <span style="color:#707a7c">@Getter</span>
-    <span style="color:#707a7c">@Setter</span>
-    Map&lt;Long, Boolean&gt; stocks;
-
-    <span style="color:#8b008b;font-weight:bold">public</span> Integer <span style="color:#008b45">getCount</span>() {
-        Integer count = 0;
-        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
-            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
-                count += item.<span style="color:#658b00">getCount</span>();
-            }
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> count;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 總商品金額
-</span><span style="color:#228b22">     **/</span>
-    <span style="color:#228b22">//BigDecimal total;
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">//計算訂單總額
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> BigDecimal <span style="color:#008b45">getTotal</span>() {
-        BigDecimal totalNum = BigDecimal.<span style="color:#658b00">ZERO</span>;
-        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
-            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
-                <span style="color:#228b22">//計算當前商品的總價格
-</span><span style="color:#228b22"></span>                BigDecimal itemPrice = item.<span style="color:#658b00">getPrice</span>().<span style="color:#658b00">multiply</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(item.<span style="color:#658b00">getCount</span>().<span style="color:#658b00">toString</span>()));
-                <span style="color:#228b22">//再計算全部商品的總價格
-</span><span style="color:#228b22"></span>                totalNum = totalNum.<span style="color:#658b00">add</span>(itemPrice);
-            }
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> totalNum;
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 訂單確認頁需要用的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">OrderConfirmVo</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 會員收貨地址列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     **/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
+</span></span><span style="display:flex;"><span>    List&lt;MemberAddressTo&gt; memberAddressTos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 所有選中的購物項【購物車中的所有項】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     **/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
+</span></span><span style="display:flex;"><span>    List&lt;OrderItemTo&gt; items;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 優惠券（會員積分）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     **/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Integer integration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 防止重複提交的令牌 冪等性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     **/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String orderToken;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
+</span></span><span style="display:flex;"><span>    Map&lt;Long, Boolean&gt; stocks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Integer <span style="color:#008b45">getCount</span>() {
+</span></span><span style="display:flex;"><span>        Integer count = 0;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
+</span></span><span style="display:flex;"><span>                count += item.<span style="color:#658b00">getCount</span>();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> count;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 總商品金額
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     **/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//BigDecimal total;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">//計算訂單總額
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> BigDecimal <span style="color:#008b45">getTotal</span>() {
+</span></span><span style="display:flex;"><span>        BigDecimal totalNum = BigDecimal.<span style="color:#658b00">ZERO</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//計算當前商品的總價格
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                BigDecimal itemPrice = item.<span style="color:#658b00">getPrice</span>().<span style="color:#658b00">multiply</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(item.<span style="color:#658b00">getCount</span>().<span style="color:#658b00">toString</span>()));
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//再計算全部商品的總價格
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                totalNum = totalNum.<span style="color:#658b00">add</span>(itemPrice);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> totalNum;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>OrderWebController.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 去結算確認頁
-</span><span style="color:#228b22"></span><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/toTrade&#34;</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">toTrade</span>(Model model, HttpServletRequest request) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
-    OrderConfirmVo confirmVo = orderService.<span style="color:#658b00">confirmOrder</span>();
-    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;confirmOrderData&#34;</span>, confirmVo);
-    <span style="color:#228b22">// 展示訂單確認的數據
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;confirm&#34;</span>;
-}
-</code></pre></div><h3 id="service層">Service層</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 去結算確認頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@GetMapping</span>(value = <span style="color:#cd5555">&#34;/toTrade&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">toTrade</span>(Model model, HttpServletRequest request) <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+</span></span><span style="display:flex;"><span>    OrderConfirmVo confirmVo = orderService.<span style="color:#658b00">confirmOrder</span>();
+</span></span><span style="display:flex;"><span>    model.<span style="color:#658b00">addAttribute</span>(<span style="color:#cd5555">&#34;confirmOrderData&#34;</span>, confirmVo);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 展示訂單確認的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;confirm&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="service層">Service層</h3>
 <ul>
 <li>這邊有2個知識點: feign丟失請求頭、防重令牌，在下面分別展開</li>
 <li>OrderServiceImpl.java</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * 訂單確認頁返回需要用的數據
-</span><span style="color:#228b22"> *
-</span><span style="color:#228b22"> * @return
-</span><span style="color:#228b22"> */</span>
-<span style="color:#707a7c">@Override</span>
-<span style="color:#8b008b;font-weight:bold">public</span> OrderConfirmVo <span style="color:#008b45">confirmOrder</span>() <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
-    <span style="color:#228b22">// 構建OrderConfirmVo
-</span><span style="color:#228b22"></span>    OrderConfirmVo confirmVo = <span style="color:#8b008b;font-weight:bold">new</span> OrderConfirmVo();
-    <span style="color:#228b22">// 獲取當前用戶登入的信息
-</span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
-    <span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
-</span><span style="color:#228b22"></span>    RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
-    <span style="color:#228b22">// 開啟第一個異步任務
-</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
-        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
-</span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
-        <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
-</span><span style="color:#228b22"></span>        List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
-        confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
-    }, threadPoolExecutor);
-
-    <span style="color:#228b22">// 開啟第二個異步任務
-</span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; cartInfoFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
-        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據【解決異步ThreadLocal 無法共享數據】
-</span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
-        <span style="color:#228b22">// 遠程查詢購物車所有選中的購物項
-</span><span style="color:#228b22"></span>        List&lt;OrderItemTo&gt; currentCartItems = cartFeignService.<span style="color:#658b00">getCurrentCartItems</span>();
-        confirmVo.<span style="color:#658b00">setItems</span>(currentCartItems);
-        <span style="color:#228b22">// feign在遠程調用之前要構造請求，會調用很多的攔截器
-</span><span style="color:#228b22"></span>    }, threadPoolExecutor).<span style="color:#658b00">thenRunAsync</span>(() -&gt; {
-        List&lt;OrderItemTo&gt; items = confirmVo.<span style="color:#658b00">getItems</span>();
-        <span style="color:#228b22">// 獲取全部商品的id
-</span><span style="color:#228b22"></span>        List&lt;Long&gt; skuIds = items.<span style="color:#658b00">stream</span>()
-                .<span style="color:#658b00">map</span>((itemVo -&gt; itemVo.<span style="color:#658b00">getSkuId</span>()))
-                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-        <span style="color:#228b22">// 遠程查詢商品庫存信息
-</span><span style="color:#228b22"></span>        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIds);
-        List&lt;SkuStockVo&gt; skuStockVos = skuHasStock.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuStockVo&gt;&gt;() {
-        });
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (skuStockVos != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; skuStockVos.<span style="color:#658b00">size</span>() &gt; 0) {
-            <span style="color:#228b22">// 將skuStockVos集合轉換為map
-</span><span style="color:#228b22"></span>            Map&lt;Long, Boolean&gt; skuHasStockMap =
-                    skuStockVos.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
-            confirmVo.<span style="color:#658b00">setStocks</span>(skuHasStockMap);
-        }
-    }, threadPoolExecutor);
-
-    <span style="color:#228b22">// 查詢用戶積分
-</span><span style="color:#228b22"></span>    Integer integration = memberResponseTo.<span style="color:#658b00">getIntegration</span>();
-    confirmVo.<span style="color:#658b00">setIntegration</span>(integration);
-
-    <span style="color:#228b22">// 價格數據計算寫在VO了
-</span><span style="color:#228b22"></span>
-    <span style="color:#228b22">// 防重令牌(防止表單重複提交)
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 為用戶設置一個token，三十分鐘過期時間（存在redis）
-</span><span style="color:#228b22"></span>    String token = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;-&#34;</span>, <span style="color:#cd5555">&#34;&#34;</span>);
-    redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">set</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>(), token, 30,
-            TimeUnit.<span style="color:#658b00">MINUTES</span>);
-    confirmVo.<span style="color:#658b00">setOrderToken</span>(token);
-
-    CompletableFuture.<span style="color:#658b00">allOf</span>(addressFuture, cartInfoFuture).<span style="color:#658b00">get</span>();
-
-    <span style="color:#8b008b;font-weight:bold">return</span> confirmVo;
-}
-</code></pre></div><h4 id="feign丟失請求頭">feign丟失請求頭</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 訂單確認頁返回需要用的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> OrderConfirmVo <span style="color:#008b45">confirmOrder</span>() <span style="color:#8b008b;font-weight:bold">throws</span> ExecutionException, InterruptedException {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 構建OrderConfirmVo
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    OrderConfirmVo confirmVo = <span style="color:#8b008b;font-weight:bold">new</span> OrderConfirmVo();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 獲取當前用戶登入的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    MemberResponseTo memberResponseTo = LoginUserInterceptor.<span style="color:#658b00">loginUser</span>.<span style="color:#658b00">get</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 開啟第一個異步任務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>        confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
+</span></span><span style="display:flex;"><span>    }, threadPoolExecutor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 開啟第二個異步任務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; cartInfoFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 每一個線程都來共享之前的請求數據【解決異步ThreadLocal 無法共享數據】
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠程查詢購物車所有選中的購物項
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;OrderItemTo&gt; currentCartItems = cartFeignService.<span style="color:#658b00">getCurrentCartItems</span>();
+</span></span><span style="display:flex;"><span>        confirmVo.<span style="color:#658b00">setItems</span>(currentCartItems);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// feign在遠程調用之前要構造請求，會調用很多的攔截器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }, threadPoolExecutor).<span style="color:#658b00">thenRunAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>        List&lt;OrderItemTo&gt; items = confirmVo.<span style="color:#658b00">getItems</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取全部商品的id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;Long&gt; skuIds = items.<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">map</span>((itemVo -&gt; itemVo.<span style="color:#658b00">getSkuId</span>()))
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠程查詢商品庫存信息
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R skuHasStock = wareFeignService.<span style="color:#658b00">getSkuHasStock</span>(skuIds);
+</span></span><span style="display:flex;"><span>        List&lt;SkuStockVo&gt; skuStockVos = skuHasStock.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuStockVo&gt;&gt;() {
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuStockVos != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; skuStockVos.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 將skuStockVos集合轉換為map
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            Map&lt;Long, Boolean&gt; skuHasStockMap =
+</span></span><span style="display:flex;"><span>                    skuStockVos.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
+</span></span><span style="display:flex;"><span>            confirmVo.<span style="color:#658b00">setStocks</span>(skuHasStockMap);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, threadPoolExecutor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 查詢用戶積分
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Integer integration = memberResponseTo.<span style="color:#658b00">getIntegration</span>();
+</span></span><span style="display:flex;"><span>    confirmVo.<span style="color:#658b00">setIntegration</span>(integration);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 價格數據計算寫在VO了
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 防重令牌(防止表單重複提交)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 為用戶設置一個token，三十分鐘過期時間（存在redis）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String token = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;-&#34;</span>, <span style="color:#cd5555">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>    redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">set</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>(), token, 30,
+</span></span><span style="display:flex;"><span>            TimeUnit.<span style="color:#658b00">MINUTES</span>);
+</span></span><span style="display:flex;"><span>    confirmVo.<span style="color:#658b00">setOrderToken</span>(token);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CompletableFuture.<span style="color:#658b00">allOf</span>(addressFuture, cartInfoFuture).<span style="color:#658b00">get</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> confirmVo;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="feign丟失請求頭">feign丟失請求頭</h4>
 <p><img src="image-20220128164501873.png" alt="image-20220128164501873"></p>
 <ul>
 <li>
@@ -1347,44 +1347,44 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>在feign接口指定使用設定，例如:</p>
 </li>
 <li>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@FeignClient</span>(name = <span style="color:#cd5555">&#34;cart&#34;</span>, configuration = FeignConfig.<span style="color:#658b00">class</span>)
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">CartFeignService</span> {
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@FeignClient</span>(name = <span style="color:#cd5555">&#34;cart&#34;</span>, configuration = FeignConfig.<span style="color:#658b00">class</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">CartFeignService</span> {
+</span></span></code></pre></div></li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * feign攔截器功能
-</span><span style="color:#228b22"> * 解決feign 遠程請求頭丟失問題
-</span><span style="color:#228b22"> **/</span>
-<span style="color:#707a7c">@Configuration</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">FeignConfig</span> {
-
-    <span style="color:#707a7c">@Bean</span>(<span style="color:#cd5555">&#34;requestInterceptor&#34;</span>)
-    <span style="color:#8b008b;font-weight:bold">public</span> RequestInterceptor <span style="color:#008b45">requestInterceptor</span>() {
-
-        RequestInterceptor requestInterceptor = <span style="color:#8b008b;font-weight:bold">new</span> RequestInterceptor() {
-            <span style="color:#707a7c">@Override</span>
-            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">apply</span>(RequestTemplate template) {
-                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;feign遠程調用，攔截包裝請求頭&#34;</span>);
-
-                <span style="color:#228b22">// 使用RequestContextHolder拿到剛進來的請求數據
-</span><span style="color:#228b22"></span>                ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
-                <span style="color:#8b008b;font-weight:bold">if</span> (requestAttributes != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                    HttpServletRequest request = requestAttributes.<span style="color:#658b00">getRequest</span>();<span style="color:#228b22">//老請求
-</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (request != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                        <span style="color:#228b22">// 同步請求頭的數據（主要是cookie）
-</span><span style="color:#228b22"></span>                        <span style="color:#228b22">// 把老請求的cookie值放到新請求上來，進行一個同步
-</span><span style="color:#228b22"></span>                        String cookie = request.<span style="color:#658b00">getHeader</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>);
-                        template.<span style="color:#658b00">header</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>, cookie);
-                    }
-                }
-            }
-        };
-        <span style="color:#8b008b;font-weight:bold">return</span> requestInterceptor;
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * feign攔截器功能
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 解決feign 遠程請求頭丟失問題
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> **/</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">FeignConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>(<span style="color:#cd5555">&#34;requestInterceptor&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> RequestInterceptor <span style="color:#008b45">requestInterceptor</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        RequestInterceptor requestInterceptor = <span style="color:#8b008b;font-weight:bold">new</span> RequestInterceptor() {
+</span></span><span style="display:flex;"><span>            <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">apply</span>(RequestTemplate template) {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;feign遠程調用，攔截包裝請求頭&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 使用RequestContextHolder拿到剛進來的請求數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (requestAttributes != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                    HttpServletRequest request = requestAttributes.<span style="color:#658b00">getRequest</span>();<span style="color:#228b22">//老請求
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (request != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 同步請求頭的數據（主要是cookie）
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                        <span style="color:#228b22">// 把老請求的cookie值放到新請求上來，進行一個同步
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                        String cookie = request.<span style="color:#658b00">getHeader</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>);
+</span></span><span style="display:flex;"><span>                        template.<span style="color:#658b00">header</span>(<span style="color:#cd5555">&#34;Cookie&#34;</span>, cookie);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> requestInterceptor;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>我還是有點沒弄清它這個設定載入的細節，因為我feign包是放在common之下，當我把FeignConfig也放在common，就需要在註解指定configuration = FeignConfig.class才能生效</li>
 <li>關於Feign設定的細節參考 : <a href="https://www.twblogs.net/a/5da0a13ebd9eee541c34e853">https://www.twblogs.net/a/5da0a13ebd9eee541c34e853</a></li>
 <li>我當初是看了這篇 <a href="https://www.cnblogs.com/mindzone/p/15315273.html">https://www.cnblogs.com/mindzone/p/15315273.html</a> 決定把feing放在common的，我感覺這樣確實比較整齊</li>
@@ -1394,17 +1394,17 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <ul>
 <li>然而又有問題，因為一個老請求進來，我們是開線程池去異步調用各個feign，相當於換線程了，所以調用之前要手動共享請求的資料</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
-</span><span style="color:#228b22"></span>RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
-<span style="color:#228b22">// 開啟第一個異步任務
-</span><span style="color:#228b22"></span>CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
-    <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
-</span><span style="color:#228b22"></span>    RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
-    <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
-</span><span style="color:#228b22"></span>    List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
-    confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
-}, threadPoolExecutor);
-</code></pre></div><h5 id="返回問題">返回問題</h5>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 獲取當前線程請求頭信息(解決Feign異步調用丟失請求頭問題)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>RequestAttributes requestAttributes = RequestContextHolder.<span style="color:#658b00">getRequestAttributes</span>();
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 開啟第一個異步任務
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>CompletableFuture&lt;Void&gt; addressFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 每一個線程都來共享之前的請求數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    RequestContextHolder.<span style="color:#658b00">setRequestAttributes</span>(requestAttributes);
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 遠程查詢所有的收貨地址列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;MemberAddressTo&gt; address = memberFeignService.<span style="color:#658b00">getAddress</span>(memberResponseTo.<span style="color:#658b00">getId</span>());
+</span></span><span style="display:flex;"><span>    confirmVo.<span style="color:#658b00">setMemberAddressTos</span>(address);
+</span></span><span style="display:flex;"><span>}, threadPoolExecutor);
+</span></span></code></pre></div><h5 id="返回問題">返回問題</h5>
 <ul>
 <li>被遠程調用的controller，想要它返回To類，在方法上要記得註解<code>@ResponseBody</code>，或是直接整個用<code>@RestController</code></li>
 </ul>

@@ -631,37 +631,37 @@ func main() {
 	//如果不加鎖concurrent map iteration and map write
 	lock.Lock()
 	for i, v := range myMap {
-		fmt.Printf(&quot;map[%d]=%v\n&quot;, i, v)
+		fmt.Printf(&#34;map[%d]=%v\n&#34;, i, v)
 	}
 	lock.Unlock()
 
 	//看看管道
 	fmt.Println(intChan)
 	//出來是一個地址，表示誰要經過這 (當然本身也有一個地址但不重要)
-	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	fmt.Printf(&#34;長度=%v 容量=%v\n&#34;, len(intChan), cap(intChan))
 
 	//向管道寫入數據
 	intChan &lt;- 10
-	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	fmt.Printf(&#34;長度=%v 容量=%v\n&#34;, len(intChan), cap(intChan))
 	num1 := 5
 	intChan &lt;- num1
 	intChan &lt;- 1
-	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	fmt.Printf(&#34;長度=%v 容量=%v\n&#34;, len(intChan), cap(intChan))
 	//intChan &lt;- 12 //超過3個太長報錯
 
 	//從管道取數據
 	var num2 int = &lt;-intChan
 	fmt.Println(num2)
-	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	fmt.Printf(&#34;長度=%v 容量=%v\n&#34;, len(intChan), cap(intChan))
 	//先進先出，取完超過一樣報錯
 	num3 := &lt;-intChan
 	fmt.Println(num3)
-	fmt.Printf(&quot;長度=%v 容量=%v\n&quot;, len(intChan), cap(intChan))
+	fmt.Printf(&#34;長度=%v 容量=%v\n&#34;, len(intChan), cap(intChan))
 
 	//關於allChan
 	allChan &lt;- 10
-	allChan &lt;- &quot;ABC&quot;
-	cat1 := Cat{&quot;小花&quot;, 3}
+	allChan &lt;- &#34;ABC&#34;
+	cat1 := Cat{&#34;小花&#34;, 3}
 	allChan &lt;- cat1
 	//可以亂塞一通
 
@@ -670,11 +670,11 @@ func main() {
 	&lt;-allChan
 
 	newCat := &lt;-allChan //從管道中取出來的cat1
-	fmt.Printf(&quot;類型=%T 值=%v\n&quot;, newCat, newCat)
-	// fmt.Printf(&quot;%v\n&quot;, newCat.Name) //雖然類型一樣但這樣用不通過
+	fmt.Printf(&#34;類型=%T 值=%v\n&#34;, newCat, newCat)
+	// fmt.Printf(&#34;%v\n&#34;, newCat.Name) //雖然類型一樣但這樣用不通過
 	//必須類型斷言
 	a := newCat.(Cat)
-	fmt.Printf(&quot;%v\n&quot;, a.Name)
+	fmt.Printf(&#34;%v\n&#34;, a.Name)
 
 }
 </code></pre><h2 id="只讀或寫">只讀或寫</h2>
@@ -719,7 +719,7 @@ func main() {
 <pre tabindex="0"><code>func writeData(intChan chan int) {
 	for i := 1; i &lt;= 50; i++ {
 		intChan &lt;- i
-		fmt.Printf(&quot;writeData=%v\n&quot;, i)
+		fmt.Printf(&#34;writeData=%v\n&#34;, i)
 		// time.Sleep(time.Second / 1000)
 	}
 	close(intChan) //寫完就關
@@ -731,7 +731,7 @@ func readData(intChan chan int, exitChan chan bool) {
 		if !ok {
 			break
 		}
-		fmt.Printf(&quot;readData讀取到數據=%v\n&quot;, v)
+		fmt.Printf(&#34;readData讀取到數據=%v\n&#34;, v)
 	}
 	//讀取完=任務完成 其實這裡不管對exitChan做啥都無所謂，重點是有調用他就能阻塞main
 	exitChan &lt;- true
@@ -747,26 +747,25 @@ func main() {
 	go writeData(intChan)
 	go readData(intChan, exitChan)
 	if &lt;-exitChan { //重點就是這個判斷調用到一個管道有跨到子函數的就能阻塞住main
-		fmt.Println(&quot;任務完成&quot;)
+		fmt.Println(&#34;任務完成&#34;)
 	}
 }
-
 </code></pre><h2 id="用select解決阻塞">用select解決阻塞</h2>
 <pre tabindex="0"><code>func sayH() {
 	for i := 0; i &lt; 10; i++ {
 		time.Sleep(time.Second / 10)
-		fmt.Println(&quot;hello&quot;)
+		fmt.Println(&#34;hello&#34;)
 	}
 }
 
 func test() {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println(&quot;test錯誤&quot;, err)
+			fmt.Println(&#34;test錯誤&#34;, err)
 		}
 	}()
 	myMap := make(map[int]string)
-	myMap[0] = &quot;我家&quot;
+	myMap[0] = &#34;我家&#34;
 	fmt.Println(myMap)
 }
 
@@ -774,7 +773,7 @@ func main() {
 
 	go sayH()
 	go test()
-	fmt.Println(&quot;hellom&quot;)
+	fmt.Println(&#34;hellom&#34;)
 
 	intChan := make(chan int, 10)
 	for i := 0; i &lt; 10; i++ {
@@ -783,7 +782,7 @@ func main() {
 
 	stringChan := make(chan string, 5)
 	for i := 0; i &lt; 5; i++ {
-		stringChan &lt;- &quot;hello&quot; + fmt.Sprintf(&quot;%d&quot;, i)
+		stringChan &lt;- &#34;hello&#34; + fmt.Sprintf(&#34;%d&#34;, i)
 	}
 	//傳統方法遍歷，如果不關閉會阻塞 就導致deadlock
 	//實際開發不好確定哪時候關閉，就用select解決
@@ -791,11 +790,11 @@ func main() {
 		select {
 		//就算沒關閉，只要阻塞他就往其他case移動
 		case v := &lt;-intChan:
-			fmt.Printf(&quot;intChan取出%d\n&quot;, v)
+			fmt.Printf(&#34;intChan取出%d\n&#34;, v)
 		case v := &lt;-stringChan:
-			fmt.Printf(&quot;stringChan取出%s\n&quot;, v)
+			fmt.Printf(&#34;stringChan取出%s\n&#34;, v)
 		default:
-			fmt.Println(&quot;取完了&quot;)
+			fmt.Println(&#34;取完了&#34;)
 			return
 		}
 	}

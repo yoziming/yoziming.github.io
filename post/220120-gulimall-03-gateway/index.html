@@ -1102,51 +1102,51 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <ul>
 <li>三級樹形列表，老師這邊一次sql查出全部資料然後用stream工具類操作賦好值，實在太強。我想看懂就花了大半天，還是老實for循環，或是多查幾次SQL吧&hellip;</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 三級樹型列表
-</span><span style="color:#228b22">     *
-</span><span style="color:#228b22">     * @return
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">listTree</span>() {
-        <span style="color:#228b22">// 查所有分類
-</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; entities = baseMapper.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
-        <span style="color:#228b22">// lamdba表達式左邊形參，右邊方法
-</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; levelMenus = entities.<span style="color:#658b00">stream</span>()
-                .<span style="color:#658b00">filter</span>(e -&gt; e.<span style="color:#658b00">getParentCid</span>() == 0) <span style="color:#228b22">// 先篩出第一級，set他的子級，調用下面的方法
-</span><span style="color:#228b22"></span>                .<span style="color:#658b00">map</span>((menu) -&gt; {
-                    menu.<span style="color:#658b00">setChildren</span>(findChildren(menu, entities));
-                    <span style="color:#8b008b;font-weight:bold">return</span> menu;
-                })
-                .<span style="color:#658b00">sorted</span>(Comparator.<span style="color:#658b00">comparingInt</span>(menu -&gt; (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>())))
-                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-        <span style="color:#8b008b;font-weight:bold">return</span> levelMenus;
-    }
-
-    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 找出所有子級並賦上
-</span><span style="color:#228b22">     *
-</span><span style="color:#228b22">     * @param root
-</span><span style="color:#228b22">     * @param all
-</span><span style="color:#228b22">     * @return
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">findChildren</span>(CategoryEntity root, List&lt;CategoryEntity&gt; all) {
-        <span style="color:#228b22">// all是全部的品項
-</span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; children = all.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(categoryEntity -&gt; {
-            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(root.<span style="color:#658b00">getCatId</span>());
-        }).<span style="color:#658b00">map</span>(categoryEntity -&gt; {
-            <span style="color:#228b22">// 找到子菜單(遞歸)
-</span><span style="color:#228b22"></span>            categoryEntity.<span style="color:#658b00">setChildren</span>(findChildren(categoryEntity, all));
-            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity;
-        }).<span style="color:#658b00">sorted</span>((menu, menu2) -&gt; {
-            <span style="color:#228b22">// 菜單的排序
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>()) - (menu2.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu2.<span style="color:#658b00">getSort</span>());
-        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-
-        <span style="color:#8b008b;font-weight:bold">return</span> children;
-    }
-</code></pre></div><h2 id="設定網關">設定網關</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 三級樹型列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">listTree</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 查所有分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; entities = baseMapper.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// lamdba表達式左邊形參，右邊方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; levelMenus = entities.<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">filter</span>(e -&gt; e.<span style="color:#658b00">getParentCid</span>() == 0) <span style="color:#228b22">// 先篩出第一級，set他的子級，調用下面的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                .<span style="color:#658b00">map</span>((menu) -&gt; {
+</span></span><span style="display:flex;"><span>                    menu.<span style="color:#658b00">setChildren</span>(findChildren(menu, entities));
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> menu;
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">sorted</span>(Comparator.<span style="color:#658b00">comparingInt</span>(menu -&gt; (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>())))
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> levelMenus;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 找出所有子級並賦上
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * @param root
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * @param all
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">findChildren</span>(CategoryEntity root, List&lt;CategoryEntity&gt; all) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// all是全部的品項
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; children = all.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(categoryEntity -&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity.<span style="color:#658b00">getParentCid</span>().<span style="color:#658b00">equals</span>(root.<span style="color:#658b00">getCatId</span>());
+</span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">map</span>(categoryEntity -&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 找到子菜單(遞歸)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            categoryEntity.<span style="color:#658b00">setChildren</span>(findChildren(categoryEntity, all));
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity;
+</span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">sorted</span>((menu, menu2) -&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 菜單的排序
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>()) - (menu2.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu2.<span style="color:#658b00">getSort</span>());
+</span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> children;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h2 id="設定網關">設定網關</h2>
 <ul>
 <li>首先把後台前端的<code>baseUrl</code>改了，讓他指向網關的阜88
 <ul>
@@ -1212,9 +1212,9 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
-</span><span style="color:#bbb"></span>- StripPrefix=1<span style="color:#bbb">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">filters</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>- StripPrefix=1<span style="color:#bbb">
+</span></span></span></code></pre></div><ul>
 <li>都設定完後，相當於請求訪問都到88找網關，網關藉由服務發現轉介給其他服務</li>
 </ul>
 <p><img src="image-20220112225902832.png" alt="image-20220112225902832"></p>
@@ -1246,57 +1246,57 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <ul>
 <li>結果老師教的方法不行，網路上試了幾個也不行，找半天最後終於找到一個可以的，需要造2個類(PS.版本spring boot=2.3.2.RELEASE，cloud=Hoxton.SR9)</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Configuration</span>
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsConfig</span> {
-
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> CorsResponseHeaderFilter <span style="color:#008b45">corsResponseHeaderFilter</span>() {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsResponseHeaderFilter();
-    }
-
-    <span style="color:#707a7c">@Bean</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> CorsWebFilter <span style="color:#008b45">corsWebFilter</span>() {
-        UrlBasedCorsConfigurationSource source = <span style="color:#8b008b;font-weight:bold">new</span> UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = <span style="color:#8b008b;font-weight:bold">new</span> CorsConfiguration();
-
-        corsConfiguration.<span style="color:#658b00">addAllowedHeader</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
-        corsConfiguration.<span style="color:#658b00">addAllowedMethod</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
-        corsConfiguration.<span style="color:#658b00">addAllowedOrigin</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
-        corsConfiguration.<span style="color:#658b00">setAllowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-        corsConfiguration.<span style="color:#658b00">setMaxAge</span>(600L);
-
-        source.<span style="color:#658b00">registerCorsConfiguration</span>(<span style="color:#cd5555">&#34;/**&#34;</span>, corsConfiguration);
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsWebFilter(source);
-    }
-}
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsResponseHeaderFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> GlobalFilter, Ordered {
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getOrder</span>() {
-        <span style="color:#228b22">// 指定此過濾器位於NettyWriteResponseFilter之後
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// 即待處理完響應體後接着處理響應頭
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> NettyWriteResponseFilter.<span style="color:#658b00">WRITE_RESPONSE_FILTER_ORDER</span> + 1;
-    }
-
-    <span style="color:#707a7c">@Override</span>
-    <span style="color:#707a7c">@SuppressWarnings</span>(<span style="color:#cd5555">&#34;serial&#34;</span>)
-    <span style="color:#8b008b;font-weight:bold">public</span> Mono&lt;Void&gt; <span style="color:#008b45">filter</span>(ServerWebExchange exchange, GatewayFilterChain chain) {
-        <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange).<span style="color:#658b00">then</span>(Mono.<span style="color:#658b00">defer</span>(() -&gt; {
-            exchange.<span style="color:#658b00">getResponse</span>().<span style="color:#658b00">getHeaders</span>().<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
-                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getValue</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">size</span>() &gt; 1))
-                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_ORIGIN</span>)
-                            || kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_CREDENTIALS</span>)))
-                    .<span style="color:#658b00">forEach</span>(kv -&gt;
-                    {
-                        kv.<span style="color:#658b00">setValue</span>(<span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;String&gt;() {{
-                            add(kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">get</span>(0));
-                        }});
-                    });
-
-            <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange);
-        }));
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> CorsResponseHeaderFilter <span style="color:#008b45">corsResponseHeaderFilter</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsResponseHeaderFilter();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> CorsWebFilter <span style="color:#008b45">corsWebFilter</span>() {
+</span></span><span style="display:flex;"><span>        UrlBasedCorsConfigurationSource source = <span style="color:#8b008b;font-weight:bold">new</span> UrlBasedCorsConfigurationSource();
+</span></span><span style="display:flex;"><span>        CorsConfiguration corsConfiguration = <span style="color:#8b008b;font-weight:bold">new</span> CorsConfiguration();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">addAllowedHeader</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">addAllowedMethod</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">addAllowedOrigin</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">setAllowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">setMaxAge</span>(600L);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        source.<span style="color:#658b00">registerCorsConfiguration</span>(<span style="color:#cd5555">&#34;/**&#34;</span>, corsConfiguration);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsWebFilter(source);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CorsResponseHeaderFilter</span> <span style="color:#8b008b;font-weight:bold">implements</span> GlobalFilter, Ordered {
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getOrder</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 指定此過濾器位於NettyWriteResponseFilter之後
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 即待處理完響應體後接着處理響應頭
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> NettyWriteResponseFilter.<span style="color:#658b00">WRITE_RESPONSE_FILTER_ORDER</span> + 1;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@SuppressWarnings</span>(<span style="color:#cd5555">&#34;serial&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Mono&lt;Void&gt; <span style="color:#008b45">filter</span>(ServerWebExchange exchange, GatewayFilterChain chain) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange).<span style="color:#658b00">then</span>(Mono.<span style="color:#658b00">defer</span>(() -&gt; {
+</span></span><span style="display:flex;"><span>            exchange.<span style="color:#658b00">getResponse</span>().<span style="color:#658b00">getHeaders</span>().<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getValue</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">size</span>() &gt; 1))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_ORIGIN</span>)
+</span></span><span style="display:flex;"><span>                            || kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_CREDENTIALS</span>)))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">forEach</span>(kv -&gt;
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        kv.<span style="color:#658b00">setValue</span>(<span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;String&gt;() {{
+</span></span><span style="display:flex;"><span>                            add(kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">get</span>(0));
+</span></span><span style="display:flex;"><span>                        }});
+</span></span><span style="display:flex;"><span>                    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange);
+</span></span><span style="display:flex;"><span>        }));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>最後終於成功了，相當於透過網關轉發請求給微服務然後響應回去</li>
 </ul>
 <p><img src="image-20220113000015404.png" alt="image-20220113000015404"></p>
@@ -1337,34 +1337,34 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    remove(node, data) {
-      <span style="color:#8b008b;font-weight:bold">const</span> ids = [data.catId];
-      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">`是否刪除【</span><span style="color:#cd5555">${</span>data.name<span style="color:#cd5555">}</span><span style="color:#cd5555">】分類?`</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
-        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
-        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
-        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
-      })
-        .then(() =&gt; {
-          <span style="color:#8b008b;font-weight:bold">this</span>.$http({
-            url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/delete&#34;</span>),
-            method: <span style="color:#cd5555">&#34;post&#34;</span>,
-            data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(ids, <span style="color:#8b008b;font-weight:bold">false</span>),
-          }).then(({ data }) =&gt; {
-            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-              message: <span style="color:#cd5555">&#34;分類刪除成功&#34;</span>,
-              type: <span style="color:#cd5555">&#34;success&#34;</span>,
-            });
-            <span style="color:#228b22">//刷新出新的分類
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
-            <span style="color:#228b22">//設置需要預設展開的分類
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [node.parent.data.catId];
-          });
-        })
-        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {});
-
-      console.log(<span style="color:#cd5555">&#34;remove&#34;</span>, node, data);
-    },
-</code></pre></div><h2 id="新增與修改節點">新增與修改節點</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>    remove(node, data) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">const</span> ids = [data.catId];
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$confirm(<span style="color:#cd5555">`是否刪除【</span><span style="color:#cd5555">${</span>data.name<span style="color:#cd5555">}</span><span style="color:#cd5555">】分類?`</span>, <span style="color:#cd5555">&#34;提示&#34;</span>, {
+</span></span><span style="display:flex;"><span>        confirmButtonText: <span style="color:#cd5555">&#34;確定&#34;</span>,
+</span></span><span style="display:flex;"><span>        cancelButtonText: <span style="color:#cd5555">&#34;取消&#34;</span>,
+</span></span><span style="display:flex;"><span>        type: <span style="color:#cd5555">&#34;warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>        .then(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+</span></span><span style="display:flex;"><span>            url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/delete&#34;</span>),
+</span></span><span style="display:flex;"><span>            method: <span style="color:#cd5555">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>            data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(ids, <span style="color:#8b008b;font-weight:bold">false</span>),
+</span></span><span style="display:flex;"><span>          }).then(({ data }) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>              message: <span style="color:#cd5555">&#34;分類刪除成功&#34;</span>,
+</span></span><span style="display:flex;"><span>              type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//刷新出新的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//設置需要預設展開的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [node.parent.data.catId];
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .<span style="color:#8b008b;font-weight:bold">catch</span>(() =&gt; {});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;remove&#34;</span>, node, data);
+</span></span><span style="display:flex;"><span>    },
+</span></span></code></pre></div><h2 id="新增與修改節點">新增與修改節點</h2>
 <ul>
 <li>前端:
 <ul>
@@ -1374,99 +1374,99 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    edit(data) {
-      console.log(<span style="color:#cd5555">&#34;要修改的數據&#34;</span>, data);
-      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;edit&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;修改分類&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
-
-      <span style="color:#228b22">//發送請求獲取當前節點最新的數據
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
-        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">`/product/category/info/</span><span style="color:#cd5555">${</span>data.catId<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>),
-        method: <span style="color:#cd5555">&#34;get&#34;</span>,
-      }).then(({ data }) =&gt; {
-        <span style="color:#228b22">//請求成功
-</span><span style="color:#228b22"></span>        console.log(<span style="color:#cd5555">&#34;要回顯的數據&#34;</span>, data);
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.name = data.data.name;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = data.data.catId;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = data.data.icon;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = data.data.productUnit;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.data.parentCid;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.data.catLevel;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = data.data.sort;
-        <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = data.data.showStatus;
-        <span style="color:#228b22">/**
-</span><span style="color:#228b22">         *         parentCid: 0,
-</span><span style="color:#228b22">         catLevel: 0,
-</span><span style="color:#228b22">         showStatus: 1,
-</span><span style="color:#228b22">         sort: 0,
-</span><span style="color:#228b22">         */</span>
-      });
-    },
-    append(data) {
-      console.log(<span style="color:#cd5555">&#34;append&#34;</span>, data);
-      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;add&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;添加分類&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.catId;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.catLevel * <span style="color:#b452cd">1</span> + <span style="color:#b452cd">1</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = <span style="color:#8b008b;font-weight:bold">null</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.name = <span style="color:#cd5555">&#34;&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = <span style="color:#cd5555">&#34;&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = <span style="color:#cd5555">&#34;&#34;</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = <span style="color:#b452cd">0</span>;
-      <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = <span style="color:#b452cd">1</span>;
-    },
-
-    submitData() {
-      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;add&#34;</span>) {
-        <span style="color:#8b008b;font-weight:bold">this</span>.addCategory();
-      }
-      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;edit&#34;</span>) {
-        <span style="color:#8b008b;font-weight:bold">this</span>.editCategory();
-      }
-    },
-    <span style="color:#228b22">//修改三級分類數據
-</span><span style="color:#228b22"></span>    editCategory() {
-      <span style="color:#8b008b;font-weight:bold">const</span> { catId, name, icon, productUnit } = <span style="color:#8b008b;font-weight:bold">this</span>.category;
-      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
-        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update&#34;</span>),
-        method: <span style="color:#cd5555">&#34;post&#34;</span>,
-        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData({ catId, name, icon, productUnit }, <span style="color:#8b008b;font-weight:bold">false</span>),
-      }).then(({ data }) =&gt; {
-        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          message: <span style="color:#cd5555">&#34;分類修改成功&#34;</span>,
-          type: <span style="color:#cd5555">&#34;success&#34;</span>,
-        });
-        <span style="color:#228b22">//關閉對話框
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
-        <span style="color:#228b22">//刷新出新的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
-        <span style="color:#228b22">//設置需要預設展開的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
-      });
-    },
-    <span style="color:#228b22">//添加三級分類
-</span><span style="color:#228b22"></span>    addCategory() {
-      console.log(<span style="color:#cd5555">&#34;提交的三級分類數據&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.category);
-      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
-        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/save&#34;</span>),
-        method: <span style="color:#cd5555">&#34;post&#34;</span>,
-        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.category, <span style="color:#8b008b;font-weight:bold">false</span>),
-      }).then(({ data }) =&gt; {
-        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          message: <span style="color:#cd5555">&#34;分類保存成功&#34;</span>,
-          type: <span style="color:#cd5555">&#34;success&#34;</span>,
-        });
-        <span style="color:#228b22">//關閉對話框
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
-        <span style="color:#228b22">//刷新出新的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
-        <span style="color:#228b22">//設置需要預設展開的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
-      });
-    },
-</code></pre></div><h2 id="拖曳改變排序">拖曳改變排序</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>    edit(data) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;要修改的數據&#34;</span>, data);
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;edit&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;修改分類&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//發送請求獲取當前節點最新的數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+</span></span><span style="display:flex;"><span>        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">`/product/category/info/</span><span style="color:#cd5555">${</span>data.catId<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span>),
+</span></span><span style="display:flex;"><span>        method: <span style="color:#cd5555">&#34;get&#34;</span>,
+</span></span><span style="display:flex;"><span>      }).then(({ data }) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//請求成功
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        console.log(<span style="color:#cd5555">&#34;要回顯的數據&#34;</span>, data);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.name = data.data.name;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = data.data.catId;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = data.data.icon;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = data.data.productUnit;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.data.parentCid;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.data.catLevel;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = data.data.sort;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = data.data.showStatus;
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         *         parentCid: 0,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         catLevel: 0,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         showStatus: 1,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         sort: 0,
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">         */</span>
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    append(data) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;append&#34;</span>, data);
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.dialogType = <span style="color:#cd5555">&#34;add&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.title = <span style="color:#cd5555">&#34;添加分類&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid = data.catId;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.catLevel = data.catLevel * <span style="color:#b452cd">1</span> + <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.catId = <span style="color:#8b008b;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.name = <span style="color:#cd5555">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.icon = <span style="color:#cd5555">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.productUnit = <span style="color:#cd5555">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.sort = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.category.showStatus = <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    submitData() {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;add&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.addCategory();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.dialogType === <span style="color:#cd5555">&#34;edit&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.editCategory();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//修改三級分類數據
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    editCategory() {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">const</span> { catId, name, icon, productUnit } = <span style="color:#8b008b;font-weight:bold">this</span>.category;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+</span></span><span style="display:flex;"><span>        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update&#34;</span>),
+</span></span><span style="display:flex;"><span>        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData({ catId, name, icon, productUnit }, <span style="color:#8b008b;font-weight:bold">false</span>),
+</span></span><span style="display:flex;"><span>      }).then(({ data }) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;分類修改成功&#34;</span>,
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//關閉對話框
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//刷新出新的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//設置需要預設展開的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//添加三級分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    addCategory() {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;提交的三級分類數據&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.category);
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+</span></span><span style="display:flex;"><span>        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/save&#34;</span>),
+</span></span><span style="display:flex;"><span>        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.category, <span style="color:#8b008b;font-weight:bold">false</span>),
+</span></span><span style="display:flex;"><span>      }).then(({ data }) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;分類保存成功&#34;</span>,
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//關閉對話框
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.dialogVisible = <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//刷新出新的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//設置需要預設展開的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = [<span style="color:#8b008b;font-weight:bold">this</span>.category.parentCid];
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span></code></pre></div><h2 id="拖曳改變排序">拖曳改變排序</h2>
 <blockquote>
 <p>這個太麻煩，草草略過</p>
 </blockquote>
@@ -1487,122 +1487,122 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>後端用list去接、調用<code>updateBatchById(list)</code>方法</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">    batchSave() {
-      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
-        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update/sort&#34;</span>),
-        method: <span style="color:#cd5555">&#34;post&#34;</span>,
-        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.updateNodes, <span style="color:#8b008b;font-weight:bold">false</span>),
-      }).then(({ data }) =&gt; {
-        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
-          message: <span style="color:#cd5555">&#34;分類順序等修改成功&#34;</span>,
-          type: <span style="color:#cd5555">&#34;success&#34;</span>,
-        });
-        <span style="color:#228b22">//刷新出新的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
-        <span style="color:#228b22">//設置需要預設展開的分類
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = <span style="color:#8b008b;font-weight:bold">this</span>.pCid;
-        <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes = [];
-        <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = <span style="color:#b452cd">0</span>;
-        <span style="color:#228b22">// this.pCid = 0;
-</span><span style="color:#228b22"></span>      });
-    },
-    handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log(<span style="color:#cd5555">&#34;handleDrop: &#34;</span>, draggingNode, dropNode, dropType);
-      <span style="color:#228b22">//1、當前節點最新的父節點id
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> pCid = <span style="color:#b452cd">0</span>;
-      <span style="color:#8b008b;font-weight:bold">let</span> siblings = <span style="color:#8b008b;font-weight:bold">null</span>;
-      <span style="color:#8b008b;font-weight:bold">if</span> (dropType == <span style="color:#cd5555">&#34;before&#34;</span> || dropType == <span style="color:#cd5555">&#34;after&#34;</span>) {
-        pCid =
-          dropNode.parent.data.catId == <span style="color:#8b008b;font-weight:bold">undefined</span>
-            ? <span style="color:#b452cd">0</span>
-            : dropNode.parent.data.catId;
-        siblings = dropNode.parent.childNodes;
-      } <span style="color:#8b008b;font-weight:bold">else</span> {
-        pCid = dropNode.data.catId;
-        siblings = dropNode.childNodes;
-      }
-      <span style="color:#8b008b;font-weight:bold">this</span>.pCid.push(pCid);
-
-      <span style="color:#228b22">//2、當前拖拽節點的最新順序，
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; siblings.length; i++) {
-        <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].data.catId == draggingNode.data.catId) {
-          <span style="color:#228b22">//如果遍歷的是當前正在拖拽的節點
-</span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">let</span> catLevel = draggingNode.level;
-          <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].level != draggingNode.level) {
-            <span style="color:#228b22">//當前節點的層級發生變化
-</span><span style="color:#228b22"></span>            catLevel = siblings[i].level;
-            <span style="color:#228b22">//修改他子節點的層級
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(siblings[i]);
-          }
-          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
-            catId: siblings[i].data.catId,
-            sort: i,
-            parentCid: pCid,
-            catLevel: catLevel,
-          });
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({ catId: siblings[i].data.catId, sort: i });
-        }
-      }
-
-      <span style="color:#228b22">//3、當前拖拽節點的最新層級
-</span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;updateNodes&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes);
-    },
-    updateChildNodeLevel(node) {
-      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
-        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
-          <span style="color:#8b008b;font-weight:bold">const</span> cNode = node.childNodes[i].data;
-          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
-            catId: cNode.catId,
-            catLevel: node.childNodes[i].level,
-          });
-          <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(node.childNodes[i]);
-        }
-      }
-    },
-    allowDrop(draggingNode, dropNode, type) {
-      <span style="color:#228b22">//1、被拖動的當前節點以及所在的父節點總層數不能大於3
-</span><span style="color:#228b22"></span>
-      <span style="color:#228b22">//1）、被拖動的當前節點總層數
-</span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;allowDrop:&#34;</span>, draggingNode, dropNode, type);
-      <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(draggingNode);
-      <span style="color:#228b22">//當前正在拖動的節點+父節點所在的深度不大於3即可
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> deep = <span style="color:#658b00">Math</span>.abs(<span style="color:#8b008b;font-weight:bold">this</span>.maxLevel - draggingNode.level) + <span style="color:#b452cd">1</span>;
-      console.log(<span style="color:#cd5555">&#34;深度：&#34;</span>, deep);
-
-      <span style="color:#228b22">//   this.maxLevel
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (type == <span style="color:#cd5555">&#34;inner&#34;</span>) {
-        <span style="color:#228b22">// console.log(
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">//   `this.maxLevel：${this.maxLevel}；draggingNode.data.catLevel：${draggingNode.data.catLevel}；dropNode.level：${dropNode.level}`
-</span><span style="color:#228b22"></span>        <span style="color:#228b22">// );
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.level &lt;= <span style="color:#b452cd">3</span>;
-      } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.parent.level &lt;= <span style="color:#b452cd">3</span>;
-      }
-    },
-    countNodeLevel(node) {
-      <span style="color:#228b22">//找到所有子節點，求出最大深度
-</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
-        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
-          <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes[i].level &gt; <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel) {
-            <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = node.childNodes[i].level;
-          }
-          <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(node.childNodes[i]);
-        }
-      }
-    },
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#228b22">/**
-</span><span style="color:#228b22">     * 修改排序
-</span><span style="color:#228b22">     */</span>
-    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/update/sort&#34;</span>)
-    <span style="color:#228b22">//@RequiresPermissions(&#34;product:category:update&#34;)
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">updateSort</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;CategoryEntity&gt; list) {
-        categoryService.<span style="color:#658b00">updateBatchById</span>(list);
-
-        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
-    }
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>    batchSave() {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.$http({
+</span></span><span style="display:flex;"><span>        url: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornUrl(<span style="color:#cd5555">&#34;/product/category/update/sort&#34;</span>),
+</span></span><span style="display:flex;"><span>        method: <span style="color:#cd5555">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>        data: <span style="color:#8b008b;font-weight:bold">this</span>.$http.adornData(<span style="color:#8b008b;font-weight:bold">this</span>.updateNodes, <span style="color:#8b008b;font-weight:bold">false</span>),
+</span></span><span style="display:flex;"><span>      }).then(({ data }) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.$message({
+</span></span><span style="display:flex;"><span>          message: <span style="color:#cd5555">&#34;分類順序等修改成功&#34;</span>,
+</span></span><span style="display:flex;"><span>          type: <span style="color:#cd5555">&#34;success&#34;</span>,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//刷新出新的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.getMenus();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//設置需要預設展開的分類
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">this</span>.expandedKey = <span style="color:#8b008b;font-weight:bold">this</span>.pCid;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes = [];
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// this.pCid = 0;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      });
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    handleDrop(draggingNode, dropNode, dropType, ev) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;handleDrop: &#34;</span>, draggingNode, dropNode, dropType);
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//1、當前節點最新的父節點id
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> pCid = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">let</span> siblings = <span style="color:#8b008b;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span> (dropType == <span style="color:#cd5555">&#34;before&#34;</span> || dropType == <span style="color:#cd5555">&#34;after&#34;</span>) {
+</span></span><span style="display:flex;"><span>        pCid =
+</span></span><span style="display:flex;"><span>          dropNode.parent.data.catId == <span style="color:#8b008b;font-weight:bold">undefined</span>
+</span></span><span style="display:flex;"><span>            ? <span style="color:#b452cd">0</span>
+</span></span><span style="display:flex;"><span>            : dropNode.parent.data.catId;
+</span></span><span style="display:flex;"><span>        siblings = dropNode.parent.childNodes;
+</span></span><span style="display:flex;"><span>      } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        pCid = dropNode.data.catId;
+</span></span><span style="display:flex;"><span>        siblings = dropNode.childNodes;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">this</span>.pCid.push(pCid);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//2、當前拖拽節點的最新順序，
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; siblings.length; i++) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].data.catId == draggingNode.data.catId) {
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">//如果遍歷的是當前正在拖拽的節點
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">let</span> catLevel = draggingNode.level;
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">if</span> (siblings[i].level != draggingNode.level) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//當前節點的層級發生變化
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            catLevel = siblings[i].level;
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//修改他子節點的層級
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(siblings[i]);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
+</span></span><span style="display:flex;"><span>            catId: siblings[i].data.catId,
+</span></span><span style="display:flex;"><span>            sort: i,
+</span></span><span style="display:flex;"><span>            parentCid: pCid,
+</span></span><span style="display:flex;"><span>            catLevel: catLevel,
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({ catId: siblings[i].data.catId, sort: i });
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//3、當前拖拽節點的最新層級
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;updateNodes&#34;</span>, <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes);
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    updateChildNodeLevel(node) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">const</span> cNode = node.childNodes[i].data;
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.updateNodes.push({
+</span></span><span style="display:flex;"><span>            catId: cNode.catId,
+</span></span><span style="display:flex;"><span>            catLevel: node.childNodes[i].level,
+</span></span><span style="display:flex;"><span>          });
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.updateChildNodeLevel(node.childNodes[i]);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    allowDrop(draggingNode, dropNode, type) {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//1、被拖動的當前節點以及所在的父節點總層數不能大於3
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//1）、被拖動的當前節點總層數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      console.log(<span style="color:#cd5555">&#34;allowDrop:&#34;</span>, draggingNode, dropNode, type);
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(draggingNode);
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//當前正在拖動的節點+父節點所在的深度不大於3即可
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">let</span> deep = <span style="color:#658b00">Math</span>.abs(<span style="color:#8b008b;font-weight:bold">this</span>.maxLevel - draggingNode.level) + <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#cd5555">&#34;深度：&#34;</span>, deep);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//   this.maxLevel
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (type == <span style="color:#cd5555">&#34;inner&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// console.log(
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">//   `this.maxLevel：${this.maxLevel}；draggingNode.data.catLevel：${draggingNode.data.catLevel}；dropNode.level：${dropNode.level}`
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// );
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.level &lt;= <span style="color:#b452cd">3</span>;
+</span></span><span style="display:flex;"><span>      } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> deep + dropNode.parent.level &lt;= <span style="color:#b452cd">3</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    countNodeLevel(node) {
+</span></span><span style="display:flex;"><span>      <span style="color:#228b22">//找到所有子節點，求出最大深度
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; node.childNodes.length &gt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> i = <span style="color:#b452cd">0</span>; i &lt; node.childNodes.length; i++) {
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">if</span> (node.childNodes[i].level &gt; <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">this</span>.maxLevel = node.childNodes[i].level;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">this</span>.countNodeLevel(node.childNodes[i]);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 修改排序
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/update/sort&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//@RequiresPermissions(&#34;product:category:update&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> R <span style="color:#008b45">updateSort</span>(<span style="color:#707a7c">@RequestBody</span> List&lt;CategoryEntity&gt; list) {
+</span></span><span style="display:flex;"><span>        categoryService.<span style="color:#658b00">updateBatchById</span>(list);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> R.<span style="color:#658b00">ok</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-01-20</p>

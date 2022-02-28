@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>JSP、Hibernate、Spring Data JPA</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="整理工作上用到的知識">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="JSP、Hibernate、Spring Data JPA" />
+<meta property="og:description" content="整理工作上用到的知識" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220301-jsp-jpa/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-03-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-03-01T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JSP、Hibernate、Spring Data JPA"/>
+<meta name="twitter:description" content="整理工作上用到的知識"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jsp" onclick="onNavClick(`#jsp-nav`)" id="jsp-nav">
+									JSP
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jpa" onclick="onNavClick(`#jpa-nav`)" id="jpa-nav">
+									JPA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hibernate" onclick="onNavClick(`#hibernate-nav`)" id="hibernate-nav">
+									Hibernate
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring-data-jpa" onclick="onNavClick(`#spring-data-jpa-nav`)" id="spring-data-jpa-nav">
+									Spring Data JPA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mybatis" onclick="onNavClick(`#mybatis-nav`)" id="mybatis-nav">
+									MyBatis
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mybatis-plus" onclick="onNavClick(`#mybatis-plus-nav`)" id="mybatis-plus-nav">
+									Mybatis-plus
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jsp" onclick="onNavClick(`#jsp-nav`)" id="jsp-nav">
+									JSP
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jpa" onclick="onNavClick(`#jpa-nav`)" id="jpa-nav">
+									JPA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hibernate" onclick="onNavClick(`#hibernate-nav`)" id="hibernate-nav">
+									Hibernate
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spring-data-jpa" onclick="onNavClick(`#spring-data-jpa-nav`)" id="spring-data-jpa-nav">
+									Spring Data JPA
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#mybatis" onclick="onNavClick(`#mybatis-nav`)" id="mybatis-nav">
+									MyBatis
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#mybatis-plus" onclick="onNavClick(`#mybatis-plus-nav`)" id="mybatis-plus-nav">
+									Mybatis-plus
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/jdbc.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    JSP、Hibernate、Spring Data JPA
+                    
+                    <div class="post-subtitle">
+                        整理工作上用到的知識
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-03-01 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/jdbc">jdbc</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="jsp">JSP</h1>
+<blockquote>
+<p>萬萬沒想到JSP這種我以為早就被淘汰的東西，在台灣還有很多企業在用</p>
+</blockquote>
+<ul>
+<li>JSP的本質其實是Servlet，當它第一次被訪問，透過Web容器(Tomcat)的JSP引擎編譯成Servlet，然後一樣執行init()方法一次，之後開始service()，直到最後被卸載destroy()</li>
+<li>Servlet在Web容器中其實也是編譯成Java，產生.class檔案，當有請求過來就動態的處理一些業務邏輯(例如從request拿參數、去DB撈出對應的資料)，最後這個.class用out.print()拼接出封裝好的html的靜態頁面，返回給使用者</li>
+<li>確實可以在JSP中寫出一個直接捅到JDBC撈資料然後返回的程式碼，但一般來說不會這麼做，而是使用MVC架構</li>
+<li>MVC架構下，訪問發送一個請求過來，轉到Controller，再送到Service層處理業務邏輯，把處理完的資料(可能是某VO)放到pageContext之類的地方，而JSP是作為一個類似模板的地位，用jstl之類的標籤做簡單的邏輯控制、填充要呈現的結果頁面，最後輸出成html給使用者</li>
+<li>在這種使用框架的情境下，通常用xx.do、xx.action、xx.html等等作為請求的網址，方便Controller區分靜態文件(例如.css或.js)與請求</li>
+<li>JSP的缺點就是它必須依賴Web容器，部署、調試都很麻煩又慢，且Web容器Tomcat在高併發之下成為性能瓶頸，高耦合、難遷移(如果是純html模板那遷移相對容易，JSP就綁死在Java樹上)，故JSP技術被淘汰</li>
+</ul>
+<h1 id="jpa">JPA</h1>
+<blockquote>
+<p>Java Persistence API</p>
+</blockquote>
+<ul>
+<li>「Java 持久化的 API」，JPA是一個標準規範及接口，通過註解(annotation) 如@Entity、@Table、@Column或XML描述物件－關係表的對映關係，將執行期(在記憶體中)的實體物件持久化到資料庫中</li>
+<li>JPA只是一個標準規範，而要使用JPA的功能就需要Provider來配合，而Provider就是各種ORM框架</li>
+<li>Database - JDBC - JPA - 各種ORM框架</li>
+</ul>
+<h2 id="hibernate">Hibernate</h2>
+<ul>
+<li>全表映射，它把DB與開發者隔離了，可以完全不管DB類型，而使用HQL語句代替，但也是可以用native sql，壞處是性能差，有3種使用模式</li>
+<li>Hibernate Query Language</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String hql=<span style="color:#cd5555">&#34;select u.uid,u.uname,u.upwd from Users u where u.uname=&#39;張三&#39;&#34;</span>;
+</span></span><span style="display:flex;"><span>Query query = session.<span style="color:#658b00">createQuery</span>(hql);
+</span></span><span style="display:flex;"><span>List&lt;Object[]&gt; list = query.<span style="color:#658b00">list</span>();
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> (Object[] objects : list) {
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(Arrays.<span style="color:#658b00">toString</span>(objects));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>原生SQL查詢，例如:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String sql = <span style="color:#cd5555">&#34;select uid,uname,upwd from _users&#34;</span>;
+</span></span><span style="display:flex;"><span>List list = session.<span style="color:#658b00">createSQLQuery</span>(sql).<span style="color:#658b00">list</span>();
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(Object obj : list){
+</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(obj);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Query By Criteria
+<ul>
+<li>類似動態語言的特性，可以鏈式查詢</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">//查詢uname屬性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>PropertyProjection property = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;name&#34;</span>);
+</span></span><span style="display:flex;"><span>criteria.<span style="color:#658b00">setProjection</span>(property);
+</span></span><span style="display:flex;"><span>List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//查詢uname, upwd屬性
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//1.建立投射列表
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ProjectionList projectionList = Projections.<span style="color:#658b00">projectionList</span>();
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//2.向投射列表中新增列投射
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>PropertyProjection property1 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;uname&#34;</span>);
+</span></span><span style="display:flex;"><span>PropertyProjection property2 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;upwd&#34;</span>);
+</span></span><span style="display:flex;"><span>projectionList.<span style="color:#658b00">add</span>(property1).<span style="color:#658b00">add</span>(property2);
+</span></span><span style="display:flex;"><span><span style="color:#228b22">//3.將投射列表設定到準則中
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>criteria.<span style="color:#658b00">setProjection</span>(projectionList);
+</span></span><span style="display:flex;"><span>List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
+</span></span></code></pre></div><h3 id="spring-data-jpa">Spring Data JPA</h3>
+<blockquote>
+<p><a href="https://spring.io/projects/spring-data-jpa">https://spring.io/projects/spring-data-jpa</a></p>
+</blockquote>
+<ul>
+<li>JPA的進一步封裝，Spring Data JPA底層基於Hibernate，使用註解來宣告Model層，例如</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Entity</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Table</span>(name = <span style="color:#cd5555">&#34;memberaccountjpa&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MemberAccountJPA</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@GeneratedValue</span>(strategy=GenerationType.<span style="color:#658b00">AUTO</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> id;
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;EMAIL&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String email;
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;CELLPHONE&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String cellphone;
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;PASSWORD&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String password;
+</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;ADDRESS&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String address;
+</span></span></code></pre></div><ul>
+<li>然後造一個對應的XxxRepository介面繼承JpaRepository，就可以快速的使用基礎CRUD，詳細關鍵字看官方文檔</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">MemberRepository</span>  <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;MemberAccountJPA, Long&gt;{
+</span></span><span style="display:flex;"><span>	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findAll</span>();
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findByEmail</span>(String email);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>為何繼承介面就能操作? 底層是動態代理模式，實際執行的實體是SimpleJpaRepository，它執行的方法再往底層追是 hibernate 的CriteriaQueryImpl，拼接出SQL語句</li>
+</ul>
+<h2 id="mybatis">MyBatis</h2>
+<ul>
+<li>不同於傳統ORM，屬於utils系列(沒有完全按照JPA規範)，前身是iBatis</li>
+<li>是半自動映射(指需要手動寫xml提供POJO與DB的映射關係)，優勢在於靈活、可優化空間大
+<ul>
+<li>與Hibernate相比可以看成自排與手排的區別</li>
+</ul>
+</li>
+</ul>
+<h3 id="mybatis-plus">Mybatis-plus</h3>
+<ul>
+<li>是MyBatis的進一步封裝，優勢在於有類似動態語言的鏈式調用(與Hibernate的Query By Criteria類似，但個人認為Mybatis-plus的更簡潔好用)，一般的CRUD都已經封裝好了方法</li>
+<li>有各種插件提供分頁、自動注入、逆向生成(能連到DB就自動生成POJO與對應的xml mapper)，需要複雜的SQL語句時又能直接在xml寫原生SQL語句，算是集簡單易用效能高上限也高的大成，也難怪採用此方案的人越來越多</li>
+<li>參考筆記 <a href="https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/">https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-03-01</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220228-postgres-javafaker/">
+			上一篇<br>用Javafaker產生假資料
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

@@ -16,7 +16,7 @@
       <guid>https://yoziming.github.io/post/211215-agg-ja-30/</guid>
       <description>Lambda表達式  可以簡略表達接口的匿名函數部份
   用於函數式接口，即只有一個抽象方法的接口  因為當你使用這個接口就必定要實現這個唯一的方法，所以很多東西可以省略    結構 // 舉例 Comparator&amp;lt;Integer&amp;gt; com = (o1, o2) -&amp;gt; o1.compareTo(o2);  -&amp;gt;:Lambda符號、箭頭符號 左邊:Lambda形參列表，就是接口中抽象方法的形參列表  參數類型可以省略(類型推斷) 如果只有一個參數，可以省略()括號   右邊:Lambda體，就是重寫的方法體，應該用{}大括號包裹  如果只有一行語句，可以省略{}大括號  如果省略{}大括號也必須省略return      應用  其實不用特別去記，IDEA寫出來他就會提示自動修改了
- 一. // 無參無返回 Runnable r1 = new Runnable() { @Override public void run() { System.out.println(&amp;#34;hello&amp;#34;); } }; // Lambda省略後 Runnable r1 = () -&amp;gt; System.out.println(&amp;#34;hello&amp;#34;); 二. // 方法有一個形參，無返回 Consumer&amp;lt;String&amp;gt; stringConsumer = new Consumer&amp;lt;String&amp;gt;() { @Override public void accept(String s) { System.</description>
+ 一. // 無參無返回 Runnable r1 = new Runnable() {  @Override  public void run() {  System.out.println(&amp;#34;hello&amp;#34;);  } }; // Lambda省略後 Runnable r1 = () -&amp;gt; System.</description>
     </item>
     
     <item>
@@ -48,7 +48,7 @@
       
       <guid>https://yoziming.github.io/post/211212-agg-ja-27/</guid>
       <description>標準輸出/入流  System.in:標準輸入字節流，預設是從鍵盤輸入，類型是InputStream System.out:標準輸出流，預設輸出到控制台，類型是PrintStream，繼承自FilterOutputStream，繼承自OutputStream  重定向方法  public static void setIn(InputStream in) public static void setOut(PrintStream out)  範例-讀取輸入  不使用scanner
- public static void main(String[] args) { // 把標準輸入字節流先轉換成字符流  BufferedReader bufferedReader = null; try { InputStreamReader isr = new InputStreamReader(System.in); // 把字符流用bufferedReader包起來，為了調用readline方法  bufferedReader = new BufferedReader(isr); for (; true; ) { System.out.println(&amp;#34;輸入要轉換成大寫的字串...&amp;#34;); String str = bufferedReader.readLine(); if (&amp;#34;exit&amp;#34;.equalsIgnoreCase(str)) { // &amp;#34;exit&amp;#34;放前面防空指針  System.out.println(&amp;#34;離開&amp;#34;); break; } System.out.println(str.toUpperCase()); } } catch (IOException e) { e.</description>
+ public static void main(String[] args) {  // 把標準輸入字節流先轉換成字符流  BufferedReader bufferedReader = null;  try {  InputStreamReader isr = new InputStreamReader(System.in);  // 把字符流用bufferedReader包起來，為了調用readline方法  bufferedReader = new BufferedReader(isr);  for (; true; ) {  System.out.println(&amp;#34;輸入要轉換成大寫的字串...&amp;#34;);  String str = bufferedReader.readLine();  if (&amp;#34;exit&amp;#34;.equalsIgnoreCase(str)) { // &amp;#34;exit&amp;#34;放前面防空指針  System.</description>
     </item>
     
     <item>
@@ -74,7 +74,7 @@ https://yoziming.github.io/post/211212-slash-file-name/
       
       <guid>https://yoziming.github.io/post/211210-agg-ja-25/</guid>
       <description>泛型Generic  泛型是JDK5新增的項目
- 特性  帶泛型的結構在實例化時，可以指明具體的泛型類型，類似於貼&amp;lt;標籤&amp;gt; 指明完後，使用到類的地方全都換成該泛型 用一個比喻，我自訂一個帶&amp;lt;&amp;gt;泛型的校車類，當實例化具體的校車A時，在&amp;lt;&amp;gt;中指明上裝的都是&amp;lt;北一女學生&amp;gt;，那裝進去的就只能是北一女學生， 當我對這台校車A進行各種操作時，就不用考慮裡面人是啥種類(以前都用Object盛裝，然後操作時還要先instanceOf確認種類再強轉)，現在跟校車A牽扯的通通都是&amp;lt;北一女學生&amp;gt;不用囉嗦 承上例，我也可以實例化另一台校車B&amp;lt;建中男學生&amp;gt;。一個優勢在於我規劃校車這個類時，先不用考慮具體要裝的是啥類而用泛型，用這個泛型先寫好通用的方法，留著空給實例化時再去決定實際調用的類  使用範例 // 造一個指明泛型為Integer, String的Map HashMap&amp;lt;Integer, String&amp;gt; stringHashMap = new HashMap&amp;lt;Integer, String&amp;gt;(); stringHashMap.put(1, &amp;#34;小名&amp;#34;); stringHashMap.put(2, &amp;#34;老王&amp;#34;); stringHashMap.put(3, &amp;#34;阿洲&amp;#34;); // 此時如果想放進非Integer,String的東西則報錯  // 轉成EntrySet，叫Map.Entry是因為Entry是一個內部接口 Set&amp;lt;Map.Entry&amp;lt;Integer, String&amp;gt;&amp;gt; entries = stringHashMap.entrySet(); // 通通都自動帶入泛型，而不用再去判斷種類或強轉 // 試著遍歷 Iterator&amp;lt;Map.Entry&amp;lt;Integer, String&amp;gt;&amp;gt; iterator = entries.iterator(); while (iterator.hasNext()) { Map.Entry&amp;lt;Integer, String&amp;gt; next = iterator.next(); Integer key = next.getKey(); String value = next.getValue(); System.out.println(key + &amp;#34;=&amp;gt;&amp;#34; + value); } 聲明  集合接口或集合類都天生帶有泛型的結構，自建的類或接口也能聲明泛型 泛型類可能有多個參數，可以都放在&amp;lt;&amp;gt;內用&amp;quot;,&amp;ldquo;隔開，例如:&amp;lt;E1, E2, E3&amp;gt; 聲明構造器時不用寫泛型 靜態方法不能使用類的泛型(因為泛型在實例化時才決定，當能不能跟static共存) 異常類不能聲明為泛型(因為它祖宗就沒有&amp;lt;&amp;gt;，繼承再怎樣都生不出來)  實例化  實例化時，指定的泛型必須是一個實際類，不能是基本數據類型(有需要就用包裝類) 泛型可以嵌套使用 帶泛型的接口或類在實例化時如果不指定泛型，就當作Object處理，但不等價於Object 要嘛一路都用泛型，要嘛都不要用  泛型方法   在方法中出現了泛型的結構，泛形參數與類的泛型無關</description>
+ 特性  帶泛型的結構在實例化時，可以指明具體的泛型類型，類似於貼&amp;lt;標籤&amp;gt; 指明完後，使用到類的地方全都換成該泛型 用一個比喻，我自訂一個帶&amp;lt;&amp;gt;泛型的校車類，當實例化具體的校車A時，在&amp;lt;&amp;gt;中指明上裝的都是&amp;lt;北一女學生&amp;gt;，那裝進去的就只能是北一女學生， 當我對這台校車A進行各種操作時，就不用考慮裡面人是啥種類(以前都用Object盛裝，然後操作時還要先instanceOf確認種類再強轉)，現在跟校車A牽扯的通通都是&amp;lt;北一女學生&amp;gt;不用囉嗦 承上例，我也可以實例化另一台校車B&amp;lt;建中男學生&amp;gt;。一個優勢在於我規劃校車這個類時，先不用考慮具體要裝的是啥類而用泛型，用這個泛型先寫好通用的方法，留著空給實例化時再去決定實際調用的類  使用範例 // 造一個指明泛型為Integer, String的Map HashMap&amp;lt;Integer, String&amp;gt; stringHashMap = new HashMap&amp;lt;Integer, String&amp;gt;(); stringHashMap.put(1, &amp;#34;小名&amp;#34;); stringHashMap.put(2, &amp;#34;老王&amp;#34;); stringHashMap.put(3, &amp;#34;阿洲&amp;#34;); // 此時如果想放進非Integer,String的東西則報錯  // 轉成EntrySet，叫Map.Entry是因為Entry是一個內部接口 Set&amp;lt;Map.Entry&amp;lt;Integer, String&amp;gt;&amp;gt; entries = stringHashMap.entrySet(); // 通通都自動帶入泛型，而不用再去判斷種類或強轉 // 試著遍歷 Iterator&amp;lt;Map.Entry&amp;lt;Integer, String&amp;gt;&amp;gt; iterator = entries.iterator(); while (iterator.hasNext()) {  Map.Entry&amp;lt;Integer, String&amp;gt; next = iterator.next();  Integer key = next.getKey();  String value = next.getValue();  System.out.println(key + &amp;#34;=&amp;gt;&amp;#34; + value); } 聲明  集合接口或集合類都天生帶有泛型的結構，自建的類或接口也能聲明泛型 泛型類可能有多個參數，可以都放在&amp;lt;&amp;gt;內用&amp;quot;,&amp;ldquo;隔開，例如:&amp;lt;E1, E2, E3&amp;gt; 聲明構造器時不用寫泛型 靜態方法不能使用類的泛型(因為泛型在實例化時才決定，當能不能跟static共存) 異常類不能聲明為泛型(因為它祖宗就沒有&amp;lt;&amp;gt;，繼承再怎樣都生不出來)  實例化  實例化時，指定的泛型必須是一個實際類，不能是基本數據類型(有需要就用包裝類) 泛型可以嵌套使用 帶泛型的接口或類在實例化時如果不指定泛型，就當作Object處理，但不等價於Object 要嘛一路都用泛型，要嘛都不要用  泛型方法   在方法中出現了泛型的結構，泛形參數與類的泛型無關</description>
     </item>
     
     <item>
@@ -116,7 +116,7 @@ https://yoziming.github.io/post/211212-slash-file-name/
   提供toSting方法
   提供其他訴求，例如:get屬性等等
   範例:
-class PayMethod { private final String name; private final String desc; private PayMethod(String name, String desc) { this.name = name; this.desc = desc; } public static final PayMethod CASH = new PayMethod(&amp;#34;現金&amp;#34;, &amp;#34;真金白銀&amp;#34;); public static final PayMethod VISA = new PayMethod(&amp;#34;VISA卡&amp;#34;, &amp;#34;VISA金融卡&amp;#34;); public static final PayMethod ONLINE = new PayMethod(&amp;#34;電子支付&amp;#34;, &amp;#34;街口支付&amp;#34;); @Override public String toString() { return &amp;#34;PayMethod{&amp;#34; + &amp;#34;name=&amp;#39;&amp;#34; + name + &amp;#39;\&amp;#39;&amp;#39; + &amp;#34;, desc=&amp;#39;&amp;#34; + desc + &amp;#39;\&amp;#39;&amp;#39; + &amp;#39;}&amp;#39;; } } // 調用，因為是靜態，直接類名.</description>
+class PayMethod {  private final String name;  private final String desc;   private PayMethod(String name, String desc) {  this.name = name;  this.desc = desc;  }   public static final PayMethod CASH = new PayMethod(&amp;#34;現金&amp;#34;, &amp;#34;真金白銀&amp;#34;);  public static final PayMethod VISA = new PayMethod(&amp;#34;VISA卡&amp;#34;, &amp;#34;VISA金融卡&amp;#34;);  public static final PayMethod ONLINE = new PayMethod(&amp;#34;電子支付&amp;#34;, &amp;#34;街口支付&amp;#34;);   @Override  public String toString() {  return &amp;#34;PayMethod{&amp;#34; +  &amp;#34;name=&amp;#39;&amp;#34; + name + &amp;#39;\&amp;#39;&amp;#39; +  &amp;#34;, desc=&amp;#39;&amp;#34; + desc + &amp;#39;\&amp;#39;&amp;#39; +  &amp;#39;}&amp;#39;;  } }  // 調用，因為是靜態，直接類名.</description>
     </item>
     
     <item>
@@ -133,7 +133,7 @@ class PayMethod { private final String name; private final String desc; private 
  toString():顯示時間 getTime():返回時間戳    java.sql.Date類  本身是java.util.Date的子類，用來對應資料庫中的日期變量  為了區分，最好使用全類名例如:java.sql.Date d2 = new java.sql.Date(d1.getTime()); 創建:形參必須傳入時間戳 方法:  toString():顯示時間，格式只有日期，如:2021-12-01 getTime():返回時間戳     java.util.Date與java.sql.Date轉換:形參中填入getTime()即可互轉  SimpleDateFormat類   顧名思義，把Date類格式化成String用的
   創建一個形參為你想要的格式(如常見的yyyy-MM-dd hh:mm:ss)的SimpleDateFormat物件
   用此物件調用format(date物件)方法返回想要的String，舉例:
-Date d1 = new Date(); SimpleDateFormat sdf = new SimpleDateFormat(&amp;#34;yyyy-MM-dd hh:mm:ss&amp;#34;); String s1 = sdf.</description>
+Date d1 = new Date();  SimpleDateFormat sdf = new SimpleDateFormat(&amp;#34;yyyy-MM-dd hh:mm:ss&amp;#34;); String s1 = sdf.</description>
     </item>
     
     <item>
@@ -142,7 +142,7 @@ Date d1 = new Date(); SimpleDateFormat sdf = new SimpleDateFormat(&amp;#34;yyyy-
       <pubDate>Sun, 05 Dec 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/211205-agg-ja-20/</guid>
-      <description>String類 String類特性  表示字符串，內容以&amp;quot;&amp;quot;包裹表示，稱為字面量的定義方式 是一個final類，不可被繼承 實現了Serializable接口，可以序列化 實現了Comparable接口，表示可以比較大小 內部定義了一個final char[] value數組來實際儲存數據，代表不可變的字符序列  當我們用字面量(區別於new)定義了一個String str1=&amp;quot;abc&amp;quot;，相當於在方法區的字符串常量池中新增了一個&amp;quot;abc&amp;quot;序列，其為不可變的 字符串常量池中不會儲存內容相同的字符串，比如我再新增一個str2=&amp;quot;abc&amp;quot;，則他們指向同一地址。  延伸str6=&amp;quot;a&amp;quot;+&amp;quot;bc&amp;quot;，在聲明時字面量相加，等於常量跟常量拼接，都是在常量池，所以指向同樣位置   而當我把str1=&amp;quot;hello&amp;quot;，或是用+拼接了其他內容，或是用replace取代了其中某一位的字，都是在常量池重新開闢空間，所謂不可變是這個意思   如果是用String str3=new String(&amp;quot;abc&amp;quot;);方法生成，則是創在堆中，str3本身是指向堆的地址，去比==都是false。這個動作實際開闢了2個記憶體空間，它在堆中的value才指向常量池  如果是new一個構造器生成時賦予的name傳入形參則跟new String是不同的，傳入形參也是類似於字面量的方法(因為顯然多在堆中開闢位置是毫無必要的) 若是用+拼接有任何涉及到變量的，例如str4=str1+&amp;quot;def&amp;quot;，都是相當於在堆空間new的操作，==去比較時全都false 但如果變量被final修飾(正常不會有人這麼做)，相當於這個變量存在常量池，又會是常量跟常量拼接，所以指向同樣位置 若是用intern()方法，例如str5=str1.intern();，返回值是在常量池中，==比較是true    面試題-判斷結果 public class StringTest { String str = new String(&amp;#34;good&amp;#34;); char[] ch = {&amp;#39;t&amp;#39;, &amp;#39;e&amp;#39;, &amp;#39;s&amp;#39;, &amp;#39;t&amp;#39;}; public void change(String str, char[] ch) { str = &amp;#34;bad&amp;#34;; ch[0] = &amp;#39;b&amp;#39;; } public static void main(String[] args) { StringTest ex = new StringTest(); ex.</description>
+      <description>String類 String類特性  表示字符串，內容以&amp;quot;&amp;quot;包裹表示，稱為字面量的定義方式 是一個final類，不可被繼承 實現了Serializable接口，可以序列化 實現了Comparable接口，表示可以比較大小 內部定義了一個final char[] value數組來實際儲存數據，代表不可變的字符序列  當我們用字面量(區別於new)定義了一個String str1=&amp;quot;abc&amp;quot;，相當於在方法區的字符串常量池中新增了一個&amp;quot;abc&amp;quot;序列，其為不可變的 字符串常量池中不會儲存內容相同的字符串，比如我再新增一個str2=&amp;quot;abc&amp;quot;，則他們指向同一地址。  延伸str6=&amp;quot;a&amp;quot;+&amp;quot;bc&amp;quot;，在聲明時字面量相加，等於常量跟常量拼接，都是在常量池，所以指向同樣位置   而當我把str1=&amp;quot;hello&amp;quot;，或是用+拼接了其他內容，或是用replace取代了其中某一位的字，都是在常量池重新開闢空間，所謂不可變是這個意思   如果是用String str3=new String(&amp;quot;abc&amp;quot;);方法生成，則是創在堆中，str3本身是指向堆的地址，去比==都是false。這個動作實際開闢了2個記憶體空間，它在堆中的value才指向常量池  如果是new一個構造器生成時賦予的name傳入形參則跟new String是不同的，傳入形參也是類似於字面量的方法(因為顯然多在堆中開闢位置是毫無必要的) 若是用+拼接有任何涉及到變量的，例如str4=str1+&amp;quot;def&amp;quot;，都是相當於在堆空間new的操作，==去比較時全都false 但如果變量被final修飾(正常不會有人這麼做)，相當於這個變量存在常量池，又會是常量跟常量拼接，所以指向同樣位置 若是用intern()方法，例如str5=str1.intern();，返回值是在常量池中，==比較是true    面試題-判斷結果 public class StringTest {  String str = new String(&amp;#34;good&amp;#34;);  char[] ch = {&amp;#39;t&amp;#39;, &amp;#39;e&amp;#39;, &amp;#39;s&amp;#39;, &amp;#39;t&amp;#39;};   public void change(String str, char[] ch) {  str = &amp;#34;bad&amp;#34;;  ch[0] = &amp;#39;b&amp;#39;;  }   public static void main(String[] args) {  StringTest ex = new StringTest();  ex.</description>
     </item>
     
     <item>
@@ -158,7 +158,7 @@ synchronized (同步器) { // 需要同步的代碼 }   同步器可以是任何
  若是靠實現Runnable接口方法的多線程，可以用this，因為只有一個該類，當前對象是同一個 如果是繼承類實現的多線程，則可以用static變量，或是考慮&amp;quot;類名.class&amp;quot;(這玩意也是唯一的)    但這樣做實質等於單線程了，效率不高
   同步方法   解決多線程安全問題
   舉例:
-public class SynTest implements Runnable { int ticket = 100; @Override public void run() { show(); } private synchronized void show() { for (; ticket &amp;gt; 0; ) { try { Thread.</description>
+public class SynTest implements Runnable {  int ticket = 100;   @Override  public void run() {  show();  }   private synchronized void show() {  for (; ticket &amp;gt; 0; ) {  try {  Thread.</description>
     </item>
     
     <item>
@@ -200,7 +200,7 @@ Error   錯誤，JVM系統內部錯誤虛擬機無法解決的問題、資源耗
     Unchecked Exception:又稱RuntimeException，運行時異常，比如:
  NullPointerException，空指針訪問 ArrayIndexOutOfBoundsException，數組角標越界 ClassCastException，類型轉換異常 NumberFormatException，數字類型不合 InputMismatchException，輸入數據不符合，例如scan int結果來了字串 ArithmeticException，算法異常，例如把某數除以0 通常是透過撰寫相應程式以避免的邏輯錯誤, 可以根據當下的情境來判斷是不是要catch    異常處理 代碼執行時，一旦出現異常，就會在異常處生成一個對應異常類的物件，並將其拋出，拋出後的代碼就不再執行
 try-catch   格式:
-try { int num = Integer.parseInt(str); } catch (NumberFormatException e) { e.</description>
+try {  int num = Integer.</description>
     </item>
     
     <item>
@@ -213,7 +213,7 @@ try { int num = Integer.parseInt(str); } catch (NumberFormatException e) { e.</d
 類的設計必須保證子類與父類共有特徵，有時候我們將父類設計得非常抽象，以至於它沒有具體的實例，這樣的類稱為抽象類。
  定義  abstract屬於Java中的關鍵字，可以用來修飾類與方法，以下分別說明  abstract修飾類  此類不能實例化 必定有構造器被繼承 開發中都會提供抽象類的子類，讓子類形成實例來調用 不能修飾final類，final類規定不能被繼承，玩毛線  abstract修飾方法  稱為抽象方法，只有聲明，沒有方法體 (就沒要讓你具體用) 此方法不能被調用 包含抽象方法的類，必定是一個抽象類。反之抽象類不一定要有抽象方法 實際開發中的調用必須是被子類繼承後重寫，所有的抽象方法都被重寫後此子類才能實例化(否則，存在繼承來的抽象方法你就是個抽象類) 不能修飾私有private方法，因為抽象就是為了被繼承，抽象與其矛盾 不能修飾靜態static方法，靜態方法跟類共存亡，可以直接被類調用，通常是去弄靜態屬性的，抽象與其矛盾 不能修飾final方法，final方法規定是不能被重寫，抽象與其矛盾  應用-模板方法設計 在軟體開發中，實現某種功能時，整體中很固定、通用的方法，在父類中就寫好了；而其他不確定、易變的就先抽象起來，交給子類去實現
 匿名子類的匿名對象  在一次性使用的場合，不想實際造一個匿名類的實體子類，可以在new 匿名類()後面接{}，{內直接重寫方法，範例:
- abstract public class Person { abstract public void work(); } public class Student extends Person { @Override public void work() { System.out.println(&amp;#34;學生讀書&amp;#34;); } public static void main(String[] args) { method(new Student()); method(new Person() { @Override public void work() { System.</description>
+ abstract public class Person {  abstract public void work(); } public class Student extends Person {  @Override  public void work() {  System.out.println(&amp;#34;學生讀書&amp;#34;);  }   public static void main(String[] args) {  method(new Student());  method(new Person() {  @Override  public void work() {  System.</description>
     </item>
     
     <item>
@@ -244,7 +244,7 @@ Father obj = new Child();   使用:虛擬方法調用，編譯期只能調用父
  白話:編譯看左，運行看右    前提:類的繼承關係、方法的重寫，缺一不可
   目的:避免重複寫很多重載的方法
   體現:
-  舉例`Person`類 之下有子類 `Chinese`、`Japanese`、`American` `Person`類有`welcome`方法，被各自子類以該國語言重寫過 我的某功能調用`welcome`時能接受`Person`類，依照實際子類物件呈現不同語言的`welcome`結果 該功能即不需要`Chinese`、`Japanese`、`American`都寫一次   public class Atest { public static void main(String[] args) { Atest test = new Atest(); test.func(new Dog()); // 多態體現在這  } public void func(Animal animal) { //Animal animal=new Dog();  animal.</description>
+  舉例`Person`類 之下有子類 `Chinese`、`Japanese`、`American` `Person`類有`welcome`方法，被各自子類以該國語言重寫過 我的某功能調用`welcome`時能接受`Person`類，依照實際子類物件呈現不同語言的`welcome`結果 該功能即不需要`Chinese`、`Japanese`、`American`都寫一次   public class Atest {  public static void main(String[] args) {  Atest test = new Atest();  test.func(new Dog()); // 多態體現在這  }   public void func(Animal animal) { //Animal animal=new Dog();  animal.</description>
     </item>
     
     <item>
@@ -273,7 +273,7 @@ Father obj = new Child();   使用:虛擬方法調用，編譯期只能調用父
       <guid>https://yoziming.github.io/post/211126-agg-ja-11/</guid>
       <description>項目練習-客戶訊息管理系統  有點基礎這部分都蠻簡單的
  有個知識點是這邊在&amp;quot;刪除用戶&amp;quot;的功能用到了循環鏈表的概念
-public boolean deleteCustomer(int index) { if (customers[index] != null) { for (int i = index; i &amp;lt; total - 1; i++) { // 不能搬到total，否則[i+1]會越位  customers[i] = customers[i + 1]; } customers[total - 1] = null; total--; System.out.println(&amp;#34;刪除用戶成功!&amp;#34;); return true; } System.out.println(&amp;#34;索引無效，操作失敗&amp;#34;); return false; } total表示當前數組中用戶總數，這個i &amp;lt; total - 1蠻關鍵的，我原先沒想到這邊要-1，還想著讓他把後面的null往前搬就好，沒考慮到末尾可能會越位的情況。
+public boolean deleteCustomer(int index) {  if (customers[index] != null) {  for (int i = index; i &amp;lt; total - 1; i++) { // 不能搬到total，否則[i+1]會越位  customers[i] = customers[i + 1];  }  customers[total - 1] = null;  total--;   System.out.println(&amp;#34;刪除用戶成功!&amp;#34;);  return true;  }  System.out.println(&amp;#34;索引無效，操作失敗&amp;#34;);  return false; } total表示當前數組中用戶總數，這個i &amp;lt; total - 1蠻關鍵的，我原先沒想到這邊要-1，還想著讓他把後面的null往前搬就好，沒考慮到末尾可能會越位的情況。
 搬完再跟customers[total - 1] = null搭配使用，這樣才是健壯的</description>
     </item>
     
@@ -286,8 +286,7 @@ public boolean deleteCustomer(int index) { if (customers[index] != null) { for (
       <description>封裝的設計思想   高內聚:類的內部數據操作細節自己完成，不允許外部干涉
   低耦合:對外露出少量的方法(API)供使用
    舉例:微波爐，我不需要用戶控制燈光、波照、轉盤等等，只要他放入東西按下&amp;quot;解凍&amp;quot;即可。即所謂的&amp;quot;一鍵XX&amp;quot;功能。
- 封裝性的體現  將類的屬性私有化(private)，通過公共的(public)的set與get方法讓外部調用，舉例:  public class Main { public static void main(String[] args) { Animal a1 = new Animal(); a1.setAge(10); System.out.println(a1.getAge()); } } class Animal { private int age; public void setAge(int i) { age = i; } public int getAge() { return age; } }  不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&amp;quot;小工具&amp;quot;) 單例模式(將構造器私有化) &amp;hellip;等等 需要權限修飾符來配合  權限修飾符  JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)
-  private:限當前類內部使用 default(缺省，就是不寫):同一個包名就可以調用 protected:不同包它的子類可以調用 public:相當於開放的  修飾的對象  以上4種可以用於修飾類的內部結構:屬性、方法、構造器、內部類 class本身的修飾只能是缺省或public，一個.</description>
+ 封裝性的體現  將類的屬性私有化(private)，通過公共的(public)的set與get方法讓外部調用，舉例:  public class Main {  public static void main(String[] args) {  Animal a1 = new Animal();  a1.setAge(10);  System.out.println(a1.getAge());  } }  class Animal {  private int age;   public void setAge(int i) {  age = i;  }   public int getAge() {  return age;  } }  不對外公開的私有方法(比如對外是各種排序方法，內部自己寫了一個交換兩數據位置的&amp;quot;小工具&amp;quot;) 單例模式(將構造器私有化) &amp;hellip;等等 需要權限修飾符來配合  權限修飾符  JAVA中有4種權限修飾符，各自的範圍是: (從小到大，下包含上)</description>
     </item>
     
     <item>
@@ -298,7 +297,7 @@ public boolean deleteCustomer(int index) { if (customers[index] != null) { for (
       <guid>https://yoziming.github.io/post/211124-agg-ja-09/</guid>
       <description>細說方法 方法的重載(overload)  定義:同一各類中，允許存在一個以上的同名方法，只要他們的參數個數或參數類型不同即可 跟方法的權限修飾符、返回值類型、形參變量名、方法體無關，判斷重點在於參數本身 可能會自動類型提升，舉例:傳入的是int形，方法中沒有int但有double，就會調用double 典型的例子就是內建的println()  可變個數形參  格式:方法名(形參類型 ... 形參名) 調用時傳入的形參數量可以是0到多個，包含數組 與本類中方法名相同，形參不同的方法間構成重載(可共存) 與本類中方法名相同，形參類型也相同的數組之間不構成重載(不可共存)  PS.這是歷史遺留問題，因為可變個數形參是JDK5加入的，以前都是用數組   方法內把它當作數組使用，遍歷itar (i=0;i&amp;lt;形參名.length;i++){} 必須聲明在末尾，且最多只能有一個  方法參數的值傳遞 先複習一下變量的賦值規則  變量是基本數據類型(byte、short、int、long、char、float、double、boolean)，賦值的是變量所保存的數據值 變量是引用類型(引用類型就只有null跟地址值兩種情況)，賦值給的是所保存數據的地址值  名詞解釋  形參:方法定義時，聲明的小括號中的參數 實參:方法調用時，實際傳給形參的數據  傳參規則  跟變量的賦值規則其實相同
   如果參數是基本數據類型，實參賦給形參的是數據值(類似給一份副本) 如果參數是引用類型，實參賦給形參的是地址值(包含變量的數據類型)  陷阱題  println在char[]這有個特例，要避免踩坑就是調用時多看看方法格式
- int[] arr1 = new int[]{1, 2, 3}; System.out.println(arr1); // [I@1b6d3586 char[] arr2 = new char[]{&amp;#39;a&amp;#39;, &amp;#39;b&amp;#39;, &amp;#39;c&amp;#39;}; System.out.println(arr2); // abc 練習-在方法中引用其他類的方法並調用 public class Main { public static void main(String[] args) { PassObject t1 = new PassObject(); Circle c = new Circle(); t1.</description>
+ int[] arr1 = new int[]{1, 2, 3}; System.out.println(arr1); // [I@1b6d3586 char[] arr2 = new char[]{&amp;#39;a&amp;#39;, &amp;#39;b&amp;#39;, &amp;#39;c&amp;#39;}; System.out.println(arr2); // abc 練習-在方法中引用其他類的方法並調用 public class Main {  public static void main(String[] args) {  PassObject t1 = new PassObject();  Circle c = new Circle();  t1.</description>
     </item>
     
     <item>
@@ -329,7 +328,7 @@ https://www.zhihu.com/question/22515658/answer/120754062
  屬性(field):成員變量，又稱域、字段、欄位
 行為(method):成員方法，又稱函數
 舉例:汽車類的屬性有輪子大小、有品牌名稱；汽車的行為有吃汽油跑
-練習-在JAVA創建類並實例化 class Car { // 屬性  String brand; String owner; boolean isNew = true; // 可以給預設值  // 行為(方法)  public void crash() { if (isNew) { System.</description>
+練習-在JAVA創建類並實例化 class Car {  // 屬性  String brand;  String owner;  boolean isNew = true; // 可以給預設值   // 行為(方法)  public void crash() {  if (isNew) {  System.</description>
     </item>
     
     <item>
@@ -344,7 +343,7 @@ https://www.zhihu.com/question/22515658/answer/120754062
   加密
   &amp;hellip;
   練習題-帕斯卡三角  形狀不是很漂亮
- int[][] arr = new int[10][]; for (int i = 0; i &amp;lt; arr.length; i++) { arr[i] = new int[i + 1]; // 兩外邊都是1  arr[i][0] = 1; arr[i][i] = 1; if (i &amp;gt; 1) { for (int j = 1; j &amp;lt; arr[i].</description>
+ int[][] arr = new int[10][]; for (int i = 0; i &amp;lt; arr.length; i++) {  arr[i] = new int[i + 1];  // 兩外邊都是1  arr[i][0] = 1;  arr[i][i] = 1;  if (i &amp;gt; 1) {  for (int j = 1; j &amp;lt; arr[i].</description>
     </item>
     
     <item>
@@ -366,7 +365,7 @@ https://www.zhihu.com/question/22515658/answer/120754062
       
       <guid>https://yoziming.github.io/post/211120-agg-ja-05/</guid>
       <description>嵌套循環  就是for中有for，有時候需要多花點時間理解
-  內層循環整個遍歷完，外層循環才執行一次 假設外層循環要執行m次，內層循環要執行n次。整個跑完內層循環一共執行了m*n次  練習題-印菱形 Scanner scan = new Scanner(System.in); System.out.println(&amp;#34;輸入想印的菱形邊長n=...&amp;#34;); int n = scan.nextInt(); // 上半部分(含中間最長邊) for (int i = 1; i &amp;lt;= n; i++) { for (int j = 0; j &amp;lt; n - i; j++) { System.out.print(&amp;#34; &amp;#34;); } for (int k = 0; k &amp;lt; i; k++) { System.out.print(&amp;#34;* &amp;#34;); } System.out.println(); } // 下半部分(從最長-1開始) for (int i = 1; i &amp;lt;= n; i++) { for (int j = 0; j &amp;lt; i; j++) { System.</description>
+  內層循環整個遍歷完，外層循環才執行一次 假設外層循環要執行m次，內層循環要執行n次。整個跑完內層循環一共執行了m*n次  練習題-印菱形 Scanner scan = new Scanner(System.in); System.out.println(&amp;#34;輸入想印的菱形邊長n=...&amp;#34;); int n = scan.nextInt(); // 上半部分(含中間最長邊) for (int i = 1; i &amp;lt;= n; i++) {  for (int j = 0; j &amp;lt; n - i; j++) {  System.out.print(&amp;#34; &amp;#34;);  }  for (int k = 0; k &amp;lt; i; k++) {  System.out.print(&amp;#34;* &amp;#34;);  }  System.out.println(); } // 下半部分(從最長-1開始) for (int i = 1; i &amp;lt;= n; i++) {  for (int j = 0; j &amp;lt; i; j++) {  System.</description>
     </item>
     
     <item>
@@ -381,8 +380,7 @@ if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); System.out.println(&amp;#34
 if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); else System.out.println(&amp;#34;d&amp;#34;); 結果為d   多行時直接報錯
 if (1 == 2) System.out.println(&amp;#34;a&amp;#34;); System.out.println(&amp;#34;b&amp;#34;); System.out.println(&amp;#34;c&amp;#34;); else 報錯   小結:不加{}的全部拖出去打
   switch-case   結構:
-switch (表達式) { case 常量1: // 執行語句  break; case 常量2... ... default: // 預設執行語句 }   如果不加break;就不會跳出，而是會穿透且之下的語句全都執行一遍
-  基於上述特性，可以合併使用，舉例:</description>
+switch (表達式) {  case 常量1:  // 執行語句  break;  case 常量2...  ...  default:  // 預設執行語句 }   如果不加break;就不會跳出，而是會穿透且之下的語句全都執行一遍</description>
     </item>
     
     <item>

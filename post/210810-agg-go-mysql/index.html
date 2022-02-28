@@ -493,10 +493,10 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
                     <h1 id="go使用mysql與事務操作">Go使用mysql與事務操作</h1>
 <h3 id="基本操作">基本操作</h3>
 <pre tabindex="0"><code>import (
-	&quot;database/sql&quot;
-	&quot;fmt&quot;
+	&#34;database/sql&#34;
+	&#34;fmt&#34;
 
-	_ &quot;github.com/go-sql-driver/mysql&quot;
+	_ &#34;github.com/go-sql-driver/mysql&#34;
 )
 
 var db *sql.DB // 是一個連接池對象
@@ -509,8 +509,8 @@ type user struct {
 }
 
 func initDB() (err error) {
-	dsn := &quot;root:root@tcp(127.0.0.1:3306)/sql_test&quot;
-	db, err = sql.Open(&quot;mysql&quot;, dsn) // 這個db要用全局的，重要!
+	dsn := &#34;root:root@tcp(127.0.0.1:3306)/sql_test&#34;
+	db, err = sql.Open(&#34;mysql&#34;, dsn) // 這個db要用全局的，重要!
 	if err != nil {
 		return
 	}
@@ -518,7 +518,7 @@ func initDB() (err error) {
 	if err != nil {
 		return
 	} else {
-		fmt.Println(&quot;連接成功&quot;)
+		fmt.Println(&#34;連接成功&#34;)
 	}
 	return
 }
@@ -530,7 +530,7 @@ func find1() {
 	rowObj := db.QueryRow(sqlStr, 1)
 	err := rowObj.Scan(&amp;u1.id, &amp;u1.name, &amp;u1.age)
 	if err != nil {
-		fmt.Println(&quot;Scan failed!&quot;, err)
+		fmt.Println(&#34;Scan failed!&#34;, err)
 		return
 	}
 	fmt.Println(u1)
@@ -553,7 +553,7 @@ func findMore() {
 }
 
 func update(newAge int, id int) {
-	sqlStr := &quot;update user set age=? where id = ?&quot;
+	sqlStr := &#34;update user set age=? where id = ?&#34;
 	ret, err := db.Exec(sqlStr, newAge, id)
 	if err != nil {
 		fmt.Println(err)
@@ -563,11 +563,11 @@ func update(newAge int, id int) {
 	if err != nil {
 		return
 	}
-	fmt.Println(&quot;更新了&quot;, n, &quot;行數據&quot;)
+	fmt.Println(&#34;更新了&#34;, n, &#34;行數據&#34;)
 }
 
 func delete(id int) {
-	sqlStr := &quot;delete from user where id = ?&quot;
+	sqlStr := &#34;delete from user where id = ?&#34;
 	ret, err := db.Exec(sqlStr, id)
 	if err != nil {
 		fmt.Println(err)
@@ -577,13 +577,13 @@ func delete(id int) {
 	if err != nil {
 		return
 	}
-	fmt.Println(&quot;更新了&quot;, n, &quot;行數據&quot;)
+	fmt.Println(&#34;更新了&#34;, n, &#34;行數據&#34;)
 }
 
 func main() {
 	err := initDB()
 	if err != nil {
-		fmt.Println(&quot;init DB failed&quot;, err)
+		fmt.Println(&#34;init DB failed&#34;, err)
 	}
 
 	preInsert()
@@ -594,30 +594,29 @@ func main() {
 }
 
 func insert() {
-	sqlStr := `insert into user(name, age) values(&quot;AAC&quot;, 18)`
+	sqlStr := `insert into user(name, age) values(&#34;AAC&#34;, 18)`
 	ret, err := db.Exec(sqlStr)
 	if err != nil {
-		fmt.Println(&quot;insert failed!&quot;, err)
+		fmt.Println(&#34;insert failed!&#34;, err)
 		return
 	}
 	// 插入後能拿到對應的ID
 	id, _ := ret.LastInsertId()
-	fmt.Println(&quot;id=&quot;, id)
+	fmt.Println(&#34;id=&#34;, id)
 }
 
 func preInsert() {
-	sqlStr := &quot;insert into user(name, age) values(?,?)&quot;
+	sqlStr := &#34;insert into user(name, age) values(?,?)&#34;
 	stmt, err := db.Prepare(sqlStr)
 	if err != nil {
 		return
 	}
 	defer stmt.Close()
 	for i := 1; i &lt; 10; i++ {
-		_, _ = stmt.Exec(&quot;人物&quot;, i)
+		_, _ = stmt.Exec(&#34;人物&#34;, i)
 
 	}
 }
-
 </code></pre><h3 id="mysql事務操作">mysql事務操作</h3>
 <p>事務：一個最小的不可再分的工作單元；通常一個事務對應一個完整的業務(例如銀行帳戶轉帳業務，該業務就是一個最小的工作單元)，同時這個完整的業務需要執行多次的DML(insert、update、delete)語句共同聯合完成。A轉帳給B，這裡面就需要執行兩次update操作。在MySQL中只有使用了Innodb資料庫引擎的資料庫或表才支援事務。交易處理可以用來維護資料庫的完整性，保證成批的SQL語句要麼全部執行，要麼全部不執行。</p>
 <blockquote>
@@ -631,10 +630,10 @@ func preInsert() {
 <li>持久性 交易處理結束後，對資料的修改就是永久的，即便系統故障也不會丟失。</li>
 </ol>
 <pre tabindex="0"><code>import (
-	&quot;database/sql&quot;
-	&quot;fmt&quot;
+	&#34;database/sql&#34;
+	&#34;fmt&#34;
 
-	_ &quot;github.com/go-sql-driver/mysql&quot;
+	_ &#34;github.com/go-sql-driver/mysql&#34;
 )
 
 var db *sql.DB // 是一個連接池對象
@@ -647,8 +646,8 @@ type user struct {
 }
 
 func initDB() (err error) {
-	dsn := &quot;root:root@tcp(127.0.0.1:3306)/sql_test&quot;
-	db, err = sql.Open(&quot;mysql&quot;, dsn) // 這個db要用全局的，重要!
+	dsn := &#34;root:root@tcp(127.0.0.1:3306)/sql_test&#34;
+	db, err = sql.Open(&#34;mysql&#34;, dsn) // 這個db要用全局的，重要!
 	if err != nil {
 		return
 	}
@@ -656,7 +655,7 @@ func initDB() (err error) {
 	if err != nil {
 		return
 	} else {
-		fmt.Println(&quot;連接成功&quot;)
+		fmt.Println(&#34;連接成功&#34;)
 	}
 	return
 }
@@ -664,12 +663,12 @@ func initDB() (err error) {
 func transaction() {
 	tx, err := db.Begin()
 	if err != nil {
-		fmt.Println(&quot;begin failed!&quot;, err)
+		fmt.Println(&#34;begin failed!&#34;, err)
 		return
 	}
 
-	sqlStr1 := &quot;update user set age=age-2 where id=1&quot;
-	sqlStr2 := &quot;update user set age=age+2 where id=3&quot;
+	sqlStr1 := &#34;update user set age=age-2 where id=1&#34;
+	sqlStr2 := &#34;update user set age=age+2 where id=3&#34;
 	ret1, err := tx.Exec(sqlStr1)
 	if err != nil {
 		tx.Rollback()
@@ -693,7 +692,7 @@ func transaction() {
 	fmt.Println(affRow1, affRow2)
 	if affRow1 == 1 &amp;&amp; affRow2 == 1 {
 		tx.Commit()
-		fmt.Println(&quot;已提交&quot;)
+		fmt.Println(&#34;已提交&#34;)
 	} else {
 		tx.Rollback()
 	}
