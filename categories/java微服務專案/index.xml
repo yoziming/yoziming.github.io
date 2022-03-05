@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java微服務專案 on 柚子茶室</title>
+    <link>https://yoziming.github.io/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%B0%88%E6%A1%88/</link>
+    <description>Recent content in Java微服務專案 on 柚子茶室</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Yoziming</copyright>
+    <lastBuildDate>Mon, 14 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/java%E5%BE%AE%E6%9C%8D%E5%8B%99%E5%B0%88%E6%A1%88/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>商城初級高級篇總和與展示</title>
+      <link>https://yoziming.github.io/post/220214-gulimall-26/</link>
+      <pubDate>Mon, 14 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220214-gulimall-26/</guid>
+      <description>柚子商城  基於SpringBoot、SpringCloud的大型分散式微服務架構B2C商城項目 項目由業務集群 + 後台管理系統構成，主要練習微服務架構、服務註冊與發現、遠程調用、網關、Restful接口、數據校驗、高併發處理、MQ訊息中心、限流降級、鏈路追蹤、性能監控、壓力測試等等  專案背景(Background)  本項目參考自 尚硅谷java微服務課程: https://www.bilibili.com/video/BV1np4y1C7Yf?p=342 個人學習過程的詳細筆記(共26篇): https://yoziming.github.io/post/220118-gulimall-01/  項目架構圖 解析  使用者通過任意客户端（app/Web）向伺服器發送請求，請求首先來到Nginx集群，Nginx將請求轉交給Api網關（SpringCloud Gateway） Api網關:  根據當前請求，動態路由到指定的服務 如果服務出現問題，也可以在網關通過Sentinel做熔斷降級與限流，例如超過負荷時暫時顯示排隊頁面，只放伺服器能乘載的輛   Nacos註冊中心：微服務的註冊與發現 Feign：微服務之間的遠程調用 OAuth2.0認證中心：登入與請求權限的管理 快取：使用Redis結合spring cache與redsson分布式鎖 持久化：使用MySQL 消息隊列：使用Rabbit MQ實現微服務之間的非同步解耦，包括完成分佈式事務的最終一致性 全文檢索：使用Elastic Search實現 圖片存儲：使用MinIO存儲服務 Sleuth + Zipkin：服務的可視化追蹤 其他運維部分暫時沒完成  服務模組 檔案結構 mall-parent ├── auth-server -- 登入認證中心 ├── cart -- 購物車服務 ├── common -- 工具類及通用程式碼 ├── coupon -- 優惠服務 ├── gateway -- 網關 ├── member -- 會員服務 ├── order -- 訂單服務 ├── preset -- 啟動需要的前置工作(docker、sql語句等等) ├── product -- 商品服務 ├── search -- 商品搜尋服務 ├── seckill -- 秒殺優惠服務(高併發所以獨立出來) ├── third-party -- 第三方服務 ├── ware -- 倉儲服務 ├── renren-fast -- 後台管理系統 ├── renren-generator -- 人人開源項目的代碼生成器 renren-fast-vue -- 後台管理系統 技術選型 後端技術    技術 説明 官網     SpringBoot 容器+MVC框架 https://spring.</description>
+    </item>
+    
+    <item>
+      <title>微服務商城之高可用集群篇</title>
+      <link>https://yoziming.github.io/post/220213-gulimall-25/</link>
+      <pubDate>Sun, 13 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220213-gulimall-25/</guid>
+      <description>高可用集群篇  微服務做到現在，終於要開始部署了，首先要認識Kubernetes(K8S) 之前也有稍微了解過K8S，見筆記 https://yoziming.github.io/post/211006-k8s/ 簡單來說就是用來管理doker的總控  Master  API Server: API介面 etcd: K-V形式的消息隊列 Scheduler: 監視Pod、調度叢集 kube-controller-manager: 操作進程的管理員  節點控制器（Node Controller）: 負責在節點出現故障時進行通知和回應 任務控制器（Job controller）: 監測代表一次性任務的 Job 物件，然後創建 Pods 來運行這些任務直至完成 端點控制器（Endpoints Controller）: 填充端點(Endpoints)對象(即加入 Service 與 Pod) 服務帳戶和權杖控制器（Service Account &amp;amp; Token Controllers）: 為新的命名空間創建默認帳戶和 API 訪問權杖    Noede  Container Runtime: 正常就是Docker，負責運行容器 kubelet: 工頭，每個節點的負責人，管理Pod kube-proxy: 節點的網路接口，負責通訊 Fluentd: 日誌  Pod  K8s管理的最小單元 裡面可以有多個容器，共用一個網路位置  其他名詞  Controllers: Pod的高層抽象，用來實際執行部署   Service: 也是抽象，Pod組成的一個服務   Namespace: 邏輯隔離資源  暫時停下  要運行K8S對資源的要求(主要是ram)太狠了，我的小破電腦已經扛不住了 課程只好暫時先停在這，整理一下手邊的資源，先去準備工作的事  </description>
+    </item>
+    
+    <item>
+      <title>高併發方案、Sentinel限流、Sleuth鏈路追蹤</title>
+      <link>https://yoziming.github.io/post/220210-gulimall-24-sentinel/</link>
+      <pubDate>Thu, 10 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220210-gulimall-24-sentinel/</guid>
+      <description>高併發關注重點  單一職責: 專門的服務模組，就只幹這件事，不論要擴容或是掛了都方便 鏈結加密: 每場商品都有隨機產生的Token，防有心人提早準備(台鐵搶票系統學一下好嗎?) 預熱、扣減: 既然知道會讀多寫少，提前把要被查的資料放Redis；用信號量做令牌，只放行這些數量 動靜分離: 靜態資源從網關就打回去，確保來到伺服的都是動態請求 攔截惡意請求: 在網關設定，判斷那些非人的操作(例如同IP超快超大量的)，直接擋回去 流量錯峰: 用干擾手段使人的操作時間不同(就是噁心用戶)，爭取錯開請求進來的時間 限流、熔斷、降級: 降級就是負載超過上限，Show一個&amp;quot;當前流量過高，請稍後重試&amp;quot;之類的惱人畫面給用戶看 延遲隊列: 終極手段，管你多少請求只要通過驗證就放進隊列，之後慢慢處理，總會給你處理到，但不保證是現在  Sentinel  官方: https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D
+  用來限流、保護資源 Sentinel分為核心庫 與 Dashboard可視化界面，核心庫不依賴Dashboard 工作原理主要分為三個步驟:  定義資源: 叫做&amp;quot;埋點&amp;quot;，即聲明要保護的資源，可以是服務、方法、甚至單純一段程式碼  方法很多，最簡單就是用註解或try-catch https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8   定義規則: 流量控制規則、熔斷降級規則、系統保護規則、來源訪問控制規則 和 熱點參數規則  最簡單就是開啟Dashboard用可視化界面建立規則(但這樣用的設定保存在記憶體，重開會消失)   檢驗規則是否生效    使用  引包  &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-cloud-starter-alibaba-sentinel&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2021.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  設定application.properties  注意他有2端口，一個是訪問dashboard本身，預設是8080 另一個是微服務傳給sentinel中心，預設是8719    # sentinel控制台 spring.cloud.sentinel.transport.dashboard=localhost:8333 # 微服務與控制台傳輸數據的端口 spring.</description>
+    </item>
+    
+    <item>
+      <title>秒殺優惠模組、Cron表達式</title>
+      <link>https://yoziming.github.io/post/220209-gulimall-23-sec-kill/</link>
+      <pubDate>Wed, 09 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220209-gulimall-23-sec-kill/</guid>
+      <description>秒殺優惠活動 流程  秒殺分兩部分，一是營運人員後台系統新增秒殺場次到DB，然後關聯商品到場次中 後台系統新增場次隸屬於Coupon優惠模組之下   這邊把活動的訊息封裝到資料庫，大部分生成器都做好了，只有少數搜尋條件等等要調整，就不一一列出  網關   注意，後台是網址帶有/api/，請求來自renren-fast-admin的(例如營運人員上架商品、促銷活動)，再重寫URL轉發給其他模組
+  用戶訪問商城網站，是來自nginx轉發的，斷言是Host=cart.mall.com
+  application.yml
+  - id:coupon_routeuri:lb://couponpredicates:- Path=/api/coupon/**filters:- RewritePath=/api/(?&amp;lt;segment&amp;gt;.*),/$\{segment}- id:mall_seckill_routeuri:lb://seckillpredicates:- Host=seckill.mall.com秒殺模組  這邊負責實際業務邏輯的執行，秒殺有瞬間高併發的特點，必須要做限流＋異步＋緩存 + 頁面靜態化+ 獨立部署，還需要處理定時任務等等 定時任務將最近三天的場次 + 關聯商品上傳到redis中  高併發用redis    Cron表達式  用來定義定時任務的週期 由6個空格分開7個域     域 是否必填 值以及範圍 通配符     秒 是 0-59 , - * /   分 是 0-59 , - * /   時 是 0-23 , - * /   日 是 1-31 , - * ?</description>
+    </item>
+    
+    <item>
+      <title>串接第三方支付</title>
+      <link>https://yoziming.github.io/post/220208-gulimall-22-pay/</link>
+      <pubDate>Tue, 08 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220208-gulimall-22-pay/</guid>
+      <description>商城支付 非對稱加密 RSA  加密跟解密是不同的鑰匙  我用私鑰加密，發給給你，你用公鑰解密，你不知道我的私鑰   加簽: 根據明文(例如: &amp;ldquo;我給小明100元&amp;rdquo;)用MD5生成一個簽名，如果明文任意字符修改，簽名就會天差地別(MD5特性) 驗簽: 確定 明文與簽名是否對應(明文是否被篡改)  NAT穿透  Network Address Translation Traversal
+  內部IP就是192.168.X.X開頭的那些，穿透技術就是讓外部可以透過公有IP訪問到你的內部IP 原理就是透過各種網路服務供應商幫你搭橋 使用場景:  開發測試，取得暫時的對外域名讓外部可以訪問本機 智慧家電連網，例如出門在外用手機網路可以看家裡監控那種 遠程控制，遠端桌面   以前玩Minecraft架server有用過類似的東西  支付沙盒  大部分的電子支付API都有提供一個sandbox做測試開發用  LinePay的 https://pay.line.me/jp/developers/techsupport/sandbox/creation?locale=zh_TW   但是這個申請都要有店家資格，不好弄  我研究了一下這個EcPAY的 https://www.ecpay.com.tw/Service/API_Dwnld   大致使用流程就是申請帳號，然後下載支付網站提供的API與SDK，包到自己的專案之下，填上各種授權key，串接付款與跳轉的頁面這樣  支付串接流程  PayWebController.java  這邊接收前端來的訂單號@RequestParam(&amp;quot;orderSn&amp;quot;)，用訂單號去查詢訂單內容，然後帶著訂單內容往支付的API    @GetMapping(value = &amp;#34;/payOrder&amp;#34;, produces = &amp;#34;text/html&amp;#34;) public String payOrder(@RequestParam(&amp;#34;orderSn&amp;#34;) String orderSn) throws AlipayApiException {  	PayVo payVo = orderService.</description>
+    </item>
+    
+    <item>
+      <title>Seata、消息隊列分佈式事務</title>
+      <link>https://yoziming.github.io/post/220207-gulimall-21-delay-queue/</link>
+      <pubDate>Mon, 07 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220207-gulimall-21-delay-queue/</guid>
+      <description>Spring cloud alibaba Seata  有很多模式，這邊只演示最簡單的AT模式 簡單來說就是多包一層，額外開一個伺服器去監控多個分佈式模組，誰出問題就讓大家都回滾    使用@GlobalTransactional就可以達成分佈式事務
+  利用的機制是在DB增加一個undo_log表，這個表相當於存快照的地方，當要回滾就從這邊還原
+ AT模式簡單，代價就是面對併發效率不高    這玩意才幾個版本設定就變好多次，具體使用還是看官網吧
+ https://seata.io/zh-cn/docs/ops/deploy-guide-beginner.html    延遲隊列  Delay Queue，使用 消息隊列 + 庫存工作單表 來控制分佈式事務
+  下訂單後，要鎖定庫存，這是個分佈式事務，需要保證鎖定的庫存能回滾，首先在DB使用兩張表 wms_ware_order_task 庫存工作單表，訂單、工作單id、倉庫id wms_ware_order_task_detail 庫存工作單詳情表，訂單、工作單id、倉庫id、skuId、鎖庫存數量 鎖庫存的時候往工作單表、工作單詳情表插入數據  創建隊列與交換機  在RabbitMQ
+  創建訂單時，遠程調用orderLockStock創建了庫存工作單，並且鎖定庫存  那邊發了&amp;quot;stock-event-exchange&amp;quot;, &amp;quot;stock.locked&amp;quot;, lockedTo，lockedTo裡面就是庫存工作單id   當遠程調用創建庫存工作單成功，本地也發一個&amp;quot;order-event-exchange&amp;quot;, &amp;quot;order.create.order&amp;quot;，裡面存的是訂單本體   改良，省下一個交換機，帶有&amp;quot;order.create.order&amp;quot;路由鍵的訂單會進到order.delay.queue這個延遲隊列，而這個隊列還是指向order-event-exchange交換機 但是他設有過期時間，當時間到了就把路由鍵換成order.release.order 也就是說，所有的訂單最終都會進到order.release.order.queue，並且被listener消費，這個listener會調用closeOrder方法 closeOrder方法查看訂單是否已經支付，若已支付就完事，訂單可以安心離開隊列。若沒支付就查詢訂單最新狀態，再發到&amp;quot;order-event-exchange&amp;quot;, &amp;quot;order.release.other.unlock&amp;quot;, order 這個&amp;quot;order.release.other.unlock&amp;quot;路由鍵就會把訂單送到stock.release.stock.queue，嘗試進行庫存解鎖的動作   之前學了用AmqpAdmin創建交換機與隊列的方法，有更省事的可以直接用@Bean讓spring自動創建  Broker中沒有該名字的隊列、交換機才會創建 不會重複創建覆蓋(一旦創好，不能更新)，如果同名的隊列其中設定(例如過期時間)對不上會報錯 第一次使用隊列的時候才會創建   MyMQConfig.</description>
+    </item>
+    
+    <item>
+      <title>提交訂單: 冪等性、分散式交易的一致性</title>
+      <link>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</link>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</guid>
+      <description>冪等性  idempotent
+  多次提交，結果不變，常見有這些辦法:  Token  令牌或驗證碼 伺服器存儲了一個令牌，然後頁面要帶上這個令牌比較，一樣才可以提交  提交後刪除掉token，再次點擊提交就會失敗 但是F5刷新的話就不一樣了，會有新的token產生   注意: 獲取redis令牌 + 令牌匹配 + redis刪除，全程要保證原子性，使用lua腳本  鎖 數據庫悲觀鎖  Pessimistic Lock
+  就是排他鎖，所謂悲觀在於覺得總有刁民想亂搞我的data，所以自己拿到鎖就把data藏到大衣裡，完全不給其他人用，連看都不給看 當一個SQL command獲得悲觀鎖後，其他的SQL command 無法讀取無法修改，直到悲觀鎖被釋放後才能執行，例如:  select* from xxx where id = 1 for update;  悲觀鎖使用時一般伴隨事務一起使用，數據鎖定時間可能會很長，需要根據實際情況選用 另外要注意的是，id字段一定是主鍵或者唯一索引，不然可能造成鎖表的結果，處理起來會非常麻煩 資料庫中的行鎖，表鎖，讀鎖，寫鎖，以及syncronized實現的鎖均為悲觀鎖  數據庫樂觀鎖  Optimistic Lock
+  允許多個 SQL command 來操作 table，但是要帶上版本號 當 SQL command 想要變更欄位 data 時會先把之前取出 version 跟 table 現在的 version 做對比，如果相同就代表這段期間沒人修改可以執行；如果不同就會禁止這次的操作 這種方法適合在更新的場景中，例如:  update t_goods set count = count-1,version =version + 1 where good_id=2 and version = 1  樂觀鎖主要使用於處理讀多寫少的場景  分佈式鎖  不管多少服務，限制同時都只有一人能操作 參考之前的筆記: https://yoziming.</description>
+    </item>
+    
+    <item>
+      <title>確認訂單、feign請求頭問題</title>
+      <link>https://yoziming.github.io/post/220205-gulimall-19/</link>
+      <pubDate>Sat, 05 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220205-gulimall-19/</guid>
+      <description>商城訂單模組  訂單通常是最複雜的模組之一
+  涉及三流:  信息流：商品信息、優惠信息 資金流：退款、付款 物流：發送、退貨    訂單流程  訂單流程是指從訂單產生到完成的過程
+   不同的產品類型或業務類型在系統中的流程會千差萬別，比如線上實物訂單和虛擬訂單與o20訂單等，所以需要根據不同的類型進行構建訂單流程
+  不管類型如何訂單都包括正向流程和逆向流程，對應的場景就是購買商品和退換貨流程，正向流程就是一個正常的網購步驟
+ 訂單生成-&amp;gt; 支付訂單-&amp;gt; 賣家發貨-&amp;gt; 確認收貨-&amp;gt; 交易成功    而每個步驟的背後，訂單是如何在多系統之間交互流轉的，可概括如下圖
+  正向流程  訂單創建前需要預覽訂單，選擇收貨信息等 訂單創建需要鎖定庫存，庫存有才可創建，否則不能創建 訂單創建後超時未支付需要解鎖庫存 支付成功後，需要進行拆單，根據商品打包方式，所在倉庫，物流等進行拆單 支付的每筆流水都需要記錄，以待查賬 訂單創建，支付成功等狀態都需要給MQ發送消息，方便其他系統感知訂閲  逆向流程  修改訂單，用户沒有提交訂單，可以對訂單一些信息進行修改，比如配送信息， 優惠信息，及其他一些訂單可修改範圍的內容，此時只需對數據進行變更即可。 訂單取消，用户主動取消訂單和用户超時未支付，兩種情況下訂單都會取消訂單，而超時情況是系統自動關閉訂單，所以在訂單支付的響應機制上面要做支付的  訂單狀態  待付款: 用户提交訂單後，訂單進行預下單，目前主流電商網站都會便於用户快速完成支付，需要注意的是待付款狀態下可以對庫存進行鎖定，鎖定庫存需要配置支付超時時間，超時後將自動取消訂單，訂單變更為關閉狀態 已付款/待發貨: 用户完成訂單支付，訂單系統需要記錄支付時間，支付流水單號便於對賬，訂單下放到WMS系統，倉庫進行調撥，配貨，分揀，出庫等操作 待收貨/已發貨: 倉儲將商品出庫後，訂單進入物流環節，訂單系統需要同步物流信息，便於用户實時知悉物品物流狀態 已完成: 用户確認收貨後，訂單交易完成。後續支付側進行結算，如果訂單存在問題進入售後狀態 已取消: 付款之前取消訂單。包括超時未付款或用户商户取消訂單都會產生這種訂單狀態 售後中: 用户在付款後申請退款，或商家發貨後用户申請退換貨。售後也同樣存在各種狀態，當發起售後申請後生成售後訂單，售後訂單狀態為待審核，等待商家審核，商家審核通過後訂單狀態變更為待退貨，等待用户將商品寄回，商家收貨後訂單狀態更新為待退款狀態，退款到用户原賬户後訂單狀態更新為售後成功  前端頁面 等待付款，詳情頁：
+訂單頁：
+收銀頁：
+整理各種POJO與規範  feign包放在common模組下，用TO(Transfer Object)來跨模組接收、傳遞物件 VO(View Object) 是專門返回給前端、給人看的東西 Entity實體，也稱為PO(Persistant Object)，屬性基本和資料表欄位一一對應。一個實體即是真實存在的一筆資料，必須要有唯一標識(例如id)以區分其它實體 DAO(Data Access Object)封裝了PO在資料庫的CRUD等操作  實作 登入攔截  點結算時，沒登入就讓用戶先去登入</description>
+    </item>
+    
+    <item>
+      <title>RabbitMQ與訊息確認</title>
+      <link>https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/</link>
+      <pubDate>Fri, 04 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220204-gulimall-18-rabbitmq/</guid>
+      <description>Message Queue  Message queue 訊息佇列
+  佇列（queue），又稱為隊列，特性是先進先出(FIFO) 訊息佇列是一個中間件，又是經典的&amp;quot;加一層&amp;quot;操作，抽出一個專門存放溝通訊息的地方，就是訊息佇列  可以理解成去銀行辦事，那個領號碼牌的機器   市面上常見的MQ: ActiveMQ、RabbitMQ、RocketMQ、Kafka  目的  縮短調用時間: 透過序列分發後續的異步調用，不需要一步一步往下走等返回  就像去醫院，醫生開了檢查要你去抽血跟照X光，哪邊方便就先去做，總之檢查單開了醫生就不管了，你總會去做完檢查     解耦: 模組間溝通用訂閱佇列的形式，只需要關注收發訊息，減少業務邏輯的侵入  比如到了抽血站，拿檢驗單去掃機器就能完成抽血報名，不需要醫生打電話告知抽血站誰要抽什麼血     削峰: 流量控制，錯開高併發，依順序處理  隊列是有序、可控制流量的，不會突然1000人擠爆抽血站    名詞   消息代理（message broker）: 安裝了消息中間件的伺服器，發送消息和接收消息都要連上它
+ 冒險者公會的任務看板    目的地（destination）: 目的地表示生產者發送消息給消息代理之後，是存儲到消息代理中哪一個具體的目的地（隊列或主題）
+  隊列（queue）：點對點通信，1個發送者，n個接受者，但一個信息只會被一個接受者消費（消費後移出隊列）
+ 理解為拋繡球    主題（topic）：發佈/訂閲，多個發送者+多個訂閲者。多個訂閲者會同時接收到
+ 廣播      JMS (Java Message Service): 基於JAVA API定義的標準介面</description>
+    </item>
+    
+    <item>
+      <title>cookie&amp;redis實現訪客購物車</title>
+      <link>https://yoziming.github.io/post/220203-gulimall-17-offline-cart/</link>
+      <pubDate>Thu, 03 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220203-gulimall-17-offline-cart/</guid>
+      <description>購物車需求分析 訪客購物車  沒登入也能放地購物車，是我才不搞那麼多，沒登入就讓用戶登一下不就好了，唉當練習吧
+意外的是這個項目是仿京東，結果京東現在也不提供這種功能了，一律先登入再說
+   可以把資料暫存在客戶端，例如:
+ localstorage cookie WebSQL    但何種商品被放到購物車本身是一個有價值的資訊，所以選擇放到伺服端的redis
+  用户購物車  一樣採用redis，優勢在於  極高的讀寫併發性能 好組織數據結構 redis也有持久化策略，AOF   登入後會將離線購物車合併  操作分析  增（添加商品到購物車） 刪（刪除某個商品） 改（修改商品數量） 查（查詢購物車中的商品）  商品是否被選中，下次進來還是選中狀態 用户可以使用購物車多件商品一起結算下單 在購物車中展示商品優惠信息 提示購物車商品價格變化    資料庫設計  Redis數據結構用Hash，造一個雙層Map來存  Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;  第一個key是用户id，value是購物車信息 第二個key是skuId，value是購物項數據  Vo設計  類似之前做的書城項目
+  CartVo是完整的一台車，這邊有CartItemVo構成的List、總件數、總價 CartItemVo略等同於Sku，就是車中的某項商品，加上件數與價格   在CartVo.java 將計算總價等等方法封裝起來  public BigDecimal getTotalAmount() {  BigDecimal amount = new BigDecimal(&amp;#34;0&amp;#34;);  // 計算購物項總價  if (!</description>
+    </item>
+    
+    <item>
+      <title>註冊、登入與Spring Session</title>
+      <link>https://yoziming.github.io/post/220202-gulimall-16-spring-session/</link>
+      <pubDate>Wed, 02 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220202-gulimall-16-spring-session/</guid>
+      <description>WebMvcConfigurer  參考 https://blog.csdn.net/pan_junbiao/article/details/120039885
+  複習SpringMVC WebMvcConfigurer是一個接口，用JavaBean的方式代替web.xml，常用於: 攔截器，例如:  @Override public void addInterceptors(InterceptorRegistry registry) {  super.addInterceptors(registry);  registry.addInterceptor(new TestInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;).excludePathPatterns(&amp;#34;/emp/toLogin&amp;#34;,&amp;#34;/emp/login&amp;#34;,&amp;#34;/js/**&amp;#34;,&amp;#34;/css/**&amp;#34;,&amp;#34;/images/**&amp;#34;); }  跨域設定，例如:  // 跨域 @Override public void addCorsMappings(CorsRegistry registry) {  registry.addMapping(&amp;#34;/**&amp;#34;)  .allowedOrigins(&amp;#34;*&amp;#34;) //浏览器允许所有的域访问 / 注意 * 不能满足带有cookie的访问,Origin 必须是全匹配  .allowCredentials(true) // 允许带cookie访问  .allowedMethods(&amp;#34;GET&amp;#34;, &amp;#34;POST&amp;#34;, &amp;#34;PUT&amp;#34;, &amp;#34;DELETE&amp;#34;, &amp;#34;OPTIONS&amp;#34;)  .allowedHeaders(&amp;#34;token&amp;#34;)  .maxAge(3600); }  更多關於跨域，參考 https://segmentfault.com/a/1190000019485883
+  映射html頁面  前後綴一樣由thymeleaf加上    @Configuration public class MallWebConfig implements WebMvcConfigurer {   // View映射，省下造controller一個一個設定  @Override  public void addViewControllers(ViewControllerRegistry registry) {  registry.</description>
+    </item>
+    
+    <item>
+      <title>商品詳情</title>
+      <link>https://yoziming.github.io/post/220201-gulimall-15/</link>
+      <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220201-gulimall-15/</guid>
+      <description>商品詳情 View  商品詳情也是子網域，設定網關:   nginx就不用改了，因為之前設的規則是*.mall.com 導入頁面item.html與靜態資源 前端頁面一樣用thymeleaf渲染 thymeleaf中動態網址的寫法，用|包住網址前後，中間${參數}  &amp;lt;a th:href=&amp;#34;|http://item.mall.com/${product.skuId}.html|&amp;#34;&amp;gt;  格式化數字，前面3是整數位，2是小數位  &amp;lt;span th:text=&amp;#34;${#numbers.formatDecimal(item.info.price,3,2)}&amp;#34;&amp;gt;  sku組合切換，太偏前端了，有用到再來學   https://www.bilibili.com/video/BV1np4y1C7Yf?p=208&amp;amp;spm_id_from=pageDriver
+  另外我發現thymeleaf是不是有病，一般的HTML註解&amp;lt;!--他竟然還是會解析，不顯示但是會解析 可以參考 https://blog.csdn.net/sun_jy2011/article/details/40299821 比如一塊代碼有問想先註解掉，整塊用快捷鍵選起來ctrl+/先註解掉還不行，他就是硬要解析，如果有BUG就會一直讀出BUG，真的是有病耶，這樣設計是腦子被門夾到嗎。一定要用下面這樣的格式包起來的才不會解析  &amp;lt;!--/*--&amp;gt; xxxx OOOO &amp;lt;!--*/--&amp;gt; Controller  ItemController.java  我才搞懂return &amp;quot;item&amp;quot;是因為前面說的thymeleaf自動會加上前後綴，就相當於templates/item.html    @GetMapping(&amp;#34;/{skuId}.html&amp;#34;) public String skuItem(@PathVariable(&amp;#34;skuId&amp;#34;) Long skuId, Model model) throws ExecutionException,  InterruptedException {  System.out.println(&amp;#34;準備查詢&amp;#34; + skuId + &amp;#34;詳情&amp;#34;);    SkuItemVo vos = skuInfoService.item(skuId);  model.</description>
+    </item>
+    
+    <item>
+      <title>線程池與CompletableFuture異步編排</title>
+      <link>https://yoziming.github.io/post/220131-gulimall-14-thread/</link>
+      <pubDate>Mon, 31 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220131-gulimall-14-thread/</guid>
+      <description>多線程 初始化線程的4種方式  繼承 Thread 實現 Runnable接口 實現 Callable接口 + FutureTask（可以拿到返回結果，可以處理異常） 線程池   複習 https://yoziming.github.io/post/211204-agg-ja-19/
+ 區別  1、2不能得到返回值。3可以獲取返回值 1、2、3都不能控制資源 4可以控制資源，性能穩定，不會一下子所有線程一起運行 實際開發中，只用線程池，因為高併發狀態開啓了n個線程，會直接耗盡資源  線程池的優勢  降低資源的消耗: 省得在那創了又刪，刪了又創 提高響應速度: 已經在池子那等了，來活就幹 提高線程的可管理性: 例如系統中可以創建兩個線程池，核心線程池、非核心線程池，有需要時可以關閉非核心線程池釋放記憶體資源  就像公司分兩部門，壓力大就把非核心的部門關了    手動創建線程池  可以new ThreadPoolExecutor(參數)手動創建線程池，七大參數:  // ThreadPoolExecutor.java 原始碼 corePoolSize – the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set maximumPoolSize – the maximum number of threads to allow in the pool keepAliveTime – when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.</description>
+    </item>
+    
+    <item>
+      <title>用ElasticSearch實現商品搜索</title>
+      <link>https://yoziming.github.io/post/220130-gulimall-13/</link>
+      <pubDate>Sun, 30 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220130-gulimall-13/</guid>
+      <description>搜索頁面   搜尋頁面有自己的子網域，網址是 http://search.mall.com/
+  我觀察了一下，台灣的商城網站大多是用子目錄，例如:
+  https://www.momoshop.com.tw/search/ https://www.etmall.com.tw/Search? https://shopping.friday.tw/ec2/search?   而用子網域的通常是大陸的電商網站，經過查詢兩者其實沒太大差異
+  通常來說，屬於網站下的附屬小功能，用子目錄；而體量大到可以分割出去才用會用子網域
+  子網域複雜了一點，反正都學學吧
+  設定網段  改host模擬DNS   nginx  採了坑，改完忘記要重開服務     網關  - id: mall_search_route uri: lb://search predicates: - Host=search.mall.com 靜態資源  這邊一樣用thymeleaf渲染，引包 關閉 spring.thymeleaf.cache=false 調整 list.html，確認一下跟首頁的超連結是否正確  寫Vo  這可就複雜了，需要考慮各種搜尋條件、返回的結果&amp;hellip;
+  搜尋條件 SearchParam.java  @Data public class SearchParam {   /** * 頁面傳遞過來的全文匹配關鍵字 */  private String keyword;   /** * 品牌id,可以多選 */  private List&amp;lt;Long&amp;gt; brandId;   /** * 三級分類id */  private Long catalog3Id;   /** * 排序條件：sort=price/salecount/hotscore_desc/asc */  private String sort;   /** * 是否有貨 */  private Integer hasStock;   /** * 價格區間查詢 */  private String skuPrice;   /** * 按照屬性進行篩選 */  private List&amp;lt;String&amp;gt; attrs;   /** * 頁碼 */  private Integer pageNum = 1;   /** * 原生的所有查詢條件 */  private String _queryString;  }  返回的結果 SearchResult.</description>
+    </item>
+    
+    <item>
+      <title>Redisson與SpringCache</title>
+      <link>https://yoziming.github.io/post/220129-gulimall-12-redisson/</link>
+      <pubDate>Sat, 29 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220129-gulimall-12-redisson/</guid>
+      <description>Redisson   Java操作Redis的框架，主要用他的分布式鎖的功能
+  加鎖的方法與邏輯幾乎都跟java.util.concurrent包下的一樣
+ JUC包: ReentrantLock那些，如果沒印象了看下面個種鎖的範例就會回想起來    前置設定  https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95
+  引包  &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;redisson&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;3.16.8&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  造config類  注意import org.redisson.config.Config    @Configuration public class RedissonConfig {  /** * 所有對Redisson的使用都是通過RedissonClient * * @return * @throws IOException */  @Bean(destroyMethod = &amp;#34;shutdown&amp;#34;)  public RedissonClient redisson() throws IOException {  // 創建配置  Config config = new Config();  config.</description>
+    </item>
+    
+    <item>
+      <title>Redis緩存與分佈式鎖</title>
+      <link>https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/</link>
+      <pubDate>Fri, 28 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/</guid>
+      <description>緩存  誰適合進緩存?  讀多寫少 即時性、一致性要求不高的   例如: 物流資訊、排行榜  實現   請求來了，緩存中是否已有資料?
+ 無，去DB拿一份給他，並且存到緩存中 有，直接從緩存拿給他    本地緩存: 最簡單實現就是寫一個Map，把東西存裡面。然而在分布式會有問題
+ 負載均衡: 每次輪到可能每個分散的機站都要去DB取一份資料 資料一致性: 某處更新了，其他處已經緩存中的不會更新    於是就會用到Redis這種noSQL
+  Spring Redis  引包: spring-boot-starter-data-redis application.properties設定端口與密碼(如果有)  spring.redis.host=localhost spring.redis.port=6379  造一個StringRedisTemplate 用.opsForXXX()方法造出操作子，XXX是要存的value類型 拿造出的操作子開始set、get  @Autowired StringRedisTemplate stringRedisTemplate;  @Test void test1() {  ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue();  ops.set(&amp;#34;hello&amp;#34;, &amp;#34;world_&amp;#34; + UUID.randomUUID());  System.out.println(&amp;#34;ops.get(\&amp;#34;hello\&amp;#34;) = &amp;#34; + ops.</description>
+    </item>
+    
+    <item>
+      <title>Nginx&amp;網關、壓測與性能優化</title>
+      <link>https://yoziming.github.io/post/220127-gulimall-10-stress-testing/</link>
+      <pubDate>Thu, 27 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220127-gulimall-10-stress-testing/</guid>
+      <description>Nginx反向代理  正向代理，例如Proxy、VPN，我透過它去訪問別人。例如我暗戀班上正妹但不敢講，拜託正妹的閨密轉交情書，正妹只知道情書來自閨密轉交但不知道是誰送的(除非閨密把我賣了)  閨密對我而言就是正向代理(前向代理)   反向代理，例如某殺手組織內有多個專業殺手，跟一個對外的業務窗口。當委託人想下任務只能找到窗口，而組織內的任務實際由哪位殺手完成外人無從得知。委託人最終只知道任務的結果  窗口對於殺手組織而言就是反向代理   目的: 負載均衡、安全(對外只暴露一個IP，內部伺服器真實網址別人不知道)  模擬部署  首先docker拉一個nginx，並且把設定檔文件夾掛載出來，方便修改  乍看有點混亂，nginx.conf是主配置檔 而conf.d是子資料夾，裡面可以放多個xxx.conf，為從配置 第三個掛載是為了放html靜態資源 最後一個是log    docker run -p 80:80 --name nginx -v /mydata/nginx/nginx.conf:/etc/nginx/nginx.conf -v /mydata/nginx/conf.d:/etc/nginx/conf.d -v /mydata/nginx/html:/usr/share/nginx/html -v /mydata/nginx/logs:/var/log/nginx -d nginx  為了模擬DNS的效果，用SwitchHosts修改本機  SwitchHosts: https://github.com/oldj/SwitchHosts/releases     進到虛擬機，修改nginx轉發的規則，讓它指向本機IP   把服務都開起來，有點樣子了  其實目前只是繞一圈回來，接著再來設定網關    結合網關  大的HTTP  使用nginx注意{}閉合與結尾的;     小的Server  通過nginx的時候，會把請求頭裡面很多訊息都削掉 所以這邊要手動把頭加回去，否則下面的網關沒辦法靠Host=XX來辨識斷言 把檔案名稱保存為mall.</description>
+    </item>
+    
+    <item>
+      <title>抽取關鍵字至ES、Thymeleaf模板引擎</title>
+      <link>https://yoziming.github.io/post/220126-gulimall-09-thymeleaf/</link>
+      <pubDate>Wed, 26 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220126-gulimall-09-thymeleaf/</guid>
+      <description>商品上架  上架，除了把狀態改成上架，為了商品能被快速搜索到，還要提取出關鍵訊息存到ES 簡單來說就是把該商品的sku提取出來，存到ES的index中，當用戶搜索商品時，就可以依照分組動態產生篩選條件，依照得分呈現商品屬性   很繁瑣，但是不難 SpuInfoController.java  // 上架 @PostMapping(&amp;#34;/{spuId}/up&amp;#34;) public R spuUp(@PathVariable Long spuId) {  spuInfoService.up(spuId);  return R.ok(); }  SpuInfoServiceImpl.java  知識點:用stream把list轉map    // 商品上架 @Override public void up(Long spuId) {  // 先從spuID查出對應的所有sku  List&amp;lt;SkuInfoEntity&amp;gt; skuInfoEntities = skuInfoService.getSkusBySpuId(spuId);   // 先查出當前sku的所有可以被用來檢索的規格屬性  List&amp;lt;ProductAttrValueEntity&amp;gt; baseAttrs = productAttrValueService.baseAttrListforspu(spuId);  List&amp;lt;Long&amp;gt; attrIds = baseAttrs.stream().map(ProductAttrValueEntity::getAttrId).collect(Collectors.toList());  // sku當初填值時就有一欄是&amp;#34;是否能被檢索  List&amp;lt;Long&amp;gt; searchAttrIds = attrService.selectSearchAttrs(attrIds);  // 轉換為Set集合  Set&amp;lt;Long&amp;gt; idSet = searchAttrIds.</description>
+    </item>
+    
+    <item>
+      <title>ElasticSearch與Spring整合</title>
+      <link>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</link>
+      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</guid>
+      <description>ElasticSearch  用來執行站內搜索(如商品查詢)的引擎
+  開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作 核心觀念: Inverted Index (反向索引) 是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取 名詞對應:     RDBMS 概念 Elasticsearch     Table 表 Index   Row 一筆資料(例如:張三) Document   Column 屬性(例如:姓名) Field   Schema 架構(例如:資料類型、允許為空等等) Mapping   SQL 操作語句 DSL     以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用 個人直接把它看作表了，畢竟是概念，不用分太細  安裝  使用docker
+  教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作  mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;#34;http.</description>
+    </item>
+    
+    <item>
+      <title>商品屬性維護、庫存模組、基礎篇總結</title>
+      <link>https://yoziming.github.io/post/220124-gulimall-07/</link>
+      <pubDate>Mon, 24 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220124-gulimall-07/</guid>
+      <description>商品屬性維護 spu檢索  一個快速找到API的方法  裝上插件RestfulTool，直接貼上文檔給的URL瞬間就能定位     SpuInfoServiceImpl.java  處理多條件模糊搜索    @Override public PageUtils queryPageByKeyword(Map&amp;lt;String, Object&amp;gt; params) { /* key: &amp;#39;華為&amp;#39;,//檢索關鍵字 catelogId: 6,//三級分類id brandId: 1,//品牌id status: 0,//商品狀態 */  QueryWrapper&amp;lt;SpuInfoEntity&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;();  String key = (String) params.get(&amp;#34;key&amp;#34;);  if (StringUtils.isNotBlank(key) &amp;amp;&amp;amp; !&amp;#34;0&amp;#34;.equalsIgnoreCase(key)) {  wrapper.and(w -&amp;gt; {  // 模糊搜索為了怕蓋掉下面的所以用and，其實也能放最後就好  // 優先 NOT&amp;gt;AND&amp;gt;OR  w.eq(&amp;#34;id&amp;#34;, key).or().like(&amp;#34;spu_name&amp;#34;, key);  });  }  String status = (String) params.</description>
+    </item>
+    
+    <item>
+      <title>保存sku、spu，feign遠程調用</title>
+      <link>https://yoziming.github.io/post/220123-gulimall-06-feign/</link>
+      <pubDate>Sun, 23 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220123-gulimall-06-feign/</guid>
+      <description>銷售屬性  AttrController.java  獲取的API跟先前幾乎一樣，所以改造之前的queryBasePageCatelogId，順便換名字    /** * 規格參數列表 */ @GetMapping(&amp;#34;/{attrType}/list/{catelogId}&amp;#34;) //@RequiresPermissions(&amp;#34;product:attr:list&amp;#34;) public R baseAttrList(@RequestParam Map&amp;lt;String, Object&amp;gt; params,  @PathVariable(&amp;#34;catelogId&amp;#34;) Long catelogId,  @PathVariable(&amp;#34;attrType&amp;#34;) String attrType ) {  PageUtils page = attrService.queryBaseAttrPage(params, catelogId, attrType);  return R.ok().put(&amp;#34;page&amp;#34;, page); }  AttrServiceImpl.java  @Override public PageUtils queryBaseAttrPage(Map&amp;lt;String, Object&amp;gt; params, Long catelogId, String attrType) {  QueryWrapper&amp;lt;AttrEntity&amp;gt; qw = new QueryWrapper&amp;lt;&amp;gt;();  // 判斷是要銷售還是基本屬性，1=基本，0=銷售  qw.eq(&amp;#34;attr_type&amp;#34;, &amp;#34;base&amp;#34;.equalsIgnoreCase(attrType) ? 1 : 0);  順便修改保存方法   為了不留技術債(只有自己知道的神秘代號)，新增一個枚舉類來表示   把剛剛用的1、0都換成ProductConstant.</description>
+    </item>
+    
+    <item>
+      <title>後台-商品屬性，多對多非外鍵表操作</title>
+      <link>https://yoziming.github.io/post/220122-gulimall-05-sku-spu/</link>
+      <pubDate>Sat, 22 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220122-gulimall-05-sku-spu/</guid>
+      <description>後台-商品屬性  先認識名詞
+  SPU（Standard Product Unit）  「標準產品單位」，是商品資訊聚合的最小單位，是一組可複用、易檢索的標準化資訊的集合，該集合描述了一個產品的特性，例如: 「iPhone 13」   SKU（Stock Keeping Unit）  「最小庫存單位」，對應具體規格的商品，即貨號（或料號），例如: 「iPhone 13(256G)」、「潮男衝鋒衣-M-Blue」   既然是商城項目，現在需要呈現幾種關聯:  選中一個品牌，他有哪些品項的產品，例如: 蘋果:手機、平板&amp;hellip; 選中一個品項(分類)，裡面有他的規格等參數，例如: 手機{CPU:高通880, 尺寸:6吋&amp;hellip;} 選中一個SPU，他有那些共通屬性，例如: iPhone 13的廠商都是蘋果、作業系統都是IOS&amp;hellip; 選中一個SKU，有哪些獨特屬性，例如: 顏色、有多少庫存&amp;hellip; 以上有些是多對多的關係，還挺複雜的，一一拆解來實現  標題大綱是學習的知識點      資料庫表的名詞對應  我直到跟著做完整個商品管理，才弄清他資料庫設計背後的商業邏輯，因為沒有外鍵又要多對多關聯，整個挺複雜的，這塊是難點
+  brand = 品牌，一個品牌之下可能存在多個category  蘋果 有 手機、平板   在品牌中操作關聯 = 操作pms_category_brand_relation   category = 分類，品項   attr_group = 屬性分組  隸屬於某個category之下 例如: 手機的基本信息集合(裡面有長寬、大小、材質等等)     attr = 屬性  隸屬於某個category之下，例如: 手機的外殼有白色、黑色 其中attr_type = 1 表示基本屬性(規格參數)，例如: 三星S21的充電口是typeC(每個型號都一樣) 其中attr_type = 0 表示銷售屬性，例如哀鳳13的顏色(有多種對應的貨號)     屬性不一定有分組，因為他建立的時候不一定要填 建立關聯就是操作pms_attr_attrgroup_relation這張表  可以在規格參數頁面中對某條參數修改，指定他屬於某分組 也可以在分組頁面中將同品項未納入分組的屬性關聯到旗下    父子節點訊息傳遞  首先從品項出發，要呈現的效果是這樣    左邊的品項三級分類直接拿先前做好的來用</description>
+    </item>
+    
+    <item>
+      <title>逆向生成前端頁面、JSR303、雲儲存圖片</title>
+      <link>https://yoziming.github.io/post/220121-gulimall-04-jsr303/</link>
+      <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220121-gulimall-04-jsr303/</guid>
+      <description>逆向生成前端頁面  首先一樣造出側邊欄   找到當初生成器產的那些，好樣的原來當初都一併造了，通通複製過去   另外去前端把權限驗證先暫時關了，全部返回true   查看效果，什麼新增修改基本的CRUD人家全做好了，哭阿  簡單修飾 顯示狀態換成開關  去餓了嗎找模板  :active-value，:是v-bind縮寫 相當於把showStatus的值在1跟0切換，而showStatus本就是pojo的屬性，所以直接傳給後端API就完事     &amp;lt;el-table-column  prop=&amp;#34;showStatus&amp;#34;  header-align=&amp;#34;center&amp;#34;  align=&amp;#34;center&amp;#34;  label=&amp;#34;顯示狀態&amp;#34;  &amp;gt;  &amp;lt;template slot-scope=&amp;#34;scope&amp;#34;&amp;gt;  &amp;lt;el-switch  v-model=&amp;#34;scope.row.showStatus&amp;#34;  active-color=&amp;#34;#13ce66&amp;#34;  inactive-color=&amp;#34;#ff4949&amp;#34;  :active-value=&amp;#34;1&amp;#34;  :inactive-value=&amp;#34;0&amp;#34;  @change=&amp;#34;updateBrandStatus(scope.row)&amp;#34;  &amp;gt;&amp;lt;/el-switch&amp;gt;  &amp;lt;/template&amp;gt;  &amp;lt;/el-table-column&amp;gt;  下面綁定一個監聽@change的方法，調用後端API更新   updateBrandStatus(data) {  console.log(&amp;#34;最新信息&amp;#34;, data);  let { brandId, showStatus } = data;  //發送請求修改狀態  this.</description>
+    </item>
+    
+    <item>
+      <title>後台:商品分類、網關轉發微服務、跨域</title>
+      <link>https://yoziming.github.io/post/220120-gulimall-03-gateway/</link>
+      <pubDate>Thu, 20 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220120-gulimall-03-gateway/</guid>
+      <description>後台頁面  別的項目學過了，這邊快速跳過，只記幾個新知識
+ 計算屬性與監聽器 過濾器 組件化  可以復用的模板
+  沒有el屬性，不與頁面中的元素綁定 template就是他的HTML模板 data()必須是一個函數而非物件   局部組件  用componments聲明，其中的key名就是標簽名    生命週期  參考 https://book.vue.tw/CH1/1-7-lifecycle.html  腳手架創建表單  之前這邊手動要先去router創建右邊的導航欄，腳手架可以用可視化工具直接創造，非常方便 自己要實現的部分只剩接後端API的網址與資料呈現  javax問題  啟動renren-fast服務時因為引用了common模組(為了讓後台的server也能上nacos服務發現)，又出了點問題，排查了半天  package javax.validation.constraints does not exist 解法: &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-validation&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt;  我感覺人人開源這個項目已經跟不上時代了，網路上目前2022年1月比較推薦的是若依腳手架，他這個star超高全站第2，也有一直在維護，issue處理很積極，有機會嘗試看看 https://gitee.com/y_project/RuoYi  後端  現在要實現在後台檢視商品列表功能，進到product模組的controller，寫查詢的控制器與服務、實現類 要返回的資料是這種表格   三級樹形列表，老師這邊一次sql查出全部資料然後用stream工具類操作賦好值，實在太強。我想看懂就花了大半天，還是老實for循環，或是多查幾次SQL吧&amp;hellip;   /** * 三級樹型列表 * * @return */  @Override  public List&amp;lt;CategoryEntity&amp;gt; listTree() {  // 查所有分類  List&amp;lt;CategoryEntity&amp;gt; entities = baseMapper.</description>
+    </item>
+    
+    <item>
+      <title>服務註冊nacos、feign、Gateway</title>
+      <link>https://yoziming.github.io/post/220119-gulimall-02-nacos/</link>
+      <pubDate>Wed, 19 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220119-gulimall-02-nacos/</guid>
+      <description>SpringCloud自由配 結合SpringCloud Alibaba最終的技術搭配方案
+ SpringCloud Alibaba - Nacos: 註冊中心 (服務發現/註冊) SpringCloud Alibaba- Nacos: 配置中心 (動態配置管理) SpringCloud Ribbon: 負載均衡 SpringCloud Feign: 聲明式HTTP客户端(調用遠程服務) SpringCloud Alibaba - Sentinel: 服務容錯(限流、降級、熔斷) SpringCloud Gateway: API 網關 (webflux 編程模式) SpringCloud Sleuth: 調用鏈監控 SpringCloud Alibaba - Seata: 原Fescar, 即分佈式事務解決方案  版本需求關係  SpringCloud 版本配不上，開都開不起來
+ https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E
+Nacos註冊  https://nacos.io/zh-cn/docs/quick-start-spring-cloud.html
+  導依賴  &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-cloud-starter-alibaba-nacos-discovery&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.2.6.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  docker啟動nacos  --env 配置環境 MODE=standalong 單節點 --name nacos 映象名稱為nacos -d 背景啟動    # 拉映像 docker pull nacos/nacos-server # 啟動容器 docker run --env MODE=standalone --name nacos -d -p 8848:8848 -e JVM_XMS=256m -e JVM_XMX=256m -e JVM_XMN=256m -e JVM_MMS=256m nacos/nacos-server  這東西不限制會吃超多記憶體 預設網址為localhost:8848/nacos，帳號密碼都是nacos  註冊服務 在應用的 /resource /application.</description>
+    </item>
+    
+    <item>
+      <title>項目簡介 &amp; 環境搭建</title>
+      <link>https://yoziming.github.io/post/220118-gulimall-01/</link>
+      <pubDate>Tue, 18 Jan 2022 12:00:00 +0800</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220118-gulimall-01/</guid>
+      <description>項目簡介  市面上常見的電商模式
+   B2B(Business to Business)是指商家和商家建立的商業關係
+  B2C(Business to Consumer)就是我們經常看到的供應商直接把商品賣個用户，也就是商業零售，直接面向消費銷售產品和服務
+  C2B(Customer to Business)即消費者對企業，先有消費者需求產生而後有企業生產，即先有消費者提出需求，後又生產企業按需求組織生產
+  C2C(Customer to Consumer)客户之間把自己的東西放到網上去賣
+  O2O(Online To Offline)將線下商務的機會與互聯網結合在一起，讓互聯網成為線下交易前台，線上快速支付線下優質服務，如UBER
+    穀粒商城是一個B2C模式的電商平台
+  項目架構圖  微服務劃分圖  項目技術&amp;amp;特色  前後分離開發，並開發基於 vue 的 後台管理系統 SpringCloud 全新的解決方案 應用監控、限流、網關、熔斷降級、等分佈式方案，全方位涉及 透徹講解分佈式事務，分佈式鎖等分佈式系統的難點 壓力測試與性能優化 各種集群技術的區別以及使用 CI/CD 使用  環境搭建 安裝linux虛擬機   下載VirtualBox
+ https://www.virtualbox.org/    下載Vagrant
+ https://www.vagrantup.com/downloads.html    使用Vagrant快速建立linux虛擬機，打開window cmd或power shell</description>
+    </item>
+    
+    <item>
+      <title>醫院管理API &amp; 服務註冊與發現</title>
+      <link>https://yoziming.github.io/post/220118-agg-spring-08/</link>
+      <pubDate>Tue, 18 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220118-agg-spring-08/</guid>
+      <description>醫院管理系統  hospital-manage醫院管理系統，是一個已經完成的模組，功能是提供給醫院方操作，讓醫院管理人員上傳醫院的科室、排班資訊等等的一個小系統 我們的項目是預約掛號平台，要實現求診者與醫院的配對 現在就要模擬實際業務，參考提供的API文檔完成對接  連接MongoDB  練習點，這邊把醫院方上傳的資料存到mongoDB
+  回到service-hosp模組，先去application.properties設定資料庫連線地址 建立接口繼承MongoRepository  @Repository public interface HospitalRepository extends MongoRepository&amp;lt;Hospital, String&amp;gt; {}  建立HospitalServiceImpl接口與實現類、ApiController開始對接API  上傳醫院  控制層知識點:  request.getParameterMap()拿到的是String[]，最好轉成Obj方便後續操作 這邊用了base64編碼傳了一張圖片，&amp;quot;+&amp;ldquo;變成了&amp;rdquo; &amp;ldquo;空白要還原 之後用&amp;lt;img src=&amp;quot;data:image/png;base64,編碼串&amp;quot;/&amp;gt;可以把圖片還原顯示出來    @ApiOperation(&amp;#34;上傳醫院&amp;#34;) @PostMapping(&amp;#34;saveHospital&amp;#34;) public Result saveHospital(HttpServletRequest request) {  Map&amp;lt;String, String[]&amp;gt; parameterMap = request.getParameterMap();  // 調用工具類把map中的string[]轉成obj  Map&amp;lt;String, Object&amp;gt; stringObjectMap = HttpRequestHelper.switchMap(parameterMap);  // base64編碼傳送過程中把&amp;#34;+&amp;#34;變成了&amp;#34; &amp;#34;空白，要轉換回來  String logoData = (String) stringObjectMap.get(&amp;#34;logoData&amp;#34;);  logoData = logoData.</description>
+    </item>
+    
+    <item>
+      <title>MongoDB</title>
+      <link>https://yoziming.github.io/post/220117-agg-spring-07-mongodb/</link>
+      <pubDate>Mon, 17 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220117-agg-spring-07-mongodb/</guid>
+      <description>MongoDB  茫狗DB
+  屬於NoSQL，非關聯式 以JSON的格式儲存資料 強處:高併發讀寫、巨量資料、擴展好 弱點:交易  前置 # 拉取鏡像 docker pull mongo:latest  # 創建和啓動容器 docker run --name mymongo -p 27017:27017 -d mongo  # 進入容器 docker exec -it mymongo /bin/bash  # 使用MongoDB客户端進行操作 mongo 庫操作 //Help查看命令提示db.help()//切換/創建資料庫(如果不存在就創建)usetest//查詢所有資料庫showdbs//刪除當前使用資料庫db.dropDatabase()//查看當前使用的資料庫db或db.getName()//顯示當前db狀態db.stats()//當前db版本db.version()//查看當前db的鏈接機器地址db.getMongo() 剛建立的db在show看不到，直到其中存了實際的資料才算數  命名限制  不能是空字符串&amp;quot;&amp;quot; 不得含有&#39; &#39;(空格)、.、$、/、\和\0 (空字符) 避免用_下畫線開頭 應全部小寫 最多64字節  名詞對應    SQL Mongo 解釋/説明     table collection 表/集合   row document 行/文檔，即一筆資料(如:張三&amp;hellip;)   column field 字段/域，欄位(如:姓名)   index index 索引   join embedded 表連接，MongoDB叫嵌入但略有不同   primary key _id 主鍵，MongoDB自動將_id當主鍵，沒指定就自動創    集合操作  相當於操作&amp;quot;表&amp;quot;</description>
+    </item>
+    
+    <item>
+      <title>字典檔模組、Spring Cache&#43;Redis、Nginx</title>
+      <link>https://yoziming.github.io/post/220116-agg-spring-06/</link>
+      <pubDate>Sun, 16 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220116-agg-spring-06/</guid>
+      <description>字典檔  暫時不知道作來幹嘛，就是放一些縣市級分區的資本資料
+  一樣分前、後端實現功能  顯示列表 後端-建模組  建立service-cmn子模組  複習一下過程，在父節點service右鍵新增 選maven，無原型，用-命名，選Parent，其他不動 到pom.xml中    刪除 &amp;lt;properties&amp;gt;  &amp;lt;maven.compiler.source&amp;gt;8&amp;lt;/maven.compiler.source&amp;gt;  &amp;lt;maven.compiler.target&amp;gt;8&amp;lt;/maven.compiler.target&amp;gt; &amp;lt;/properties&amp;gt;  加入描述 &amp;lt;version&amp;gt;1.0-SNAPSHOT&amp;lt;/version&amp;gt; &amp;lt;packaging&amp;gt;jar&amp;lt;/packaging&amp;gt; &amp;lt;name&amp;gt;service-cmn&amp;lt;/name&amp;gt; &amp;lt;description&amp;gt;service-cmn&amp;lt;/description&amp;gt;  把servicehosp整包複製過來，取完整新包名yoziming.ad.servicecmn，開始改造名稱 可以用重命名功能與大量取代，注意大小寫與範圍   查到mybatis plus有自動生成功能，但看了一下有點亂，用複製的挺穩也快，先將就吧 最後記得對子模組右鍵，引入框架支援  看到application.properties裡面是灰的就要想到這點  裡面連的庫名與服務端口、服務名要改       swagger的@Api註解value與tags的區別  value用於描述 tags用於分組，類的tag會覆蓋方法的    後端-寫接口 // DictController @Api(value = &amp;#34;數據字典&amp;#34;, tags = &amp;#34;數據字典&amp;#34;) @RestController @RequestMapping(&amp;#34;/admin/cmn/Dict&amp;#34;) @CrossOrigin public class DictController {  @Autowired  private DictService dictService;   @ApiOperation(&amp;#34;根據id查詢子數據列表&amp;#34;)  @GetMapping(&amp;#34;getAllChildDictById/{id}&amp;#34;)  public Result getAllChildDictById(@PathVariable Long id) {  return Result.</description>
+    </item>
+    
+    <item>
+      <title>前端:後臺模板vue-admin-template</title>
+      <link>https://yoziming.github.io/post/220115-agg-spring-05/</link>
+      <pubDate>Sat, 15 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220115-agg-spring-05/</guid>
+      <description>後臺模板  非常經典的模板，被用的很廣泛
+  倉庫 https://github.com/PanJiaChen/vue-admin-template 解壓縮下載來的vue-admin-template-master，取個好名字放到自己的專案路徑下 進到資料夾，執行npm install安裝依賴  依賴除錯  課件給的老板本用起來很多錯誤，需要手動排查
+ // 載都沒載直接報錯停止，可能是npm版本太高，降版本: npm install npm@6.14.10 -g /* node-sass問題，報錯為 node-sass@4.14.1 postinstall: `node scripts/build.js` node-sass跟Node.js版本有很大關係，不相容的時候可以這樣 */ npm install gulp-sass --save-dev npm install node-sass@latest // 清除緩存 npm cache clean --force  都沒問題使用npm run dev就能啟動了  後來我是去它倉庫抓4.4版本的，依賴都沒報錯，也不用修改登入接口那些    開始搭建 新增側邊欄  左邊那些表在vue中對應叫router，修改/src/router/index.js綁定要顯示的項目 @/是設定好的別名，表示/src路徑之下 然後在view中添加要顯示的內容，新增檔案後輸入veu+table就能產生模板  串接api  到@/api下編輯接口，複製一個預設的來改，點進去發現第一行import request from &#39;@/utils/request&#39;是已經引用好axios了  但是他這邊request.js裡面成功代號預設是20000，如果與後端用的不同要自己修改  改這個最好用全局取代，因為還有其他比如登入也用到這個代碼，要統一改     修改下面的請求方法，與後端api的URL對接  import request from &amp;#39;@/utils/request&amp;#39;  export default {  findPageHospitalSet(current, limit, searchObj) {  return request({  // ES6特性，反引號包裹強化字串  url: `http://localhost:8201/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,  // url: `/admin/hosp/hospitalSet/findPageHospitalSet/${current}/${limit}`,  method: &amp;#39;post&amp;#39;,  // data表示使用json傳遞給後端的@RequestBody  data: searchObj  })  } }  暫時先用完整的url跳過需要關閉mock與跨域問題  修改請求端口號  留坑，暫時先用完整的url跳過需要關閉mock與跨域問題</description>
+    </item>
+    
+    <item>
+      <title>前端:ES6、Vue、Node.js</title>
+      <link>https://yoziming.github.io/post/220114-agg-spring-04/</link>
+      <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220114-agg-spring-04/</guid>
+      <description>ES6  ECMAScript 6(簡稱ES6)，是 JavaScript 語言新一代的標準，在 2015 年 6 月正式發佈 泛指 ES5.1 版以後的新一代 JavaScript 語言標準 Ecma International:歐洲一個定標準的組織，比較出名的有CD-ROM格式  特性  與傳統javascript的差別
+  聲明變量用let取代var  有作用域，在{}之間 不可重複聲明   常量用const，且須顯式聲明 快速解構、快速定義:  let user = {name: &amp;#39;Helen&amp;#39;, age: 18} let { name, age } = user console.log(name, age)  let money=100 let type=&amp;#34;cat&amp;#34; let kitty={type,money} console.log(kitty)  模板字串:用反引號包裹，其中可以換行，可以用${}，{}中可以有運算  let name = &amp;#34;lucy&amp;#34; let age = 17 let info = `My name is ${name}, I am ${age+1}` console.</description>
+    </item>
+    
+    <item>
+      <title>醫院設定模組、swagger2、統一返回/異常/日誌</title>
+      <link>https://yoziming.github.io/post/220113-agg-spring-03/</link>
+      <pubDate>Thu, 13 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220113-agg-spring-03/</guid>
+      <description>搭建醫院設定模組  service-hosp，提供查詢與管理醫院設定
+  首先父節點service的pom已經將model設為依賴，可以引用其下的實體類model   進到service-hosp修改pom，引用spring-boot-maven-plugin，讓maven打包的時候把依賴也包進去，包成一個可以直接執行的jar包   添加application.properties，指定服務連接的名稱、端口、資料庫連接等等  # 服務端口 server.port=8201 # 服務名 spring.application.name=service-hosp # 環境設置：dev、test、prod spring.profiles.active=dev # mysql資料庫連接 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver spring.datasource.url=jdbc:mysql://localhost:3306/yygh_hosp?characterEncoding=utf-8&amp;amp;useSSL=false&amp;amp;serverTimezone=GMT%2B8 spring.datasource.username=root spring.datasource.password=1234 #返回json的全局時間格式 spring.jackson.date-format=yyyy-MM-dd HH:mm:ss spring.jackson.time-zone=GMT+8  創建當前包servicehosp，加入啟動類  package yoziming.ad.servicehosp @SpringBootApplication public class ServiceHospApplication {  public static void main(String[] args) {  SpringApplication.run(ServiceHospApplication.class, args);  } }  在yoziming.ad.servicehosp包下新增三個包controller、mapper、service，實現mybatis+的要求以執行CRUD操作  mapper下新增接口，繼承BaseMapper&amp;lt;bean&amp;gt; @Mapper public interface HospitalSetMapper extends BaseMapper&amp;lt;HospitalSet&amp;gt; { } service下新增接口，繼承IService&amp;lt;bean&amp;gt; public interface HospitalSetService extends IService&amp;lt;HospitalSet&amp;gt; { }  service下再增加impl包，放實現類，繼承ServiceImpl&amp;lt;剛創的Mapper,bean&amp;gt;，實現接口 @Service public class HospitalSetServiceImpl extends ServiceImpl&amp;lt;HospitalSetMapper, HospitalSet&amp;gt; implements HospitalSetService { } Controller綁定網址，注入service，即可開始業務邏輯 @RestController @RequestMapping(&amp;#34;/admin/hosp/hospitalSet&amp;#34;) public class HospitalSetController {   // 注入service  @Autowired  private HospitalSetService hospitalSetService;   // 查詢醫院表所有訊息  @GetMapping(&amp;#34;findAll&amp;#34;)  public List&amp;lt;HospitalSet&amp;gt; findAllHospitalSet(){  return hospitalSetService.</description>
+    </item>
+    
+    <item>
+      <title>MyBatis-Plus快速上手</title>
+      <link>https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/</link>
+      <pubDate>Wed, 12 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220112-agg-spring-02-mybatis-plus/</guid>
+      <description>MyBatis-Plus  非常好用的ORM框架
+  https://baomidou.com/ 它官網目前2022年1月是最新3.5.0版本，以下基於此版本與MySQL 8演示  依賴 &amp;lt;!--mybatis-plus--&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;com.baomidou&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;mybatis-plus-boot-starter&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;3.5.0&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;!--mysql依賴--&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;mysql&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;mysql-connector-java&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;!--lombok用來簡化實體類--&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt;  &amp;lt;optional&amp;gt;true&amp;lt;/optional&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;!--spring-boot-starter 如果沒有要加--&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;spring-boot-starter&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt;  &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; application.properties #MySQL 8 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver spring.datasource.url=jdbc:mysql://localhost:3306/mybatis_plus?serverTimezone=GMT%2B8 spring.datasource.username=root spring.datasource.password=1234 #mybatis日誌，開啟後更好查看SQL操作 mybatis-plus.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl 綁定Mapper  最傳統是在xml中一個一個綁定bean的屬性與資料庫的表格，Mapper就是他們的映射關係。
+在MyBatis-Plus中只要繼承他封裝好的BaseMapper就能直接開始CRUD
+ 在實體類(pojo/bean/entity)的包下先建立對應的實體類(例如User.java)，用@Data標記讓Lombok快速生成，不用Lombok就自己手動生成setter那些
+@Data public class User { 創建包名mapper，下面建立對應的Mapper接口，繼承BaseMapper&amp;lt;User&amp;gt;，泛型&amp;lt;&amp;gt;中放bean，並用@Repository標記(為了後面測試生成實例時不泛紅報錯)，例如:</description>
+    </item>
+    
+    <item>
+      <title>Spring框架、預約就醫項目</title>
+      <link>https://yoziming.github.io/post/220112-agg-spring-01/</link>
+      <pubDate>Wed, 12 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220112-agg-spring-01/</guid>
+      <description>本筆記基於:尚医通项目:尚硅谷Java微服务+分布式+全栈项目【尚医通】 https://www.bilibili.com/video/BV1V5411K7rT
+ Spring  輕量(檔案才幾MB)的開源框架，用以簡化開發過程 最主要目的就是降低耦合 非侵入式:框架的API不會出現在業務邏輯中，業務邏輯本身是乾淨的方便轉移 容器:用容器管理物件的生命週期與依賴關係 Spring的核心為IoC與Aop  IoC  Inversion of Control，直譯控制反轉不好理解，其實就是一種依賴關係的轉移 傳統方法例如&amp;quot;貓叫&amp;quot;，我要先造一隻貓，然後讓貓執行叫方法 現在反過來，我從&amp;quot;叫&amp;quot;出發，告訴容器要執行叫的是一隻貓，這個貓由容器來提供  如果想換成&amp;quot;狗叫&amp;quot;，我一樣是從叫出發，只是跟容器說現在要給我狗   如此一來，降低了耦合(不需要親自造貓用貓)，提高了復用性(一個叫不僅貓狗，雞豬牛羊都行) 傳統依賴關係是需要先主動造貓或造狗之後用來叫，現在反過來從&amp;quot;叫&amp;quot;讓容器造對應的物件去想叫的地方，所以說是控制反轉  DI  IoC算是一個思想，實作上Spring使用DI將其實現
+   Dependency Injection，依賴注入，是IOC思想的具體實現，即由容器建立物件，並且把物件注入到要用的地方
+  被依賴物件透過外部注入至依賴物件的地方使用
+  就是把物件實例化交給框架管理
+  本來Book book = new Book()
+  現在用工廠代理+反射交給框架創建，降低耦合
+    Bean管理   Spring的Bean管理，流程分為創建物件與注入屬性
+  想造物件首先要有一個工廠，Spring提供有兩種:
+  BeanFactory:框架內部用的接口，在獲取物件時才創物件
+  ApplicationContext:是BeanFactory的子接口，在加載時就創好物件，一般用的都是這個
+    AOP  Aspect-Oriented Programming 切面導向程式設計，它的目的在於將許多的共同方法抽離出來，與物件導向程式設計類似，但AOP 與OOP 不同的地方就在於，AOP 不用原方法呼叫共同方法，只需要指定執行共同方法的時機點即可。 不好理解，看專業的說明吧  https://ithelp.</description>
+    </item>
+    
+  </channel>
+</rss>
