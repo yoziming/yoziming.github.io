@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>從前端下查詢，再用流匯出並下載Excel</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="提供完整的範例">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="從前端下查詢，再用流匯出並下載Excel" />
+<meta property="og:description" content="提供完整的範例" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220331-export-excel/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-03-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-03-31T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="從前端下查詢，再用流匯出並下載Excel"/>
+<meta name="twitter:description" content="提供完整的範例"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bc%95%e5%8c%85" onclick="onNavClick(`#引包-nav`)" id="引包-nav">
+									引包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#controller" onclick="onNavClick(`#controller-nav`)" id="controller-nav">
+									Controller
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bajsonobject%e9%a0%86%e5%ba%8f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#解決jsonobject順序問題-nav`)" id="解決jsonobject順序問題-nav">
+									解決JSONObject順序問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af" onclick="onNavClick(`#後端-nav`)" id="後端-nav">
+									後端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bc%95%e5%8c%85" onclick="onNavClick(`#引包-nav`)" id="引包-nav">
+									引包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#controller" onclick="onNavClick(`#controller-nav`)" id="controller-nav">
+									Controller
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%a7%a3%e6%b1%bajsonobject%e9%a0%86%e5%ba%8f%e5%95%8f%e9%a1%8c" onclick="onNavClick(`#解決jsonobject順序問題-nav`)" id="解決jsonobject順序問題-nav">
+									解決JSONObject順序問題
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/java-book.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    從前端下查詢，再用流匯出並下載Excel
+                    
+                    <div class="post-subtitle">
+                        提供完整的範例
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-03-31 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="前端">前端</h1>
+<ul>
+<li>重點在於前端若使用JQuery封裝好的$.postJSON等方法，會因為二進位問題導致亂碼</li>
+<li>使用原生的xhr可以解決</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span><span style="color:#1e889b">&lt;!DOCTYPE html&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">html</span> <span style="color:#658b00">lang</span>=<span style="color:#cd5555">&#34;en&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">meta</span> <span style="color:#658b00">charset</span>=<span style="color:#cd5555">&#34;UTF-8&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">title</span>&gt;Title&lt;/<span style="color:#8b008b;font-weight:bold">title</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">button</span> <span style="color:#658b00">onclick</span>=<span style="color:#cd5555">&#34;doExport()&#34;</span>&gt;export&lt;/<span style="color:#8b008b;font-weight:bold">button</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">html</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span> <span style="color:#658b00">src</span>=<span style="color:#cd5555">&#34;https://code.jquery.com/jquery-3.6.0.min.js&#34;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#658b00">integrity</span>=<span style="color:#cd5555">&#34;sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=&#34;</span> <span style="color:#658b00">crossorigin</span>=<span style="color:#cd5555">&#34;anonymous&#34;</span>&gt;&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">function</span> doExport() {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 請求參數，最後會轉成JSON格式
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">var</span> requestParams = {
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;name&#34;</span>: <span style="color:#cd5555">&#34;Tom&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;age&#34;</span>: <span style="color:#b452cd">13</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;test&#34;</span>: <span style="color:#cd5555">&#34;xxx&#34;</span>,
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> url = <span style="color:#cd5555">&#34;http://localhost:12222/export&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> xhr = <span style="color:#8b008b;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>        xhr.open(<span style="color:#cd5555">&#34;POST&#34;</span>, url, <span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Authorization&#34;</span>, <span style="color:#cd5555">&#34;xxx&#34;</span>); <span style="color:#228b22">// 用來做身份校驗的自訂token等等
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Content-Type&#34;</span>, <span style="color:#cd5555">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>        xhr.responseType = <span style="color:#cd5555">&#34;blob&#34;</span>; <span style="color:#228b22">// 返回類型blob
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        xhr.onload = <span style="color:#8b008b;font-weight:bold">function</span> () { <span style="color:#228b22">// 定義請求完成的處理函數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.status === <span style="color:#b452cd">200</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> blob = <span style="color:#8b008b;font-weight:bold">this</span>.response;
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> reader = <span style="color:#8b008b;font-weight:bold">new</span> FileReader();
+</span></span><span style="display:flex;"><span>                reader.readAsDataURL(blob);
+</span></span><span style="display:flex;"><span>                reader.onload = <span style="color:#8b008b;font-weight:bold">function</span> (e) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 轉換完成後創建隱藏的a標籤執行下載
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">var</span> a = <span style="color:#658b00">document</span>.createElement(<span style="color:#cd5555">&#39;a&#39;</span>);
+</span></span><span style="display:flex;"><span>                    a.download = <span style="color:#cd5555">&#34;export&#34;</span>; <span style="color:#228b22">// 自訂的檔案名稱
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    a.href = e.target.result;
+</span></span><span style="display:flex;"><span>                    $(<span style="color:#cd5555">&#34;body&#34;</span>).append(a);
+</span></span><span style="display:flex;"><span>                    a.click();
+</span></span><span style="display:flex;"><span>                    $(a).remove();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        xhr.send(JSON.stringify(requestParams)) <span style="color:#228b22">// 發送ajax請求，如果沒有要帶參數可以為空
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</span></span></code></pre></div><h1 id="後端">後端</h1>
+<h2 id="引包">引包</h2>
+<ul>
+<li>這裡用糊塗工具包更方便，但要注意還需引poi，否則<code>ExcelUtil.getWriter();</code>報錯</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>cn.hutool<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>hutool-all<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>5.7.22<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.poi<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>poi-ooxml<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>4.1.2<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h2 id="controller">Controller</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyController</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 從BeanList輸出excel到前端並且自訂欄位
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/export&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">export</span>(<span style="color:#707a7c">@RequestBody</span> Response aaa, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;aaa = &#34;</span> + aaa);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(1).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(0).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(2).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ExcelWriter writer = ExcelUtil.<span style="color:#658b00">getWriter</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 自定義標題別名
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;aaa&#34;</span>, <span style="color:#cd5555">&#34;姓名&#34;</span>);
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;bbb&#34;</span>, <span style="color:#cd5555">&#34;年齡&#34;</span>);
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;count&#34;</span>, <span style="color:#cd5555">&#34;分數&#34;</span>);
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;type&#34;</span>, <span style="color:#cd5555">&#34;是否通過&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 預設未添加alias的屬性也會寫出，如果想只寫出加了別名的字段，可以調用此方法排除之
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">setOnlyAlias</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 一次性寫出內容，使用默認樣式，強制輸出標題
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">write</span>(xxxInfos, <span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// response為HttpServletResponse對象
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/vnd.ms-excel;charset=utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// test.xls是彈出下載對話框的文件名，不能為中文，中文請自行編碼
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Content-Disposition&#34;</span>, <span style="color:#cd5555">&#34;attachment;filename=test.xls&#34;</span>);
+</span></span><span style="display:flex;"><span>        ServletOutputStream out = response.<span style="color:#658b00">getOutputStream</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">flush</span>(out, <span style="color:#8b008b;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 關閉writer，釋放內存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">close</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 此處記得關閉輸出Servlet流
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        IoUtil.<span style="color:#658b00">close</span>(out);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="解決jsonobject順序問題">解決JSONObject順序問題</h3>
+<ul>
+<li>研究@ResponseBody附贈的探討，最初是在想用JSONObject與map到底差在哪，才發現JSONObject底層其實也是map</li>
+<li>區別在於map可以存null、少數情況下(例如android SDK 4.3以下)用map在多層架構下可能會包不到內層的物件</li>
+<li>所以最好都用JSONObject，建構時傳入一個<code>new LinkedHashMap()</code>可以確保呈現的順序等於put的順序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 解決JSONObject順序問題
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/res&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">res</span>() {
+</span></span><span style="display:flex;"><span>        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(1).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(0).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(2).<span style="color:#658b00">build</span>();
+</span></span><span style="display:flex;"><span>        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
+</span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+</span></span><span style="display:flex;"><span>        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
+</span></span><span style="display:flex;"><span>        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;abc&#34;</span>, 123);
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 重點
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        JSONObject jo = <span style="color:#8b008b;font-weight:bold">new</span> JSONObject(<span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap());
+</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
+</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;afsg&#34;</span>, <span style="color:#cd5555">&#34;SRgrehg&#34;</span>);
+</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;map&#34;</span>, map);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> jo.<span style="color:#658b00">toStringPretty</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-03-31</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220301-jsp-jpa/">
+			上一篇<br>JSP、Hibernate、Spring Data JPA
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
