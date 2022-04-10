@@ -700,9 +700,28 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></code></pre></div><h1 id="小結">小結</h1>
 <ul>
 <li>方法二更好一點，用Map、Set本身可以防止重複的key，並且不需要額外造一個<code>Vo</code>更省資源</li>
-<li>另外我發現<code>JSONArray</code>就很奇怪，如果純用<code>LinkedHashMap</code>作為內部元件，那我put的順序最後輸出時又會亂掉，但是用<code>JSONObject(new LinkedHashMap&lt;String, Object&gt;());</code>他就能維持住put的順序</li>
+<li>另外我發現<code>Hutool</code>的<code>JSONArray</code>就很奇怪，如果純用<code>LinkedHashMap</code>作為<code>JsonNode</code>，那我put的順序最後輸出時又會亂掉，但是用<code>JSONObject(new LinkedHashMap&lt;String, Object&gt;());</code>他就能維持住put的順序</li>
+<li>後來覺得<code>jackson-databind</code>可能還是好用一點，直接用<code>LinkedHashMap</code>構成他就會照順序</li>
 </ul>
-
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List&lt;Object&gt; ja = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+</span></span><span style="display:flex;"><span>idGroupsMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
+</span></span><span style="display:flex;"><span>    HashMap&lt;String, Object&gt; jo = <span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap&lt;&gt;();
+</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, k);
+</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, v);
+</span></span><span style="display:flex;"><span>    ja.<span style="color:#658b00">add</span>(jo);
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;JSON = &#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> ObjectMapper().<span style="color:#658b00">writeValueAsString</span>(ja));
+</span></span></code></pre></div><ul>
+<li>如果有POJO也可以直接註釋順序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@JsonPropertyOrder</span>({<span style="color:#cd5555">&#34;name&#34;</span>, <span style="color:#cd5555">&#34;phoneNumber&#34;</span>,<span style="color:#cd5555">&#34;email&#34;</span>, <span style="color:#cd5555">&#34;salary&#34;</span>, <span style="color:#cd5555">&#34;id&#34;</span> })
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Employee</span> {
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><ul>
+<li>但是要注意用<code>jackson</code>還原泛型時使用<code>TypeReference</code>不要引錯包，我曾經在這邊找問題找超久&hellip;</li>
+</ul>
+<pre tabindex="0"><code>import com.fasterxml.jackson.core.type.TypeReference;
+</code></pre>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-04-10</p>
