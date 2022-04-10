@@ -6,9 +6,301 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Thu, 31 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 Apr 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>常用類:String相關類與方法</title>
+        <link>https://yoziming.github.io/post/211205-agg-ja-20/</link>
+        <pubDate>Sun, 05 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211205-agg-ja-20/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211205-agg-ja-20/ -&lt;h1 id=&#34;string類&#34;&gt;String類&lt;/h1&gt;
+&lt;h3 id=&#34;string類特性&#34;&gt;String類特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;表示字符串，內容以&lt;code&gt;&amp;quot;&amp;quot;&lt;/code&gt;包裹表示，稱為字面量的定義方式&lt;/li&gt;
+&lt;li&gt;是一個&lt;code&gt;final&lt;/code&gt;類，不可被繼承&lt;/li&gt;
+&lt;li&gt;實現了&lt;code&gt;Serializable&lt;/code&gt;接口，可以序列化&lt;/li&gt;
+&lt;li&gt;實現了&lt;code&gt;Comparable&lt;/code&gt;接口，表示可以比較大小&lt;/li&gt;
+&lt;li&gt;內部定義了一個&lt;code&gt;final char[] value&lt;/code&gt;數組來實際儲存數據，代表不可變的字符序列
+&lt;ul&gt;
+&lt;li&gt;當我們用字面量(區別於&lt;code&gt;new&lt;/code&gt;)定義了一個&lt;code&gt;String str1=&amp;quot;abc&amp;quot;&lt;/code&gt;，相當於在方法區的字符串常量池中新增了一個&lt;code&gt;&amp;quot;abc&amp;quot;&lt;/code&gt;序列，其為不可變的&lt;/li&gt;
+&lt;li&gt;字符串常量池中不會儲存內容相同的字符串，比如我再新增一個&lt;code&gt;str2=&amp;quot;abc&amp;quot;&lt;/code&gt;，則他們指向同一地址。
+&lt;ul&gt;
+&lt;li&gt;延伸&lt;code&gt;str6=&amp;quot;a&amp;quot;+&amp;quot;bc&amp;quot;&lt;/code&gt;，在聲明時字面量相加，等於常量跟常量拼接，都是在常量池，所以指向同樣位置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;而當我把&lt;code&gt;str1=&amp;quot;hello&amp;quot;&lt;/code&gt;，或是用&lt;code&gt;+&lt;/code&gt;拼接了其他內容，或是用&lt;code&gt;replace&lt;/code&gt;取代了其中某一位的字，都是在常量池重新開闢空間，所謂不可變是這個意思&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;如果是用&lt;code&gt;String str3=new String(&amp;quot;abc&amp;quot;);&lt;/code&gt;方法生成，則是創在堆中，str3本身是指向堆的地址，去比&lt;code&gt;==&lt;/code&gt;都是&lt;code&gt;false&lt;/code&gt;。這個動作實際開闢了2個記憶體空間，它在堆中的value才指向常量池
+&lt;ul&gt;
+&lt;li&gt;如果是&lt;code&gt;new&lt;/code&gt;一個構造器生成時賦予的name傳入形參則跟&lt;code&gt;new&lt;/code&gt; String是不同的，傳入形參也是類似於字面量的方法(因為顯然多在堆中開闢位置是毫無必要的)&lt;/li&gt;
+&lt;li&gt;若是用+拼接有任何涉及到變量的，例如&lt;code&gt;str4=str1+&amp;quot;def&amp;quot;&lt;/code&gt;，都是相當於在堆空間&lt;code&gt;new&lt;/code&gt;的操作，&lt;code&gt;==&lt;/code&gt;去比較時全都&lt;code&gt;false&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;但如果變量被&lt;code&gt;final&lt;/code&gt;修飾(正常不會有人這麼做)，相當於這個變量存在常量池，又會是常量跟常量拼接，所以指向同樣位置&lt;/li&gt;
+&lt;li&gt;若是用&lt;code&gt;intern()&lt;/code&gt;方法，例如&lt;code&gt;str5=str1.intern();&lt;/code&gt;，返回值是在常量池中，&lt;code&gt;==&lt;/code&gt;比較是&lt;code&gt;true&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;面試題-判斷結果&#34;&gt;面試題-判斷結果&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;StringTest&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String str = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;good&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] ch = {&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;t&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;e&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;t&amp;#39;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;change&lt;/span&gt;(String str, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] ch) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        str = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;bad&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ch[0] = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        StringTest ex = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; StringTest();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ex.&lt;span style=&#34;color:#658b00&#34;&gt;change&lt;/span&gt;(ex.&lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;, ex.&lt;span style=&#34;color:#658b00&#34;&gt;ch&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(ex.&lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;); &lt;span style=&#34;color:#228b22&#34;&gt;// good
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(ex.&lt;span style=&#34;color:#658b00&#34;&gt;ch&lt;/span&gt;); &lt;span style=&#34;color:#228b22&#34;&gt;// best
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;切記傳形參時，引用類型傳的是地址值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;這個案例中形參只是正好也叫&lt;code&gt;str&lt;/code&gt;而已，仔細看編譯器提示它應該會是灰色的，因為根本沒用到。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;change的&lt;code&gt;str&lt;/code&gt;是方法的形參，當屬性的&lt;code&gt;str&lt;/code&gt;作為實參傳入時，把屬性&lt;code&gt;str&lt;/code&gt;的地址給了形參&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;形參&lt;code&gt;str&lt;/code&gt;指向方法區造了一個&lt;code&gt;&amp;quot;bad&amp;quot;&lt;/code&gt;，但也沒用到然後隨著方法結束就消亡了。而屬性&lt;code&gt;str&lt;/code&gt;仍然指向&lt;code&gt;&amp;quot;good&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ch的狀況同理，它的地址被傳進去給了形參，形參跟實參都是指向同一個位置，地址指向的首位元素被改成了b，所以改變&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;而若使用&lt;code&gt;this.str = &amp;quot;bad&amp;quot;;&lt;/code&gt;，形參叫啥名字、或有無這個&lt;code&gt;string&lt;/code&gt;的形參根本都無所謂，是等同於在其他地方&lt;code&gt;str = &amp;quot;bad&amp;quot;;&lt;/code&gt;，在方法區常量池中重新開闢並重新賦值&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;string常用方法&#34;&gt;String常用方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int length()&lt;/code&gt;:返回字數(一個中英文字母都是1)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;char charAt(index)&lt;/code&gt;:返回指定下標，小心越位&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isEmpty()&lt;/code&gt;:返回是否空字串&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean equals(Object obj)&lt;/code&gt;:比較內容是否相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean equalsIgnoreCase(String str)&lt;/code&gt;:忽略大小寫比較內容是否相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String concat(String str2)&lt;/code&gt;:將str2拼接到後面，等同於&amp;quot;&lt;code&gt;+&lt;/code&gt;&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int CompareTo(String str2)&lt;/code&gt;:根據字符串編碼，拿調用者減去&lt;code&gt;str2&lt;/code&gt;，可以用在排序&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String toLowerCase()&lt;/code&gt;:返回一份全轉為小寫的副本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String toUpperCase()&lt;/code&gt;:返回一份全轉為大寫的副本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String trim()&lt;/code&gt;:刪除前後的空格(中間的不算)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String substring(int 開始,結尾)&lt;/code&gt;:根據下標取切片，左閉右開(含頭不含尾)，結尾可省略
+&lt;ul&gt;
+&lt;li&gt;即是說想從頭複製到尾形參是&lt;code&gt;(0,length)&lt;/code&gt;，注意超過會溢出&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean endsWith(String str)&lt;/code&gt;:返回是否以&lt;code&gt;str&lt;/code&gt;結尾，區分大小寫，長度不限&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean startsWith(String str)&lt;/code&gt;:返回是否以&lt;code&gt;str&lt;/code&gt;開頭，區分大小寫，長度不限
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;boolean startsWith(String str,int 下標)&lt;/code&gt;:從指定下標開始(含)算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean contains(String str)&lt;/code&gt;:返回是否包含一個以上&lt;code&gt;str&lt;/code&gt;，區分大小寫，長度不限&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int indexOf(String str)&lt;/code&gt;:返回第一次匹配到&lt;code&gt;str&lt;/code&gt;的下標，區分大小寫，長度不限。-1表示無
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int indexOf(String str,int 下標)&lt;/code&gt;:從指定下標開始(含)算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int lastIndexOf(String str)&lt;/code&gt;:返回最後一次匹配到&lt;code&gt;str&lt;/code&gt;的下標，區分大小寫，長度不限。-1表示無
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int lastIndexOf(String str,int 下標)&lt;/code&gt;:從指定下標開始(含)反向搜索(往左搜)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;當&lt;/code&gt;indexOf&lt;code&gt;與&lt;/code&gt;lastIndexOf`返回相同，要嘛只存在一個解，要嘛都-1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String replace(string 舊,新)&lt;/code&gt;:拿舊換新，區分大小寫，長度不限，預設全部取代&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String replaceAll(string 正則,新)&lt;/code&gt;:正則式替換，全部取代&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String replaceFirst(string 正則,新)&lt;/code&gt;:正則式替換，只取代第一個匹配&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean match(string 正則)&lt;/code&gt;:匹配是否符合正則&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String[] split(string 正則)&lt;/code&gt;:依照正則切分成字符串的數組
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;String[] split(string 正則,int limit)&lt;/code&gt;:最多切成幾個元素，超過全放在最後&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;string類基本數據轉換複習&#34;&gt;String類、基本數據轉換(複習)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;String&lt;/code&gt;轉成基本數據、包裝類:&lt;code&gt;Integer.parseInt(str)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;基本數據、包裝類轉String:&lt;code&gt;String.valueOf(num)&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;或是直接&lt;code&gt;str2=num+&amp;quot;&amp;quot;;&lt;/code&gt;  // 是在堆裡&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String&lt;/code&gt;轉成char[]:&lt;code&gt;toCharArray()&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;反轉，直接調用構造器&lt;code&gt;= new String(arr)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String&lt;/code&gt;轉成byte[]:getBytes()，會返回位元組(字節)，預設編碼&lt;code&gt;utf-8&lt;/code&gt;(中文字大多是3位)，utf-8本身是一個可變長度的編碼方式
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getBytes(字元編碼)&lt;/code&gt;:也可以指定編碼&lt;/li&gt;
+&lt;li&gt;反轉，一樣調用構造器&lt;code&gt;= new String(arr)&lt;/code&gt;，形參也可以加,&amp;ldquo;指定編碼&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;stringbuffer&#34;&gt;StringBuffer&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;面試重點題&lt;/th&gt;
+&lt;th&gt;字符序列&lt;/th&gt;
+&lt;th&gt;特性&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;不可變&lt;/td&gt;
+&lt;td&gt;改變等於新創，效率最低&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;StringBuffer&lt;/td&gt;
+&lt;td&gt;可變&lt;/td&gt;
+&lt;td&gt;線程安全、效率低&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;StringBuilder&lt;/td&gt;
+&lt;td&gt;可變&lt;/td&gt;
+&lt;td&gt;線程不安全、效率高&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;以下沒特別講都是&lt;code&gt;StringBuffer&lt;/code&gt;跟&lt;code&gt;StringBuilder&lt;/code&gt;都共有的特性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;底層都是&lt;code&gt;char[]&lt;/code&gt;，但不同於&lt;code&gt;String&lt;/code&gt;有&lt;code&gt;final&lt;/code&gt;修飾，&lt;code&gt;StringBuffer&lt;/code&gt;的內容是可變的&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;new StringBuffer&lt;/code&gt;或&lt;code&gt;StringBuilder&lt;/code&gt;時，&lt;code&gt;capacity&lt;/code&gt;預設容量是16，注意容量不等於當前長度&lt;code&gt;length&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;當使用&lt;code&gt;append&lt;/code&gt;拼接其他內容時，會先判斷是否超過容量，超過就創立一個新的數組容量是原有*2再+2，把原來的複製過去再拼接&lt;/li&gt;
+&lt;li&gt;超過太多會考慮直接計算欲拼接完的字符長度來當新容量&lt;/li&gt;
+&lt;li&gt;實際開發中，由於拼接複製效率低，最好在構造時就預想好需使用的容量，&lt;code&gt;StringBuffer(int capacity)&lt;/code&gt;、&lt;code&gt;StringBuilder(int capacity)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;stringbuffer常用方法&#34;&gt;StringBuffer常用方法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;範圍沒特別說都是左閉右開(含頭不含尾)，預設返回都是對&lt;code&gt;this&lt;/code&gt;操作&lt;/p&gt;
+&lt;p&gt;都是&lt;code&gt;StringBuffer&lt;/code&gt;跟&lt;code&gt;StringBuilder&lt;/code&gt;共有的方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;append(xxx)&lt;/code&gt;:拼接，內容xxx都視為String拚上去&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;delete(int start,int end)&lt;/code&gt;:刪除指定範圍的內容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;replace(首,尾,str)&lt;/code&gt;:取代指定範圍的內容為str&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setCharAt(index,ch)&lt;/code&gt;:修改指定位內容為ch&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;insert(index,str)&lt;/code&gt;:從指定位置插入str，插完的index位即是str開頭&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;reverse()&lt;/code&gt;:序列反轉&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;indexOf(String str)&lt;/code&gt;:返回第一次匹配到str的下標，區分大小寫，長度不限。-1表示無&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;string算法題練習&#34;&gt;String算法題練習&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CharCount&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 获取一个字符串在另一个字符串中出现的次数。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;//比如：获取&amp;#34; ab&amp;#34;在&amp;#34;abkkcadkabkebfkabkskab&amp;#34; 中出现的次数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        String s0 = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;abkkcadkabkebfkabkskab&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        String s0 = &amp;#34;abkkcadkabkebfkabababababababababababababerg654erg654erg564abababkskab&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        String st = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ab&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; count = 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (s0.&lt;span style=&#34;color:#658b00&#34;&gt;contains&lt;/span&gt;(st)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            String s1 = s0.&lt;span style=&#34;color:#658b00&#34;&gt;replace&lt;/span&gt;(st, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;@&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] c1 = s1.&lt;span style=&#34;color:#658b00&#34;&gt;toCharArray&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(Arrays.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;(c1));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; i = 0; i &amp;lt; c1.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;; i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (c1[i] == 64) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    count++;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            count = 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;次數=&amp;#34;&lt;/span&gt; + count);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;    老師思路:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;    while包住，用indexOf(子str,index)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;    匹配有，就count++，index+=子str長度
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;     */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Reverse&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 将一个字符串进行反转。将字符串中指定部分进行反转。比如&amp;#34;abcdefg&amp;#34;反转为&amp;#34;abfedcg&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; left = 2; &lt;span style=&#34;color:#228b22&#34;&gt;// 擷取左邊保留位數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; right = 1; &lt;span style=&#34;color:#228b22&#34;&gt;// 擷取右邊倒數保留位數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String str = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;abcdefghijk&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String s2 = str.&lt;span style=&#34;color:#658b00&#34;&gt;substring&lt;/span&gt;(left, str.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;() - right);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;欲反轉順序區=&amp;#34;&lt;/span&gt; + s2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] rs2 = s2.&lt;span style=&#34;color:#658b00&#34;&gt;toCharArray&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; i = 0; i &amp;lt; rs2.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt; / 2; i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; c = rs2[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            rs2[i] = rs2[rs2.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt; - 1 - i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            rs2[rs2.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt; - 1 - i] = c;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;反轉後=&amp;#34;&lt;/span&gt; + Arrays.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;(rs2));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String rrs2 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(rs2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String str3 = str.&lt;span style=&#34;color:#658b00&#34;&gt;substring&lt;/span&gt;(0, left) + rrs2 + str.&lt;span style=&#34;color:#658b00&#34;&gt;substring&lt;/span&gt;(str.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;() - right);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;最終=&amp;#34;&lt;/span&gt; + str3);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;老師的思路一:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;不切出sub數組，而是在for循環直接換位
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;for(int x=左,y=右;x&amp;lt;y;x++,y--){
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;char temp=arr[x];
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;arr[x]=arr[y]
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;思路二:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;切出來，倒著遍歷數組，拼成一個反著的string，再接回去
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;思路三:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;切出來，用stringBuilder裝，反轉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Contain&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 4.获取两个字符串中最大相同子串。比如：
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;//str1 = &amp;#34;abcwerthelloyuiodef&amp;#34;;str2 = &amp;#34;cvhellobnm&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;//前提，只存在一解
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;//提示：将短的那个串进行长度依次递减的子串与较长的串比较。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        String str1 = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;abcwerthelloyuiodef&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String str2 = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;cvhellobnm&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String ans = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; i = 0; i &amp;lt; str2.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;(); i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            String str3 = str2.&lt;span style=&#34;color:#658b00&#34;&gt;substring&lt;/span&gt;(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (str1.&lt;span style=&#34;color:#658b00&#34;&gt;contains&lt;/span&gt;(str3)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                ans = str3;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                String str4 = str2.&lt;span style=&#34;color:#658b00&#34;&gt;substring&lt;/span&gt;(i, str2.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;() - 1 - i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (str1.&lt;span style=&#34;color:#658b00&#34;&gt;contains&lt;/span&gt;(str4)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    ans = str4;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ans=&amp;#34;&lt;/span&gt; + ans);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;    老師思路:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;用兩個循環包住，外部控制位數從長度--，內部一個個去切，直到contains符合
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;     */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;String&lt;/code&gt;類的不可變性:底層是一個&lt;code&gt;final char[]&lt;/code&gt;，長度跟內容自然不可變，改變都是新造一個重給地址&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211205-agg-ja-20/ - Yoziming</description>
+        </item>
     
     
     
