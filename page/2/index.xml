@@ -6126,6 +6126,179 @@ func main() {
     
     
         <item>
+        <title>約瑟夫問題</title>
+        <link>https://yoziming.github.io/post/210815-agg-go-al-josephus/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-agg-go-al-josephus/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-josephus/ -&lt;h1 id=&#34;約瑟夫問題&#34;&gt;約瑟夫問題&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Boy struct {
+	No   int
+	Next *Boy //指向下一個小孩的指針
+}
+
+func addBoy(num int) *Boy {
+	//num表示小孩的個數，*Boy返回第一個小孩的指針
+	first := &amp;amp;Boy{}
+	temp := &amp;amp;Boy{}
+	if num &amp;lt; 1 {
+		fmt.Println(&amp;#34;num值錯誤&amp;#34;)
+		return first
+	}
+
+	for i := 1; i &amp;lt;= num; i++ {
+		boy := &amp;amp;Boy{
+			No: i,
+		}
+		if i == 1 {
+			first = boy //不變
+			temp = boy
+			temp.Next = first
+		} else {
+			temp.Next = boy
+			temp = boy
+			temp.Next = first //構成環形
+		}
+	}
+	return first
+}
+
+func show(first *Boy) {
+	if first.Next == nil {
+		fmt.Println(&amp;#34;列表為空&amp;#34;)
+		return
+	}
+	temp := first
+	for {
+		fmt.Printf(&amp;#34;編號%d~&amp;gt;&amp;#34;, temp.No)
+		if temp.Next == first {
+			break
+		}
+		temp = temp.Next
+	}
+}
+
+func play(first *Boy, k int, m int) {
+	//從第k人開始報數m出列
+	if first.Next == nil {
+		fmt.Println(&amp;#34;列表為空&amp;#34;)
+		return
+	}
+	tail := first
+	for {
+		if tail.Next == first {
+			break
+		}
+		tail = tail.Next
+	}
+	//讓first移動到k
+	for i := 0; i &amp;lt; k-1; i++ {
+		first = first.Next
+		tail = tail.Next
+	}
+
+	//開始數m
+	for {
+		for i := 1; i &amp;lt;= m-1; i++ {
+			first = first.Next
+			tail = tail.Next
+		}
+		fmt.Println(first.No, &amp;#34;出列&amp;#34;)
+		first = first.Next
+		tail.Next = first
+
+		//退出
+		if tail == first {
+			break
+		}
+	}
+	fmt.Println(first.No, &amp;#34;為最後一個&amp;#34;)
+}
+func main() {
+	first := addBoy(41)
+	show(first)
+	fmt.Println()
+	play(first, 1, 3)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-josephus/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>迷宮遞迴</title>
+        <link>https://yoziming.github.io/post/210815-agg-go-al-recursive/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-agg-go-al-recursive/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-recursive/ -&lt;h1 id=&#34;迷宮遞迴&#34;&gt;迷宮遞迴&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func SetWay(myMap *[8][7]int, a int, b int) bool {
+	//a,b 表示對地圖的那個點測試
+
+	//找到出口
+	if myMap[6][5] == 2 {
+		return true
+	} else {
+		//繼續找
+		if myMap[a][b] == 0 { //可探測的點
+			myMap[a][b] = 2            //踩上去了，再探上下左右，但是我知道要往下往右探
+			if SetWay(myMap, a+1, b) { //下
+				return true
+			} else if SetWay(myMap, a, b+1) { //右
+				return true
+			} else if SetWay(myMap, a-1, b) { //上
+				return true
+			} else if SetWay(myMap, a, b-1) { //左
+				return true
+			} else { //死路
+				myMap[a][b] = 3
+				return false
+			}
+		} else { //不可探測的點
+			return false
+		}
+	}
+}
+func main() {
+	//定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路
+	var myMap [8][7]int
+
+	//四周設置圍牆
+	for i := 0; i &amp;lt; 7; i++ {
+		myMap[0][i] = 1
+		myMap[7][i] = 1
+	}
+	for i := 0; i &amp;lt; 8; i++ {
+		myMap[i][0] = 1
+		myMap[i][6] = 1
+	}
+	myMap[3][1] = 1
+	myMap[3][2] = 1
+
+	//看樣子
+	for i := 0; i &amp;lt; 8; i++ {
+		for j := 0; j &amp;lt; 7; j++ {
+			fmt.Print(myMap[i][j], &amp;#34; &amp;#34;)
+		}
+		fmt.Println()
+	}
+
+	SetWay(&amp;amp;myMap, 1, 1)
+	fmt.Println(&amp;#34;已探完&amp;#34;)
+
+	for i := 0; i &amp;lt; 8; i++ {
+		for j := 0; j &amp;lt; 7; j++ {
+			fmt.Print(myMap[i][j], &amp;#34; &amp;#34;)
+		}
+		fmt.Println()
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-recursive/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
         <title>單向鏈表</title>
         <link>https://yoziming.github.io/post/210815-agg-go-al-list/</link>
         <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
@@ -6341,6 +6514,82 @@ func main() {
 
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-quick-sort/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>稀疏數組</title>
+        <link>https://yoziming.github.io/post/210815-agg-go-al-array3/</link>
+        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210815-agg-go-al-array3/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-array3/ -&lt;h1 id=&#34;稀疏數組&#34;&gt;稀疏數組&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type ValNode struct {
+	row int //橫的
+	col int //直的
+	val int
+}
+
+func main() {
+	//創建數組範例
+	var chessMap [11][11]int
+	chessMap[1][2] = 1
+	chessMap[2][3] = 2
+
+	//輸出看樣子
+	for _, v := range chessMap {
+		for _, v2 := range v {
+			fmt.Printf(&amp;#34;%d\t&amp;#34;, v2)
+		}
+		fmt.Println()
+	}
+
+	//轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片
+	var sparseArr []ValNode
+	//紀錄規模跟預設值
+	valNode0 := ValNode{
+		row: 11,
+		col: 11,
+		val: 0,
+	}
+	sparseArr = append(sparseArr, valNode0)
+
+	for i, v := range chessMap {
+		for j, k := range v {
+			if k != 0 {
+				valNodeFind := ValNode{
+					row: i,
+					col: j,
+					val: k,
+				}
+				sparseArr = append(sparseArr, valNodeFind)
+			}
+		}
+	}
+	//輸出這個數組看看
+	for i, valNode := range sparseArr {
+		fmt.Printf(&amp;#34;%d: %d %d %d\n&amp;#34;, i, valNode.row, valNode.col, valNode.val)
+	}
+
+	//恢復
+	var chessMapRe [11][11]int
+	for i, v := range sparseArr {
+		if i != 0 { //跳過第一row
+			chessMapRe[v.row][v.col] = v.val
+
+		}
+	}
+
+	//輸出看樣子
+	for _, v := range chessMapRe {
+		for _, v2 := range v {
+			fmt.Printf(&amp;#34;%d\t&amp;#34;, v2)
+		}
+		fmt.Println()
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-array3/ - Yoziming</description>
         </item>
     
     
@@ -6674,255 +6923,6 @@ func main() {
 
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-circle-list/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>稀疏數組</title>
-        <link>https://yoziming.github.io/post/210815-agg-go-al-array3/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-agg-go-al-array3/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-array3/ -&lt;h1 id=&#34;稀疏數組&#34;&gt;稀疏數組&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type ValNode struct {
-	row int //橫的
-	col int //直的
-	val int
-}
-
-func main() {
-	//創建數組範例
-	var chessMap [11][11]int
-	chessMap[1][2] = 1
-	chessMap[2][3] = 2
-
-	//輸出看樣子
-	for _, v := range chessMap {
-		for _, v2 := range v {
-			fmt.Printf(&amp;#34;%d\t&amp;#34;, v2)
-		}
-		fmt.Println()
-	}
-
-	//轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片
-	var sparseArr []ValNode
-	//紀錄規模跟預設值
-	valNode0 := ValNode{
-		row: 11,
-		col: 11,
-		val: 0,
-	}
-	sparseArr = append(sparseArr, valNode0)
-
-	for i, v := range chessMap {
-		for j, k := range v {
-			if k != 0 {
-				valNodeFind := ValNode{
-					row: i,
-					col: j,
-					val: k,
-				}
-				sparseArr = append(sparseArr, valNodeFind)
-			}
-		}
-	}
-	//輸出這個數組看看
-	for i, valNode := range sparseArr {
-		fmt.Printf(&amp;#34;%d: %d %d %d\n&amp;#34;, i, valNode.row, valNode.col, valNode.val)
-	}
-
-	//恢復
-	var chessMapRe [11][11]int
-	for i, v := range sparseArr {
-		if i != 0 { //跳過第一row
-			chessMapRe[v.row][v.col] = v.val
-
-		}
-	}
-
-	//輸出看樣子
-	for _, v := range chessMapRe {
-		for _, v2 := range v {
-			fmt.Printf(&amp;#34;%d\t&amp;#34;, v2)
-		}
-		fmt.Println()
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-array3/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>約瑟夫問題</title>
-        <link>https://yoziming.github.io/post/210815-agg-go-al-josephus/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-agg-go-al-josephus/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-josephus/ -&lt;h1 id=&#34;約瑟夫問題&#34;&gt;約瑟夫問題&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Boy struct {
-	No   int
-	Next *Boy //指向下一個小孩的指針
-}
-
-func addBoy(num int) *Boy {
-	//num表示小孩的個數，*Boy返回第一個小孩的指針
-	first := &amp;amp;Boy{}
-	temp := &amp;amp;Boy{}
-	if num &amp;lt; 1 {
-		fmt.Println(&amp;#34;num值錯誤&amp;#34;)
-		return first
-	}
-
-	for i := 1; i &amp;lt;= num; i++ {
-		boy := &amp;amp;Boy{
-			No: i,
-		}
-		if i == 1 {
-			first = boy //不變
-			temp = boy
-			temp.Next = first
-		} else {
-			temp.Next = boy
-			temp = boy
-			temp.Next = first //構成環形
-		}
-	}
-	return first
-}
-
-func show(first *Boy) {
-	if first.Next == nil {
-		fmt.Println(&amp;#34;列表為空&amp;#34;)
-		return
-	}
-	temp := first
-	for {
-		fmt.Printf(&amp;#34;編號%d~&amp;gt;&amp;#34;, temp.No)
-		if temp.Next == first {
-			break
-		}
-		temp = temp.Next
-	}
-}
-
-func play(first *Boy, k int, m int) {
-	//從第k人開始報數m出列
-	if first.Next == nil {
-		fmt.Println(&amp;#34;列表為空&amp;#34;)
-		return
-	}
-	tail := first
-	for {
-		if tail.Next == first {
-			break
-		}
-		tail = tail.Next
-	}
-	//讓first移動到k
-	for i := 0; i &amp;lt; k-1; i++ {
-		first = first.Next
-		tail = tail.Next
-	}
-
-	//開始數m
-	for {
-		for i := 1; i &amp;lt;= m-1; i++ {
-			first = first.Next
-			tail = tail.Next
-		}
-		fmt.Println(first.No, &amp;#34;出列&amp;#34;)
-		first = first.Next
-		tail.Next = first
-
-		//退出
-		if tail == first {
-			break
-		}
-	}
-	fmt.Println(first.No, &amp;#34;為最後一個&amp;#34;)
-}
-func main() {
-	first := addBoy(41)
-	show(first)
-	fmt.Println()
-	play(first, 1, 3)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-josephus/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>迷宮遞迴</title>
-        <link>https://yoziming.github.io/post/210815-agg-go-al-recursive/</link>
-        <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210815-agg-go-al-recursive/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210815-agg-go-al-recursive/ -&lt;h1 id=&#34;迷宮遞迴&#34;&gt;迷宮遞迴&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func SetWay(myMap *[8][7]int, a int, b int) bool {
-	//a,b 表示對地圖的那個點測試
-
-	//找到出口
-	if myMap[6][5] == 2 {
-		return true
-	} else {
-		//繼續找
-		if myMap[a][b] == 0 { //可探測的點
-			myMap[a][b] = 2            //踩上去了，再探上下左右，但是我知道要往下往右探
-			if SetWay(myMap, a+1, b) { //下
-				return true
-			} else if SetWay(myMap, a, b+1) { //右
-				return true
-			} else if SetWay(myMap, a-1, b) { //上
-				return true
-			} else if SetWay(myMap, a, b-1) { //左
-				return true
-			} else { //死路
-				myMap[a][b] = 3
-				return false
-			}
-		} else { //不可探測的點
-			return false
-		}
-	}
-}
-func main() {
-	//定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路
-	var myMap [8][7]int
-
-	//四周設置圍牆
-	for i := 0; i &amp;lt; 7; i++ {
-		myMap[0][i] = 1
-		myMap[7][i] = 1
-	}
-	for i := 0; i &amp;lt; 8; i++ {
-		myMap[i][0] = 1
-		myMap[i][6] = 1
-	}
-	myMap[3][1] = 1
-	myMap[3][2] = 1
-
-	//看樣子
-	for i := 0; i &amp;lt; 8; i++ {
-		for j := 0; j &amp;lt; 7; j++ {
-			fmt.Print(myMap[i][j], &amp;#34; &amp;#34;)
-		}
-		fmt.Println()
-	}
-
-	SetWay(&amp;amp;myMap, 1, 1)
-	fmt.Println(&amp;#34;已探完&amp;#34;)
-
-	for i := 0; i &amp;lt; 8; i++ {
-		for j := 0; j &amp;lt; 7; j++ {
-			fmt.Print(myMap[i][j], &amp;#34; &amp;#34;)
-		}
-		fmt.Println()
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210815-agg-go-al-recursive/ - Yoziming</description>
         </item>
     
     
@@ -8504,30 +8504,570 @@ func cal(score [3][5]float64) {
     
     
         <item>
-        <title>冒泡排序</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</link>
+        <title>工廠模式</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-factory/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-bubble-sort/ -&lt;h1 id=&#34;冒泡排序&#34;&gt;冒泡排序&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var arr1 = [...]int{5, 9, 6, 8, 7, 3, 4, 2, 1, 6}
+        <guid>https://yoziming.github.io/post/210810-agg-go-factory/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-factory/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//工廠模式
+// 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等
+// 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意
+// 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品
 
-func main() {
-	s1 := arr1[:]
-	bubbleSort(s1)
-	fmt.Println(arr1)
+import (
+	&amp;#34;fmt&amp;#34;
+)
+
+type Student struct {
+	Name  string
+	Age   int
+	Score float64
 }
 
-func bubbleSort(x []int) {
-	for j := 1; j &amp;lt; len(x); j++ {
-		for i := 0; i &amp;lt; len(x)-1; i++ {
-			if x[i] &amp;gt; x[i+1] {
-				x[i], x[i+1] = x[i+1], x[i]
+func (s *Student) Say() string {
+	infoStr := fmt.Sprintf(&amp;#34;信息 name=[%v] age=[%v] score=[%v]&amp;#34;,
+		s.Name, s.Age, s.Score)
+	return infoStr
+}
+
+func main() {
+	var s1 = Student{
+		Name:  &amp;#34;tom&amp;#34;,
+		Score: 98,
+		Age:   18, //不依賴順序
+	}
+	res := s1.Say()
+	fmt.Println(res)
+
+	//其他創建結構變量同時指定值的方法:
+	stu2 := Student{&amp;#34;Jack&amp;#34;, 20, 100} //項目順序都要有對應
+	fmt.Println(stu2)
+	//返回結構的指針
+	var stu3 = &amp;amp;Student{&amp;#34;Mary&amp;#34;, 28, 5}
+	fmt.Println(*stu3)
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-factory/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>切片</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-slice/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-slice/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-slice/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//切片的類型是引用(傳遞的時候也是引用地址)
+	//切片長度可變(不像數組)
+	var arr1 = [5]int{1, 2, 3, 4, 5}
+	s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右)
+	//var slice=arr[0:end]簡寫[:end]
+	//[start:len(arr)]=[start:]
+	//[0:len(arr)]=[:]
+	fmt.Println(&amp;#34;s1內容是&amp;#34;, s1)
+	fmt.Println(&amp;#34;s1長度是&amp;#34;, len(s1))
+	fmt.Println(&amp;#34;s1容量是&amp;#34;, cap(s1))
+	fmt.Printf(&amp;#34;s1第一個地址是%p\n&amp;#34;, &amp;amp;s1[0])
+	fmt.Printf(&amp;#34;arr1[1]地址是%p\n&amp;#34;, &amp;amp;arr1[1])
+	s1[0] = 33
+	fmt.Println(&amp;#34;arr1內容是&amp;#34;, arr1)
+
+	//var 切片名[]type=make([]type,len,cap)
+	var s2 []float64 = make([]float64, 5, 10)
+	fmt.Println(s2)
+	//var 變量=make(類型)
+	var s22 = make([]float64, 5, 10)
+	fmt.Println(s22)
+	var s3 []int = []int{1, 2, 3, 4, 5}
+	fmt.Println(s3)
+	//用append動態追加
+	s3 = append(s3, 6, 7, 8, 9)
+	fmt.Println(s3)
+	s3 = append(s3, s3...) //...表示擴展
+	//用append的時候 其實是創建一個新的arr，值拷貝過去，然後重新指向
+	s3[10] = 600
+	fmt.Println(s3)
+
+	//用copy 要求2者都是切片類型
+	//短的賦給長的 後面沒東西就保持原樣(0)
+	//長的賦給短的 不會自動擴容 依照短的
+	var s4 = make([]int, 20)
+	fmt.Println(s4)
+	copy(s4, s3)
+	fmt.Println(s4)
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;切string&#34;&gt;切string&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;	str := &amp;#34;hello@yozimingfight!&amp;#34;
+	//string是一個byte數組，所以可以切片擷取
+	s1 := str[6:]
+	fmt.Println(s1)
+	//但是string是不可變的，不能用s1[0]=&amp;#39;z&amp;#39;這樣想改變一個字
+	//看做一個read only的切片
+
+	//可以轉[]byte或[]rune 修改 後轉回去
+	arr1 := []byte(str)
+	arr1[0] = &amp;#39;z&amp;#39;
+	str = string(arr1)
+	fmt.Println(str)
+	//byte不能處理中文字(3字節)
+	arr2 := []rune(str)
+	arr2[0] = &amp;#39;我&amp;#39;
+	str = string(arr2)
+	fmt.Println(str)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;切片練習-費波納數列&#34;&gt;切片練習-費波納數列&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func fbn(n int) []uint64 {
+	var s1 []uint64 = make([]uint64, n)
+	if n &amp;lt; 2 {
+		s1[0] = 1
+		return s1
+	} else {
+		s1[0] = 1
+		s1[1] = 1
+		for i := 2; i &amp;lt; n; i++ {
+			s1[i] = s1[i-1] + s1[i-2]
+		}
+		return s1
+	}
+}
+
+func main() {
+	a := fbn(1)
+	fmt.Println(a)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-slice/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>文字檔案讀取寫入</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-io-reader/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-io-reader/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-io-reader/ -&lt;h2 id=&#34;讀取&#34;&gt;讀取&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//打開一個文件
+	file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;)
+	//有人叫file對象/指針/文件句柄
+	if err != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err)
+	}
+	//看看文件是啥
+	fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file)
+	//退出函數就關閉文件
+	defer file.Close()
+
+	//創建一個帶緩衝的reader，預設大小是4096
+	reader := bufio.NewReader(file)
+	for {
+		str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束
+		fmt.Print(str)
+		if err == io.EOF { //表示文件末尾
+			break
+		}
+	}
+	fmt.Println(&amp;#34;\n讀取結束&amp;#34;)
+
+	//用ioutil.ReadFile一次讀完
+	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
+	file2 := &amp;#34;c:/test.txt&amp;#34;
+	str2, err2 := ioutil.ReadFile(file2)
+	if err2 != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉
+
+	//創建一個新檔案，寫入5句話
+	filePath := &amp;#34;c:/abc.txt&amp;#34;
+	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err3)
+		return
+	}
+	defer file3.Close() //及時關閉文件
+	str3 := &amp;#34;hello\r\n&amp;#34;
+	writer3 := bufio.NewWriter(file3)
+	for i := 0; i &amp;lt; 5; i++ {
+		writer3.WriteString(str3)
+	}
+	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//覆蓋一個檔案，寫入3句話
+	filePath4 := &amp;#34;c:/abc2.txt&amp;#34;
+	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	defer file4.Close() //及時關閉文件
+	str4 := &amp;#34;覆蓋\r\n&amp;#34;
+	writer4 := bufio.NewWriter(file4)
+	for i := 0; i &amp;lt; 3; i++ {
+		writer4.WriteString(str4)
+	}
+	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，追加寫入3句話
+	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	defer file5.Close() //及時關閉文件
+	str5 := &amp;#34;追加\r\n&amp;#34;
+	writer5 := bufio.NewWriter(file5)
+	for i := 0; i &amp;lt; 3; i++ {
+		writer5.WriteString(str5)
+	}
+	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，讀取打印出來並追加寫入5句話
+	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	//先讀取
+	reader6 := bufio.NewReader(file6)
+	for {
+		str, err := reader6.ReadString(&amp;#39;\n&amp;#39;)
+		if err == io.EOF { //如果讀到末尾
+			break
+		}
+		fmt.Print(str)
+	}
+	defer file6.Close() //及時關閉文件
+	str6 := &amp;#34;追加2BBB\r\n&amp;#34;
+	writer6 := bufio.NewWriter(file6)
+	for i := 0; i &amp;lt; 5; i++ {
+		writer6.WriteString(str6)
+	}
+	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;寫入&#34;&gt;寫入&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+func main() {
+	//打開一個文件
+	file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;)
+	//有人叫file對象/指針/文件句柄
+	if err != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err)
+	}
+	//看看文件是啥
+	fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file)
+	//退出函數就關閉文件
+	defer file.Close()
+
+	//創建一個帶緩衝的reader，預設大小是4096
+	reader := bufio.NewReader(file)
+	for {
+		str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束
+		fmt.Print(str)
+		if err == io.EOF { //表示文件末尾
+			break
+		}
+	}
+	fmt.Println(&amp;#34;\n讀取結束&amp;#34;)
+
+	//用ioutil.ReadFile一次讀完
+	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
+	file2 := &amp;#34;c:/test.txt&amp;#34;
+	str2, err2 := ioutil.ReadFile(file2)
+	if err2 != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉
+
+	//創建一個新檔案，寫入5句話
+	filePath := &amp;#34;c:/abc.txt&amp;#34;
+	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err3)
+		return
+	}
+	defer file3.Close() //及時關閉文件
+	str3 := &amp;#34;hello\r\n&amp;#34;
+	writer3 := bufio.NewWriter(file3)
+	for i := 0; i &amp;lt; 5; i++ {
+		writer3.WriteString(str3)
+	}
+	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//覆蓋一個檔案，寫入3句話
+	filePath4 := &amp;#34;c:/abc2.txt&amp;#34;
+	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	defer file4.Close() //及時關閉文件
+	str4 := &amp;#34;覆蓋\r\n&amp;#34;
+	writer4 := bufio.NewWriter(file4)
+	for i := 0; i &amp;lt; 3; i++ {
+		writer4.WriteString(str4)
+	}
+	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，追加寫入3句話
+	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	defer file5.Close() //及時關閉文件
+	str5 := &amp;#34;追加\r\n&amp;#34;
+	writer5 := bufio.NewWriter(file5)
+	for i := 0; i &amp;lt; 3; i++ {
+		writer5.WriteString(str5)
+	}
+	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//打開一個檔案abc，讀取打印出來並追加寫入5句話
+	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
+	if err3 != nil {
+		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
+		return
+	}
+	//先讀取
+	reader6 := bufio.NewReader(file6)
+	for {
+		str, err := reader6.ReadString(&amp;#39;\n&amp;#39;)
+		if err == io.EOF { //如果讀到末尾
+			break
+		}
+		fmt.Print(str)
+	}
+	defer file6.Close() //及時關閉文件
+	str6 := &amp;#34;追加2BBB\r\n&amp;#34;
+	writer6 := bufio.NewWriter(file6)
+	for i := 0; i &amp;lt; 5; i++ {
+		writer6.WriteString(str6)
+	}
+	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
+
+	//將c:/abc的內容導入到c:abc2
+
+	fileAPath := &amp;#34;c:/abc.txt&amp;#34;
+	fileBPath := &amp;#34;c:/abc2.txt&amp;#34;
+
+	data, err9 := ioutil.ReadFile(fileAPath)
+	if err9 != nil {
+		fmt.Println(&amp;#34;文件讀取錯誤&amp;#34;, err9)
+		return
+	}
+	err = ioutil.WriteFile(fileBPath, data, 0666)
+	if err != nil {
+		fmt.Println(&amp;#34;文件讀取錯誤&amp;#34;, err)
+		return
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-io-reader/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>文檔字符統計</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-txt/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-txt/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-txt/ -&lt;h1 id=&#34;文檔字符統計&#34;&gt;文檔字符統計&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//保存結果用
+type CharCount struct {
+	ChCount    int //英文字數
+	NumCount   int //
+	SpaceCount int
+	OtherCount int
+}
+
+func main() {
+	//思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體
+	fileName := &amp;#34;c:/abc.txt&amp;#34;
+	file, err := os.Open(fileName)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	//來個實例
+	var count CharCount
+	reader := bufio.NewReader(file)
+
+	//開始讀取
+	for {
+		str, err := reader.ReadString(&amp;#39;\n&amp;#39;)
+		//這存在BUG 當行不換行做結尾就統計不到
+		if err == io.EOF {
+			break
+		}
+		for _, v := range str {
+			switch {
+			case v &amp;gt;= &amp;#39;a&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;z&amp;#39;:
+				fallthrough
+			case v &amp;gt;= &amp;#39;A&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;Z&amp;#39;:
+				count.ChCount++
+			case v == &amp;#39; &amp;#39; || v == &amp;#39;\t&amp;#39;:
+				count.SpaceCount++
+			case v &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;9&amp;#39;:
+				count.NumCount++
+			default:
+				count.OtherCount++
 			}
 		}
 	}
+	fmt.Printf(&amp;#34;字符=%v 數字=%v 空格=%v 其他=%v&amp;#34;,
+		count.ChCount, count.NumCount, count.SpaceCount, count.OtherCount)
+
 }
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-bubble-sort/ - Yoziming</description>
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-txt/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>日期時間</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-date-time/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-date-time/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-date-time/ -&lt;h1 id=&#34;日期時間&#34;&gt;日期時間&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	//1.獲取當前本地時間
+	now := time.Now()
+	fmt.Printf(&amp;#34;now=%v,type=%T&amp;#34;, now, now) //返回的類型是struct
+	//2.通過now獲取各種詳細
+	fmt.Printf(&amp;#34;年=%v,type=%T\n&amp;#34;, now.Year(), now.Year())
+	fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, now.Month(), now.Month())
+	fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, int(now.Month()), int(now.Month()))
+	fmt.Printf(&amp;#34;日=%v,type=%T\n&amp;#34;, now.Day(), now.Day())
+	fmt.Printf(&amp;#34;時=%v,type=%T\n&amp;#34;, now.Hour(), now.Hour())
+	fmt.Printf(&amp;#34;分=%v,type=%T\n&amp;#34;, now.Minute(), now.Minute())
+	fmt.Printf(&amp;#34;秒=%v,type=%T\n&amp;#34;, now.Second(), now.Second())
+	fmt.Printf(&amp;#34;星期=%v,type=%T\n&amp;#34;, now.Weekday(), now.Weekday())
+	fmt.Printf(&amp;#34;星期=%v\n&amp;#34;, int(now.Weekday()))
+	//3.格式化日期時間
+	dateStr := fmt.Sprintf(&amp;#34;年月日時分=%d-%d-%d %d:%d\n&amp;#34;, now.Year(), now.Month(),
+		now.Day(), now.Minute(), now.Second())
+	fmt.Println(dateStr)
+	//4.蛋疼的指定格式
+	fmt.Println(now.Format(&amp;#34;2006-01-02 15:04:05&amp;#34;))
+	fmt.Println(now.Format(&amp;#34;2006-01-02&amp;#34;))
+	fmt.Println(now.Format(&amp;#34;06&amp;#34;))
+	fmt.Println(now.Format(&amp;#34;01&amp;#34;))
+	fmt.Println(now.Format(&amp;#34;03&amp;#34;))
+	fmt.Println(now.Format(&amp;#34;01-02-06 03 04 05&amp;#34;))
+	//123456=月日時分秒年
+	//5.時間常量&amp;amp;休眠
+	//每隔固定時間打印數字，打到100退出
+	for i := 0; i &amp;lt;= 100; i++ {
+		fmt.Println(i)
+		time.Sleep(time.Millisecond)
+	}
+	//6.獲取時間戳unix unixNano
+	fmt.Println(now.Unix())
+	fmt.Println(now.UnixNano())
+
+	//跑之前的時間
+	start := now.Unix()
+	test()
+	end := now.Unix()
+	fmt.Printf(&amp;#34;耗時%v&amp;#34;, end-start)
+}
+
+//7.統計函數執行時間
+func test() {
+	str := &amp;#34;&amp;#34;
+	for i := 0; i &amp;lt; 100000; i++ {
+		str = str + &amp;#34;hello&amp;#34; + strconv.Itoa(i)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-date-time/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>字串轉換常用函數</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-string-conver/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-string-conver/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-string-conver/ -&lt;h1 id=&#34;字串轉換常用函數&#34;&gt;字串轉換常用函數&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+var str string = &amp;#34;abc123中文&amp;#34;
+
+func main() {
+	fmt.Println(&amp;#34;長度=&amp;#34;, len(str))
+	r := []rune(str)
+	for i := 0; i &amp;lt; len(r); i++ {
+		fmt.Printf(&amp;#34;遍歷=%q\n&amp;#34;, r[i])
+	}
+	//轉成整數 Atoi
+	n, err := strconv.Atoi(&amp;#34;5421&amp;#34;)
+	if err != nil {
+		fmt.Println(&amp;#34;錯誤,err&amp;#34;)
+	} else {
+		fmt.Println(&amp;#34;轉換成&amp;#34;, n)
+		//整數轉字串
+		str2 := strconv.Itoa(654231)
+		fmt.Printf(&amp;#34;類型是%T\n&amp;#34;, str2)
+		//轉byte
+		var bytes = []byte(&amp;#34;hello&amp;#34;)
+		fmt.Printf(&amp;#34;bytes=%v \n&amp;#34;, bytes)
+		//byte轉回字串
+		str3 := string([]byte{97, 98, 99})
+		fmt.Printf(&amp;#34;str3=%v \n&amp;#34;, str3)
+		//10進制轉2,8,16返回字串
+		str4 := strconv.FormatInt(123, 2)
+		fmt.Printf(&amp;#34;str4類型是%T,值=%v \n&amp;#34;, str4, str4)
+		//查找子串
+		b := strings.Contains(&amp;#34;seafood&amp;#34;, &amp;#34;foo&amp;#34;)
+		fmt.Printf(&amp;#34;b類型是%T,值=%v \n&amp;#34;, b, b)
+		//統計符合數量
+		c := strings.Count(&amp;#34;sgfjklewshfrrrrrr&amp;#34;, &amp;#34;r&amp;#34;)
+		fmt.Printf(&amp;#34;c類型是%T,值=%v \n&amp;#34;, c, c)
+		//不分大小寫 (因為==是分的)
+		d := strings.EqualFold(&amp;#34;ABCd&amp;#34;, &amp;#34;aBcD&amp;#34;)
+		fmt.Printf(&amp;#34;d類型是%T,值=%v \n&amp;#34;, d, d)
+		//查找第一次出現的子串位置
+		i := strings.Index(&amp;#34;sdaf654abc&amp;#34;, &amp;#34;a&amp;#34;)
+		fmt.Printf(&amp;#34;i類型是%T,值=%v \n&amp;#34;, i, i)
+		//查找最後出現的子串位置
+		l := strings.LastIndex(&amp;#34;sdaf654abc&amp;#34;, &amp;#34;a&amp;#34;)
+		fmt.Printf(&amp;#34;l類型是%T,值=%v \n&amp;#34;, l, l)
+		//替換文字
+		str5 := &amp;#34;瘟疫之地有瘟疫,瘟疫病人身上有瘟疫&amp;#34;
+		r := strings.Replace(str5, &amp;#34;瘟疫&amp;#34;, &amp;#34;痔瘡&amp;#34;, 2)
+		fmt.Println(&amp;#34;原句&amp;#34;, str5)
+		fmt.Printf(&amp;#34;r類型是%T,值=%v \n&amp;#34;, r, r)
+		//依照指定的字串分割成切片
+		s := strings.Split(&amp;#34;hello,world,ok&amp;#34;, &amp;#34;,&amp;#34;)
+		fmt.Printf(&amp;#34;s類型是%T,值=%v \n&amp;#34;, s, s)
+		//大小寫轉換
+		cap := &amp;#34;DDDDssss&amp;#34;
+		cap = strings.ToLower(cap)
+		fmt.Println(cap)
+		cap = strings.ToUpper(cap)
+		fmt.Println(cap)
+		//去掉左右兩邊空格
+		sp := strings.TrimSpace(&amp;#34;  KJHF JKLH LKJ  ..   &amp;#34;)
+		fmt.Println(sp)
+		//去掉左右指定 //TrimLeft // TrimRight
+		lr := strings.Trim(&amp;#34;!!KJHFJHG!!!&amp;#34;, &amp;#34;!&amp;#34;)
+		fmt.Println(lr)
+		//判斷開頭或結束  //HasSuffix
+		s6 := strings.HasPrefix(&amp;#34;ftp://192.164.2.1&amp;#34;, &amp;#34;ftp&amp;#34;)
+		fmt.Printf(&amp;#34;s6類型是%T,值=%v \n&amp;#34;, s6, s6)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-string-conver/ - Yoziming</description>
         </item>
     
     
@@ -8707,91 +9247,114 @@ func main() {
     
     
         <item>
-        <title>切片</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-slice/</link>
+        <title>命令行參數Args&amp;Flag</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-args-flag/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210810-agg-go-slice/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-slice/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	//切片的類型是引用(傳遞的時候也是引用地址)
-	//切片長度可變(不像數組)
-	var arr1 = [5]int{1, 2, 3, 4, 5}
-	s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右)
-	//var slice=arr[0:end]簡寫[:end]
-	//[start:len(arr)]=[start:]
-	//[0:len(arr)]=[:]
-	fmt.Println(&amp;#34;s1內容是&amp;#34;, s1)
-	fmt.Println(&amp;#34;s1長度是&amp;#34;, len(s1))
-	fmt.Println(&amp;#34;s1容量是&amp;#34;, cap(s1))
-	fmt.Printf(&amp;#34;s1第一個地址是%p\n&amp;#34;, &amp;amp;s1[0])
-	fmt.Printf(&amp;#34;arr1[1]地址是%p\n&amp;#34;, &amp;amp;arr1[1])
-	s1[0] = 33
-	fmt.Println(&amp;#34;arr1內容是&amp;#34;, arr1)
-
-	//var 切片名[]type=make([]type,len,cap)
-	var s2 []float64 = make([]float64, 5, 10)
-	fmt.Println(s2)
-	//var 變量=make(類型)
-	var s22 = make([]float64, 5, 10)
-	fmt.Println(s22)
-	var s3 []int = []int{1, 2, 3, 4, 5}
-	fmt.Println(s3)
-	//用append動態追加
-	s3 = append(s3, 6, 7, 8, 9)
-	fmt.Println(s3)
-	s3 = append(s3, s3...) //...表示擴展
-	//用append的時候 其實是創建一個新的arr，值拷貝過去，然後重新指向
-	s3[10] = 600
-	fmt.Println(s3)
-
-	//用copy 要求2者都是切片類型
-	//短的賦給長的 後面沒東西就保持原樣(0)
-	//長的賦給短的 不會自動擴容 依照短的
-	var s4 = make([]int, 20)
-	fmt.Println(s4)
-	copy(s4, s3)
-	fmt.Println(s4)
-
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;切string&#34;&gt;切string&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;	str := &amp;#34;hello@yozimingfight!&amp;#34;
-	//string是一個byte數組，所以可以切片擷取
-	s1 := str[6:]
-	fmt.Println(s1)
-	//但是string是不可變的，不能用s1[0]=&amp;#39;z&amp;#39;這樣想改變一個字
-	//看做一個read only的切片
-
-	//可以轉[]byte或[]rune 修改 後轉回去
-	arr1 := []byte(str)
-	arr1[0] = &amp;#39;z&amp;#39;
-	str = string(arr1)
-	fmt.Println(str)
-	//byte不能處理中文字(3字節)
-	arr2 := []rune(str)
-	arr2[0] = &amp;#39;我&amp;#39;
-	str = string(arr2)
-	fmt.Println(str)
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;切片練習-費波納數列&#34;&gt;切片練習-費波納數列&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func fbn(n int) []uint64 {
-	var s1 []uint64 = make([]uint64, n)
-	if n &amp;lt; 2 {
-		s1[0] = 1
-		return s1
-	} else {
-		s1[0] = 1
-		s1[1] = 1
-		for i := 2; i &amp;lt; n; i++ {
-			s1[i] = s1[i-1] + s1[i-2]
-		}
-		return s1
+        <guid>https://yoziming.github.io/post/210810-agg-go-args-flag/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-args-flag/ -&lt;h1 id=&#34;命令行參數argsflag&#34;&gt;命令行參數Args&amp;amp;Flag&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	fmt.Println(&amp;#34;命令行參數有&amp;#34;, len(os.Args))
+	//遍歷os.Args切片 得到所有輸入的參數值
+	for i, v := range os.Args {
+		fmt.Printf(&amp;#34;args[%v]=%v\n&amp;#34;, i, v)
 	}
+	fmt.Println(&amp;#34;=====================&amp;#34;)
+
+	//flag方法 先定義幾個變量用於接收參數值
+	var user string
+	var pwd string
+	var host string
+	var port int
+
+	flag.StringVar(&amp;amp;user, &amp;#34;u&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;帳號 預設為空&amp;#34;)
+	flag.StringVar(&amp;amp;pwd, &amp;#34;pwd&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;密碼 預設為空&amp;#34;)
+	flag.StringVar(&amp;amp;host, &amp;#34;h&amp;#34;, &amp;#34;localhost&amp;#34;, &amp;#34;主機 預設為localhost&amp;#34;)
+	flag.IntVar(&amp;amp;port, &amp;#34;port&amp;#34;, 3306, &amp;#34;端口 預設為3306&amp;#34;)
+	//前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設
+
+	flag.Parse() //這個一定要調用
+
+	//輸出結果
+	fmt.Printf(&amp;#34;user=%v pwd=%v host=%v port=%v&amp;#34;,
+		user, pwd, host, port)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-args-flag/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>冒泡排序</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-bubble-sort/ -&lt;h1 id=&#34;冒泡排序&#34;&gt;冒泡排序&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var arr1 = [...]int{5, 9, 6, 8, 7, 3, 4, 2, 1, 6}
+
+func main() {
+	s1 := arr1[:]
+	bubbleSort(s1)
+	fmt.Println(arr1)
+}
+
+func bubbleSort(x []int) {
+	for j := 1; j &amp;lt; len(x); j++ {
+		for i := 0; i &amp;lt; len(x)-1; i++ {
+			if x[i] &amp;gt; x[i+1] {
+				x[i], x[i+1] = x[i+1], x[i]
+			}
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-bubble-sort/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>拷貝檔案</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-io-copy/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-io-copy/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-io-copy/ -&lt;h1 id=&#34;拷貝一個檔案&#34;&gt;拷貝一個檔案&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//定義一個函數接收2個路徑
+func CopyFile(dstFileName, srcFileName string) (written int64, err error) {
+	srcFile, err := os.Open(srcFileName)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer srcFile.Close()
+	//通過srcFile獲取到reader
+	reader := bufio.NewReader(srcFile)
+
+	//打開dstFileName
+	dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//通過dstFile獲取到writer
+	writer := bufio.NewWriter(dstFile)
+	defer dstFile.Close()
+	return io.Copy(writer, reader)
+
 }
 
 func main() {
-	a := fbn(1)
-	fmt.Println(a)
+	src := &amp;#34;C:/01.mkv&amp;#34; //原始檔
+	dst := &amp;#34;C:/food2.mkv&amp;#34;
+	_, err := CopyFile(dst, src)
+	if err == nil {
+		fmt.Println(&amp;#34;拷貝完成&amp;#34;)
+	} else {
+		fmt.Println(&amp;#34;拷貝失敗&amp;#34;)
+	}
+
 }
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-slice/ - Yoziming</description>
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-io-copy/ - Yoziming</description>
         </item>
     
     
@@ -8854,118 +9417,300 @@ func main() {
     
     
         <item>
-        <title>命令行參數Args&amp;Flag</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-args-flag/</link>
+        <title>接口interface</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-interface/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210810-agg-go-args-flag/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-args-flag/ -&lt;h1 id=&#34;命令行參數argsflag&#34;&gt;命令行參數Args&amp;amp;Flag&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	fmt.Println(&amp;#34;命令行參數有&amp;#34;, len(os.Args))
-	//遍歷os.Args切片 得到所有輸入的參數值
-	for i, v := range os.Args {
-		fmt.Printf(&amp;#34;args[%v]=%v\n&amp;#34;, i, v)
-	}
-	fmt.Println(&amp;#34;=====================&amp;#34;)
-
-	//flag方法 先定義幾個變量用於接收參數值
-	var user string
-	var pwd string
-	var host string
-	var port int
-
-	flag.StringVar(&amp;amp;user, &amp;#34;u&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;帳號 預設為空&amp;#34;)
-	flag.StringVar(&amp;amp;pwd, &amp;#34;pwd&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;密碼 預設為空&amp;#34;)
-	flag.StringVar(&amp;amp;host, &amp;#34;h&amp;#34;, &amp;#34;localhost&amp;#34;, &amp;#34;主機 預設為localhost&amp;#34;)
-	flag.IntVar(&amp;amp;port, &amp;#34;port&amp;#34;, 3306, &amp;#34;端口 預設為3306&amp;#34;)
-	//前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設
-
-	flag.Parse() //這個一定要調用
-
-	//輸出結果
-	fmt.Printf(&amp;#34;user=%v pwd=%v host=%v port=%v&amp;#34;,
-		user, pwd, host, port)
+        <guid>https://yoziming.github.io/post/210810-agg-go-interface/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-interface/ -&lt;h1 id=&#34;接口interface&#34;&gt;接口interface&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，&lt;/p&gt;
+&lt;p&gt;那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//接口內不能有變量，方法也不能實現
+type Usb interface {
+	//聲明兩個沒實現的方法
+	Start()
+	Stop()
 }
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-args-flag/ - Yoziming</description>
+
+type Usb2 interface {
+	//接口是不需要顯示聲明，只要能實現就都能調用
+	Start()
+	Stop()
+	//假如我多聲明一個沒實現的方法在接口內就不能調用
+	Test() //有方法沒實現，導致Usb2這個接口不能用
+}
+type Phone struct {
+}
+
+//讓Phone實現USB接口的方法
+func (p Phone) Start() {
+	fmt.Println(&amp;#34;手機啟動&amp;#34;)
+}
+func (p Phone) Stop() {
+	fmt.Println(&amp;#34;手機停止&amp;#34;)
+}
+
+type Camera struct {
+}
+
+func (c Camera) Start() {
+	fmt.Println(&amp;#34;相機啟動~~&amp;#34;)
+}
+func (c Camera) Stop() {
+	fmt.Println(&amp;#34;相機停止&amp;#34;)
+}
+
+//電腦
+type Computer struct {
+}
+
+func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型
+	//通過usb變量來調用Start等方法
+	fmt.Println(&amp;#34;電腦連接usb中...&amp;#34;)
+	usb.Start()
+	usb.Stop()
+
+}
+func main() {
+	computer := Computer{}
+	phone := Phone{}
+	camera := Camera{}
+
+	//關鍵
+	computer.Working(phone)
+	computer.Working(camera)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口繼承&#34;&gt;接口繼承&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;繼承主要在於復用性跟可維護性
+接口價值在於擴展性(設計好規範(方法)，讓其他類型去實現&lt;/p&gt;
+&lt;p&gt;繼承是 is a的關係 例如 學生是個人
+接口是 like a的關係 例如 學生會說英語&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func (m *Monkey) climb() {
+	fmt.Println(m.Name, &amp;#34;生來會爬樹&amp;#34;)
+}
+
+//聲明接口
+type BirdAble interface {
+	Flying()
+}
+
+func (lm *LittleMonkey) Flying() {
+	fmt.Println(lm.Name, &amp;#34;學會飛了&amp;#34;)
+}
+
+func main() {
+	var monkey1 LittleMonkey
+	monkey1.Name = &amp;#34;悟空&amp;#34;
+	monkey1.climb()
+	monkey1.Flying()
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口實踐排序&#34;&gt;接口實踐排序&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Hero struct {
+	Name string
+	Age  int
+}
+
+//聲明一個Hero結構體的切片類型
+type HeroSlice []Hero
+
+//實現接口
+func (hs HeroSlice) Len() int {
+	return len(hs)
+}
+
+func (hs HeroSlice) Less(i, j int) bool {
+	//return hs[i].Age &amp;lt; hs[j].Age //Less就是決定使用哪個字段來排序
+	return hs[i].Name &amp;lt; hs[j].Name //Less就是決定使用哪個字段來排序
+}
+
+func (hs HeroSlice) Swap(i, j int) {
+	hs[i], hs[j] = hs[j], hs[i]
+}
+
+func main() {
+	//定義一個數組跟切片
+	var intSlice = []int{5, 3, 1, 2, 4}
+	//來排序
+	sort.Ints(intSlice)
+	fmt.Println(intSlice)
+
+	//系統提供的方法
+
+	//創建切片內容
+	var heroes HeroSlice
+	for i := 0; i &amp;lt; 10; i++ {
+		hero := Hero{
+			Name: fmt.Sprintf(&amp;#34;英雄%d&amp;#34;, rand.Intn(100)),
+			Age:  rand.Intn(100),
+		}
+		//放進切片 隨機創建了十個hero放進heroes這個切片
+		heroes = append(heroes, hero)
+	}
+
+	//排序前
+	for _, v := range heroes {
+		fmt.Println(v)
+	}
+
+	//調用sort.Sort
+	sort.Sort(heroes)
+	//因為我的結構體能實現接口，就可以享受這些方便
+	fmt.Println(&amp;#34;---排序後---&amp;#34;)
+	for _, v := range heroes {
+		fmt.Println(v)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;類型斷言&#34;&gt;類型斷言&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TypeJudge(items ...interface{}) {
+	for index, x := range items {
+		switch x.(type) {
+		case bool:
+			fmt.Printf(&amp;#34;第%v個參數是bool類型,值是%v\n&amp;#34;, index+1, x)
+		case int, int32, int64:
+			fmt.Printf(&amp;#34;第%v個參數是int類型,值是%v\n&amp;#34;, index+1, x)
+		case string:
+			fmt.Printf(&amp;#34;第%v個參數是string類型,值是%v\n&amp;#34;, index+1, x)
+		default:
+			fmt.Printf(&amp;#34;第%v個參數是不明類型,值是%v\n&amp;#34;, index+1, x)
+		}
+	}
+}
+
+func main() {
+	var n1 float64 = 2.3
+	var n2 int = 30
+	var name string = &amp;#34;tom&amp;#34;
+	n4 := 300
+
+	TypeJudge(n1, n2, name, n4)
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-interface/ - Yoziming</description>
         </item>
     
     
     
         <item>
-        <title>字串轉換常用函數</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-string-conver/</link>
+        <title>結構體</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-struct/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210810-agg-go-string-conver/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-string-conver/ -&lt;h1 id=&#34;字串轉換常用函數&#34;&gt;字串轉換常用函數&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
-var str string = &amp;#34;abc123中文&amp;#34;
+        <guid>https://yoziming.github.io/post/210810-agg-go-struct/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-struct/ -&lt;h1 id=&#34;結構體&#34;&gt;結構體&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Cat struct {
+	Name  string
+	Age   int
+	Color string
+	// S1    []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用)
+}
+
+//結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間
 
 func main() {
-	fmt.Println(&amp;#34;長度=&amp;#34;, len(str))
-	r := []rune(str)
-	for i := 0; i &amp;lt; len(r); i++ {
-		fmt.Printf(&amp;#34;遍歷=%q\n&amp;#34;, r[i])
+	//創建Cat的變量
+	var cat1 Cat
+	cat1.Name = &amp;#34;小花&amp;#34;
+	cat1.Age = 18
+	cat1.Color = &amp;#34;花&amp;#34;
+	fmt.Println(&amp;#34;cat1=&amp;#34;, cat1)
+	// cat1.S1 = make([]int, 10)
+	// cat1.S1[0] = 100
+	// fmt.Println(&amp;#34;cat1=&amp;#34;, cat1)
+
+	//推薦方式
+	cat2 := Cat{&amp;#34;小黑&amp;#34;, 5, &amp;#34;black&amp;#34;}
+	fmt.Println(cat2)
+
+	//方法3
+	//var c *C=new(C)
+	var cat3 *Cat = new(Cat)
+	//因為cat3是一個指針
+	(*cat3).Name = &amp;#34;小白&amp;#34;
+	//語法糖 cat3.Age也可以 ，不建議
+	cat3.Age = 6
+	fmt.Println(*cat3)
+
+	//方法4
+	//var c *C=&amp;amp;C{}
+	//因為c是一個指針 本來應該要用*...但是不用也行 草
+	var cat4 *Cat = &amp;amp;Cat{&amp;#34;阿皇&amp;#34;, 0, &amp;#34;Yellow&amp;#34;}
+	cat4.Name = &amp;#34;阿煌&amp;#34;
+	(*cat4).Age = 1
+	fmt.Println(*cat4)
+
+	type Person struct {
+		Name string `json:&amp;#34;name&amp;#34;`
+		Age  int    `json:&amp;#34;age&amp;#34;`
 	}
-	//轉成整數 Atoi
-	n, err := strconv.Atoi(&amp;#34;5421&amp;#34;)
+
+	p1 := Person{&amp;#34;aaa&amp;#34;, 10}
+	fmt.Println(p1)
+	var p2 *Person = &amp;amp;p1
+	// fmt.Println(*p2.Age) //這樣寫會報錯。因為.的優先級比*高
+	fmt.Println(p2.Age) //語法糖
+
+	//用type重定義(類似於取別名)但是他會認為是2種類型
+	type Per Person
+	// var p3 Person = Person{&amp;#34;tommy&amp;#34;, 5}
+	// var p4 Per
+	// //p3=p4 //這樣會報錯
+	// p4 = Per(p3) //這樣強轉
+	// fmt.Println(p3, p4)
+	fmt.Println(&amp;#34;--------------&amp;#34;)
+	//struct的每個字段上可以寫一個tag，該tag可以通過反射機制獲取，常用於序列化
+	pj := Per{&amp;#34;李四&amp;#34;, 44}
+	jsonStr, err := json.Marshal(pj) //返回的是byte
 	if err != nil {
-		fmt.Println(&amp;#34;錯誤,err&amp;#34;)
+		fmt.Println(&amp;#34;錯誤&amp;#34;)
+	}
+	fmt.Println(string(jsonStr)) //返回的是byte所以加一個string
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-struct/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>順序查找</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-sequential-search/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-sequential-search/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-sequential-search/ -&lt;h1 id=&#34;順序查找&#34;&gt;順序查找&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	names := [4]string{&amp;#34;A&amp;#34;, &amp;#34;B&amp;#34;, &amp;#34;C&amp;#34;, &amp;#34;D&amp;#34;}
+	var input = &amp;#34;&amp;#34;
+	fmt.Println(&amp;#34;輸入...&amp;#34;)
+	fmt.Scanln(&amp;amp;input)
+	//順序查找
+	// for i := 0; i &amp;lt; len(names); i++ {
+	// 	if input == names[i] {
+	// 		fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, i)
+	// 		break
+	// 	} else if i == len(names)-1 {
+	// 		fmt.Println(&amp;#34;比對失敗...&amp;#34;)
+	// 	}
+
+	//順序查找2
+	index := -1
+	for i := 0; i &amp;lt; len(names); i++ {
+		if input == names[i] {
+			index = i
+			break
+		}
+	}
+	if index != -1 {
+		fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, index)
 	} else {
-		fmt.Println(&amp;#34;轉換成&amp;#34;, n)
-		//整數轉字串
-		str2 := strconv.Itoa(654231)
-		fmt.Printf(&amp;#34;類型是%T\n&amp;#34;, str2)
-		//轉byte
-		var bytes = []byte(&amp;#34;hello&amp;#34;)
-		fmt.Printf(&amp;#34;bytes=%v \n&amp;#34;, bytes)
-		//byte轉回字串
-		str3 := string([]byte{97, 98, 99})
-		fmt.Printf(&amp;#34;str3=%v \n&amp;#34;, str3)
-		//10進制轉2,8,16返回字串
-		str4 := strconv.FormatInt(123, 2)
-		fmt.Printf(&amp;#34;str4類型是%T,值=%v \n&amp;#34;, str4, str4)
-		//查找子串
-		b := strings.Contains(&amp;#34;seafood&amp;#34;, &amp;#34;foo&amp;#34;)
-		fmt.Printf(&amp;#34;b類型是%T,值=%v \n&amp;#34;, b, b)
-		//統計符合數量
-		c := strings.Count(&amp;#34;sgfjklewshfrrrrrr&amp;#34;, &amp;#34;r&amp;#34;)
-		fmt.Printf(&amp;#34;c類型是%T,值=%v \n&amp;#34;, c, c)
-		//不分大小寫 (因為==是分的)
-		d := strings.EqualFold(&amp;#34;ABCd&amp;#34;, &amp;#34;aBcD&amp;#34;)
-		fmt.Printf(&amp;#34;d類型是%T,值=%v \n&amp;#34;, d, d)
-		//查找第一次出現的子串位置
-		i := strings.Index(&amp;#34;sdaf654abc&amp;#34;, &amp;#34;a&amp;#34;)
-		fmt.Printf(&amp;#34;i類型是%T,值=%v \n&amp;#34;, i, i)
-		//查找最後出現的子串位置
-		l := strings.LastIndex(&amp;#34;sdaf654abc&amp;#34;, &amp;#34;a&amp;#34;)
-		fmt.Printf(&amp;#34;l類型是%T,值=%v \n&amp;#34;, l, l)
-		//替換文字
-		str5 := &amp;#34;瘟疫之地有瘟疫,瘟疫病人身上有瘟疫&amp;#34;
-		r := strings.Replace(str5, &amp;#34;瘟疫&amp;#34;, &amp;#34;痔瘡&amp;#34;, 2)
-		fmt.Println(&amp;#34;原句&amp;#34;, str5)
-		fmt.Printf(&amp;#34;r類型是%T,值=%v \n&amp;#34;, r, r)
-		//依照指定的字串分割成切片
-		s := strings.Split(&amp;#34;hello,world,ok&amp;#34;, &amp;#34;,&amp;#34;)
-		fmt.Printf(&amp;#34;s類型是%T,值=%v \n&amp;#34;, s, s)
-		//大小寫轉換
-		cap := &amp;#34;DDDDssss&amp;#34;
-		cap = strings.ToLower(cap)
-		fmt.Println(cap)
-		cap = strings.ToUpper(cap)
-		fmt.Println(cap)
-		//去掉左右兩邊空格
-		sp := strings.TrimSpace(&amp;#34;  KJHF JKLH LKJ  ..   &amp;#34;)
-		fmt.Println(sp)
-		//去掉左右指定 //TrimLeft // TrimRight
-		lr := strings.Trim(&amp;#34;!!KJHFJHG!!!&amp;#34;, &amp;#34;!&amp;#34;)
-		fmt.Println(lr)
-		//判斷開頭或結束  //HasSuffix
-		s6 := strings.HasPrefix(&amp;#34;ftp://192.164.2.1&amp;#34;, &amp;#34;ftp&amp;#34;)
-		fmt.Printf(&amp;#34;s6類型是%T,值=%v \n&amp;#34;, s6, s6)
+		fmt.Println(&amp;#34;比對失敗...&amp;#34;)
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-string-conver/ - Yoziming</description>
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-sequential-search/ - Yoziming</description>
         </item>
     
     
@@ -9718,279 +10463,6 @@ func main() {
     
     
         <item>
-        <title>工廠模式</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-factory/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-factory/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-factory/ -&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//工廠模式
-// 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等
-// 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意
-// 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品
-
-import (
-	&amp;#34;fmt&amp;#34;
-)
-
-type Student struct {
-	Name  string
-	Age   int
-	Score float64
-}
-
-func (s *Student) Say() string {
-	infoStr := fmt.Sprintf(&amp;#34;信息 name=[%v] age=[%v] score=[%v]&amp;#34;,
-		s.Name, s.Age, s.Score)
-	return infoStr
-}
-
-func main() {
-	var s1 = Student{
-		Name:  &amp;#34;tom&amp;#34;,
-		Score: 98,
-		Age:   18, //不依賴順序
-	}
-	res := s1.Say()
-	fmt.Println(res)
-
-	//其他創建結構變量同時指定值的方法:
-	stu2 := Student{&amp;#34;Jack&amp;#34;, 20, 100} //項目順序都要有對應
-	fmt.Println(stu2)
-	//返回結構的指針
-	var stu3 = &amp;amp;Student{&amp;#34;Mary&amp;#34;, 28, 5}
-	fmt.Println(*stu3)
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-factory/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>拷貝檔案</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-io-copy/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-io-copy/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-io-copy/ -&lt;h1 id=&#34;拷貝一個檔案&#34;&gt;拷貝一個檔案&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//定義一個函數接收2個路徑
-func CopyFile(dstFileName, srcFileName string) (written int64, err error) {
-	srcFile, err := os.Open(srcFileName)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer srcFile.Close()
-	//通過srcFile獲取到reader
-	reader := bufio.NewReader(srcFile)
-
-	//打開dstFileName
-	dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//通過dstFile獲取到writer
-	writer := bufio.NewWriter(dstFile)
-	defer dstFile.Close()
-	return io.Copy(writer, reader)
-
-}
-
-func main() {
-	src := &amp;#34;C:/01.mkv&amp;#34; //原始檔
-	dst := &amp;#34;C:/food2.mkv&amp;#34;
-	_, err := CopyFile(dst, src)
-	if err == nil {
-		fmt.Println(&amp;#34;拷貝完成&amp;#34;)
-	} else {
-		fmt.Println(&amp;#34;拷貝失敗&amp;#34;)
-	}
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-io-copy/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>接口interface</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-interface/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-interface/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-interface/ -&lt;h1 id=&#34;接口interface&#34;&gt;接口interface&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，&lt;/p&gt;
-&lt;p&gt;那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//接口內不能有變量，方法也不能實現
-type Usb interface {
-	//聲明兩個沒實現的方法
-	Start()
-	Stop()
-}
-
-type Usb2 interface {
-	//接口是不需要顯示聲明，只要能實現就都能調用
-	Start()
-	Stop()
-	//假如我多聲明一個沒實現的方法在接口內就不能調用
-	Test() //有方法沒實現，導致Usb2這個接口不能用
-}
-type Phone struct {
-}
-
-//讓Phone實現USB接口的方法
-func (p Phone) Start() {
-	fmt.Println(&amp;#34;手機啟動&amp;#34;)
-}
-func (p Phone) Stop() {
-	fmt.Println(&amp;#34;手機停止&amp;#34;)
-}
-
-type Camera struct {
-}
-
-func (c Camera) Start() {
-	fmt.Println(&amp;#34;相機啟動~~&amp;#34;)
-}
-func (c Camera) Stop() {
-	fmt.Println(&amp;#34;相機停止&amp;#34;)
-}
-
-//電腦
-type Computer struct {
-}
-
-func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型
-	//通過usb變量來調用Start等方法
-	fmt.Println(&amp;#34;電腦連接usb中...&amp;#34;)
-	usb.Start()
-	usb.Stop()
-
-}
-func main() {
-	computer := Computer{}
-	phone := Phone{}
-	camera := Camera{}
-
-	//關鍵
-	computer.Working(phone)
-	computer.Working(camera)
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口繼承&#34;&gt;接口繼承&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;繼承主要在於復用性跟可維護性
-接口價值在於擴展性(設計好規範(方法)，讓其他類型去實現&lt;/p&gt;
-&lt;p&gt;繼承是 is a的關係 例如 學生是個人
-接口是 like a的關係 例如 學生會說英語&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func (m *Monkey) climb() {
-	fmt.Println(m.Name, &amp;#34;生來會爬樹&amp;#34;)
-}
-
-//聲明接口
-type BirdAble interface {
-	Flying()
-}
-
-func (lm *LittleMonkey) Flying() {
-	fmt.Println(lm.Name, &amp;#34;學會飛了&amp;#34;)
-}
-
-func main() {
-	var monkey1 LittleMonkey
-	monkey1.Name = &amp;#34;悟空&amp;#34;
-	monkey1.climb()
-	monkey1.Flying()
-
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;接口實踐排序&#34;&gt;接口實踐排序&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Hero struct {
-	Name string
-	Age  int
-}
-
-//聲明一個Hero結構體的切片類型
-type HeroSlice []Hero
-
-//實現接口
-func (hs HeroSlice) Len() int {
-	return len(hs)
-}
-
-func (hs HeroSlice) Less(i, j int) bool {
-	//return hs[i].Age &amp;lt; hs[j].Age //Less就是決定使用哪個字段來排序
-	return hs[i].Name &amp;lt; hs[j].Name //Less就是決定使用哪個字段來排序
-}
-
-func (hs HeroSlice) Swap(i, j int) {
-	hs[i], hs[j] = hs[j], hs[i]
-}
-
-func main() {
-	//定義一個數組跟切片
-	var intSlice = []int{5, 3, 1, 2, 4}
-	//來排序
-	sort.Ints(intSlice)
-	fmt.Println(intSlice)
-
-	//系統提供的方法
-
-	//創建切片內容
-	var heroes HeroSlice
-	for i := 0; i &amp;lt; 10; i++ {
-		hero := Hero{
-			Name: fmt.Sprintf(&amp;#34;英雄%d&amp;#34;, rand.Intn(100)),
-			Age:  rand.Intn(100),
-		}
-		//放進切片 隨機創建了十個hero放進heroes這個切片
-		heroes = append(heroes, hero)
-	}
-
-	//排序前
-	for _, v := range heroes {
-		fmt.Println(v)
-	}
-
-	//調用sort.Sort
-	sort.Sort(heroes)
-	//因為我的結構體能實現接口，就可以享受這些方便
-	fmt.Println(&amp;#34;---排序後---&amp;#34;)
-	for _, v := range heroes {
-		fmt.Println(v)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;類型斷言&#34;&gt;類型斷言&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func TypeJudge(items ...interface{}) {
-	for index, x := range items {
-		switch x.(type) {
-		case bool:
-			fmt.Printf(&amp;#34;第%v個參數是bool類型,值是%v\n&amp;#34;, index+1, x)
-		case int, int32, int64:
-			fmt.Printf(&amp;#34;第%v個參數是int類型,值是%v\n&amp;#34;, index+1, x)
-		case string:
-			fmt.Printf(&amp;#34;第%v個參數是string類型,值是%v\n&amp;#34;, index+1, x)
-		default:
-			fmt.Printf(&amp;#34;第%v個參數是不明類型,值是%v\n&amp;#34;, index+1, x)
-		}
-	}
-}
-
-func main() {
-	var n1 float64 = 2.3
-	var n2 int = 30
-	var name string = &amp;#34;tom&amp;#34;
-	n4 := 300
-
-	TypeJudge(n1, n2, name, n4)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-interface/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
         <title>數組</title>
         <link>https://yoziming.github.io/post/210810-agg-go-array1/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
@@ -10099,433 +10571,50 @@ func test(a *[3]int) {
     
     
         <item>
-        <title>文字檔案讀取寫入</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-io-reader/</link>
+        <title>錯誤處理</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-err/</link>
         <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://yoziming.github.io/post/210810-agg-go-io-reader/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-io-reader/ -&lt;h2 id=&#34;讀取&#34;&gt;讀取&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	//打開一個文件
-	file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;)
-	//有人叫file對象/指針/文件句柄
-	if err != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err)
-	}
-	//看看文件是啥
-	fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file)
-	//退出函數就關閉文件
-	defer file.Close()
-
-	//創建一個帶緩衝的reader，預設大小是4096
-	reader := bufio.NewReader(file)
-	for {
-		str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束
-		fmt.Print(str)
-		if err == io.EOF { //表示文件末尾
-			break
-		}
-	}
-	fmt.Println(&amp;#34;\n讀取結束&amp;#34;)
-
-	//用ioutil.ReadFile一次讀完
-	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
-	file2 := &amp;#34;c:/test.txt&amp;#34;
-	str2, err2 := ioutil.ReadFile(file2)
-	if err2 != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉
-
-	//創建一個新檔案，寫入5句話
-	filePath := &amp;#34;c:/abc.txt&amp;#34;
-	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err3)
-		return
-	}
-	defer file3.Close() //及時關閉文件
-	str3 := &amp;#34;hello\r\n&amp;#34;
-	writer3 := bufio.NewWriter(file3)
-	for i := 0; i &amp;lt; 5; i++ {
-		writer3.WriteString(str3)
-	}
-	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//覆蓋一個檔案，寫入3句話
-	filePath4 := &amp;#34;c:/abc2.txt&amp;#34;
-	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	defer file4.Close() //及時關閉文件
-	str4 := &amp;#34;覆蓋\r\n&amp;#34;
-	writer4 := bufio.NewWriter(file4)
-	for i := 0; i &amp;lt; 3; i++ {
-		writer4.WriteString(str4)
-	}
-	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//打開一個檔案abc，追加寫入3句話
-	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	defer file5.Close() //及時關閉文件
-	str5 := &amp;#34;追加\r\n&amp;#34;
-	writer5 := bufio.NewWriter(file5)
-	for i := 0; i &amp;lt; 3; i++ {
-		writer5.WriteString(str5)
-	}
-	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//打開一個檔案abc，讀取打印出來並追加寫入5句話
-	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	//先讀取
-	reader6 := bufio.NewReader(file6)
-	for {
-		str, err := reader6.ReadString(&amp;#39;\n&amp;#39;)
-		if err == io.EOF { //如果讀到末尾
-			break
-		}
-		fmt.Print(str)
-	}
-	defer file6.Close() //及時關閉文件
-	str6 := &amp;#34;追加2BBB\r\n&amp;#34;
-	writer6 := bufio.NewWriter(file6)
-	for i := 0; i &amp;lt; 5; i++ {
-		writer6.WriteString(str6)
-	}
-	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
-
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;寫入&#34;&gt;寫入&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
-func main() {
-	//打開一個文件
-	file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;)
-	//有人叫file對象/指針/文件句柄
-	if err != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err)
-	}
-	//看看文件是啥
-	fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file)
-	//退出函數就關閉文件
-	defer file.Close()
-
-	//創建一個帶緩衝的reader，預設大小是4096
-	reader := bufio.NewReader(file)
-	for {
-		str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束
-		fmt.Print(str)
-		if err == io.EOF { //表示文件末尾
-			break
-		}
-	}
-	fmt.Println(&amp;#34;\n讀取結束&amp;#34;)
-
-	//用ioutil.ReadFile一次讀完
-	//這個包已經封裝了open跟close了，只適用在檔案大小不大的情境
-	file2 := &amp;#34;c:/test.txt&amp;#34;
-	str2, err2 := ioutil.ReadFile(file2)
-	if err2 != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉
-
-	//創建一個新檔案，寫入5句話
-	filePath := &amp;#34;c:/abc.txt&amp;#34;
-	file3, err3 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err3)
-		return
-	}
-	defer file3.Close() //及時關閉文件
-	str3 := &amp;#34;hello\r\n&amp;#34;
-	writer3 := bufio.NewWriter(file3)
-	for i := 0; i &amp;lt; 5; i++ {
-		writer3.WriteString(str3)
-	}
-	writer3.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//覆蓋一個檔案，寫入3句話
-	filePath4 := &amp;#34;c:/abc2.txt&amp;#34;
-	file4, err4 := os.OpenFile(filePath4, os.O_WRONLY|os.O_TRUNC, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	defer file4.Close() //及時關閉文件
-	str4 := &amp;#34;覆蓋\r\n&amp;#34;
-	writer4 := bufio.NewWriter(file4)
-	for i := 0; i &amp;lt; 3; i++ {
-		writer4.WriteString(str4)
-	}
-	writer4.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//打開一個檔案abc，追加寫入3句話
-	file5, err4 := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	defer file5.Close() //及時關閉文件
-	str5 := &amp;#34;追加\r\n&amp;#34;
-	writer5 := bufio.NewWriter(file5)
-	for i := 0; i &amp;lt; 3; i++ {
-		writer5.WriteString(str5)
-	}
-	writer5.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//打開一個檔案abc，讀取打印出來並追加寫入5句話
-	file6, err4 := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
-	if err3 != nil {
-		fmt.Println(&amp;#34;open file err=&amp;#34;, err4)
-		return
-	}
-	//先讀取
-	reader6 := bufio.NewReader(file6)
-	for {
-		str, err := reader6.ReadString(&amp;#39;\n&amp;#39;)
-		if err == io.EOF { //如果讀到末尾
-			break
-		}
-		fmt.Print(str)
-	}
-	defer file6.Close() //及時關閉文件
-	str6 := &amp;#34;追加2BBB\r\n&amp;#34;
-	writer6 := bufio.NewWriter(file6)
-	for i := 0; i &amp;lt; 5; i++ {
-		writer6.WriteString(str6)
-	}
-	writer6.Flush() //因為本來是存在buf區要把它實際寫出來
-
-	//將c:/abc的內容導入到c:abc2
-
-	fileAPath := &amp;#34;c:/abc.txt&amp;#34;
-	fileBPath := &amp;#34;c:/abc2.txt&amp;#34;
-
-	data, err9 := ioutil.ReadFile(fileAPath)
-	if err9 != nil {
-		fmt.Println(&amp;#34;文件讀取錯誤&amp;#34;, err9)
-		return
-	}
-	err = ioutil.WriteFile(fileBPath, data, 0666)
-	if err != nil {
-		fmt.Println(&amp;#34;文件讀取錯誤&amp;#34;, err)
-		return
-	}
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-io-reader/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>文檔字符統計</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-txt/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-txt/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-txt/ -&lt;h1 id=&#34;文檔字符統計&#34;&gt;文檔字符統計&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//保存結果用
-type CharCount struct {
-	ChCount    int //英文字數
-	NumCount   int //
-	SpaceCount int
-	OtherCount int
-}
-
-func main() {
-	//思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體
-	fileName := &amp;#34;c:/abc.txt&amp;#34;
-	file, err := os.Open(fileName)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
-	//來個實例
-	var count CharCount
-	reader := bufio.NewReader(file)
-
-	//開始讀取
-	for {
-		str, err := reader.ReadString(&amp;#39;\n&amp;#39;)
-		//這存在BUG 當行不換行做結尾就統計不到
-		if err == io.EOF {
-			break
-		}
-		for _, v := range str {
-			switch {
-			case v &amp;gt;= &amp;#39;a&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;z&amp;#39;:
-				fallthrough
-			case v &amp;gt;= &amp;#39;A&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;Z&amp;#39;:
-				count.ChCount++
-			case v == &amp;#39; &amp;#39; || v == &amp;#39;\t&amp;#39;:
-				count.SpaceCount++
-			case v &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;9&amp;#39;:
-				count.NumCount++
-			default:
-				count.OtherCount++
-			}
-		}
-	}
-	fmt.Printf(&amp;#34;字符=%v 數字=%v 空格=%v 其他=%v&amp;#34;,
-		count.ChCount, count.NumCount, count.SpaceCount, count.OtherCount)
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-txt/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>日期時間</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-date-time/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-date-time/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-date-time/ -&lt;h1 id=&#34;日期時間&#34;&gt;日期時間&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	//1.獲取當前本地時間
-	now := time.Now()
-	fmt.Printf(&amp;#34;now=%v,type=%T&amp;#34;, now, now) //返回的類型是struct
-	//2.通過now獲取各種詳細
-	fmt.Printf(&amp;#34;年=%v,type=%T\n&amp;#34;, now.Year(), now.Year())
-	fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, now.Month(), now.Month())
-	fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, int(now.Month()), int(now.Month()))
-	fmt.Printf(&amp;#34;日=%v,type=%T\n&amp;#34;, now.Day(), now.Day())
-	fmt.Printf(&amp;#34;時=%v,type=%T\n&amp;#34;, now.Hour(), now.Hour())
-	fmt.Printf(&amp;#34;分=%v,type=%T\n&amp;#34;, now.Minute(), now.Minute())
-	fmt.Printf(&amp;#34;秒=%v,type=%T\n&amp;#34;, now.Second(), now.Second())
-	fmt.Printf(&amp;#34;星期=%v,type=%T\n&amp;#34;, now.Weekday(), now.Weekday())
-	fmt.Printf(&amp;#34;星期=%v\n&amp;#34;, int(now.Weekday()))
-	//3.格式化日期時間
-	dateStr := fmt.Sprintf(&amp;#34;年月日時分=%d-%d-%d %d:%d\n&amp;#34;, now.Year(), now.Month(),
-		now.Day(), now.Minute(), now.Second())
-	fmt.Println(dateStr)
-	//4.蛋疼的指定格式
-	fmt.Println(now.Format(&amp;#34;2006-01-02 15:04:05&amp;#34;))
-	fmt.Println(now.Format(&amp;#34;2006-01-02&amp;#34;))
-	fmt.Println(now.Format(&amp;#34;06&amp;#34;))
-	fmt.Println(now.Format(&amp;#34;01&amp;#34;))
-	fmt.Println(now.Format(&amp;#34;03&amp;#34;))
-	fmt.Println(now.Format(&amp;#34;01-02-06 03 04 05&amp;#34;))
-	//123456=月日時分秒年
-	//5.時間常量&amp;amp;休眠
-	//每隔固定時間打印數字，打到100退出
-	for i := 0; i &amp;lt;= 100; i++ {
-		fmt.Println(i)
-		time.Sleep(time.Millisecond)
-	}
-	//6.獲取時間戳unix unixNano
-	fmt.Println(now.Unix())
-	fmt.Println(now.UnixNano())
-
-	//跑之前的時間
-	start := now.Unix()
-	test()
-	end := now.Unix()
-	fmt.Printf(&amp;#34;耗時%v&amp;#34;, end-start)
-}
-
-//7.統計函數執行時間
-func test() {
-	str := &amp;#34;&amp;#34;
-	for i := 0; i &amp;lt; 100000; i++ {
-		str = str + &amp;#34;hello&amp;#34; + strconv.Itoa(i)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-date-time/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>結構體</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-struct/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-struct/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-struct/ -&lt;h1 id=&#34;結構體&#34;&gt;結構體&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Cat struct {
-	Name  string
-	Age   int
-	Color string
-	// S1    []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用)
-}
-
-//結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間
-
-func main() {
-	//創建Cat的變量
-	var cat1 Cat
-	cat1.Name = &amp;#34;小花&amp;#34;
-	cat1.Age = 18
-	cat1.Color = &amp;#34;花&amp;#34;
-	fmt.Println(&amp;#34;cat1=&amp;#34;, cat1)
-	// cat1.S1 = make([]int, 10)
-	// cat1.S1[0] = 100
-	// fmt.Println(&amp;#34;cat1=&amp;#34;, cat1)
-
-	//推薦方式
-	cat2 := Cat{&amp;#34;小黑&amp;#34;, 5, &amp;#34;black&amp;#34;}
-	fmt.Println(cat2)
-
-	//方法3
-	//var c *C=new(C)
-	var cat3 *Cat = new(Cat)
-	//因為cat3是一個指針
-	(*cat3).Name = &amp;#34;小白&amp;#34;
-	//語法糖 cat3.Age也可以 ，不建議
-	cat3.Age = 6
-	fmt.Println(*cat3)
-
-	//方法4
-	//var c *C=&amp;amp;C{}
-	//因為c是一個指針 本來應該要用*...但是不用也行 草
-	var cat4 *Cat = &amp;amp;Cat{&amp;#34;阿皇&amp;#34;, 0, &amp;#34;Yellow&amp;#34;}
-	cat4.Name = &amp;#34;阿煌&amp;#34;
-	(*cat4).Age = 1
-	fmt.Println(*cat4)
-
-	type Person struct {
-		Name string `json:&amp;#34;name&amp;#34;`
-		Age  int    `json:&amp;#34;age&amp;#34;`
-	}
-
-	p1 := Person{&amp;#34;aaa&amp;#34;, 10}
-	fmt.Println(p1)
-	var p2 *Person = &amp;amp;p1
-	// fmt.Println(*p2.Age) //這樣寫會報錯。因為.的優先級比*高
-	fmt.Println(p2.Age) //語法糖
-
-	//用type重定義(類似於取別名)但是他會認為是2種類型
-	type Per Person
-	// var p3 Person = Person{&amp;#34;tommy&amp;#34;, 5}
-	// var p4 Per
-	// //p3=p4 //這樣會報錯
-	// p4 = Per(p3) //這樣強轉
-	// fmt.Println(p3, p4)
-	fmt.Println(&amp;#34;--------------&amp;#34;)
-	//struct的每個字段上可以寫一個tag，該tag可以通過反射機制獲取，常用於序列化
-	pj := Per{&amp;#34;李四&amp;#34;, 44}
-	jsonStr, err := json.Marshal(pj) //返回的是byte
-	if err != nil {
-		fmt.Println(&amp;#34;錯誤&amp;#34;)
-	}
-	fmt.Println(string(jsonStr)) //返回的是byte所以加一個string
-
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-struct/ - Yoziming</description>
+        <guid>https://yoziming.github.io/post/210810-agg-go-err/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-err/ -&lt;h1 id=&#34;錯誤處理&#34;&gt;錯誤處理&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;//捕捉異常
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;defer&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//內置函數recover就是找是否異常
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err := &lt;span style=&#34;color:#658b00&#34;&gt;recover&lt;/span&gt;(); err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; { &lt;span style=&#34;color:#228b22&#34;&gt;//err不為空=有錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;			fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;錯誤&amp;#34;&lt;/span&gt;, err)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n1 := &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n2 := &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	res := n1 / n2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(res)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//讀取文件名稱，錯誤就報錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(name &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;string&lt;/span&gt;) (err &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;error&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; name == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.ini&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//返回自訂錯誤
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; errors.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;文件錯誤&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	err := &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.in564&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#658b00&#34;&gt;panic&lt;/span&gt;(err)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;02繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;01繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;03繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://yoziming.github.io/post/210810-agg-go-err/ - Yoziming</description>
         </item>
     
     
@@ -10599,95 +10688,6 @@ type D struct {
 	a Student //有名字的結構體
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-inherit/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>錯誤處理</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-err/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-err/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-err/ -&lt;h1 id=&#34;錯誤處理&#34;&gt;錯誤處理&lt;/h1&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;//捕捉異常
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;defer&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//內置函數recover就是找是否異常
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err := &lt;span style=&#34;color:#658b00&#34;&gt;recover&lt;/span&gt;(); err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; { &lt;span style=&#34;color:#228b22&#34;&gt;//err不為空=有錯
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;			fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;錯誤&amp;#34;&lt;/span&gt;, err)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n1 := &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n2 := &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	res := n1 / n2
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(res)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//讀取文件名稱，錯誤就報錯
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(name &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;string&lt;/span&gt;) (err &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;error&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; name == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.ini&amp;#34;&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//返回自訂錯誤
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; errors.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;文件錯誤&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	err := &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.in564&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#658b00&#34;&gt;panic&lt;/span&gt;(err)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;02繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;01繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;03繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://yoziming.github.io/post/210810-agg-go-err/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>順序查找</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-sequential-search/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-sequential-search/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-sequential-search/ -&lt;h1 id=&#34;順序查找&#34;&gt;順序查找&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	names := [4]string{&amp;#34;A&amp;#34;, &amp;#34;B&amp;#34;, &amp;#34;C&amp;#34;, &amp;#34;D&amp;#34;}
-	var input = &amp;#34;&amp;#34;
-	fmt.Println(&amp;#34;輸入...&amp;#34;)
-	fmt.Scanln(&amp;amp;input)
-	//順序查找
-	// for i := 0; i &amp;lt; len(names); i++ {
-	// 	if input == names[i] {
-	// 		fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, i)
-	// 		break
-	// 	} else if i == len(names)-1 {
-	// 		fmt.Println(&amp;#34;比對失敗...&amp;#34;)
-	// 	}
-
-	//順序查找2
-	index := -1
-	for i := 0; i &amp;lt; len(names); i++ {
-		if input == names[i] {
-			index = i
-			break
-		}
-	}
-	if index != -1 {
-		fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, index)
-	} else {
-		fmt.Println(&amp;#34;比對失敗...&amp;#34;)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-sequential-search/ - Yoziming</description>
         </item>
     
     

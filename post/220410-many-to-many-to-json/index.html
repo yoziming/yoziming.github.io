@@ -292,6 +292,26 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 							
 								</ul>
 							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e4%b8%89" onclick="onNavClick(`#方法三-nav`)" id="方法三-nav">
+									方法三
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
 								</ul>
 							
 						
@@ -502,6 +522,26 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 							
 								</ul>
 							
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b9%e6%b3%95%e4%b8%89" onclick="onNavClick(`#方法三-nav`)" id="方法三-nav">
+									方法三
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
 								</ul>
 							
 						
@@ -697,9 +737,34 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    v.<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> v;
 </span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="方法三">方法三</h2>
+<ul>
+<li>流式操作，用<code>Collectors.mapping</code></li>
+<li>最優雅，且如果資料量龐大時可以用parallelStream來並行處理(但是小心順序與線程安全問題)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Map&lt;Integer, Set&lt;Integer&gt;&gt; userMap =
+</span></span><span style="display:flex;"><span>        list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(
+</span></span><span style="display:flex;"><span>                Collectors.<span style="color:#658b00">groupingBy</span>(
+</span></span><span style="display:flex;"><span>                        User::getUserId,
+</span></span><span style="display:flex;"><span>                        Collectors.<span style="color:#658b00">mapping</span>(
+</span></span><span style="display:flex;"><span>                                User::getGroup,
+</span></span><span style="display:flex;"><span>                                Collectors.<span style="color:#658b00">toSet</span>()
+</span></span><span style="display:flex;"><span>                        )
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>List&lt;Map&lt;String, Object&gt;&gt; result =
+</span></span><span style="display:flex;"><span>        userMap.<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">map</span>(entry -&gt; {
+</span></span><span style="display:flex;"><span>                    Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;(2);
+</span></span><span style="display:flex;"><span>                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, entry.<span style="color:#658b00">getKey</span>());
+</span></span><span style="display:flex;"><span>                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, entry.<span style="color:#658b00">getValue</span>());
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> map;
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
 </span></span></code></pre></div><h1 id="小結">小結</h1>
 <ul>
-<li>方法二更好一點，用Map、Set本身可以防止重複的key，並且不需要額外造一個<code>Vo</code>更省資源</li>
+<li>方法二、三更好一點，用Map、Set本身可以防止重複的key，並且不需要額外造一個<code>Vo</code>更省資源</li>
 <li>另外我發現<code>Hutool</code>的<code>JSONArray</code>就很奇怪，如果純用<code>LinkedHashMap</code>作為<code>JsonNode</code>，那我put的順序最後輸出時又會亂掉，但是用<code>JSONObject(new LinkedHashMap&lt;String, Object&gt;());</code>他就能維持住put的順序</li>
 <li>後來覺得<code>jackson-databind</code>可能還是好用一點，直接用<code>LinkedHashMap</code>構成他就會照順序</li>
 </ul>

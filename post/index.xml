@@ -247,18 +247,6 @@
     </item>
     
     <item>
-      <title>提交訂單: 冪等性、分散式交易的一致性</title>
-      <link>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</link>
-      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</guid>
-      <description>冪等性  idempotent
-  多次提交，結果不變，常見有這些辦法:  Token  令牌或驗證碼 伺服器存儲了一個令牌，然後頁面要帶上這個令牌比較，一樣才可以提交  提交後刪除掉token，再次點擊提交就會失敗 但是F5刷新的話就不一樣了，會有新的token產生   注意: 獲取redis令牌 + 令牌匹配 + redis刪除，全程要保證原子性，使用lua腳本  鎖 數據庫悲觀鎖  Pessimistic Lock
-  就是排他鎖，所謂悲觀在於覺得總有刁民想亂搞我的data，所以自己拿到鎖就把data藏到大衣裡，完全不給其他人用，連看都不給看 當一個SQL command獲得悲觀鎖後，其他的SQL command 無法讀取無法修改，直到悲觀鎖被釋放後才能執行，例如:  select* from xxx where id = 1 for update;  悲觀鎖使用時一般伴隨事務一起使用，數據鎖定時間可能會很長，需要根據實際情況選用 另外要注意的是，id字段一定是主鍵或者唯一索引，不然可能造成鎖表的結果，處理起來會非常麻煩 資料庫中的行鎖，表鎖，讀鎖，寫鎖，以及syncronized實現的鎖均為悲觀鎖  數據庫樂觀鎖  Optimistic Lock
-  允許多個 SQL command 來操作 table，但是要帶上版本號 當 SQL command 想要變更欄位 data 時會先把之前取出 version 跟 table 現在的 version 做對比，如果相同就代表這段期間沒人修改可以執行；如果不同就會禁止這次的操作 這種方法適合在更新的場景中，例如:  update t_goods set count = count-1,version =version + 1 where good_id=2 and version = 1  樂觀鎖主要使用於處理讀多寫少的場景  分佈式鎖  不管多少服務，限制同時都只有一人能操作 參考之前的筆記: https://yoziming.</description>
-    </item>
-    
-    <item>
       <title>生活雜記</title>
       <link>https://yoziming.github.io/post/220206-eu-name/</link>
       <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
@@ -271,22 +259,24 @@
     </item>
     
     <item>
+      <title>提交訂單: 冪等性、分散式交易的一致性</title>
+      <link>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</link>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220206-gulimall-20-idempotent/</guid>
+      <description>冪等性  idempotent
+  多次提交，結果不變，常見有這些辦法:  Token  令牌或驗證碼 伺服器存儲了一個令牌，然後頁面要帶上這個令牌比較，一樣才可以提交  提交後刪除掉token，再次點擊提交就會失敗 但是F5刷新的話就不一樣了，會有新的token產生   注意: 獲取redis令牌 + 令牌匹配 + redis刪除，全程要保證原子性，使用lua腳本  鎖 數據庫悲觀鎖  Pessimistic Lock
+  就是排他鎖，所謂悲觀在於覺得總有刁民想亂搞我的data，所以自己拿到鎖就把data藏到大衣裡，完全不給其他人用，連看都不給看 當一個SQL command獲得悲觀鎖後，其他的SQL command 無法讀取無法修改，直到悲觀鎖被釋放後才能執行，例如:  select* from xxx where id = 1 for update;  悲觀鎖使用時一般伴隨事務一起使用，數據鎖定時間可能會很長，需要根據實際情況選用 另外要注意的是，id字段一定是主鍵或者唯一索引，不然可能造成鎖表的結果，處理起來會非常麻煩 資料庫中的行鎖，表鎖，讀鎖，寫鎖，以及syncronized實現的鎖均為悲觀鎖  數據庫樂觀鎖  Optimistic Lock
+  允許多個 SQL command 來操作 table，但是要帶上版本號 當 SQL command 想要變更欄位 data 時會先把之前取出 version 跟 table 現在的 version 做對比，如果相同就代表這段期間沒人修改可以執行；如果不同就會禁止這次的操作 這種方法適合在更新的場景中，例如:  update t_goods set count = count-1,version =version + 1 where good_id=2 and version = 1  樂觀鎖主要使用於處理讀多寫少的場景  分佈式鎖  不管多少服務，限制同時都只有一人能操作 參考之前的筆記: https://yoziming.</description>
+    </item>
+    
+    <item>
       <title>LeetCode Easy: 35-58</title>
       <link>https://yoziming.github.io/post/220205-leetcode-easy-35/</link>
       <pubDate>Sat, 05 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220205-leetcode-easy-35/</guid>
       <description>\35. Search Insert Position  二分查找  核心思路是&amp;quot;下一輪的搜索區間&amp;quot; 然後逐步縮小區間    public int searchInsert(int[] nums, int target) {  // 右邊界最大的數有可能就是答案(最衰的情況下)，他的index就是長度  int len = nums.length, left = 0, right = len;  // 開始迫近  while (left &amp;lt; right) {  // 每輪都重新定義中間數，注意小數點會被捨去  int mid = left + (right - left) / 2;  // 如果目標更大  if (nums[mid] &amp;lt; target) {  // 成為新的左標，下一輪搜尋[mid + 1...right]  left = mid + 1; // 因為小數點會被捨去，所以這邊+1  } else {  // 成為新的右標，下一輪搜尋[left.</description>
-    </item>
-    
-    <item>
-      <title>整理常用的git操作</title>
-      <link>https://yoziming.github.io/post/220205-git-common-use/</link>
-      <pubDate>Sat, 05 Feb 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/220205-git-common-use/</guid>
-      <description>整理常用的git操作  這東西沒在用的時候硬學也記不住，用到的時候又總是順序不太對，這樣那樣的報錯，乾脆寫一篇筆記統一整理一下 首先git是以&amp;quot;資料夾&amp;quot;為單位進行版本控制(了解後感覺理所當然，但我一開始沒弄明白這點只會複製貼上教學的指令，就一直懵懵懂懂的) 我們幹的事是把&amp;quot;本地這個資料夾&amp;quot;連結到github上的遠端倉庫，針對某個分支進行某些操作  常用的git操作  所謂&amp;lt;倉庫網址&amp;gt;就是在github網站某倉庫，點右上角綠色的code顯示的那串，例如  https://github.com/yoziming/javamall.git
- 下載遠端倉庫到本地，會得到一個資料夾  git clone https://github.com/yoziming/javamall.git  本地連到遠端倉庫  用於本地已經建了一個資料夾的狀況 origin是用來操作的別名，因為如果是載下來的倉庫預設就叫origin    git remote add origin &amp;lt;倉庫網址&amp;gt;  查看當前資料夾控制的遠端  git remote -v  切換分支(需要該分支確實存在)  git checkout &amp;lt;分支&amp;gt;  建立新的 branch 並切到新的 branch  git checkout -b &amp;lt;新分支名稱&amp;gt;  添加全部檔案  git add .  加上註解  使用git commit -e添加多行    git commit -m &amp;#34;一行註解&amp;#34;  推送到遠端  origin是別名    git push -u origin &amp;lt;分支名&amp;gt;  修改連線的倉庫網址  git remote set-url origin https://github.</description>
     </item>
     
     <item>
@@ -304,6 +294,16 @@
 訂單頁：
 收銀頁：
 整理各種POJO與規範  feign包放在common模組下，用TO(Transfer Object)來跨模組接收、傳遞物件 VO(View Object) 是專門返回給前端、給人看的東西 Entity實體，也稱為PO(Persistant Object)，屬性基本和資料表欄位一一對應。一個實體即是真實存在的一筆資料，必須要有唯一標識(例如id)以區分其它實體 DAO(Data Access Object)封裝了PO在資料庫的CRUD等操作  實作 登入攔截  點結算時，沒登入就讓用戶先去登入</description>
+    </item>
+    
+    <item>
+      <title>整理常用的git操作</title>
+      <link>https://yoziming.github.io/post/220205-git-common-use/</link>
+      <pubDate>Sat, 05 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220205-git-common-use/</guid>
+      <description>整理常用的git操作  這東西沒在用的時候硬學也記不住，用到的時候又總是順序不太對，這樣那樣的報錯，乾脆寫一篇筆記統一整理一下 首先git是以&amp;quot;資料夾&amp;quot;為單位進行版本控制(了解後感覺理所當然，但我一開始沒弄明白這點只會複製貼上教學的指令，就一直懵懵懂懂的) 我們幹的事是把&amp;quot;本地這個資料夾&amp;quot;連結到github上的遠端倉庫，針對某個分支進行某些操作  常用的git操作  所謂&amp;lt;倉庫網址&amp;gt;就是在github網站某倉庫，點右上角綠色的code顯示的那串，例如  https://github.com/yoziming/javamall.git
+ 下載遠端倉庫到本地，會得到一個資料夾  git clone https://github.com/yoziming/javamall.git  本地連到遠端倉庫  用於本地已經建了一個資料夾的狀況 origin是用來操作的別名，因為如果是載下來的倉庫預設就叫origin    git remote add origin &amp;lt;倉庫網址&amp;gt;  查看當前資料夾控制的遠端  git remote -v  切換分支(需要該分支確實存在)  git checkout &amp;lt;分支&amp;gt;  建立新的 branch 並切到新的 branch  git checkout -b &amp;lt;新分支名稱&amp;gt;  添加全部檔案  git add .  加上註解  使用git commit -e添加多行    git commit -m &amp;#34;一行註解&amp;#34;  推送到遠端  origin是別名    git push -u origin &amp;lt;分支名&amp;gt;  修改連線的倉庫網址  git remote set-url origin https://github.</description>
     </item>
     
     <item>
@@ -1925,6 +1925,24 @@ choco install hugo -confirm choco install hugo-extended -confirm   hugo new site
     </item>
     
     <item>
+      <title>約瑟夫問題</title>
+      <link>https://yoziming.github.io/post/210815-agg-go-al-josephus/</link>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210815-agg-go-al-josephus/</guid>
+      <description>約瑟夫問題 type Boy struct { No int Next *Boy //指向下一個小孩的指針 } func addBoy(num int) *Boy { //num表示小孩的個數，*Boy返回第一個小孩的指針 first := &amp;amp;Boy{} temp := &amp;amp;Boy{} if num &amp;lt; 1 { fmt.Println(&amp;#34;num值錯誤&amp;#34;) return first } for i := 1; i &amp;lt;= num; i++ { boy := &amp;amp;Boy{ No: i, } if i == 1 { first = boy //不變 temp = boy temp.Next = first } else { temp.Next = boy temp = boy temp.</description>
+    </item>
+    
+    <item>
+      <title>迷宮遞迴</title>
+      <link>https://yoziming.github.io/post/210815-agg-go-al-recursive/</link>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210815-agg-go-al-recursive/</guid>
+      <description>迷宮遞迴 func SetWay(myMap *[8][7]int, a int, b int) bool { //a,b 表示對地圖的那個點測試 //找到出口 if myMap[6][5] == 2 { return true } else { //繼續找 if myMap[a][b] == 0 { //可探測的點 myMap[a][b] = 2 //踩上去了，再探上下左右，但是我知道要往下往右探 if SetWay(myMap, a+1, b) { //下 return true } else if SetWay(myMap, a, b+1) { //右 return true } else if SetWay(myMap, a-1, b) { //上 return true } else if SetWay(myMap, a, b-1) { //左 return true } else { //死路 myMap[a][b] = 3 return false } } else { //不可探測的點 return false } } } func main() { //定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路 var myMap [8][7]int //四周設置圍牆 for i := 0; i &amp;lt; 7; i++ { myMap[0][i] = 1 myMap[7][i] = 1 } for i := 0; i &amp;lt; 8; i++ { myMap[i][0] = 1 myMap[i][6] = 1 } myMap[3][1] = 1 myMap[3][2] = 1 //看樣子 for i := 0; i &amp;lt; 8; i++ { for j := 0; j &amp;lt; 7; j++ { fmt.</description>
+    </item>
+    
+    <item>
       <title>單向鏈表</title>
       <link>https://yoziming.github.io/post/210815-agg-go-al-list/</link>
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
@@ -1943,6 +1961,15 @@ choco install hugo -confirm choco install hugo-extended -confirm   hugo new site
     </item>
     
     <item>
+      <title>稀疏數組</title>
+      <link>https://yoziming.github.io/post/210815-agg-go-al-array3/</link>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210815-agg-go-al-array3/</guid>
+      <description>稀疏數組 type ValNode struct { row int //橫的 col int //直的 val int } func main() { //創建數組範例 var chessMap [11][11]int chessMap[1][2] = 1 chessMap[2][3] = 2 //輸出看樣子 for _, v := range chessMap { for _, v2 := range v { fmt.Printf(&amp;#34;%d\t&amp;#34;, v2) } fmt.Println() } //轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片 var sparseArr []ValNode //紀錄規模跟預設值 valNode0 := ValNode{ row: 11, col: 11, val: 0, } sparseArr = append(sparseArr, valNode0) for i, v := range chessMap { for j, k := range v { if k !</description>
+    </item>
+    
+    <item>
       <title>模擬棧&amp;四則運算</title>
       <link>https://yoziming.github.io/post/210815-agg-go-al-stack/</link>
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
@@ -1958,33 +1985,6 @@ choco install hugo -confirm choco install hugo-extended -confirm   hugo new site
       
       <guid>https://yoziming.github.io/post/210815-agg-go-al-circle-list/</guid>
       <description>環形單向鏈表 type CatNode struct { no int name string next *CatNode } func Insert(head *CatNode, newCatNode *CatNode) { //判斷是否第一隻貓 if head.next == nil { head.no = newCatNode.no head.name = newCatNode.name head.next = head //構成環形 fmt.Println(*newCatNode, &amp;#34;已初始化並加入環形鏈表&amp;#34;) return } //定義一個變量找到環形最後一個 temp := head for { if temp.next == head { break } temp = temp.next } temp.next = newCatNode fmt.Println(*newCatNode, &amp;#34;已加入環形鏈表&amp;#34;) newCatNode.next = head } func Del(head *CatNode, id int) *CatNode { temp := head helper := head if temp.</description>
-    </item>
-    
-    <item>
-      <title>稀疏數組</title>
-      <link>https://yoziming.github.io/post/210815-agg-go-al-array3/</link>
-      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210815-agg-go-al-array3/</guid>
-      <description>稀疏數組 type ValNode struct { row int //橫的 col int //直的 val int } func main() { //創建數組範例 var chessMap [11][11]int chessMap[1][2] = 1 chessMap[2][3] = 2 //輸出看樣子 for _, v := range chessMap { for _, v2 := range v { fmt.Printf(&amp;#34;%d\t&amp;#34;, v2) } fmt.Println() } //轉成稀疏數組，思路:遍歷他，創造一個結構體，發現有值就放進對應的切片 var sparseArr []ValNode //紀錄規模跟預設值 valNode0 := ValNode{ row: 11, col: 11, val: 0, } sparseArr = append(sparseArr, valNode0) for i, v := range chessMap { for j, k := range v { if k !</description>
-    </item>
-    
-    <item>
-      <title>約瑟夫問題</title>
-      <link>https://yoziming.github.io/post/210815-agg-go-al-josephus/</link>
-      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210815-agg-go-al-josephus/</guid>
-      <description>約瑟夫問題 type Boy struct { No int Next *Boy //指向下一個小孩的指針 } func addBoy(num int) *Boy { //num表示小孩的個數，*Boy返回第一個小孩的指針 first := &amp;amp;Boy{} temp := &amp;amp;Boy{} if num &amp;lt; 1 { fmt.Println(&amp;#34;num值錯誤&amp;#34;) return first } for i := 1; i &amp;lt;= num; i++ { boy := &amp;amp;Boy{ No: i, } if i == 1 { first = boy //不變 temp = boy temp.Next = first } else { temp.Next = boy temp = boy temp.</description>
-    </item>
-    
-    <item>
-      <title>迷宮遞迴</title>
-      <link>https://yoziming.github.io/post/210815-agg-go-al-recursive/</link>
-      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210815-agg-go-al-recursive/</guid>
-      <description>迷宮遞迴 func SetWay(myMap *[8][7]int, a int, b int) bool { //a,b 表示對地圖的那個點測試 //找到出口 if myMap[6][5] == 2 { return true } else { //繼續找 if myMap[a][b] == 0 { //可探測的點 myMap[a][b] = 2 //踩上去了，再探上下左右，但是我知道要往下往右探 if SetWay(myMap, a+1, b) { //下 return true } else if SetWay(myMap, a, b+1) { //右 return true } else if SetWay(myMap, a-1, b) { //上 return true } else if SetWay(myMap, a, b-1) { //左 return true } else { //死路 myMap[a][b] = 3 return false } } else { //不可探測的點 return false } } } func main() { //定義地圖 1=牆壁 0=沒走過的點 2=通路 3=走過的死路 var myMap [8][7]int //四周設置圍牆 for i := 0; i &amp;lt; 7; i++ { myMap[0][i] = 1 myMap[7][i] = 1 } for i := 0; i &amp;lt; 8; i++ { myMap[i][0] = 1 myMap[i][6] = 1 } myMap[3][1] = 1 myMap[3][2] = 1 //看樣子 for i := 0; i &amp;lt; 8; i++ { for j := 0; j &amp;lt; 7; j++ { fmt.</description>
     </item>
     
     <item>
@@ -2152,12 +2152,57 @@ List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭
     </item>
     
     <item>
-      <title>冒泡排序</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</link>
+      <title>工廠模式</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-factory/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</guid>
-      <description>冒泡排序 var arr1 = [...]int{5, 9, 6, 8, 7, 3, 4, 2, 1, 6} func main() { s1 := arr1[:] bubbleSort(s1) fmt.Println(arr1) } func bubbleSort(x []int) { for j := 1; j &amp;lt; len(x); j++ { for i := 0; i &amp;lt; len(x)-1; i++ { if x[i] &amp;gt; x[i+1] { x[i], x[i+1] = x[i+1], x[i] } } } } </description>
+      <guid>https://yoziming.github.io/post/210810-agg-go-factory/</guid>
+      <description>//工廠模式 // 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等 // 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意 // 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品 import ( &amp;#34;fmt&amp;#34; ) type Student struct { Name string Age int Score float64 } func (s *Student) Say() string { infoStr := fmt.Sprintf(&amp;#34;信息 name=[%v] age=[%v] score=[%v]&amp;#34;, s.Name, s.Age, s.Score) return infoStr } func main() { var s1 = Student{ Name: &amp;#34;tom&amp;#34;, Score: 98, Age: 18, //不依賴順序 } res := s1.Say() fmt.Println(res) //其他創建結構變量同時指定值的方法: stu2 := Student{&amp;#34;Jack&amp;#34;, 20, 100} //項目順序都要有對應 fmt.Println(stu2) //返回結構的指針 var stu3 = &amp;amp;Student{&amp;#34;Mary&amp;#34;, 28, 5} fmt.</description>
+    </item>
+    
+    <item>
+      <title>切片</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-slice/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-slice/</guid>
+      <description>func main() { //切片的類型是引用(傳遞的時候也是引用地址) //切片長度可變(不像數組) var arr1 = [5]int{1, 2, 3, 4, 5} s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右) //var slice=arr[0:end]簡寫[:end] //[start:len(arr)]=[start:] //[0:len(arr)]=[:] fmt.Println(&amp;#34;s1內容是&amp;#34;, s1) fmt.Println(&amp;#34;s1長度是&amp;#34;, len(s1)) fmt.Println(&amp;#34;s1容量是&amp;#34;, cap(s1)) fmt.Printf(&amp;#34;s1第一個地址是%p\n&amp;#34;, &amp;amp;s1[0]) fmt.Printf(&amp;#34;arr1[1]地址是%p\n&amp;#34;, &amp;amp;arr1[1]) s1[0] = 33 fmt.Println(&amp;#34;arr1內容是&amp;#34;, arr1) //var 切片名[]type=make([]type,len,cap) var s2 []float64 = make([]float64, 5, 10) fmt.Println(s2) //var 變量=make(類型) var s22 = make([]float64, 5, 10) fmt.Println(s22) var s3 []int = []int{1, 2, 3, 4, 5} fmt.Println(s3) //用append動態追加 s3 = append(s3, 6, 7, 8, 9) fmt.</description>
+    </item>
+    
+    <item>
+      <title>文字檔案讀取寫入</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-io-reader/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-io-reader/</guid>
+      <description>讀取 func main() { //打開一個文件 file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;) //有人叫file對象/指針/文件句柄 if err != nil { fmt.Println(&amp;#34;open file err=&amp;#34;, err) } //看看文件是啥 fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file) //退出函數就關閉文件 defer file.Close() //創建一個帶緩衝的reader，預設大小是4096 reader := bufio.NewReader(file) for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束 fmt.Print(str) if err == io.EOF { //表示文件末尾 break } } fmt.Println(&amp;#34;\n讀取結束&amp;#34;) //用ioutil.ReadFile一次讀完 //這個包已經封裝了open跟close了，只適用在檔案大小不大的情境 file2 := &amp;#34;c:/test.txt&amp;#34; str2, err2 := ioutil.ReadFile(file2) if err2 != nil { fmt.Println(err) } fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉 //創建一個新檔案，寫入5句話 filePath := &amp;#34;c:/abc.</description>
+    </item>
+    
+    <item>
+      <title>文檔字符統計</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-txt/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-txt/</guid>
+      <description>文檔字符統計 //保存結果用 type CharCount struct { ChCount int //英文字數 NumCount int // SpaceCount int OtherCount int } func main() { //思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體 fileName := &amp;#34;c:/abc.txt&amp;#34; file, err := os.Open(fileName) if err != nil { fmt.Println(err) return } defer file.Close() //來個實例 var count CharCount reader := bufio.NewReader(file) //開始讀取 for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //這存在BUG 當行不換行做結尾就統計不到 if err == io.EOF { break } for _, v := range str { switch { case v &amp;gt;= &amp;#39;a&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;z&amp;#39;: fallthrough case v &amp;gt;= &amp;#39;A&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;Z&amp;#39;: count.</description>
+    </item>
+    
+    <item>
+      <title>日期時間</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-date-time/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-date-time/</guid>
+      <description>日期時間 func main() { //1.獲取當前本地時間 now := time.Now() fmt.Printf(&amp;#34;now=%v,type=%T&amp;#34;, now, now) //返回的類型是struct //2.通過now獲取各種詳細 fmt.Printf(&amp;#34;年=%v,type=%T\n&amp;#34;, now.Year(), now.Year()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, now.Month(), now.Month()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, int(now.Month()), int(now.Month())) fmt.Printf(&amp;#34;日=%v,type=%T\n&amp;#34;, now.Day(), now.Day()) fmt.Printf(&amp;#34;時=%v,type=%T\n&amp;#34;, now.Hour(), now.Hour()) fmt.Printf(&amp;#34;分=%v,type=%T\n&amp;#34;, now.Minute(), now.Minute()) fmt.Printf(&amp;#34;秒=%v,type=%T\n&amp;#34;, now.Second(), now.Second()) fmt.Printf(&amp;#34;星期=%v,type=%T\n&amp;#34;, now.Weekday(), now.Weekday()) fmt.Printf(&amp;#34;星期=%v\n&amp;#34;, int(now.Weekday())) //3.格式化日期時間 dateStr := fmt.Sprintf(&amp;#34;年月日時分=%d-%d-%d %d:%d\n&amp;#34;, now.Year(), now.Month(), now.Day(), now.Minute(), now.Second()) fmt.Println(dateStr) //4.蛋疼的指定格式 fmt.Println(now.Format(&amp;#34;2006-01-02 15:04:05&amp;#34;)) fmt.Println(now.Format(&amp;#34;2006-01-02&amp;#34;)) fmt.Println(now.Format(&amp;#34;06&amp;#34;)) fmt.Println(now.Format(&amp;#34;01&amp;#34;)) fmt.Println(now.Format(&amp;#34;03&amp;#34;)) fmt.Println(now.Format(&amp;#34;01-02-06 03 04 05&amp;#34;)) //123456=月日時分秒年 //5.時間常量&amp;amp;休眠 //每隔固定時間打印數字，打到100退出 for i := 0; i &amp;lt;= 100; i++ { fmt.</description>
+    </item>
+    
+    <item>
+      <title>字串轉換常用函數</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-string-conver/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-string-conver/</guid>
+      <description>字串轉換常用函數  var str string = &amp;#34;abc123中文&amp;#34; func main() { fmt.Println(&amp;#34;長度=&amp;#34;, len(str)) r := []rune(str) for i := 0; i &amp;lt; len(r); i++ { fmt.Printf(&amp;#34;遍歷=%q\n&amp;#34;, r[i]) } //轉成整數 Atoi n, err := strconv.Atoi(&amp;#34;5421&amp;#34;) if err != nil { fmt.Println(&amp;#34;錯誤,err&amp;#34;) } else { fmt.Println(&amp;#34;轉換成&amp;#34;, n) //整數轉字串 str2 := strconv.Itoa(654231) fmt.Printf(&amp;#34;類型是%T\n&amp;#34;, str2) //轉byte var bytes = []byte(&amp;#34;hello&amp;#34;) fmt.Printf(&amp;#34;bytes=%v \n&amp;#34;, bytes) //byte轉回字串 str3 := string([]byte{97, 98, 99}) fmt.Printf(&amp;#34;str3=%v \n&amp;#34;, str3) //10進制轉2,8,16返回字串 str4 := strconv.</description>
     </item>
     
     <item>
@@ -2184,12 +2229,30 @@ List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭
     </item>
     
     <item>
-      <title>切片</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-slice/</link>
+      <title>命令行參數Args&amp;Flag</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-args-flag/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210810-agg-go-slice/</guid>
-      <description>func main() { //切片的類型是引用(傳遞的時候也是引用地址) //切片長度可變(不像數組) var arr1 = [5]int{1, 2, 3, 4, 5} s1 := arr1[1:3] //表示切arr的[1 2] 左開右閉(含左不含右) //var slice=arr[0:end]簡寫[:end] //[start:len(arr)]=[start:] //[0:len(arr)]=[:] fmt.Println(&amp;#34;s1內容是&amp;#34;, s1) fmt.Println(&amp;#34;s1長度是&amp;#34;, len(s1)) fmt.Println(&amp;#34;s1容量是&amp;#34;, cap(s1)) fmt.Printf(&amp;#34;s1第一個地址是%p\n&amp;#34;, &amp;amp;s1[0]) fmt.Printf(&amp;#34;arr1[1]地址是%p\n&amp;#34;, &amp;amp;arr1[1]) s1[0] = 33 fmt.Println(&amp;#34;arr1內容是&amp;#34;, arr1) //var 切片名[]type=make([]type,len,cap) var s2 []float64 = make([]float64, 5, 10) fmt.Println(s2) //var 變量=make(類型) var s22 = make([]float64, 5, 10) fmt.Println(s22) var s3 []int = []int{1, 2, 3, 4, 5} fmt.Println(s3) //用append動態追加 s3 = append(s3, 6, 7, 8, 9) fmt.</description>
+      <guid>https://yoziming.github.io/post/210810-agg-go-args-flag/</guid>
+      <description>命令行參數Args&amp;amp;Flag func main() { fmt.Println(&amp;#34;命令行參數有&amp;#34;, len(os.Args)) //遍歷os.Args切片 得到所有輸入的參數值 for i, v := range os.Args { fmt.Printf(&amp;#34;args[%v]=%v\n&amp;#34;, i, v) } fmt.Println(&amp;#34;=====================&amp;#34;) //flag方法 先定義幾個變量用於接收參數值 var user string var pwd string var host string var port int flag.StringVar(&amp;amp;user, &amp;#34;u&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;帳號 預設為空&amp;#34;) flag.StringVar(&amp;amp;pwd, &amp;#34;pwd&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;密碼 預設為空&amp;#34;) flag.StringVar(&amp;amp;host, &amp;#34;h&amp;#34;, &amp;#34;localhost&amp;#34;, &amp;#34;主機 預設為localhost&amp;#34;) flag.IntVar(&amp;amp;port, &amp;#34;port&amp;#34;, 3306, &amp;#34;端口 預設為3306&amp;#34;) //前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設 flag.Parse() //這個一定要調用 //輸出結果 fmt.Printf(&amp;#34;user=%v pwd=%v host=%v port=%v&amp;#34;, user, pwd, host, port) } </description>
+    </item>
+    
+    <item>
+      <title>冒泡排序</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-bubble-sort/</guid>
+      <description>冒泡排序 var arr1 = [...]int{5, 9, 6, 8, 7, 3, 4, 2, 1, 6} func main() { s1 := arr1[:] bubbleSort(s1) fmt.Println(arr1) } func bubbleSort(x []int) { for j := 1; j &amp;lt; len(x); j++ { for i := 0; i &amp;lt; len(x)-1; i++ { if x[i] &amp;gt; x[i+1] { x[i], x[i+1] = x[i+1], x[i] } } } } </description>
+    </item>
+    
+    <item>
+      <title>拷貝檔案</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-io-copy/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-io-copy/</guid>
+      <description>拷貝一個檔案 //定義一個函數接收2個路徑 func CopyFile(dstFileName, srcFileName string) (written int64, err error) { srcFile, err := os.Open(srcFileName) if err != nil { fmt.Println(err) } defer srcFile.Close() //通過srcFile獲取到reader reader := bufio.NewReader(srcFile) //打開dstFileName dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666) if err != nil { fmt.Println(err) } //通過dstFile獲取到writer writer := bufio.NewWriter(dstFile) defer dstFile.Close() return io.Copy(writer, reader) } func main() { src := &amp;#34;C:/01.mkv&amp;#34; //原始檔 dst := &amp;#34;C:/food2.mkv&amp;#34; _, err := CopyFile(dst, src) if err == nil { fmt.</description>
     </item>
     
     <item>
@@ -2202,21 +2265,32 @@ List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭
     </item>
     
     <item>
-      <title>命令行參數Args&amp;Flag</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-args-flag/</link>
+      <title>接口interface</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-interface/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210810-agg-go-args-flag/</guid>
-      <description>命令行參數Args&amp;amp;Flag func main() { fmt.Println(&amp;#34;命令行參數有&amp;#34;, len(os.Args)) //遍歷os.Args切片 得到所有輸入的參數值 for i, v := range os.Args { fmt.Printf(&amp;#34;args[%v]=%v\n&amp;#34;, i, v) } fmt.Println(&amp;#34;=====================&amp;#34;) //flag方法 先定義幾個變量用於接收參數值 var user string var pwd string var host string var port int flag.StringVar(&amp;amp;user, &amp;#34;u&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;帳號 預設為空&amp;#34;) flag.StringVar(&amp;amp;pwd, &amp;#34;pwd&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;密碼 預設為空&amp;#34;) flag.StringVar(&amp;amp;host, &amp;#34;h&amp;#34;, &amp;#34;localhost&amp;#34;, &amp;#34;主機 預設為localhost&amp;#34;) flag.IntVar(&amp;amp;port, &amp;#34;port&amp;#34;, 3306, &amp;#34;端口 預設為3306&amp;#34;) //前面有亂打的字就不行 比如...exe 12354 -u tom會調用預設 flag.Parse() //這個一定要調用 //輸出結果 fmt.Printf(&amp;#34;user=%v pwd=%v host=%v port=%v&amp;#34;, user, pwd, host, port) } </description>
+      <guid>https://yoziming.github.io/post/210810-agg-go-interface/</guid>
+      <description>接口interface  例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，
+那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用
+ //接口內不能有變量，方法也不能實現 type Usb interface { //聲明兩個沒實現的方法 Start() Stop() } type Usb2 interface { //接口是不需要顯示聲明，只要能實現就都能調用 Start() Stop() //假如我多聲明一個沒實現的方法在接口內就不能調用 Test() //有方法沒實現，導致Usb2這個接口不能用 } type Phone struct { } //讓Phone實現USB接口的方法 func (p Phone) Start() { fmt.Println(&amp;#34;手機啟動&amp;#34;) } func (p Phone) Stop() { fmt.Println(&amp;#34;手機停止&amp;#34;) } type Camera struct { } func (c Camera) Start() { fmt.Println(&amp;#34;相機啟動~~&amp;#34;) } func (c Camera) Stop() { fmt.Println(&amp;#34;相機停止&amp;#34;) } //電腦 type Computer struct { } func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型 //通過usb變量來調用Start等方法 fmt.</description>
     </item>
     
     <item>
-      <title>字串轉換常用函數</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-string-conver/</link>
+      <title>結構體</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-struct/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210810-agg-go-string-conver/</guid>
-      <description>字串轉換常用函數  var str string = &amp;#34;abc123中文&amp;#34; func main() { fmt.Println(&amp;#34;長度=&amp;#34;, len(str)) r := []rune(str) for i := 0; i &amp;lt; len(r); i++ { fmt.Printf(&amp;#34;遍歷=%q\n&amp;#34;, r[i]) } //轉成整數 Atoi n, err := strconv.Atoi(&amp;#34;5421&amp;#34;) if err != nil { fmt.Println(&amp;#34;錯誤,err&amp;#34;) } else { fmt.Println(&amp;#34;轉換成&amp;#34;, n) //整數轉字串 str2 := strconv.Itoa(654231) fmt.Printf(&amp;#34;類型是%T\n&amp;#34;, str2) //轉byte var bytes = []byte(&amp;#34;hello&amp;#34;) fmt.Printf(&amp;#34;bytes=%v \n&amp;#34;, bytes) //byte轉回字串 str3 := string([]byte{97, 98, 99}) fmt.Printf(&amp;#34;str3=%v \n&amp;#34;, str3) //10進制轉2,8,16返回字串 str4 := strconv.</description>
+      <guid>https://yoziming.github.io/post/210810-agg-go-struct/</guid>
+      <description>結構體 type Cat struct { Name string Age int Color string // S1 []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用) } //結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間 func main() { //創建Cat的變量 var cat1 Cat cat1.Name = &amp;#34;小花&amp;#34; cat1.Age = 18 cat1.Color = &amp;#34;花&amp;#34; fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) // cat1.S1 = make([]int, 10) // cat1.S1[0] = 100 // fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) //推薦方式 cat2 := Cat{&amp;#34;小黑&amp;#34;, 5, &amp;#34;black&amp;#34;} fmt.Println(cat2) //方法3 //var c *C=new(C) var cat3 *Cat = new(Cat) //因為cat3是一個指針 (*cat3).Name = &amp;#34;小白&amp;#34; //語法糖 cat3.Age也可以 ，不建議 cat3.</description>
+    </item>
+    
+    <item>
+      <title>順序查找</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-sequential-search/</link>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/210810-agg-go-sequential-search/</guid>
+      <description>順序查找 func main() { names := [4]string{&amp;#34;A&amp;#34;, &amp;#34;B&amp;#34;, &amp;#34;C&amp;#34;, &amp;#34;D&amp;#34;} var input = &amp;#34;&amp;#34; fmt.Println(&amp;#34;輸入...&amp;#34;) fmt.Scanln(&amp;amp;input) //順序查找 // for i := 0; i &amp;lt; len(names); i++ { // if input == names[i] { // fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, i) // break // } else if i == len(names)-1 { // fmt.Println(&amp;#34;比對失敗...&amp;#34;) // } //順序查找2 index := -1 for i := 0; i &amp;lt; len(names); i++ { if input == names[i] { index = i break } } if index !</description>
     </item>
     
     <item>
@@ -2286,86 +2360,12 @@ List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭
     </item>
     
     <item>
-      <title>工廠模式</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-factory/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-factory/</guid>
-      <description>//工廠模式 // 假如有些要公用的東西又不想用大寫讓人隨意改了 例如結構體、結構體內的字段等等 // 我就在那個包裏建一個方法，這個方法本身大寫，在方法中原地調用那些本來是大寫的玩意 // 返回一個相同的值過來，相當於那在那個包里把該封裝的都封好，拿出來的就是產品 import ( &amp;#34;fmt&amp;#34; ) type Student struct { Name string Age int Score float64 } func (s *Student) Say() string { infoStr := fmt.Sprintf(&amp;#34;信息 name=[%v] age=[%v] score=[%v]&amp;#34;, s.Name, s.Age, s.Score) return infoStr } func main() { var s1 = Student{ Name: &amp;#34;tom&amp;#34;, Score: 98, Age: 18, //不依賴順序 } res := s1.Say() fmt.Println(res) //其他創建結構變量同時指定值的方法: stu2 := Student{&amp;#34;Jack&amp;#34;, 20, 100} //項目順序都要有對應 fmt.Println(stu2) //返回結構的指針 var stu3 = &amp;amp;Student{&amp;#34;Mary&amp;#34;, 28, 5} fmt.</description>
-    </item>
-    
-    <item>
-      <title>拷貝檔案</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-io-copy/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-io-copy/</guid>
-      <description>拷貝一個檔案 //定義一個函數接收2個路徑 func CopyFile(dstFileName, srcFileName string) (written int64, err error) { srcFile, err := os.Open(srcFileName) if err != nil { fmt.Println(err) } defer srcFile.Close() //通過srcFile獲取到reader reader := bufio.NewReader(srcFile) //打開dstFileName dstFile, err := os.OpenFile(dstFileName, os.O_WRONLY|os.O_CREATE, 0666) if err != nil { fmt.Println(err) } //通過dstFile獲取到writer writer := bufio.NewWriter(dstFile) defer dstFile.Close() return io.Copy(writer, reader) } func main() { src := &amp;#34;C:/01.mkv&amp;#34; //原始檔 dst := &amp;#34;C:/food2.mkv&amp;#34; _, err := CopyFile(dst, src) if err == nil { fmt.</description>
-    </item>
-    
-    <item>
-      <title>接口interface</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-interface/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-interface/</guid>
-      <description>接口interface  例如定義 只要滿足&amp;quot;會跑&amp;quot;且&amp;quot;會叫&amp;quot;的就是&amp;quot;動物&amp;quot;，
-那不管你是啥玩意只要實現會跑跟會叫，我就當你是動物，就能用動物的接口去調用
- //接口內不能有變量，方法也不能實現 type Usb interface { //聲明兩個沒實現的方法 Start() Stop() } type Usb2 interface { //接口是不需要顯示聲明，只要能實現就都能調用 Start() Stop() //假如我多聲明一個沒實現的方法在接口內就不能調用 Test() //有方法沒實現，導致Usb2這個接口不能用 } type Phone struct { } //讓Phone實現USB接口的方法 func (p Phone) Start() { fmt.Println(&amp;#34;手機啟動&amp;#34;) } func (p Phone) Stop() { fmt.Println(&amp;#34;手機停止&amp;#34;) } type Camera struct { } func (c Camera) Start() { fmt.Println(&amp;#34;相機啟動~~&amp;#34;) } func (c Camera) Stop() { fmt.Println(&amp;#34;相機停止&amp;#34;) } //電腦 type Computer struct { } func (c Computer) Working(usb Usb) { //接受一個Usb的接口類型 //通過usb變量來調用Start等方法 fmt.</description>
-    </item>
-    
-    <item>
       <title>數組</title>
       <link>https://yoziming.github.io/post/210810-agg-go-array1/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-array1/</guid>
       <description>數組 func main() { var n1 [3]int = [3]int{1, 2, 3} var n2 = [3]int{4, 5, 6} //長度聲明後就不能變化 var n3 = [...]int{7, 8, 9} //數組長度是類型的一部分 [3]int != [4]int var n4 = [...]string{0: &amp;#34;李四&amp;#34;, 1: &amp;#34;張三&amp;#34;, 5: &amp;#34;王武&amp;#34;} n5 := []int{5, 5, 5, 5, 5} //[]int 這樣定義其實是切片 fmt.Println(n1) fmt.Println(n2) fmt.Println(n3) fmt.Println(n4) fmt.Println(n5) n9 := fmt.Sprintf(&amp;#34;%.2f&amp;#34;, 9.888888) fmt.Println(n9) var score [5]float64 for i := 0; i &amp;lt; len(score); i++ { fmt.Println(&amp;#34;輸入成績&amp;#34;) fmt.Scanln(&amp;amp;score[i]) } for i := 0; i &amp;lt; len(score); i++ { fmt.</description>
-    </item>
-    
-    <item>
-      <title>文字檔案讀取寫入</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-io-reader/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-io-reader/</guid>
-      <description>讀取 func main() { //打開一個文件 file, err := os.Open(&amp;#34;c:/test.txt&amp;#34;) //有人叫file對象/指針/文件句柄 if err != nil { fmt.Println(&amp;#34;open file err=&amp;#34;, err) } //看看文件是啥 fmt.Printf(&amp;#34;file=%v\n&amp;#34;, file) //退出函數就關閉文件 defer file.Close() //創建一個帶緩衝的reader，預設大小是4096 reader := bufio.NewReader(file) for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //讀到換行就結束 fmt.Print(str) if err == io.EOF { //表示文件末尾 break } } fmt.Println(&amp;#34;\n讀取結束&amp;#34;) //用ioutil.ReadFile一次讀完 //這個包已經封裝了open跟close了，只適用在檔案大小不大的情境 file2 := &amp;#34;c:/test.txt&amp;#34; str2, err2 := ioutil.ReadFile(file2) if err2 != nil { fmt.Println(err) } fmt.Printf(&amp;#34;%s&amp;#34;, str2) //原本輸出是[]byte,用%s轉 //創建一個新檔案，寫入5句話 filePath := &amp;#34;c:/abc.</description>
-    </item>
-    
-    <item>
-      <title>文檔字符統計</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-txt/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-txt/</guid>
-      <description>文檔字符統計 //保存結果用 type CharCount struct { ChCount int //英文字數 NumCount int // SpaceCount int OtherCount int } func main() { //思路 打開一個文件 創一個reader每讀取一行就去統計，將結果保存到一個結構體 fileName := &amp;#34;c:/abc.txt&amp;#34; file, err := os.Open(fileName) if err != nil { fmt.Println(err) return } defer file.Close() //來個實例 var count CharCount reader := bufio.NewReader(file) //開始讀取 for { str, err := reader.ReadString(&amp;#39;\n&amp;#39;) //這存在BUG 當行不換行做結尾就統計不到 if err == io.EOF { break } for _, v := range str { switch { case v &amp;gt;= &amp;#39;a&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;z&amp;#39;: fallthrough case v &amp;gt;= &amp;#39;A&amp;#39; &amp;amp;&amp;amp; v &amp;lt;= &amp;#39;Z&amp;#39;: count.</description>
-    </item>
-    
-    <item>
-      <title>日期時間</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-date-time/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-date-time/</guid>
-      <description>日期時間 func main() { //1.獲取當前本地時間 now := time.Now() fmt.Printf(&amp;#34;now=%v,type=%T&amp;#34;, now, now) //返回的類型是struct //2.通過now獲取各種詳細 fmt.Printf(&amp;#34;年=%v,type=%T\n&amp;#34;, now.Year(), now.Year()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, now.Month(), now.Month()) fmt.Printf(&amp;#34;月=%v,type=%T\n&amp;#34;, int(now.Month()), int(now.Month())) fmt.Printf(&amp;#34;日=%v,type=%T\n&amp;#34;, now.Day(), now.Day()) fmt.Printf(&amp;#34;時=%v,type=%T\n&amp;#34;, now.Hour(), now.Hour()) fmt.Printf(&amp;#34;分=%v,type=%T\n&amp;#34;, now.Minute(), now.Minute()) fmt.Printf(&amp;#34;秒=%v,type=%T\n&amp;#34;, now.Second(), now.Second()) fmt.Printf(&amp;#34;星期=%v,type=%T\n&amp;#34;, now.Weekday(), now.Weekday()) fmt.Printf(&amp;#34;星期=%v\n&amp;#34;, int(now.Weekday())) //3.格式化日期時間 dateStr := fmt.Sprintf(&amp;#34;年月日時分=%d-%d-%d %d:%d\n&amp;#34;, now.Year(), now.Month(), now.Day(), now.Minute(), now.Second()) fmt.Println(dateStr) //4.蛋疼的指定格式 fmt.Println(now.Format(&amp;#34;2006-01-02 15:04:05&amp;#34;)) fmt.Println(now.Format(&amp;#34;2006-01-02&amp;#34;)) fmt.Println(now.Format(&amp;#34;06&amp;#34;)) fmt.Println(now.Format(&amp;#34;01&amp;#34;)) fmt.Println(now.Format(&amp;#34;03&amp;#34;)) fmt.Println(now.Format(&amp;#34;01-02-06 03 04 05&amp;#34;)) //123456=月日時分秒年 //5.時間常量&amp;amp;休眠 //每隔固定時間打印數字，打到100退出 for i := 0; i &amp;lt;= 100; i++ { fmt.</description>
-    </item>
-    
-    <item>
-      <title>結構體</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-struct/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-struct/</guid>
-      <description>結構體 type Cat struct { Name string Age int Color string // S1 []int //可以是切片 但是預設值為nil(沒分配空間，一樣要先make後才能用) } //結構體是一個值類型，預設是值拷貝，比如cat1跟cat2是獨立存在兩個空間 func main() { //創建Cat的變量 var cat1 Cat cat1.Name = &amp;#34;小花&amp;#34; cat1.Age = 18 cat1.Color = &amp;#34;花&amp;#34; fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) // cat1.S1 = make([]int, 10) // cat1.S1[0] = 100 // fmt.Println(&amp;#34;cat1=&amp;#34;, cat1) //推薦方式 cat2 := Cat{&amp;#34;小黑&amp;#34;, 5, &amp;#34;black&amp;#34;} fmt.Println(cat2) //方法3 //var c *C=new(C) var cat3 *Cat = new(Cat) //因為cat3是一個指針 (*cat3).Name = &amp;#34;小白&amp;#34; //語法糖 cat3.Age也可以 ，不建議 cat3.</description>
-    </item>
-    
-    <item>
-      <title>繼承</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-inherit/</link>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://yoziming.github.io/post/210810-agg-go-inherit/</guid>
-      <description>繼承 type Student struct { Name string Age int Score int //共有的字段 } type Pupil struct { Student //套入 Covid19 bool } type College struct { Student //套入指針效率更好 SexExp bool } func (stu *Student) ShowInfo() { fmt.Printf(&amp;#34;姓名=%v 年齡=%v 成績=%v\n&amp;#34;, stu.Name, stu.Age, stu.Score) } func (stu *Student) SetScore(s int) { stu.Score = s } func (p *Pupil) Test() { fmt.Println(&amp;#34;小學生考試&amp;#34;) } func main() { pupilA := &amp;amp;Pupil{} pupilA.Student.Name = &amp;#34;tome&amp;#34; pupilA.Student.Age = 8 pupilA.</description>
     </item>
     
     <item>
@@ -2378,12 +2378,12 @@ List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭
     </item>
     
     <item>
-      <title>順序查找</title>
-      <link>https://yoziming.github.io/post/210810-agg-go-sequential-search/</link>
+      <title>繼承</title>
+      <link>https://yoziming.github.io/post/210810-agg-go-inherit/</link>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/210810-agg-go-sequential-search/</guid>
-      <description>順序查找 func main() { names := [4]string{&amp;#34;A&amp;#34;, &amp;#34;B&amp;#34;, &amp;#34;C&amp;#34;, &amp;#34;D&amp;#34;} var input = &amp;#34;&amp;#34; fmt.Println(&amp;#34;輸入...&amp;#34;) fmt.Scanln(&amp;amp;input) //順序查找 // for i := 0; i &amp;lt; len(names); i++ { // if input == names[i] { // fmt.Printf(&amp;#34;找到%v,下標=%v \n&amp;#34;, input, i) // break // } else if i == len(names)-1 { // fmt.Println(&amp;#34;比對失敗...&amp;#34;) // } //順序查找2 index := -1 for i := 0; i &amp;lt; len(names); i++ { if input == names[i] { index = i break } } if index !</description>
+      <guid>https://yoziming.github.io/post/210810-agg-go-inherit/</guid>
+      <description>繼承 type Student struct { Name string Age int Score int //共有的字段 } type Pupil struct { Student //套入 Covid19 bool } type College struct { Student //套入指針效率更好 SexExp bool } func (stu *Student) ShowInfo() { fmt.Printf(&amp;#34;姓名=%v 年齡=%v 成績=%v\n&amp;#34;, stu.Name, stu.Age, stu.Score) } func (stu *Student) SetScore(s int) { stu.Score = s } func (p *Pupil) Test() { fmt.Println(&amp;#34;小學生考試&amp;#34;) } func main() { pupilA := &amp;amp;Pupil{} pupilA.Student.Name = &amp;#34;tome&amp;#34; pupilA.Student.Age = 8 pupilA.</description>
     </item>
     
     <item>
