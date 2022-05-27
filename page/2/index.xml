@@ -6,9 +6,576 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Sun, 10 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Apr 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>枚舉類enum、註解annotation</title>
+        <link>https://yoziming.github.io/post/211207-agg-ja-22/</link>
+        <pubDate>Tue, 07 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211207-agg-ja-22/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211207-agg-ja-22/ -&lt;h1 id=&#34;枚舉類enum&#34;&gt;枚舉類(enum)&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;當類的物件數量是有限定的、確定的，例如:星期、性別、季節、支付方式、XX狀態&lt;/li&gt;
+&lt;li&gt;需要定義一組常量時，強烈建議使用枚舉類&lt;/li&gt;
+&lt;li&gt;如果類中只有一個物件，可以用單例模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enum&lt;/code&gt;，發音&amp;quot;衣-囊&amp;quot;，名詞枚舉&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enumerate&lt;/code&gt;，發音&amp;quot;以-new-merate&amp;quot;，動詞枚舉&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;自訂枚舉類&#34;&gt;自訂枚舉類&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JDK 5以前&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;聲明物件的屬性，用&lt;code&gt;private final&lt;/code&gt;修飾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將構造器私有化，給物件屬性賦上預想好的值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在本類中預先創立好物件，用&lt;code&gt;public static final&lt;/code&gt;修飾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;提供&lt;code&gt;toSting&lt;/code&gt;方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;提供其他訴求，例如:&lt;code&gt;get&lt;/code&gt;屬性等等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;範例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;PayMethod&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;final&lt;/span&gt; String name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;final&lt;/span&gt; String desc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;PayMethod&lt;/span&gt;(String name, String desc) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;name&lt;/span&gt; = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;desc&lt;/span&gt; = desc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;final&lt;/span&gt; PayMethod CASH = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; PayMethod(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;現金&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;真金白銀&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;final&lt;/span&gt; PayMethod VISA = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; PayMethod(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA卡&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA金融卡&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;final&lt;/span&gt; PayMethod ONLINE = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; PayMethod(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;電子支付&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;街口支付&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#008b45&#34;&gt;toString&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;PayMethod{&amp;#34;&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;name=&amp;#39;&amp;#34;&lt;/span&gt; + name + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;\&amp;#39;&amp;#39;&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;, desc=&amp;#39;&amp;#34;&lt;/span&gt; + desc + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;\&amp;#39;&amp;#39;&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;}&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用，因為是靜態，直接類名.屬性
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test1&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PayMethod p1 = PayMethod.&lt;span style=&#34;color:#658b00&#34;&gt;CASH&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(p1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;關鍵字enum&#34;&gt;關鍵字enum&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JDK 5後新增的，快速有效&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;用&lt;code&gt;enum&lt;/code&gt;取代&lt;code&gt;class&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;聲明物件，用&lt;code&gt;()&lt;/code&gt;包裹想要的屬性，彼此以&amp;quot;&lt;code&gt;,&lt;/code&gt;&amp;ldquo;分行，以&lt;code&gt;;&lt;/code&gt;結尾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;聲明構造器，用&lt;code&gt;()&lt;/code&gt;包裹屬性類型與屬性名，因為枚舉類&lt;code&gt;new&lt;/code&gt;不出物件的，所以不用&lt;code&gt;private&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;範例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;enum&lt;/span&gt; PayMethod {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    CASH(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;現金&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;真金白銀&amp;#34;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VISA(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA卡&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA金融卡&amp;#34;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ONLINE(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;電子支付&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;街口支付&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PayMethod(String name, String desc) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果沒有要特別的屬性，只是單純做標籤使用，可以不寫構造器，留一個&lt;code&gt;get&lt;/code&gt;方法對外就夠了，例如:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;enum&lt;/span&gt; Status{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	FREE,BUSY;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法&#34;&gt;方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;不同於Obj類，&lt;code&gt;enum&lt;/code&gt;繼承於&lt;code&gt;java.lang.Enum&lt;/code&gt;，&lt;code&gt;toString&lt;/code&gt;預設返回是&amp;quot;物件名&amp;rdquo;，也可以自己再重寫&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;枚舉類名.values()&lt;/code&gt;:返回枚舉類的物件數組，配合foreach可以快速得知共有哪些預設物件
+&lt;ul&gt;
+&lt;li&gt;foreach:在IDEA中，&lt;code&gt;數組.for+tab&lt;/code&gt;，遍歷數組所有元素&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;枚舉類名.valueOf(&amp;quot;String&amp;quot;)&lt;/code&gt;:根據物件名返回對應的枚舉類物件
+&lt;ul&gt;
+&lt;li&gt;可以看作是一種創建枚舉類物件的方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;枚舉類實現接口&#34;&gt;枚舉類實現接口&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;聲明時加上&lt;code&gt;implements&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重寫抽象方法實現接口&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;也可以每一個物件分別實現，都存在時以個別物件的優先，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;interface&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;info&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;show&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;enum&lt;/span&gt; PayMethod &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;implements&lt;/span&gt; info {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    CASH(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;現金&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;真金白銀&amp;#34;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;show&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;拿很多現金付錢&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ONLINE(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;電子支付&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;街口支付&amp;#34;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VISA(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA卡&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;VISA金融卡&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PayMethod(String name, String desc) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;show&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;準備付錢&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;註解annotation&#34;&gt;註解(Annotation)&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;框架 = 註解 + 反射 + 設計模式&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;就是加在聲明上面的&lt;code&gt;@&lt;/code&gt;，不光是文字說明，甚至可以看作一種變相的形參&lt;/li&gt;
+&lt;li&gt;annotation，發音&amp;quot;A-ㄋ-tation&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;jdk內建的三種註解&#34;&gt;JDK內建的三種註解&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@Override&lt;/code&gt;:重寫的方法&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@Deprecated&lt;/code&gt;:廢棄的老方法&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@SuppressWarnings(&amp;quot;參數&amp;quot;)&lt;/code&gt;:抑制警告
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;all&lt;/code&gt;:全部別跳警告&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;unused&lt;/code&gt;:別警告未使用的&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;null&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rawtypes&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;很多自己查文檔&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;自訂註解&#34;&gt;自訂註解&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;聲明使用&amp;quot;&lt;code&gt;@interface 註解名{}&lt;/code&gt;&amp;quot;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它自動繼承了&lt;code&gt;java.lang.annotataion.Annotation&lt;/code&gt;接口&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;成員變量是&amp;quot;無參數方法&amp;quot;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;方法名稱為參數名，若只有一個預設叫&lt;code&gt;value&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;返回值是參數類型，一般都是&lt;code&gt;String&lt;/code&gt;，也可以是其他類&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以指定成員變量的初始值，用&lt;code&gt;default&lt;/code&gt;，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#707a7c&#34;&gt;@interface&lt;/span&gt; MyAnnotation {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String &lt;span style=&#34;color:#008b45&#34;&gt;value&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;tag&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;default&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用註解時，若想給指定參數寫賦值，需要用&amp;quot;&lt;code&gt;參數名= &lt;/code&gt;&amp;quot;；預設名為&lt;code&gt;value&lt;/code&gt;的參數則可以省略，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@MyAnnotation&lt;/span&gt;(tag = 4)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@MyAnnotation&lt;/span&gt;(value = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;something&amp;#34;&lt;/span&gt;) = &lt;span style=&#34;color:#707a7c&#34;&gt;@MyAnnotation&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;something&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;沒有成員的&lt;code&gt;annotation&lt;/code&gt;稱為標記&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;自定義註解必須配上註解的訊息處理流程才有意義&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;元註解&#34;&gt;元註解&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就是註解的註解，@在&lt;code&gt;一串@&lt;/code&gt;之上&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;@Retention(RetentionPolicy.參數)&lt;/code&gt;:指定所修飾註解的生命週期&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;SOURCE&lt;/code&gt;:注解只保留在原始檔案，當Java檔編譯成&lt;code&gt;class檔&lt;/code&gt;的時候，注解被遺棄&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;CLASS&lt;/code&gt;:注解被保留到&lt;code&gt;class檔&lt;/code&gt;，但jvm載入&lt;code&gt;class檔&lt;/code&gt;時候被遺棄，這是預設的生命週期&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;RUNTIME&lt;/code&gt;:注解不僅被保存到&lt;code&gt;class檔&lt;/code&gt;中，jvm載入&lt;code&gt;class檔&lt;/code&gt;之後，仍然存在，反射要用這個&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;@Target(ElementType.參數)&lt;/code&gt;:指定所修飾的註解可以應用在那些結構&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;FIELD&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PARAMETER&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;METHOD&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CONSTRUCTOR&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;@Documented&lt;/code&gt;:被它修飾的註解，會在文檔中保存下來&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;@Inherited&lt;/code&gt;:被它修飾的註解，將具有繼承性&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;可重複註解&#34;&gt;可重複註解&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JDK 8新增的特性，先大致了解就好&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;在想讓它能重複的註解上面聲明&lt;code&gt;@Repeatable(註解名s.class)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;java.lang.annotation.Repeatable&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Repeatable&lt;/span&gt;(MyAnnotations.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#707a7c&#34;&gt;@interface&lt;/span&gt; MyAnnotation {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String[] &lt;span style=&#34;color:#008b45&#34;&gt;value&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;再造一個&lt;code&gt;註解名s&lt;/code&gt;的新註解，返回值是原註解的數組&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#707a7c&#34;&gt;@interface&lt;/span&gt; MyAnnotations {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    MyAnnotation[] &lt;span style=&#34;color:#008b45&#34;&gt;value&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;注意他們的&lt;code&gt;@Retention&lt;/code&gt;、&lt;code&gt;@Target&lt;/code&gt;跟&lt;code&gt;@Inherited&lt;/code&gt;等等元註解屬性必須相同&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;類型註解&#34;&gt;類型註解&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;也是JDK 8新增的特性，讓註解能用在更廣的地方&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;前面學的元註解&lt;code&gt;@Target(ElementType.參數)&lt;/code&gt;可以決定註解能用在哪，&lt;code&gt;JDK8&lt;/code&gt;有新參數:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;TYPE_PARAMETER&lt;/code&gt;:表示該註解能寫在類型變量的聲明語句中(如泛型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TYPE_USE&lt;/code&gt;:表示該註解能寫在使用類型的任何語句中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;枚舉類:用於類中的物件個數確定、有限的&lt;/li&gt;
+&lt;li&gt;枚舉類物件使用&lt;code&gt;public static final&lt;/code&gt;修飾&lt;/li&gt;
+&lt;li&gt;元註解=註解的註解，&lt;code&gt;Retention&lt;/code&gt;修飾生命週期，&lt;code&gt;Target&lt;/code&gt;修飾使用範圍&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211207-agg-ja-22/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>常用類:日期時間、比較器、其他</title>
+        <link>https://yoziming.github.io/post/211206-agg-ja-21/</link>
+        <pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211206-agg-ja-21/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211206-agg-ja-21/ -&lt;h1 id=&#34;日期時間jdk-8前&#34;&gt;日期時間(JDK 8前)&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;提前說下，這些過時的類型跟方法實際95%用不上，了解一下就夠了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;System&lt;/code&gt;類中的&lt;code&gt;currentTimeMillis()&lt;/code&gt;:返回當下與&lt;code&gt;1970年1月1日&lt;/code&gt;之間的時間差，單位毫秒
+&lt;ul&gt;
+&lt;li&gt;這一長串的數字稱為&lt;code&gt;時間戳&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;javautildate類&#34;&gt;java.util.Date類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;創建&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用空參構造器:創建一個當前時間的物件，格式為&lt;code&gt;Wed Dec 01 13:35:20 CST 2021&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;形參傳入時間戳，創建一個該時間戳的物件&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;toString()&lt;/code&gt;:顯示時間&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getTime()&lt;/code&gt;:返回時間戳&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;javasqldate類&#34;&gt;java.sql.Date類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本身是&lt;code&gt;java.util.Date&lt;/code&gt;的子類，用來對應資料庫中的日期變量
+&lt;ul&gt;
+&lt;li&gt;為了區分，最好使用全類名例如:&lt;code&gt;java.sql.Date d2 = new java.sql.Date(d1.getTime());&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;創建:形參必須傳入時間戳&lt;/li&gt;
+&lt;li&gt;方法:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;toString()&lt;/code&gt;:顯示時間，格式只有日期，如:&lt;code&gt;2021-12-01&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getTime()&lt;/code&gt;:返回時間戳&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.util.Date&lt;/code&gt;與&lt;code&gt;java.sql.Date&lt;/code&gt;轉換:形參中填入&lt;code&gt;getTime()&lt;/code&gt;即可互轉&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;simpledateformat類&#34;&gt;SimpleDateFormat類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;顧名思義，把Date類格式化成String用的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;創建一個形參為你想要的格式(如常見的&lt;code&gt;yyyy-MM-dd hh:mm:ss&lt;/code&gt;)的&lt;code&gt;SimpleDateFormat&lt;/code&gt;物件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用此物件調用&lt;code&gt;format(date物件)&lt;/code&gt;方法返回想要的&lt;code&gt;String&lt;/code&gt;，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Date d1 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Date();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SimpleDateFormat sdf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; SimpleDateFormat(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;yyyy-MM-dd hh:mm:ss&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String s1 = sdf.&lt;span style=&#34;color:#658b00&#34;&gt;format&lt;/span&gt;(d1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;s1 = &amp;#34;&lt;/span&gt; + s1);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;還原(解析)文字重回&lt;code&gt;Date&lt;/code&gt;類，也要符合該物件生成時的格式，並且用&lt;code&gt;try&lt;/code&gt;包裹，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Date d2 = sdf.&lt;span style=&#34;color:#658b00&#34;&gt;parse&lt;/span&gt;(s1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;d2 = &amp;#34;&lt;/span&gt; + d2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (ParseException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;calendar類&#34;&gt;Calendar類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;日曆，用於找&amp;quot;今天是今年第幾天&amp;quot;之類的問題&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;本身是個抽象類，要調用時可選擇創建其子類&lt;code&gt;GregorianCalendar&lt;/code&gt;的物件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;或是更簡便的調用其靜態方法 &lt;code&gt;getTnstance()&lt;/code&gt;，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Calendar ca = Calendar.&lt;span style=&#34;color:#658b00&#34;&gt;getInstance&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; days1 = ca.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(Calendar.&lt;span style=&#34;color:#658b00&#34;&gt;DAY_OF_YEAR&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;days1 = &amp;#34;&lt;/span&gt; + days1);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;這個例子中，物件ca預設就是當前時間，然而他是可以被操作的，使用&lt;code&gt;set()&lt;/code&gt;或&lt;code&gt;add()&lt;/code&gt;方法去改變其自身屬性，解決例如&amp;quot;n天後是今年第幾天&amp;quot;這種問題，但這個實在很怪，個人覺得使用場景不多&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;getTime()&lt;/code&gt;:從日曆類轉成date類&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;setTime()&lt;/code&gt;:從date類轉成日曆類，用於解決例如給一個日期&amp;quot;&lt;code&gt;Wed Dec 01 16:49:56 CST 2021&lt;/code&gt;&amp;ldquo;要你算出他是今年第幾天之類的問題&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用時注意，一月=0、二月=1&amp;hellip;十二月=11，周日=1、周一=2&amp;hellip;周六=7，簡直搞事&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;日期時間jdk-8後&#34;&gt;日期時間(JDK 8後)&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;前面那些實在缺點太多太難用，大家都用Joda-Time這個第三方時間包，後來就被官方收編成了&lt;code&gt;java.time&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;localdatetime&#34;&gt;LocalDateTime&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;now()&lt;/code&gt;:返回當前時間&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;of(形參)&lt;/code&gt;:設置指定的時間&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getXXX()&lt;/code&gt;:獲取相對時間，例如當月的第幾日之類&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;withXXX(形參)&lt;/code&gt;:返回一個不可變的&lt;code&gt;LocalDateTime&lt;/code&gt;類物件，設置相對時間用，例如某年的5月&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;plusXXX(時間)&lt;/code&gt;:返回一個增加多久時間的&lt;code&gt;LocalDateTime&lt;/code&gt;類物件，例如今天買會員，3個月後過期&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;minusXXX(時間)&lt;/code&gt;:同上，減少&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;instant&#34;&gt;Instant&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;精準到納秒的時間類，跟&lt;code&gt;java.util.Date&lt;/code&gt;類九成像&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Instant.now()&lt;/code&gt;:靜態方法，返回當前時間，根據&lt;code&gt;UTC時區&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;atOffset(ZoneOffset.ofHour(8)&lt;/code&gt;:返回一個&lt;code&gt;offsetDateTime&lt;/code&gt;類的物件，位於+8時區&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;toEpochMilli()&lt;/code&gt;:返回自1970開始的時間戳&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ofEpochMilli(時間戳)&lt;/code&gt;:從時間戳創立物件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;datetimeformatter&#34;&gt;DateTimeFormatter&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;格式化，跟&lt;code&gt;SimpleDateFormat&lt;/code&gt;類九成像&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;預設標準格式&lt;code&gt;ISO_XXX&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;本地化格式&lt;code&gt;ofLocalizedDateTime(FormatStyle)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ofPattern(自訂格式)&lt;/code&gt;:靜態方法，返回一個DateTimeFormatter物件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;format(時間物件)&lt;/code&gt;:格式化&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;parse(string)&lt;/code&gt;:還原&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;其他api&#34;&gt;其他API&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ZoneID&lt;/code&gt;:時區&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Duration&lt;/code&gt;:兩個時間間隔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Period&lt;/code&gt;:兩個日期間隔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TemporalAdjusters&lt;/code&gt;:該類通過靜態方法提供大量&lt;code&gt;firstdayofxx&lt;/code&gt;、&lt;code&gt;nextXXX&lt;/code&gt;之類的方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;java比較器&#34;&gt;Java比較器&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只要涉及到物件要比較大小、排序就會用到這2個接口&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;comparable&#34;&gt;Comparable&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;又稱自然排序，一般都是從低到高、小到大&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;像&lt;code&gt;String&lt;/code&gt;、&lt;code&gt;包裝類&lt;/code&gt;等等已經內建實現了&lt;code&gt;Comparable&lt;/code&gt;接口，重寫了&lt;code&gt;compareTo(obj)&lt;/code&gt;方法，可以自然用&lt;code&gt;Arrays.sort(欲排列數組)&lt;/code&gt;方法排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果是一個自訂類，則需要手動實現重寫&lt;code&gt;compareTo(obj)&lt;/code&gt;方法，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 指明排序方式，例如價格低到高
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;compareTo&lt;/span&gt;(Object o) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (o &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;instanceof&lt;/span&gt; Goods) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Goods goods = (Goods) o; &lt;span style=&#34;color:#228b22&#34;&gt;// 為了健壯性先強轉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 基本寫法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;price&lt;/span&gt; &amp;gt; goods.&lt;span style=&#34;color:#658b00&#34;&gt;price&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;price&lt;/span&gt; &amp;lt; goods.&lt;span style=&#34;color:#658b00&#34;&gt;price&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; -1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#228b22&#34;&gt;// 可以繼續比較其他條件，例如名稱
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#228b22&#34;&gt;// return this.name.compareTo(goods.name);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#228b22&#34;&gt;// 反著排加&amp;#34;-&amp;#34; return -this.name.compareTo(goods.name);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 直接調用該數據類型的compare
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//            return Integer.compare(this.price, goods.price);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; RuntimeException(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;傳入類型不一致&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;優勢在於，我的類實現了此接口，創立出來的物件都可以比較排序了&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;comparator&#34;&gt;Comparator&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;訂製排序，與&lt;code&gt;Comparable&lt;/code&gt;不同之處在於&lt;code&gt;Comparable&lt;/code&gt;的方法&lt;code&gt;A.compareTo(B)&lt;/code&gt;是先需要一個當前類的物件A去跟B比較&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;而&lt;code&gt;Comparator&lt;/code&gt;實現的方法是&lt;code&gt;compare(obj1, obj2)&lt;/code&gt;，常用匿名內部類實現，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String[] arr = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String[]{&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;aa&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;bb&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;dd&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;cc&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;zz&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rr&amp;#34;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Arrays.&lt;span style=&#34;color:#658b00&#34;&gt;sort&lt;/span&gt;(arr, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Comparator&amp;lt;String&amp;gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;compare&lt;/span&gt;(String o1, String o2) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 可以在這邊自訂排序的規則，例如我想從z to a
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; -o1.&lt;span style=&#34;color:#658b00&#34;&gt;compareTo&lt;/span&gt;(o2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(Arrays.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;(arr));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;優勢:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用在比如自訂類不方便去實現&lt;code&gt;Comparable&lt;/code&gt;接口的場合&lt;/li&gt;
+&lt;li&gt;直接在&lt;code&gt;Arrays.sort&lt;/code&gt;形參後面加個&amp;rdquo;,&amp;ldquo;就可以非常方便一次性使用&lt;/li&gt;
+&lt;li&gt;可以用lambda表達式，例如:&lt;code&gt;Arrays.sort(arr, (o1, o2) -&amp;gt; 0);&lt;/code&gt;，既優雅效率又高&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;system類&#34;&gt;System類&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;位於&lt;code&gt;java.lang&lt;/code&gt;包下&lt;/li&gt;
+&lt;li&gt;由於該類的構造器是private，所以無法創造物件&lt;/li&gt;
+&lt;li&gt;內部的成員變量或方法都是靜態的，可以直接調用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;成員變量&#34;&gt;成員變量&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;System.in&lt;/code&gt;:標準輸入流(鍵盤)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.out&lt;/code&gt;:標準輸出流(螢幕)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.err&lt;/code&gt;:標準錯誤輸出流(螢幕)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;成員方法&#34;&gt;成員方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;currentTimemillis()&lt;/code&gt;:返回時間戳&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;exit(int status)&lt;/code&gt;:退出程序，&lt;code&gt;status&lt;/code&gt;=退出代碼，0表示正常&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gc()&lt;/code&gt;:呼叫垃圾車&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getProperty(String key)&lt;/code&gt;:獲取一些系統訊息，key的舉例:&lt;code&gt;user.name&lt;/code&gt;返回使用者名稱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;math類&#34;&gt;Math類&lt;/h1&gt;
+&lt;p&gt;常用的數學相關、科學常數等等，操作的數據通常都是double型，舉例:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;abs&lt;/code&gt;:絕對值&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sqrt&lt;/code&gt;:平方根&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;random&lt;/code&gt;:返回0.0~1.0隨機數&lt;/li&gt;
+&lt;li&gt;&amp;hellip;有用到再去查即可&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;biginteger類&#34;&gt;BigInteger類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;用來表示&lt;strong&gt;不可變的、任意精度的整數&lt;/strong&gt;，並支援大多數math相關方法，多大數字都能用它&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;bigdecimal類&#34;&gt;BigDecimal類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;用來表示&lt;strong&gt;不可變的、任意精度的有符號的十進制帶點數&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;跟錢有關的，大多數都採用這個&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;臨時複習&#34;&gt;臨時複習&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;突然想到，發現有點搞不清了，趕緊再複習一次&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;重寫(&lt;code&gt;override&lt;/code&gt;):繼承時，子類的形參、返回、異常類型以及權限範圍不能擴大，但可以有自己的處理方式；即外殼不變、內容改寫&lt;/li&gt;
+&lt;li&gt;重載(&lt;code&gt;overload&lt;/code&gt;):同一類中，同樣的方法名可以存在多個，只要他們參數不同，調用時會自己套用到對應的；最常見於構造器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;關於時間，想要本地時間&lt;code&gt;LocalDateTime&lt;/code&gt;，想要格式化用&lt;code&gt;DateTimeFormatter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;物件想比較或排序，用&lt;code&gt;Comparator&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211206-agg-ja-21/ - Yoziming</description>
+        </item>
     
     
     

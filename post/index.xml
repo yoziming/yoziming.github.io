@@ -7,7 +7,27 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Sun, 10 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ECharts基本應用</title>
+      <link>https://yoziming.github.io/post/220425-echarts/</link>
+      <pubDate>Mon, 25 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220425-echarts/</guid>
+      <description>ECharts  ECharts是百度捐給Apache，開源免費的圖表套件 官方: https://echarts.apache.org/zh/index.html  同一段時間內多條折線圖  基本的用法其實官方就很多範例，比較麻煩的其實是同一段時間內多組數據、多條折線圖的做法 我當初也是花了一陣時間才搞懂怎做，最後類似這樣的效果   思路是這樣的，首先確定X軸(時間)的起點與終點，然後根據分割的最小時間單位(例如每天)，先產生出timeNodeArray 時間刻度數組，例如我從5/1~5/30號，那就會有30個節點 timeNodeArray 可以在前端生成也可以在後端，我後來統一是做在後端，類似這樣   // 建立時間節點數組(xAxis)  FastDateFormat sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM-dd&amp;#34;);  List&amp;lt;String&amp;gt; xAxis = new ArrayList&amp;lt;&amp;gt;();  if (param.getStatsType() == 2) { // 以&amp;#34;月&amp;#34;為基本單位建立時間節點數組  sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM&amp;#34;);  int monthsBetween = monthsBetween(param.getStartTime(), param.getEndTime());  Calendar cal = Calendar.getInstance();  cal.setTime(param.getStartTime());  for (int i = 0; i &amp;lt; monthsBetween; i++) {  xAxis.add(sdf.format(cal.getTime()));  cal.</description>
+    </item>
+    
+    <item>
+      <title>快速將前端的Html table(含CSS)匯出成Excel</title>
+      <link>https://yoziming.github.io/post/220420-table-to-excel/</link>
+      <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220420-table-to-excel/</guid>
+      <description>table2excel  網路上功能類似的套件有不少，名字也都很接近，最後我用的是這款 https://github.com/JackGit/table2excel.js 他的優勢在於導出中文不亂碼，而且能包含CSS樣式(其他很多套件不能識別colspan跟rowspan，還需要自己手動調整半天)，而這款使用起來非常簡單，所見即所得，實現的效果類似這樣  使用   總共需要引用3個JS，table2excel.core.js、exceljs.min.js、FileSaver.min.js
+  我是把它打包起來放到自己的工具JS集合
+  document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/table2excel.core.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/exceljs.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/tableExport/FileSaver.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;);  /** * 匯出 */ function tableToExcel(tableDomId, fileName) {  const table2Excel = new Table2Excel(tableDomId) // new Table2Excel(&amp;#39;table&amp;#39;)  table2Excel.export(fileName, &amp;#39;xlsx&amp;#39;) // table2Excel.export(&amp;#39;my-exported-table&amp;#39;, &amp;#39;xlsx&amp;#39;) }  調用的時候就這樣，首先我會先檢查表格是否有內容，如果表格是空的就early return 沒問題就傳入表格的html Dom Id，例如#textTable就是我的表格，以及檔案名稱  	/** * 匯出 */ 	function exportData() { 	if ($(&amp;#34;#helpDiv&amp;#34;).is(&amp;#39;:visible&amp;#39;)) { 	alertMessage(&amp;#34;&amp;lt;spring:message code=&amp;#39;ec0203.0005&amp;#39;/&amp;gt;&amp;#34;); 	return; 	} 	tableToExcel(&amp;#34;#textTable&amp;#34;, &amp;#34;車種分析報表(年)&amp;#34;); 	} </description>
+    </item>
+    
     <item>
       <title>合併多對多關係並輸出成JSON</title>
       <link>https://yoziming.github.io/post/220410-many-to-many-to-json/</link>
