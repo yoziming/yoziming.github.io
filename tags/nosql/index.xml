@@ -14,10 +14,10 @@
       <pubDate>Sat, 29 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220129-gulimall-12-redisson/</guid>
-      <description>Redisson   Java操作Redis的框架，主要用他的分布式鎖的功能
-  加鎖的方法與邏輯幾乎都跟java.util.concurrent包下的一樣
- JUC包: ReentrantLock那些，如果沒印象了看下面個種鎖的範例就會回想起來    前置設定  https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95
-  引包  &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;redisson&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;3.16.8&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;  造config類  注意import org.redisson.config.Config    @Configuration public class RedissonConfig {  /** * 所有對Redisson的使用都是通過RedissonClient * * @return * @throws IOException */  @Bean(destroyMethod = &amp;#34;shutdown&amp;#34;)  public RedissonClient redisson() throws IOException {  // 創建配置  Config config = new Config();  config.</description>
+      <description>Redisson Java操作Redis的框架，主要用他的分布式鎖的功能
+加鎖的方法與邏輯幾乎都跟java.util.concurrent包下的一樣
+JUC包: ReentrantLock那些，如果沒印象了看下面個種鎖的範例就會回想起來 前置設定 https://github.com/redisson/redisson/wiki/2.-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95
+引包 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;redisson&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.16.8&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 造config類 注意import org.redisson.config.Config @Configuration public class RedissonConfig { /** * 所有對Redisson的使用都是通過RedissonClient * * @return * @throws IOException */ @Bean(destroyMethod = &amp;#34;shutdown&amp;#34;) public RedissonClient redisson() throws IOException { // 創建配置 Config config = new Config(); config.useSingleServer().setAddress(&amp;#34;redis://localhost:6379&amp;#34;); // 根據Config創建出RedissonClient實例 // Redis url should start with redis:// or rediss:// RedissonClient redissonClient = Redisson.create(config); return redissonClient; } } 注入RedissonClient，開始造鎖 @Autowired RedissonClient redisson; Lock 基本鎖 只要鎖的名字(例如: &amp;quot;myLock&amp;quot;)一樣，就是同一把鎖 預設為阻塞式等待，過期時間沒指定是30s 自動續期，如果業務超長，運行期間自動鎖上新的30s 如果手動指定了過期時間就不會自動續期，除非再使用看門狗 但何必搞那麼多，讓他預設30秒自動續就挺好 RLock lock = redisson.</description>
     </item>
     
     <item>
@@ -26,10 +26,11 @@
       <pubDate>Fri, 28 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220128-gulimall-11-synchronized-lock/</guid>
-      <description>緩存  誰適合進緩存?  讀多寫少 即時性、一致性要求不高的   例如: 物流資訊、排行榜  實現   請求來了，緩存中是否已有資料?
- 無，去DB拿一份給他，並且存到緩存中 有，直接從緩存拿給他    本地緩存: 最簡單實現就是寫一個Map，把東西存裡面。然而在分布式會有問題
- 負載均衡: 每次輪到可能每個分散的機站都要去DB取一份資料 資料一致性: 某處更新了，其他處已經緩存中的不會更新    於是就會用到Redis這種noSQL
-  Spring Redis  引包: spring-boot-starter-data-redis application.properties設定端口與密碼(如果有)  spring.redis.host=localhost spring.redis.port=6379  造一個StringRedisTemplate 用.opsForXXX()方法造出操作子，XXX是要存的value類型 拿造出的操作子開始set、get  @Autowired StringRedisTemplate stringRedisTemplate;  @Test void test1() {  ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue();  ops.set(&amp;#34;hello&amp;#34;, &amp;#34;world_&amp;#34; + UUID.randomUUID());  System.out.println(&amp;#34;ops.get(\&amp;#34;hello\&amp;#34;) = &amp;#34; + ops.</description>
+      <description>緩存 誰適合進緩存? 讀多寫少 即時性、一致性要求不高的 例如: 物流資訊、排行榜 實現 請求來了，緩存中是否已有資料?
+無，去DB拿一份給他，並且存到緩存中 有，直接從緩存拿給他 本地緩存: 最簡單實現就是寫一個Map，把東西存裡面。然而在分布式會有問題
+負載均衡: 每次輪到可能每個分散的機站都要去DB取一份資料 資料一致性: 某處更新了，其他處已經緩存中的不會更新 於是就會用到Redis這種noSQL
+Spring Redis 引包: spring-boot-starter-data-redis application.properties設定端口與密碼(如果有) spring.redis.host=localhost spring.redis.port=6379 造一個StringRedisTemplate 用.opsForXXX()方法造出操作子，XXX是要存的value類型 拿造出的操作子開始set、get @Autowired StringRedisTemplate stringRedisTemplate; @Test void test1() { ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue(); ops.set(&amp;#34;hello&amp;#34;, &amp;#34;world_&amp;#34; + UUID.randomUUID()); System.out.println(&amp;#34;ops.get(\&amp;#34;hello\&amp;#34;) = &amp;#34; + ops.get(&amp;#34;hello&amp;#34;)); } 推薦使用這個小軟體來查看管理Redis https://github.com/qishibo/AnotherRedisDesktopManager/releases
+優化實作 回到之前的CategoryServiceImpl.java // 從redis獲取所有分類 @Override public Map&amp;lt;String, List&amp;lt;Catalogs2Vo&amp;gt;&amp;gt; getCatalogJson() { // 先去緩存拿 ValueOperations&amp;lt;String, String&amp;gt; ops = stringRedisTemplate.opsForValue(); String catalogJson = ops.</description>
     </item>
     
     <item>
@@ -38,9 +39,9 @@
       <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220125-gulimall-08-elasticsearch/</guid>
-      <description>ElasticSearch  用來執行站內搜索(如商品查詢)的引擎
-  開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作 核心觀念: Inverted Index (反向索引) 是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取 名詞對應:     RDBMS 概念 Elasticsearch     Table 表 Index   Row 一筆資料(例如:張三) Document   Column 屬性(例如:姓名) Field   Schema 架構(例如:資料類型、允許為空等等) Mapping   SQL 操作語句 DSL     以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用 個人直接把它看作表了，畢竟是概念，不用分太細  安裝  使用docker
-  教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作  mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;#34;http.</description>
+      <description>ElasticSearch 用來執行站內搜索(如商品查詢)的引擎
+開源的分散式搜尋引擎，基於Apache Lucene，但是封裝成REST API，方便操作 核心觀念: Inverted Index (反向索引) 是 NoSQL 資料庫的一種，所有的資料都是以 JSON 的方式進行存取 名詞對應: RDBMS 概念 Elasticsearch Table 表 Index Row 一筆資料(例如:張三) Document Column 屬性(例如:姓名) Field Schema 架構(例如:資料類型、允許為空等等) Mapping SQL 操作語句 DSL 以前可能有人會說Index對應database，type才是對應表，但在ES7版後Type已經幾乎被棄用 個人直接把它看作表了，畢竟是概念，不用分太細 安裝 使用docker
+教學的他設定掛載位置與插件路徑，並取得權限等等，方便後續操作 mkdir -p /mydata/elasticsearch/config mkdir -p /mydata/elasticsearch/data echo &amp;#34;http.host: 0.0.0.0&amp;#34; &amp;gt;/mydata/elasticsearch/config/elasticsearch.yml chmod -R 777 /mydata/elasticsearch/ 二合一鏡像: https://hub.docker.com/r/nshou/elasticsearch-kibana 目前2022年1月是7.16.2板 我直接用docker desktop，就沒掛載那麼多 docker pull nshou/elasticsearch-kibana docker run --name elasticsearch -p 5601:5601 -p 9200:9200 -e &amp;#34;discovery.type=single-node&amp;#34; -e ES_JAVA_OPTS=&amp;#34;-Xms64m -Xmx512m&amp;#34; -d nshou/elasticsearch-kibana --name 取名 -e &amp;quot;discovery.</description>
     </item>
     
     <item>
@@ -49,8 +50,8 @@
       <pubDate>Mon, 17 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220117-agg-spring-07-mongodb/</guid>
-      <description>MongoDB  茫狗DB
-  屬於NoSQL，非關聯式 以JSON的格式儲存資料 強處:高併發讀寫、巨量資料、擴展好 弱點:交易  前置 # 拉取鏡像 docker pull mongo:latest  # 創建和啓動容器 docker run --name mymongo -p 27017:27017 -d mongo  # 進入容器 docker exec -it mymongo /bin/bash  # 使用MongoDB客户端進行操作 mongo 庫操作 //Help查看命令提示db.help()//切換/創建資料庫(如果不存在就創建)usetest//查詢所有資料庫showdbs//刪除當前使用資料庫db.dropDatabase()//查看當前使用的資料庫db或db.getName()//顯示當前db狀態db.stats()//當前db版本db.version()//查看當前db的鏈接機器地址db.getMongo() 剛建立的db在show看不到，直到其中存了實際的資料才算數  命名限制  不能是空字符串&amp;quot;&amp;quot; 不得含有&#39; &#39;(空格)、.、$、/、\和\0 (空字符) 避免用_下畫線開頭 應全部小寫 最多64字節  名詞對應    SQL Mongo 解釋/説明     table collection 表/集合   row document 行/文檔，即一筆資料(如:張三&amp;hellip;)   column field 字段/域，欄位(如:姓名)   index index 索引   join embedded 表連接，MongoDB叫嵌入但略有不同   primary key _id 主鍵，MongoDB自動將_id當主鍵，沒指定就自動創    集合操作  相當於操作&amp;quot;表&amp;quot;</description>
+      <description>MongoDB 茫狗DB
+屬於NoSQL，非關聯式 以JSON的格式儲存資料 強處:高併發讀寫、巨量資料、擴展好 弱點:交易 前置 # 拉取鏡像 docker pull mongo:latest # 創建和啓動容器 docker run --name mymongo -p 27017:27017 -d mongo # 進入容器 docker exec -it mymongo /bin/bash # 使用MongoDB客户端進行操作 mongo 庫操作 // Help查看命令提示 db.help() // 切換/創建資料庫(如果不存在就創建) use test // 查詢所有資料庫 show dbs // 刪除當前使用資料庫 db.dropDatabase() // 查看當前使用的資料庫 db 或 db.getName() // 顯示當前db狀態 db.stats() // 當前db版本 db.version() // 查看當前db的鏈接機器地址 db.getMongo() 剛建立的db在show看不到，直到其中存了實際的資料才算數 命名限制 不能是空字符串&amp;quot;&amp;quot; 不得含有&#39; &#39;(空格)、.、$、/、\和\0 (空字符) 避免用_下畫線開頭 應全部小寫 最多64字節 名詞對應 SQL Mongo 解釋/説明 table collection 表/集合 row document 行/文檔，即一筆資料(如:張三&amp;hellip;) column field 字段/域，欄位(如:姓名) index index 索引 join embedded 表連接，MongoDB叫嵌入但略有不同 primary key _id 主鍵，MongoDB自動將_id當主鍵，沒指定就自動創 集合操作 相當於操作&amp;quot;表&amp;quot;</description>
     </item>
     
     <item>
@@ -59,20 +60,26 @@
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/210810-agg-go-redis/</guid>
-      <description>Redis基本操作   本地在cmd輸入redis-cli啟動操作用戶端
-  遠端連接:
-  $ redis-cli -h host -p port -a password // 範例 $ redis-cli -h 127.0.0.1 -p 6379 -a &amp;#34;mypass&amp;#34;  PING測試連接  數據  數據結構類似JSON都是Key-Value 五大數據類型String、Hash、List、Set、Zset  String   最基本的字串，value最大值=512M
-  指令:
-  set(如果存在就相當於修改)
-  get
-  del (很多指令可以用tab協助完成)
-  setex(幾秒後自毀)
-    Hash 指令:
+      <description>Redis基本操作 本地在cmd輸入redis-cli啟動操作用戶端
+遠端連接:
+$ redis-cli -h host -p port -a password // 範例 $ redis-cli -h 127.0.0.1 -p 6379 -a &amp;#34;mypass&amp;#34; PING測試連接 數據 數據結構類似JSON都是Key-Value 五大數據類型String、Hash、List、Set、Zset String 最基本的字串，value最大值=512M
+指令:
+set(如果存在就相當於修改)
+get
+del (很多指令可以用tab協助完成)
+setex(幾秒後自毀)
+Hash 指令:
 HSET key field value hget、hdel
 一次設多項(空格隔開)hmset、hmget
 hlen:統計有幾個元素
 hexists:看field是否存在
-List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭或尾</description>
+List 是個有序的鏈表，元素的值可以重複，可以把東西加在頭或尾
+指令:lpush 從左往管子裡塞東西，一直推擠過去
+lrange 0 end (最左是0 1 2 3&amp;hellip;，也可以用負數 -1表示最後一個 -2表示倒數第2
+比如說lrange 0 -1 =從左開始全顯示
+rpush 從右邊加東西 (就順序上來說比較習慣)
+lpop / rpop 從左或右取出數據(彈走了)
+del key 刪掉就沒了</description>
     </item>
     
   </channel>

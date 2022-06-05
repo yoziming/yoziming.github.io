@@ -14,7 +14,7 @@
       <pubDate>Mon, 25 Apr 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220425-echarts/</guid>
-      <description>ECharts  ECharts是百度捐給Apache，開源免費的圖表套件 官方: https://echarts.apache.org/zh/index.html  同一段時間內多條折線圖  基本的用法其實官方就很多範例，比較麻煩的其實是同一段時間內多組數據、多條折線圖的做法 我當初也是花了一陣時間才搞懂怎做，最後類似這樣的效果   思路是這樣的，首先確定X軸(時間)的起點與終點，然後根據分割的最小時間單位(例如每天)，先產生出timeNodeArray 時間刻度數組，例如我從5/1~5/30號，那就會有30個節點 timeNodeArray 可以在前端生成也可以在後端，我後來統一是做在後端，類似這樣   // 建立時間節點數組(xAxis)  FastDateFormat sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM-dd&amp;#34;);  List&amp;lt;String&amp;gt; xAxis = new ArrayList&amp;lt;&amp;gt;();  if (param.getStatsType() == 2) { // 以&amp;#34;月&amp;#34;為基本單位建立時間節點數組  sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM&amp;#34;);  int monthsBetween = monthsBetween(param.getStartTime(), param.getEndTime());  Calendar cal = Calendar.getInstance();  cal.setTime(param.getStartTime());  for (int i = 0; i &amp;lt; monthsBetween; i++) {  xAxis.add(sdf.format(cal.getTime()));  cal.</description>
+      <description>ECharts ECharts是百度捐給Apache，開源免費的圖表套件 官方: https://echarts.apache.org/zh/index.html 同一段時間內多條折線圖 基本的用法其實官方就很多範例，比較麻煩的其實是同一段時間內多組數據、多條折線圖的做法 我當初也是花了一陣時間才搞懂怎做，最後類似這樣的效果 思路是這樣的，首先確定X軸(時間)的起點與終點，然後根據分割的最小時間單位(例如每天)，先產生出timeNodeArray 時間刻度數組，例如我從5/1~5/30號，那就會有30個節點 timeNodeArray 可以在前端生成也可以在後端，我後來統一是做在後端，類似這樣 // 建立時間節點數組(xAxis) FastDateFormat sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM-dd&amp;#34;); List&amp;lt;String&amp;gt; xAxis = new ArrayList&amp;lt;&amp;gt;(); if (param.getStatsType() == 2) { // 以&amp;#34;月&amp;#34;為基本單位建立時間節點數組 sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM&amp;#34;); int monthsBetween = monthsBetween(param.getStartTime(), param.getEndTime()); Calendar cal = Calendar.getInstance(); cal.setTime(param.getStartTime()); for (int i = 0; i &amp;lt; monthsBetween; i++) { xAxis.add(sdf.format(cal.getTime())); cal.add(Calendar.MONTH, 1); } } else if (param.getStatsType() == 3) { // 以&amp;#34;日&amp;#34;為基本單位建立時間節點數組 sdf = FastDateFormat.getInstance(&amp;#34;yyyy-MM-dd&amp;#34;); int daysBetween = daysBetween(param.</description>
     </item>
     
     <item>
@@ -23,9 +23,9 @@
       <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220420-table-to-excel/</guid>
-      <description>table2excel  網路上功能類似的套件有不少，名字也都很接近，最後我用的是這款 https://github.com/JackGit/table2excel.js 他的優勢在於導出中文不亂碼，而且能包含CSS樣式(其他很多套件不能識別colspan跟rowspan，還需要自己手動調整半天)，而這款使用起來非常簡單，所見即所得，實現的效果類似這樣  使用   總共需要引用3個JS，table2excel.core.js、exceljs.min.js、FileSaver.min.js
-  我是把它打包起來放到自己的工具JS集合
-  document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/table2excel.core.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/exceljs.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/tableExport/FileSaver.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;);  /** * 匯出 */ function tableToExcel(tableDomId, fileName) {  const table2Excel = new Table2Excel(tableDomId) // new Table2Excel(&amp;#39;table&amp;#39;)  table2Excel.export(fileName, &amp;#39;xlsx&amp;#39;) // table2Excel.export(&amp;#39;my-exported-table&amp;#39;, &amp;#39;xlsx&amp;#39;) }  調用的時候就這樣，首先我會先檢查表格是否有內容，如果表格是空的就early return 沒問題就傳入表格的html Dom Id，例如#textTable就是我的表格，以及檔案名稱  	/** * 匯出 */ 	function exportData() { 	if ($(&amp;#34;#helpDiv&amp;#34;).is(&amp;#39;:visible&amp;#39;)) { 	alertMessage(&amp;#34;&amp;lt;spring:message code=&amp;#39;ec0203.0005&amp;#39;/&amp;gt;&amp;#34;); 	return; 	} 	tableToExcel(&amp;#34;#textTable&amp;#34;, &amp;#34;車種分析報表(年)&amp;#34;); 	} </description>
+      <description>table2excel 網路上功能類似的套件有不少，名字也都很接近，最後我用的是這款 https://github.com/JackGit/table2excel.js 他的優勢在於導出中文不亂碼，而且能包含CSS樣式(其他很多套件不能識別colspan跟rowspan，還需要自己手動調整半天)，而這款使用起來非常簡單，所見即所得，實現的效果類似這樣 使用 總共需要引用3個JS，table2excel.core.js、exceljs.min.js、FileSaver.min.js
+我是把它打包起來放到自己的工具JS集合
+document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/table2excel.core.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/table2excel/exceljs.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); document.write(&amp;#39;&amp;lt;script src=&amp;#34;scripts/tableExport/FileSaver.min.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt;&amp;#39;); /** * 匯出 */ function tableToExcel(tableDomId, fileName) { const table2Excel = new Table2Excel(tableDomId) // new Table2Excel(&amp;#39;table&amp;#39;) table2Excel.export(fileName, &amp;#39;xlsx&amp;#39;) // table2Excel.export(&amp;#39;my-exported-table&amp;#39;, &amp;#39;xlsx&amp;#39;) } 調用的時候就這樣，首先我會先檢查表格是否有內容，如果表格是空的就early return 沒問題就傳入表格的html Dom Id，例如#textTable就是我的表格，以及檔案名稱 /** * 匯出 */ function exportData() { if ($(&amp;#34;#helpDiv&amp;#34;).is(&amp;#39;:visible&amp;#39;)) { alertMessage(&amp;#34;&amp;lt;spring:message code=&amp;#39;ec0203.0005&amp;#39;/&amp;gt;&amp;#34;); return; } tableToExcel(&amp;#34;#textTable&amp;#34;, &amp;#34;車種分析報表(年)&amp;#34;); } </description>
     </item>
     
     <item>
@@ -34,12 +34,12 @@
       <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://yoziming.github.io/post/220121-npm-sass-webpack/</guid>
-      <description>node版本一環套一環  webpack中有sass-loader，用途是載入 Sass/SCSS 檔並將他們編譯為 CSS 這玩意版本太高會有相容問題，目前大部分用的是7開頭，用最新的容易出錯  npm install sass-loader@7.3.1 --save-dev  然後sass-loader又是基於node-sass，也要求版本，比如七版sass-loader對應4版以上的node-sass  npm install node-sass@4.14.1 --save-dev   然後node-sass又又需要對應Node JS版本，關係如下:
-  官網: https://github.com/sass/node-sass
-  Node JS版本   官網: https://nodejs.org/en/download/releases/
-  目前2022年1月，14或12版是相對妥的，選擇使用LTS版本
- Node.js 16.13.2	Gallium Node.js 14.18.3	Fermium Node.js 12.22.9	Erbium    然而切換Node JS版本很麻煩，所以又有人做了工具
-  Node Version Switcher  官網: https://github.com/jasongin/nvs  # 安裝(有choco，沒的話自己手動載) choco install nvs # 安裝node nvs add 版本號 # 移除 nvs rm 版本號  使用超簡單，輸入nvs就會跳出互動介面   方向鍵選擇 + Enter就切換好了 但是注意每次新開一個CMD要npm之前要先nvs指定使用的版本，否則會找不到npm的bin報錯無法辨識 &#39;npm&#39; 詞彙是否為 Cmdlet、函數 詳細可以參考這篇 https://www.</description>
+      <description>node版本一環套一環 webpack中有sass-loader，用途是載入 Sass/SCSS 檔並將他們編譯為 CSS 這玩意版本太高會有相容問題，目前大部分用的是7開頭，用最新的容易出錯 npm install sass-loader@7.3.1 --save-dev 然後sass-loader又是基於node-sass，也要求版本，比如七版sass-loader對應4版以上的node-sass npm install node-sass@4.14.1 --save-dev 然後node-sass又又需要對應Node JS版本，關係如下:
+官網: https://github.com/sass/node-sass
+Node JS版本 官網: https://nodejs.org/en/download/releases/
+目前2022年1月，14或12版是相對妥的，選擇使用LTS版本
+Node.js 16.13.2	Gallium Node.js 14.18.3	Fermium Node.js 12.22.9	Erbium 然而切換Node JS版本很麻煩，所以又有人做了工具
+Node Version Switcher 官網: https://github.com/jasongin/nvs # 安裝(有choco，沒的話自己手動載) choco install nvs # 安裝node nvs add 版本號 # 移除 nvs rm 版本號 使用超簡單，輸入nvs就會跳出互動介面 方向鍵選擇 + Enter就切換好了 但是注意每次新開一個CMD要npm之前要先nvs指定使用的版本，否則會找不到npm的bin報錯無法辨識 &#39;npm&#39; 詞彙是否為 Cmdlet、函數 詳細可以參考這篇 https://www.gushiciku.cn/pl/gEiA/zh-tw 小結 Node.js 12.22.9 配 node-sass@4.14.1 如果sass安裝異常可以用淘寶鏡像 npm i node-sass --sass_binary_site=https://npm.</description>
     </item>
     
   </channel>

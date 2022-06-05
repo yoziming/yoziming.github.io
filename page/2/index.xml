@@ -6,9 +6,352 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Mon, 25 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 May 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>集合:Collection接口、疊代器、List與Set</title>
+        <link>https://yoziming.github.io/post/211208-agg-ja-23/</link>
+        <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211208-agg-ja-23/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211208-agg-ja-23/ -&lt;h1 id=&#34;集合概述&#34;&gt;集合概述&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;集合、數組都是用來儲存多個數據(在記憶體中)的結構，簡稱Java容器&lt;/li&gt;
+&lt;li&gt;數組在聲明時長度跟數據類型就定死了，還強制是有序的，增刪改查都不變&lt;/li&gt;
+&lt;li&gt;Java集合分成兩種體系，有各種接口與實現類:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Collection&lt;/code&gt;接口:單列數據，用來存一個一個的物件
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;List&lt;/code&gt;接口:元素有序、可重複，又稱為&amp;quot;動態數組&amp;quot;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ArrayList&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LinkedList&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Vector&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set&lt;/code&gt;接口:元素無序、不可重複
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;HashSet&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LinkedHashSet&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TreeSet&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Map&lt;/code&gt;接口:雙列數據，保存具有映射關係(key-value)成對的物件
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;HashMap&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;LinkedHashMap&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TreeMap&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Hashtable&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Properties&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;collection&#34;&gt;Collection&lt;/h1&gt;
+&lt;p&gt;Collection接口本身沒有直接的實現類，而是要通過其子類List與Set各自的實現類來完成物件的實例化&lt;/p&gt;
+&lt;h3 id=&#34;方法&#34;&gt;方法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用一個實現Collection接口的實例物件調用，例如:&lt;code&gt;Collection coll = new ArrayList();&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;add(Object e)&lt;/code&gt;:將Object e加入集合中&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;size()&lt;/code&gt;:返回元素個數&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;addAll(Collection c)&lt;/code&gt;:將集合c的內容全加進來&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;clear()&lt;/code&gt;:清空元素，注意不是刪除集合本身，只是清掉其中的元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;isEmpty()&lt;/code&gt;:判定是否為空&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;contains(Object obj)&lt;/code&gt;:判斷集合中是否存在obj物件，注意這邊調用的是該類的equals()方法，也就是說預設類型他是比內容；而若自訂的類沒有重寫equals()方法，則會是比地址值(相當於&amp;quot;==&amp;quot;)，一般來說在&lt;strong&gt;集合用到自訂類我們都要求該類必須重寫equals()方法&lt;/strong&gt;，不然太搞&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;containsAll(Collection c)&lt;/code&gt;:判斷當前集合是否包含整個集合c，與順序無關，每個元素都有就算&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;boolean remove(Object obj)&lt;/code&gt;:判斷集合中是否存在obj物件，有則&lt;strong&gt;移除一個&lt;/strong&gt;並返回true&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;containsAll(Collection c)&lt;/code&gt;:只要當前集合跟集合c有共通的項目，就&lt;strong&gt;全部移除&lt;/strong&gt;(相當於數學上的差集)，並返回true&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;retainAll(Collection c)&lt;/code&gt;:判斷當前集合與集合c的交集，只保留相同部分(重複的他不會去修改數量)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;equals()&lt;/code&gt;:判斷兩個集合所有元素是否相等，注意順序有差&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;toArray()&lt;/code&gt;:將集合轉成並返回數組&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Arrays.asList()&lt;/code&gt;:Arrays的靜態方法，將數組轉為List，使用時注意可能將數組形參視為&amp;quot;一整個引用類型物件&amp;quot;，前後類別要特別寫清楚，有懷疑就用size方法看看元素個數是否吻合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;iterator()&lt;/code&gt;:返回Iterator接口的疊代器實例，用於遍歷集合元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;疊代器iterator&#34;&gt;疊代器Iterator&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;專門用來遍歷&lt;code&gt;Collection&lt;/code&gt;集合的接口&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Collection&lt;/code&gt;繼承自&lt;code&gt;Iterable&lt;/code&gt;接口，表明該類可以用於疊代器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;當某個類實現&lt;code&gt;Iterable&lt;/code&gt;接口時，我們就能稱這個類是一個&amp;quot;可數&amp;quot;的類，也就是可以使用&lt;code&gt;iterator()&lt;/code&gt;方法獲取一個疊代器&lt;code&gt;Iterator&lt;/code&gt;，然後使用這個&lt;code&gt;Iterator&lt;/code&gt;實例去遍歷這個類&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Iterator&lt;/code&gt;接口:如果某個類實現了&lt;code&gt;Iterable&lt;/code&gt;接口，那麼他也需要創建一個內部類去實現一個&lt;code&gt;Iterator&lt;/code&gt;類，讓調用&lt;code&gt;Iterable&lt;/code&gt;接口中的&lt;code&gt;iterator()&lt;/code&gt;時，能夠獲取到一個&lt;code&gt;iterator&lt;/code&gt;實例&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;調用時&lt;strong&gt;創建一個疊代器物件&lt;/strong&gt;，此時疊代器的&lt;strong&gt;游標指向在第一元素之前&lt;/strong&gt;，並且有幾個常用的方法:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;.&lt;code&gt;next()&lt;/code&gt;:顯示下一個元素內容，並將指針後移一位&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;.&lt;code&gt;hasNext()&lt;/code&gt;:判斷是否存在下一個元素內容，返回布林，可以用while配合循環遍歷集合，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Iterator iterator = col.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (iterator.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(iterator.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 純遍歷用foreach更快，foreach相較之下的特性是失去了索引
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;.&lt;code&gt;remove()&lt;/code&gt;:只能用在&lt;code&gt;next()&lt;/code&gt;之後且一對一，用於刪除剛剛返回的元素；注意跟&lt;code&gt;Collection&lt;/code&gt;本身的&lt;code&gt;remove(Object obj)&lt;/code&gt;方法不一樣&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;疊代器本身不作為容器，只是看門幫忙數數的，不要搞錯主體&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;foreach&lt;/code&gt;的代碼底層就是調用了疊代器，舉例:&lt;code&gt;for (Object o : arr){...&lt;/code&gt;，他是創建了一個臨時的&lt;code&gt;Object o&lt;/code&gt;，每次疊代把&lt;code&gt;arr&lt;/code&gt;取出的元素賦給&lt;code&gt;Object o&lt;/code&gt;，之後執行下面代碼的操作，可別傻傻的對o進行賦值之類的操作，沒用的&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;list接口&#34;&gt;List接口&lt;/h1&gt;
+&lt;h3 id=&#34;list特性&#34;&gt;List特性&lt;/h3&gt;
+&lt;p&gt;特性為有序、可重複，又稱為&amp;quot;動態數組&amp;quot;，此接口有三個實現類分別為:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ArrayList&lt;/code&gt;:主要實現類，線程不安全、效率高，底層使用&lt;code&gt;Object[]&lt;/code&gt;結構，他的源碼分析(基於JDK7):
+&lt;ul&gt;
+&lt;li&gt;在new一個&lt;code&gt;ArrayList&lt;/code&gt;時，底層創建了一個長度10的&lt;code&gt;Object[]&lt;/code&gt;數組
+&lt;ul&gt;
+&lt;li&gt;在JDK8的話，這邊創造的是長度為空的數組，類似於懶漢式，有真的用到才擴容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;add&lt;/code&gt;時判斷元素個數，若超過了現有則擴容，預設擴為原來的1.5倍，同時整組複製過去新家&lt;/li&gt;
+&lt;li&gt;啟示:開發中用到&lt;code&gt;ArrayList&lt;/code&gt;時，最好選帶參數、指定好預估數量的構造器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LinkedList&lt;/code&gt;:對於頻繁的插入、刪除操作效率高，因為底層是雙向鏈表
+&lt;ul&gt;
+&lt;li&gt;雙向鏈表，每一節都包含前後兩個node的指向資訊&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Vector&lt;/code&gt;:過時的實現類，線程安全、效率低，底層使用&lt;code&gt;Object[]&lt;/code&gt;結構
+&lt;ul&gt;
+&lt;li&gt;底層創建了一個長度10的&lt;code&gt;Object[]&lt;/code&gt;數組，擴容時為2倍&lt;/li&gt;
+&lt;li&gt;即使他是線程安全的，實際開發中也不會用他，而是用&lt;code&gt;Collections&lt;/code&gt;工具類中的&lt;code&gt;synchronizedList&lt;/code&gt;方法，可以說&lt;code&gt;Vector&lt;/code&gt;近乎廢棄了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;list方法&#34;&gt;List方法&lt;/h3&gt;
+&lt;p&gt;由於&lt;code&gt;list&lt;/code&gt;是有序的，所以有些方法不太一樣(有些重寫有些重載，注意形參)，主要是針對指定位置的操作，例如:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;void add(int index,Object obj)&lt;/code&gt;:在index處插入元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;blooean addAll(int index,Collection c)&lt;/code&gt;:在index處插入集合中的每個元素，注意不要把&amp;quot;整個集合&amp;quot;當成一個元素而誤用add方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;int indexOf(Object obj)&lt;/code&gt;:返回指定obj首次出現位置；&lt;code&gt;lastIndexOf&lt;/code&gt;:最末&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Object remove(int index)&lt;/code&gt;:刪除指定位置的元素並返回刪除的元素，使用時&lt;strong&gt;注意形參&lt;/strong&gt;，不要跟&lt;code&gt;Collection&lt;/code&gt;的&lt;code&gt;boolean remove(Object obj)&lt;/code&gt;搞錯&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Object set(int index,Object obj)&lt;/code&gt;:用&lt;code&gt;obj&lt;/code&gt;取代指定位置的元素並返回被取代的元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;List sublist(int 含頭,int 不含尾)&lt;/code&gt;:切出新的sublist&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;set接口&#34;&gt;Set接口&lt;/h1&gt;
+&lt;h3 id=&#34;set特性&#34;&gt;Set特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;元素無序:所謂無序並不等於隨機，他底層也是數組(其實是&lt;code&gt;HashMap&lt;/code&gt;的&lt;code&gt;key&lt;/code&gt;部分)，但在儲存時並非依照數組索引一個一個加進去，而是先計算元素的哈希值，以這個哈希值再通過某種算法計算後決定放哪&lt;/li&gt;
+&lt;li&gt;不可重複:保證添加的元素按照&lt;code&gt;equals()&lt;/code&gt;判斷時不能返回ture，即相同的元素只能存在一個&lt;/li&gt;
+&lt;li&gt;底層邏輯:當我添加一個元素b，先算b的哈希值，從b的哈希再算出存放位置，此時:
+&lt;ul&gt;
+&lt;li&gt;若存放位置為空，則添加b成功&lt;/li&gt;
+&lt;li&gt;若存放位置已經有元素a存在(或以鏈表形式存在的多個元素)，則比較a跟b的哈希值:
+&lt;ul&gt;
+&lt;li&gt;若哈希值不同，則添加b成功(插到鏈表裡)&lt;/li&gt;
+&lt;li&gt;若哈希值相同，則再比較&lt;code&gt;equals()&lt;/code&gt;方法
+&lt;ul&gt;
+&lt;li&gt;返回true表示a跟b真的是一樣的東西，添加b失敗&lt;/li&gt;
+&lt;li&gt;返回false表示他們只是恰好哈希值一樣，添加b成功(插到鏈表裡)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;所謂的&amp;quot;插到鏈表&amp;quot;，即是說這個位置換成一個鏈表去儲存多個元素，可以想像成&amp;quot;卜&amp;quot;字的樣子:
+&lt;ul&gt;
+&lt;li&gt;JDK7是頭插法，直觀的一個一個排隊接上去&lt;/li&gt;
+&lt;li&gt;JDK8是尾插法，新來的擠佔分支口，把舊的元素一個一個往外推&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;鏈表長度超過8則會改成紅黑樹，巨難巨複雜，暫時先知道就好&lt;/li&gt;
+&lt;li&gt;當&lt;code&gt;set&lt;/code&gt;使用&lt;strong&gt;自訂類，必須重寫&lt;code&gt;equals&lt;/code&gt;跟&lt;code&gt;hashcode&lt;/code&gt;方法&lt;/strong&gt;，不然拖出去打&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;set實現類&#34;&gt;Set實現類&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Set的實現類底層其實都是用到對應的&lt;code&gt;map&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;實際開發中比較少用，並且沒有額外定義的方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;HashSet&lt;/code&gt;:主力，線程不安全、可以儲存&lt;code&gt;null&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;LinkedHashSet&lt;/code&gt;:子類，遍歷時可以按照&amp;quot;添加的順序&amp;quot;排列
+&lt;ul&gt;
+&lt;li&gt;其實就是添加元素時額外記錄了前後索引(想像成一個曲折的的雙向鏈表，類似有一群小朋友每個人都知道自己前後一號是誰，平時散裝著亂跑無所謂，但是要排隊遍歷時能夠找出順序)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;TreeSet&lt;/code&gt;:底層為紅黑樹結構，可以按照添加對象的指定屬性進行排序，要求添加的元素必須是同類物件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;自然排序:加入的類若實現了&lt;code&gt;Comparable&lt;/code&gt;接口，此時比較兩個物件是用重寫的&lt;code&gt;compareTo()&lt;/code&gt;方法而非&lt;code&gt;equals()&lt;/code&gt;，要注意自己重寫時的比較邏輯，否則可能會產生兩個物件被誤認為重複元素的況狀&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;訂製排序:用自訂的比較器，此時比較兩個物件是用重寫的&lt;code&gt;compare()&lt;/code&gt;方法而非&lt;code&gt;equals()&lt;/code&gt;，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Comparator com = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Comparator() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;compare&lt;/span&gt;(Object o1, Object o2) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 想比較的屬性
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TreeSet set = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; TreeSet(com);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;應用&#34;&gt;應用&lt;/h3&gt;
+&lt;p&gt;去除&lt;code&gt;list&lt;/code&gt;內的重複項-裝到&lt;code&gt;set&lt;/code&gt;裡，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HashSet set = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashSet();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;set.&lt;span style=&#34;color:#658b00&#34;&gt;addAll&lt;/span&gt;(list);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;set面試題&#34;&gt;Set面試題&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Person&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;Person&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; id, String name) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;id&lt;/span&gt; = id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;name&lt;/span&gt; = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#008b45&#34;&gt;toString&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Person{&amp;#34;&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;id=&amp;#34;&lt;/span&gt; + id +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;, name=&amp;#39;&amp;#34;&lt;/span&gt; + name + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;\&amp;#39;&amp;#39;&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;}&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;equals&lt;/span&gt;(Object o) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt; == o) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (o == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; || getClass() != o.&lt;span style=&#34;color:#658b00&#34;&gt;getClass&lt;/span&gt;()) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Person person = (Person) o;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; id == person.&lt;span style=&#34;color:#658b00&#34;&gt;id&lt;/span&gt; &amp;amp;&amp;amp; Objects.&lt;span style=&#34;color:#658b00&#34;&gt;equals&lt;/span&gt;(name, person.&lt;span style=&#34;color:#658b00&#34;&gt;name&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;hashCode&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; Objects.&lt;span style=&#34;color:#658b00&#34;&gt;hash&lt;/span&gt;(id, name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        HashSet set = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashSet();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Person p1 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Person(101, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;AA&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Person p2 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Person(102, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;BB&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        set.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(p1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        set.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(p2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        p1.&lt;span style=&#34;color:#658b00&#34;&gt;name&lt;/span&gt; = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;CC&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#228b22&#34;&gt;// 此時放的位置是以原AA算的，但內容被改為CC
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(set.&lt;span style=&#34;color:#658b00&#34;&gt;remove&lt;/span&gt;(p1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 返回false，因為p1內容現在是101CC，而原先的位置是101AA，不同位置
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        set.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Person(101, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;CC&amp;#34;&lt;/span&gt;)); &lt;span style=&#34;color:#228b22&#34;&gt;// 能放進去，即使內容一樣，但哈希計算後放的位置不同
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        set.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Person(101, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;AA&amp;#34;&lt;/span&gt;)); &lt;span style=&#34;color:#228b22&#34;&gt;// 能放進去，即使同位置有人，但比equals不一樣
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(set);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Collection&lt;/code&gt;用到自訂類，必須重寫&lt;code&gt;euqals&lt;/code&gt;方法，否則物件是否存在時(例如:&lt;code&gt;contains&lt;/code&gt;、&lt;code&gt;remove&lt;/code&gt;)會判斷錯誤&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;比較:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;線程安全&lt;/th&gt;
+&lt;th&gt;效率&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ArrayList&lt;/td&gt;
+&lt;td&gt;N&lt;/td&gt;
+&lt;td&gt;高&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LinkedList&lt;/td&gt;
+&lt;td&gt;N&lt;/td&gt;
+&lt;td&gt;雙向鏈表，針對頻繁插入刪除&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Vector&lt;/td&gt;
+&lt;td&gt;Y&lt;/td&gt;
+&lt;td&gt;低，已廢棄的上古類&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;List&lt;/code&gt;有序可重複、&lt;code&gt;Set&lt;/code&gt;無序不可重複&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211208-agg-ja-23/ - Yoziming</description>
+        </item>
     
     
     

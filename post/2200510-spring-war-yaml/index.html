@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Spring Boot打包war包和設定檔</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="徹底釐清yaml的載入順序">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Spring Boot打包war包和設定檔" />
+<meta property="og:description" content="徹底釐清yaml的載入順序" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/2200510-spring-war-yaml/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-05-10T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spring Boot打包war包和設定檔"/>
+<meta name="twitter:description" content="徹底釐清yaml的載入順序"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-boot%e6%89%93%e5%8c%85war%e5%8c%85%e5%92%8c%e8%a8%ad%e5%ae%9a%e6%aa%94%e5%88%86%e9%9b%a2" onclick="onNavClick(`#spring-boot打包war包和設定檔分離-nav`)" id="spring-boot打包war包和設定檔分離-nav">
+									Spring Boot打包war包和設定檔分離
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8%e6%89%93%e5%8c%85%e6%99%82%e6%8a%8a%e8%a8%ad%e5%ae%9a%e6%aa%94%e6%8e%92%e9%99%a4" onclick="onNavClick(`#在打包時把設定檔排除-nav`)" id="在打包時把設定檔排除-nav">
+									在打包時把設定檔排除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-boot%e6%89%93%e5%8c%85war%e5%8c%85%e5%92%8c%e8%a8%ad%e5%ae%9a%e6%aa%94%e5%88%86%e9%9b%a2" onclick="onNavClick(`#spring-boot打包war包和設定檔分離-nav`)" id="spring-boot打包war包和設定檔分離-nav">
+									Spring Boot打包war包和設定檔分離
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9c%a8%e6%89%93%e5%8c%85%e6%99%82%e6%8a%8a%e8%a8%ad%e5%ae%9a%e6%aa%94%e6%8e%92%e9%99%a4" onclick="onNavClick(`#在打包時把設定檔排除-nav`)" id="在打包時把設定檔排除-nav">
+									在打包時把設定檔排除
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/spring.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    Spring Boot打包war包和設定檔
+                    
+                    <div class="post-subtitle">
+                        徹底釐清yaml的載入順序
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-05-10 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="spring-boot打包war包和設定檔分離">Spring Boot打包war包和設定檔分離</h1>
+<blockquote>
+<p>如果只是想在打成jar包的時候單獨把設定檔分離出來</p>
+</blockquote>
+<ul>
+<li>Springboot讀取核心設定檔（application.properties）的優先順序為:</li>
+</ul>
+<pre tabindex="0"><code>1. Jar（war）包同級目錄的config目錄
+2. Jar（war）包同級目錄
+3. classPath(即resources目錄)的config目錄
+4. classpath目錄
+</code></pre><ul>
+<li>
+<p>要實現設定檔分離，只需要在編譯出來的jar檔的同級目錄創建一個config目錄，然後把設定檔複製到該目錄即可，運行時，會優先使用config目錄下的設定檔</p>
+</li>
+<li>
+<p>war包同級目錄建直接放application.yml優先順序低於同級目錄下的config資料夾</p>
+<ul>
+<li>注: 此時打包的yml配置其實還是在war包中，只是被優先順序更高的war包統計目錄的config資料夾或者application.ym覆蓋了</li>
+</ul>
+</li>
+</ul>
+<h3 id="在打包時把設定檔排除">在打包時把設定檔排除</h3>
+<blockquote>
+<p>在打包的時候就把.properties,.yml,.xml幾種類型的設定檔都過濾掉了</p>
+</blockquote>
+<ul>
+<li>在pom中加入:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;resources&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;resource&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;directory&gt;</span>src/main/resources<span style="color:#8b008b;font-weight:bold">&lt;/directory&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;excludes&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;exclude&gt;</span>**/*.properties<span style="color:#8b008b;font-weight:bold">&lt;/exclude&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;exclude&gt;</span>**/*.yml<span style="color:#8b008b;font-weight:bold">&lt;/exclude&gt;</span>
+</span></span><span style="display:flex;"><span>                //<span style="color:#8b008b;font-weight:bold">&lt;exclude&gt;</span>**/*.xml<span style="color:#8b008b;font-weight:bold">&lt;/exclude&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;/excludes&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;/resource&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;/resources&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/build&gt;</span>
+</span></span></code></pre></div><ul>
+<li>gradlew</li>
+</ul>
+<pre tabindex="0"><code>sourceSets {
+    main {
+        java {
+            srcDir &#39;src&#39;
+            exclude &#39;**/*.properties&#39;
+        }
+        resources {
+            srcDir &#39;config&#39;
+        }
+    }
+}
+</code></pre><ul>
+<li>更多關於gradlew打包可以參考: <a href="https://blog.qrtt1.io/posts/gradle-series-6-java-project/">https://blog.qrtt1.io/posts/gradle-series-6-java-project/</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-05-10</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220425-echarts/">
+			上一篇<br>ECharts基本應用
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>
