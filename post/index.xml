@@ -7,13 +7,40 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Tue, 10 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用Calendar獲取時間區間</title>
+      <link>https://yoziming.github.io/post/220610-calender-use/</link>
+      <pubDate>Fri, 10 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220610-calender-use/</guid>
+      <description>Calendar 其實我更想用Hutool的時間工具包，然而沒辦法的情況下只好用原生的
+取昨天0點到今天0點，比如一天結束了要統計結果產生某報表的時候 Calendar cal = Calendar.getInstance(); cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0); Date end = cal.getTime(); //今天0點 cal.add(Calendar.DATE, -1); Date start = cal.getTime(); // 昨天0點 取當下時間回推5分鐘，比如我有一個服務每5分鐘要匯報一次 要注意的是calendar一般不會用到毫秒，然而取成時間戳的時候還是會露出尾巴來 Calendar calendar = Calendar.getInstance(); calendar.set(Calendar.SECOND, 0); // 當下這分鐘 calendar.set(Calendar.MILLISECOND, 0); Date end = calendar.getTime(); calendar.add(Calendar.MINUTE, -5); Date start = calendar.getTime(); 近期其他心得 ObjectList透過stream轉換成Map(例如我想得出一個用Id可以快速獲取Name的Map)，當Key重複的時候，他不會自動把舊的頂掉，而是會拋出異常 所以需要加上第3個參數，說明要保留誰，例如(oldValue, newValue) -&amp;gt; newValue)就是留下新的 Map&amp;lt;Integer, String&amp;gt; map = list.stream().collect(Collectors.toMap(Person::getId, Person::getName,(oldValue, newValue) -&amp;gt; newValue)); </description>
+    </item>
+    
+    <item>
+      <title>使用parallelStream要注意的坑</title>
+      <link>https://yoziming.github.io/post/220525-parallel-stream-trap/</link>
+      <pubDate>Wed, 25 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220525-parallel-stream-trap/</guid>
+      <description>CopyOnWriteArrayList 場景是這樣，我有一個查詢&amp;quot;播放計畫&amp;quot;列表的功能，一個計劃關聯到多個節目與裝置，所以在buildPlayPlanVo這邊我為了加速就想用分治的辦法去做 List&amp;lt;PlayPlanVo&amp;gt; result = new CopyOnWriteArrayList&amp;lt;&amp;gt;(); // 獲取與播放計畫關聯的節目與裝置，封裝成Vo planList.parallelStream().forEach(playPlan -&amp;gt; { try { result.add(buildPlayPlanVo(playPlan)); } catch (IOException e) { ... } }); result.sort(Comparator.comparing(PlayPlanVo::getId)); return result; 最一開始用了ArrayList，結果就報錯(例如sort的時候是null)，顯然我忘記ArrayList是併發不安全的。所以換成CopyOnWriteArrayList，它可以多線程同時讀寫，以下複製網友&amp;quot;拥抱心中的梦想&amp;quot;的文章
+優點
+資料一致性完整，為什麼？因為加鎖了，併發資料不會亂
+解決了像ArrayList、Vector這種集合多執行緒遍歷反覆運算問題，記住，Vector雖然執行緒安全，只不過是加了synchronized關鍵字，反覆運算問題完全沒有解決！
+適合場景
+讀多寫少（白名單，黑名單，商品類目的訪問和更新場景），為什麼？因為寫的時候會複製新集合
+集合不大，為什麼？因為寫的時候會複製新集合
+即時性要求不高，為什麼，因為有可能會讀取到舊的集合資料
+相關心得 在lambda中，區域變數都要求是final的，一開始我也不懂為什麼，後來查了才知道一個原因就是要防止併發時同時讀寫的錯誤 StringBuilder跟StringBuffer，這兩個偶爾會用錯，後來發明個人的記憶法就再也沒錯過了: Builder效率高(建築工)、多線程用Buffer才安全(多巴胺) </description>
+    </item>
+    
     <item>
       <title>Spring Boot打包war包和設定檔</title>
-      <link>https://yoziming.github.io/post/2200510-spring-war-yaml/</link>
+      <link>https://yoziming.github.io/post/220510-spring-war-yaml/</link>
       <pubDate>Tue, 10 May 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://yoziming.github.io/post/2200510-spring-war-yaml/</guid>
+      <guid>https://yoziming.github.io/post/220510-spring-war-yaml/</guid>
       <description>Spring Boot打包war包和設定檔分離 如果只是想在打成jar包的時候單獨把設定檔分離出來
 Springboot讀取核心設定檔（application.properties）的優先順序為: 1. Jar（war）包同級目錄的config目錄 2. Jar（war）包同級目錄 3. classPath(即resources目錄)的config目錄 4. classpath目錄 要實現設定檔分離，只需要在編譯出來的jar檔的同級目錄創建一個config目錄，然後把設定檔複製到該目錄即可，運行時，會優先使用config目錄下的設定檔
 war包同級目錄建直接放application.yml優先順序低於同級目錄下的config資料夾
