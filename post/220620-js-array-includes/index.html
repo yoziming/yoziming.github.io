@@ -530,34 +530,34 @@ console.log(arrNum.indexOf(NaN)); // -1
 </ul>
 <h2 id="jquery的val搭配includes導致的血案">JQuery的val()搭配includes()導致的血案</h2>
 <blockquote>
-<p>前情提要，我有一個allProgramList是全部的id清單(裡面是數字id)</p>
-<p>itemProgram是一個&lt;<em>select</em>&gt;的html元素，可多選的下拉清單(也可以單選)</p>
+<p>前情提要，我有一個allObjectList是物件組成的清單(裡面的object有數字的id)</p>
+<p>mySelect是一個&lt;<em>select</em>&gt;的html元素，選項是id，可多選的下拉清單(也可以單選)</p>
 </blockquote>
 <ul>
-<li>我想得到使用者選中了哪些，而且必須是在allProgramList中也有的我才要，相當於要跟使用者選中的itemProgram做交集，所以就這樣寫
+<li>我想在allObjectList中篩選出使用者有選中的id構成一個新的ObjectList，所以就這樣寫
 <ul>
-<li>用$(&quot;#itemProgram&quot;).val()獲取選中的id，因為select的value用這個方法會拿到string，所以在includes()比較時也把id轉成string來比較</li>
+<li>用$(&quot;#mySelect&quot;).val()獲取選中的id，因為select的value用這個方法會拿到string，所以在includes()比較時也把id轉成string來比較</li>
 </ul>
 </li>
 </ul>
-<pre tabindex="0"><code>var programList = allProgramList.filter(function(program) {
-return $(&#34;#itemProgram&#34;).val().includes(program.pgId.toString());
-});
-</code></pre><ul>
-<li>乍看也沒問題。然而當只有單選、且id為兩位數以上就出事了</li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">var</span> newObjectList = allObjectList.filter(<span style="color:#8b008b;font-weight:bold">function</span>(obj) {
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> $(<span style="color:#cd5555">&#34;#mySelect&#34;</span>).val().includes(obj.id.toString());
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><ul>
+<li>乍一看運作起來也沒問題。然而當只有單選且id為兩位數以上就出事了</li>
 <li>因為.val()這個方法用在select上，當有多選時他會得到array，但是只有單選時卻是得到&quot;單個物件&quot;。例如使用者單選中id=&ldquo;12&rdquo;，此時我的方法實際上變成</li>
 </ul>
 <pre tabindex="0"><code>&#34;12&#34;.includes()
 </code></pre><ul>
 <li>符合條件的變成&quot;1&quot;、&ldquo;2&rdquo;、&ldquo;12&rdquo;，我想要的只有&quot;12&quot;但是卻把&quot;1&quot;、&ldquo;2&quot;也一起得到了</li>
-<li>坑點就在於.includes()這個方法不只array可以用，string也可以用(就是把string依照char拆成數組)我是真的沒想到</li>
+<li>坑點就在於.includes()這個方法不只array可以用，string也可以用(就是把string拆成數組)我是真的沒想到</li>
 </ul>
 <h3 id="教訓">教訓</h3>
 <ul>
-<li>老實一點把.val()獲取到的東西強制轉成Number Array，就可以杜絕這個隱患</li>
+<li>老實一點把.val()獲取到的東西先強制轉成Number Array，就可以杜絕這個隱患</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">var</span> programList = allProgramList.filter(<span style="color:#8b008b;font-weight:bold">function</span>(program) {
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> convertToNumberArray($(<span style="color:#cd5555">&#34;#itemProgram&#34;</span>).val()).includes(program.pgId);
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">var</span> newObjectList = allObjectList.filter(<span style="color:#8b008b;font-weight:bold">function</span>(obj) {
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> convertToNumberArray($(<span style="color:#cd5555">&#34;#mySelect&#34;</span>).val()).includes(obj.id);
 </span></span><span style="display:flex;"><span>});
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#228b22">/**
