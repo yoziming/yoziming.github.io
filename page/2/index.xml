@@ -6,9 +6,1197 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Mon, 20 Jun 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Aug 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>通訊協定:URL、IP與網路編程</title>
+        <link>https://yoziming.github.io/post/211213-agg-ja-28/</link>
+        <pubDate>Mon, 13 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211213-agg-ja-28/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211213-agg-ja-28/ -&lt;h1 id=&#34;通訊協定&#34;&gt;通訊協定&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;物理層:網路線、電話線&lt;/li&gt;
+&lt;li&gt;網路層:IP、ICMP、ARP&lt;/li&gt;
+&lt;li&gt;傳輸層:TCP、UDP&lt;/li&gt;
+&lt;li&gt;應用層:HTTP、FTP、DNS、Telnet&lt;/li&gt;
+&lt;li&gt;一般來說所謂&amp;quot;下層&amp;quot;是越靠近物理層面的那層&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;網路層ip&#34;&gt;網路層(IP)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;InetAddress類&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;實例化
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getByName(String host)&lt;/code&gt;:host可以是IP，也可以是域名再透過DNS找到IP
+&lt;ul&gt;
+&lt;li&gt;IP
+&lt;ul&gt;
+&lt;li&gt;本機:127.0.0.1或&lt;code&gt;localhost&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;內部IP:192.168.0.0~192.168.255.255&lt;/li&gt;
+&lt;li&gt;外部IP:其他的都是&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;域名:www.google.com、zh.wikipedia.org&amp;hellip;等等&lt;/li&gt;
+&lt;li&gt;DNS:Domain Name System，負責找出對應的IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getLocalHost()&lt;/code&gt;:返回本地IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;調用
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getHostName()&lt;/code&gt;:顧名思義&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getHostAddress():顧名思義&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;port&lt;/code&gt;:連接埠、端口號，每個程序各自占用的通道，介於0~65536&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;公認端口:0~1023，例如:http=80、ftp=21、telnet=23&lt;/li&gt;
+&lt;li&gt;註冊端口:1024~49151，約定成俗的，例如MySQL=3306&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;IP&lt;/code&gt;+&lt;code&gt;port&lt;/code&gt;=&lt;code&gt;Socket&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Socket&lt;/code&gt;才是真正實現程序間網路通信的基礎&lt;/li&gt;
+&lt;li&gt;主動發起通信的為客戶端&lt;code&gt;Client&lt;/code&gt;，等待請求的為服務端&lt;code&gt;Server&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;傳輸層&#34;&gt;傳輸層&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;TCP
+&lt;ul&gt;
+&lt;li&gt;可靠，連接時需進行三次握手:
+&lt;ul&gt;
+&lt;li&gt;第一次:A發給B說&amp;quot;B 在嗎?&amp;quot;&lt;/li&gt;
+&lt;li&gt;第二次:B收到並返回&amp;quot;在，我是B，請說&amp;quot;&lt;/li&gt;
+&lt;li&gt;第三次:A收到B返回的&amp;quot;請說&amp;quot;，就認為傳輸是可靠的&lt;/li&gt;
+&lt;li&gt;&lt;img src=&#34;3.gif&#34; alt=&#34;3&#34;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;適合用在大量的傳輸&lt;/li&gt;
+&lt;li&gt;傳輸完需釋放連接、效率低。四次揮手:
+&lt;ul&gt;
+&lt;li&gt;第一次:A發給B說&amp;quot;B 我們分手吧?&amp;quot;&lt;/li&gt;
+&lt;li&gt;第二次:B收到並返回&amp;quot;什麼?你確定?&amp;quot;&lt;/li&gt;
+&lt;li&gt;第三次:B想了一下確實該分，又返回&amp;quot;算了，那就分吧&amp;quot;&lt;/li&gt;
+&lt;li&gt;第四次:A收到B確定要分手，揮了揮手，沒人回應&lt;/li&gt;
+&lt;li&gt;&lt;img src=&#34;4.gif&#34; alt=&#34;4&#34;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;UDP
+&lt;ul&gt;
+&lt;li&gt;將數據、源、目的封裝成數據包，不需要建立連接&lt;/li&gt;
+&lt;li&gt;數據包大小限制在64K內&lt;/li&gt;
+&lt;li&gt;不確認、不可靠，可以廣播發送&lt;/li&gt;
+&lt;li&gt;無須釋放資源，開銷小、速度快&lt;/li&gt;
+&lt;li&gt;&lt;img src=&#34;udp.jpg&#34; alt=&#34;udp&#34;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;網路編程&#34;&gt;網路編程&lt;/h1&gt;
+&lt;h3 id=&#34;範例-tcp連線&#34;&gt;範例-TCP連線&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;實際上必須try-catch，這邊暫時用throws Exception維持代碼簡潔&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;client端&#34;&gt;client端&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;client1&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Socket localhost = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; Socket(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;, 8899);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    OutputStream outputStream = localhost.&lt;span style=&#34;color:#658b00&#34;&gt;getOutputStream&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    outputStream.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;哈囉你好嗎&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 關鍵，這邊write完不shutdown，後面read方法會被阻塞
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    localhost.&lt;span style=&#34;color:#658b00&#34;&gt;shutdownOutput&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 接收回應，這邊複習轉換流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    InputStream is = localhost.&lt;span style=&#34;color:#658b00&#34;&gt;getInputStream&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    InputStreamReader isr = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; InputStreamReader(is);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] cbuf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[10];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = isr.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(cbuf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String str = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(cbuf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;print&lt;/span&gt;(str);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 關閉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    isr.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    is.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    outputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    localhost.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;建立&lt;code&gt;Socket&lt;/code&gt;實例物件，創建的同時會發起連線&lt;/li&gt;
+&lt;li&gt;建立連到該&lt;code&gt;Socket&lt;/code&gt;的流&lt;/li&gt;
+&lt;li&gt;通過流進行讀寫操作&lt;/li&gt;
+&lt;li&gt;關閉流與&lt;code&gt;Socket&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h5 id=&#34;server端&#34;&gt;server端&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;server1&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ServerSocket serverSocket = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServerSocket(8899);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;server啟動，正在監聽port:&amp;#34;&lt;/span&gt; + serverSocket.&lt;span style=&#34;color:#658b00&#34;&gt;getLocalPort&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Socket s = serverSocket.&lt;span style=&#34;color:#658b00&#34;&gt;accept&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;收到請求，來自:&amp;#34;&lt;/span&gt; + s.&lt;span style=&#34;color:#658b00&#34;&gt;getInetAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    InputStream inputStream = s.&lt;span style=&#34;color:#658b00&#34;&gt;getInputStream&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 由於要處理中文字，用好朋友ByteArrayOutputStream來裝
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    ByteArrayOutputStream baos = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ByteArrayOutputStream();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[10];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = inputStream.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        baos.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(buf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(baos.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 返回訊號
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    OutputStream os = s.&lt;span style=&#34;color:#658b00&#34;&gt;getOutputStream&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    os.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;server收到訊息了，client你退下吧&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 關閉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    os.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    inputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    s.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    serverSocket.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;建立&lt;code&gt;ServerSocket&lt;/code&gt;，綁定監聽的端口&lt;/li&gt;
+&lt;li&gt;以&lt;code&gt;ServerSocket&lt;/code&gt;調用&lt;code&gt;accept()&lt;/code&gt;方法，返回連線成功的&lt;code&gt;Socket&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;建立該&lt;code&gt;Socket&lt;/code&gt;的流&lt;/li&gt;
+&lt;li&gt;通過流進行讀寫操作&lt;/li&gt;
+&lt;li&gt;關閉流、&lt;code&gt;Socket&lt;/code&gt;與&lt;code&gt;ServerSocket&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;範例-udp連線&#34;&gt;範例-UDP連線&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;代碼比較簡單，就寫一起了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;UDP&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;sender&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// UDP的socket不管內容跟要發到哪
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        DatagramSocket socket = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DatagramSocket();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] data = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;麥當勞歡樂送&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 具體的Packet才指明內容跟要發給誰
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        DatagramPacket datagramPacket = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DatagramPacket(data, 0, data.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;, InetAddress.&lt;span style=&#34;color:#658b00&#34;&gt;getLocalHost&lt;/span&gt;(), 9090);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 參數是發送的data、起始與終點、來源(本機)與port
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        socket.&lt;span style=&#34;color:#658b00&#34;&gt;send&lt;/span&gt;(datagramPacket);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;反正送出去了，不管有沒有人接，我先溜了&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;receiver&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// UDP接收端可以在socket先聲明端口
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        DatagramSocket socket = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DatagramSocket(9090);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 準備接收的容器
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[100];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// socket已經說過地址了，這邊就只負責讀內容
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        DatagramPacket packet = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DatagramPacket(buf, 0, buf.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#658b00&#34;&gt;receive&lt;/span&gt;(packet);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 印出接收的內容
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(packet.&lt;span style=&#34;color:#658b00&#34;&gt;getData&lt;/span&gt;(), 0, packet.&lt;span style=&#34;color:#658b00&#34;&gt;getLength&lt;/span&gt;()));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;建立&lt;code&gt;DatagramSocket&lt;/code&gt;物件&lt;/li&gt;
+&lt;li&gt;建立&lt;code&gt;DatagramPacket&lt;/code&gt;物件，在此打包或拆包，具體指明內容跟地址&lt;/li&gt;
+&lt;li&gt;以&lt;code&gt;Socket&lt;/code&gt;調用&lt;code&gt;send()&lt;/code&gt;或&lt;code&gt;receive()&lt;/code&gt;方法，形參為&lt;code&gt;Packet&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;關閉&lt;code&gt;Socket&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;url&#34;&gt;URL&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;URL(Uniform Resource Locator):統一資源定位符，它表示Internet上某一資源的地址&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;URL的基本結構由5部分組成:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;傳輸協議://主機名:端口號/檔案名#片段名?參數列表&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;例如: &lt;code&gt;http://192.168.1.100:8080/helloworld/index.jsp#a?username=shkstart&amp;amp;password=123&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;參數列表格式:參數名=參數值&amp;amp;參數名=參數值&amp;hellip;.其實就是&lt;code&gt;K-V&lt;/code&gt;型式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在Java中使用&lt;code&gt;URL&lt;/code&gt;類建立實例物件，構造器在形參輸入網址，有幾種拼接的花樣，用看的就明白不再贅述&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一個&lt;code&gt;URL&lt;/code&gt;物件生成後，屬性不可再改變，有許多&lt;code&gt;getXXX()&lt;/code&gt;方法可以獲取相關資訊&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;所謂&lt;code&gt;URI&lt;/code&gt;，uniform resource identifier是一個抽象的概念，其下包含:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;URL&lt;/code&gt;，結尾的locate就是指有一個具體能訪問的位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;URN&lt;/code&gt;，uniform resource name，透過名字來標示資源，例如&lt;code&gt;mailto:java-net@java.sun.com&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;範例-透過url連線&#34;&gt;範例-透過URL連線&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;URL url = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; URL(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;http://192.168.1.100:8080/helloworld.txt&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#228b22&#34;&gt;// 只是表明網址
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;URLConnection urlConnection = url.&lt;span style=&#34;color:#658b00&#34;&gt;openConnection&lt;/span&gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 試著連線看看，可能返回錯誤
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;urlConnection.&lt;span style=&#34;color:#658b00&#34;&gt;connect&lt;/span&gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 真正表示&amp;#34;連上&amp;#34;這個動作
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;InputStream inputStream = urlConnection.&lt;span style=&#34;color:#658b00&#34;&gt;getInputStream&lt;/span&gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 拿到流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;建立&lt;code&gt;URL&lt;/code&gt;物件，指明要連線的地址&lt;/li&gt;
+&lt;li&gt;以該&lt;code&gt;URL&lt;/code&gt;物件調用&lt;code&gt;openConnection()&lt;/code&gt;方法，嘗試連接，成功會返回&lt;code&gt;URLConnection&lt;/code&gt;物件，失敗則&lt;code&gt;IOException&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;確定能連後，以&lt;code&gt;URLConnection&lt;/code&gt;物件調用&lt;code&gt;connect()&lt;/code&gt;確實搭上線&lt;/li&gt;
+&lt;li&gt;調用&lt;code&gt;getInputStream( )&lt;/code&gt;、&lt;code&gt;getOutputStream( )&lt;/code&gt;方法建立流&lt;/li&gt;
+&lt;li&gt;操作流&lt;/li&gt;
+&lt;li&gt;關閉流、關閉連線&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;IP:&lt;code&gt;InetAddress&lt;/code&gt;類，用&lt;code&gt;getByName(String host)&lt;/code&gt;方法綁定IP&lt;/li&gt;
+&lt;li&gt;TCP:可靠、三次握手、效率低&lt;/li&gt;
+&lt;li&gt;UDP:以封包為主體，管送不管收、效率高&lt;/li&gt;
+&lt;li&gt;URL:透過網址建立URL實例物件、調用&lt;code&gt;openConnection()&lt;/code&gt;方法得到&lt;code&gt;URLConnection&lt;/code&gt;物件，再實際連線、獲取流&amp;hellip;等等&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211213-agg-ja-28/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>IO流:物件流、序列化、隨機讀寫流與NIO</title>
+        <link>https://yoziming.github.io/post/211212-agg-ja-27/</link>
+        <pubDate>Sun, 12 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211212-agg-ja-27/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211212-agg-ja-27/ -&lt;h1 id=&#34;標準輸出入流&#34;&gt;標準輸出/入流&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;System.in&lt;/code&gt;:標準輸入字節流，預設是從鍵盤輸入，類型是&lt;code&gt;InputStream&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.out&lt;/code&gt;:標準輸出流，預設輸出到控制台，類型是&lt;code&gt;PrintStream&lt;/code&gt;，繼承自&lt;code&gt;FilterOutputStream&lt;/code&gt;，繼承自&lt;code&gt;OutputStream&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;重定向方法&#34;&gt;重定向方法&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public static void setIn(InputStream in)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public static void setOut(PrintStream out)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;範例-讀取輸入&#34;&gt;範例-讀取輸入&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;不使用&lt;code&gt;scanner&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 把標準輸入字節流先轉換成字符流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    BufferedReader bufferedReader = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InputStreamReader isr = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; InputStreamReader(System.&lt;span style=&#34;color:#658b00&#34;&gt;in&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 把字符流用bufferedReader包起來，為了調用readline方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        bufferedReader = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BufferedReader(isr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;; ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;輸入要轉換成大寫的字串...&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            String str = bufferedReader.&lt;span style=&#34;color:#658b00&#34;&gt;readLine&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;exit&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;equalsIgnoreCase&lt;/span&gt;(str)) { &lt;span style=&#34;color:#228b22&#34;&gt;// &amp;#34;exit&amp;#34;放前面防空指針
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;離開&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(str.&lt;span style=&#34;color:#658b00&#34;&gt;toUpperCase&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            bufferedReader.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;print流&#34;&gt;Print流&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只有輸出，只會輸出&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;不是特別重要，認識一下有這2個&lt;code&gt;PrintStream&lt;/code&gt;、&lt;code&gt;PrintWriter&lt;/code&gt;&lt;/p&gt;
+&lt;h5 id=&#34;範例-寫log&#34;&gt;範例-寫log&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; FileNotFoundException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 造一個輸出到檔案的流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    FileOutputStream fileOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;abc.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 造一個Print輸出流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    PrintStream printStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; PrintStream(fileOutputStream, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;);&lt;span style=&#34;color:#228b22&#34;&gt;// true表示自動flush
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 將系統標準輸出重定向到Print輸出流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;setOut&lt;/span&gt;(printStream);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;原本想印在控制台，現在印到檔案abc.txt裡了!&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;數據流&#34;&gt;數據流&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用於讀取或寫出&lt;code&gt;String&lt;/code&gt;或基本數據類型，只有字節流&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;DataOutputStream&lt;/code&gt;:將記憶體中的數據寫到文件檔案中，這個文件基本不能給人看，因為可能有奇奇怪怪比如&lt;code&gt;string&lt;/code&gt;、&lt;code&gt;int&lt;/code&gt;、&lt;code&gt;boolean&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;DataInputStream&lt;/code&gt;:將文件檔案中的數據讀取記憶體中，寫的時候類型怎寫，讀的時候也必須照順序讀，否則報異常&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;套在對應的&lt;code&gt;in/outputStream&lt;/code&gt;字節流的子類使用，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    DataOutputStream dataOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DataOutputStream(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;data.txt&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;writeUTF&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;張三&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;flush&lt;/span&gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 刷新，確實寫到文件中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;writeBoolean&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;flush&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;writeFloat&lt;/span&gt;(654321.&lt;span style=&#34;color:#658b00&#34;&gt;56465421f&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dataOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;flush&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    DataInputStream dataInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DataInputStream(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;data.txt&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(dataInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;readUTF&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(dataInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;readBoolean&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(dataInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;readFloat&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;物件流&#34;&gt;物件流&lt;/h1&gt;
+&lt;h3 id=&#34;序列化&#34;&gt;序列化&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;定義:將一個&lt;code&gt;Java物件&lt;/code&gt;轉換為二進制檔案，用以通信交換或保存&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;條件:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;物件的類滿足&lt;code&gt;Serializable&lt;/code&gt;接口或&lt;code&gt;Externalizable&lt;/code&gt;接口&lt;/li&gt;
+&lt;li&gt;在類聲明版本標識號:&lt;code&gt;private static final&lt;/code&gt; &lt;code&gt;long&lt;/code&gt; &lt;code&gt;serialVersionUID&lt;/code&gt;，用以作為反序列化時的版本依據，
+&lt;ul&gt;
+&lt;li&gt;比如第一代&lt;code&gt;person&lt;/code&gt;類號碼是001，物件&amp;quot;&lt;code&gt;小明&lt;/code&gt;&amp;ldquo;存成一個&lt;code&gt;dat&lt;/code&gt;檔案&lt;/li&gt;
+&lt;li&gt;後來&lt;code&gt;person&lt;/code&gt;類更新了，多加了性別屬性，物件&amp;rdquo;&lt;code&gt;阿花-女&lt;/code&gt;&amp;ldquo;存成的&lt;code&gt;dat&lt;/code&gt;檔案與當初小明的顯然格式不同了，所以必須更改版本標示號&lt;/li&gt;
+&lt;li&gt;如果不顯式聲明標示號，每次編譯都會自動給一個，反序列化時可能報錯&lt;/li&gt;
+&lt;li&gt;用&lt;code&gt;private&lt;/code&gt;是因為&lt;code&gt;serialVersionUID&lt;/code&gt;顯然不該也不能被繼承&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;類中所有的屬性也都必須是可序列化的(基本數據類型天生可以，要注意的是引用其他類的情況)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;避免序列化:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;static&lt;/code&gt;:表示該屬性或方法是屬於&lt;code&gt;類本身&lt;/code&gt;，&lt;code&gt;物件&lt;/code&gt;被序列化當然不關我的事；有時候可能會迷惑某屬性用&lt;code&gt;static&lt;/code&gt;修飾了一樣能寫能讀，實際上那是&lt;code&gt;JVM&lt;/code&gt;從對應類中拿到的值而非反序列化而來&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;transient&lt;/code&gt;:暫時的，發音&amp;quot;tran-洗-ent&amp;rdquo;，顧名思義只存在記憶體中不實際寫出；注意這邊講的是&lt;code&gt;Serializable&lt;/code&gt;接口，此接口特性是會自動序列化
+&lt;ul&gt;
+&lt;li&gt;如果是透過實現&lt;code&gt;Externalizable&lt;/code&gt;接口者，需要在&lt;code&gt;writeExternal&lt;/code&gt;方法手動指定要序列化的變量，該方法會蓋過&lt;code&gt;transient&lt;/code&gt;的修飾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;序列化是RMI，Remote Method Invocation(遠端方法呼叫)，是允許執行在一個Java虛擬機器的物件呼叫執行在另一個Java虛擬機器上的物件的方法，駭客常用反序列化的過程做壞事，要注意安全漏洞&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;反序列化:相反的過程，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ObjectOutputStream oos = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ObjectOutputStream(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;data.dat&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oos.&lt;span style=&#34;color:#658b00&#34;&gt;writeObject&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;天線寶寶說你好&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oos.&lt;span style=&#34;color:#658b00&#34;&gt;flush&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;將物件序列化為檔案成功&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ObjectInputStream ois = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ObjectInputStream(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;data.dat&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Object obj = ois.&lt;span style=&#34;color:#658b00&#34;&gt;readObject&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;反序列化，還原成物件...&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String str = (String) obj;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(str);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;randomaccessfile類&#34;&gt;RandomAccessFile類&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;隨機讀寫流，&amp;ldquo;隨機&amp;quot;其實&amp;quot;任意&amp;quot;的意思&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;特性&#34;&gt;特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;聲明在&lt;code&gt;java.io&lt;/code&gt;包下，直接繼承於&lt;code&gt;java.io.Object&lt;/code&gt;類&lt;/li&gt;
+&lt;li&gt;實現了&lt;code&gt;DataInput&lt;/code&gt;與&lt;code&gt;DataOutput&lt;/code&gt;接口，雙頭龍&lt;/li&gt;
+&lt;li&gt;支持隨機訪問，想讀寫哪邊就讀寫哪邊&lt;/li&gt;
+&lt;li&gt;其物件包含了一個紀錄指針，用以標示當前讀寫位置&lt;/li&gt;
+&lt;li&gt;可以自由移動指針位置，透過方法:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;long getFilePointer()&lt;/code&gt;:獲取當前指針位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void seek(long pos)&lt;/code&gt;:將指針移到pos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;實例化&#34;&gt;實例化&lt;/h3&gt;
+&lt;p&gt;構造器:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;RandomAccessFile&lt;/span&gt;(File file, String mode)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;RandomAccessFile&lt;/span&gt;(String name, String mode)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;mode&lt;/code&gt;:參數，決定訪問模式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;r&lt;/code&gt;:只讀，如果檔案不存在就報異常&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rw&lt;/code&gt;:讀寫，如果檔案不存在就創建；用&lt;code&gt;write()&lt;/code&gt;方法如果檔案存在會對&amp;quot;內容&amp;quot;進行覆蓋，且預設從頭開始覆蓋&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rwd&lt;/code&gt;:讀寫並同步更新內容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rws&lt;/code&gt;:讀寫並同步更新內容及元數據&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;範例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 實例化
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;RandomAccessFile rw = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; RandomAccessFile(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello.txt&amp;#34;&lt;/span&gt;), &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rw&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 將string轉為byte編碼寫入
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;12345abcde&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 在末尾追加，相當於append
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;seek&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello.txt&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;zzz&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;範例-插入字串&#34;&gt;範例-插入字串&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test1&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    RandomAccessFile rw = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; RandomAccessFile(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello.txt&amp;#34;&lt;/span&gt;), &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rw&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    rw.&lt;span style=&#34;color:#658b00&#34;&gt;seek&lt;/span&gt;(5); &lt;span style=&#34;color:#228b22&#34;&gt;// 將指針移到5
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 造一個StringBuilder用以保存5以後的資料
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    StringBuilder builder = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; StringBuilder(Math.&lt;span style=&#34;color:#658b00&#34;&gt;toIntExact&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hello.txt&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;()));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[20];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = rw.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 將讀取的&amp;#34;後面的&amp;#34;資料寫進buf
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        builder.&lt;span style=&#34;color:#658b00&#34;&gt;append&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(buf, 0, len)); &lt;span style=&#34;color:#228b22&#34;&gt;// 將buf寫入builder
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    rw.&lt;span style=&#34;color:#658b00&#34;&gt;seek&lt;/span&gt;(5); &lt;span style=&#34;color:#228b22&#34;&gt;// 將指針移再移回5，因為read也會動指針
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;***INSERT***&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 寫回後面的部分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(builder.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	rw.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 用中文可能會亂碼，因為中文字是3個Byte，read到buf寫入builder的時候被切壞了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;改良-避免亂碼&#34;&gt;改良-避免亂碼&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用ByteArrayOutputStream&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;seek&lt;/span&gt;(6); &lt;span style=&#34;color:#228b22&#34;&gt;// 將指針移
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 解決亂碼，用ByteArrayOutputStream
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ByteArrayOutputStream baos = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ByteArrayOutputStream();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[32];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = rw.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 將讀取的&amp;#34;後面的&amp;#34;資料寫進buf
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    baos.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(buf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;seek&lt;/span&gt;(6); &lt;span style=&#34;color:#228b22&#34;&gt;// 將指針移再移回，因為read也會動指針
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;中文中文&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 寫回後面的部分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;rw.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(baos.&lt;span style=&#34;color:#658b00&#34;&gt;toString&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(StandardCharsets.&lt;span style=&#34;color:#658b00&#34;&gt;UTF_8&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 還要注意一開始seek的位置，一開始就切在要害(例如奇數位)也會導致小部分亂碼
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;nio&#34;&gt;NIO&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JDK4引入了NIO，(Non-blocking I/O)，非阻塞式，加入觀察與通知的機制&lt;/p&gt;
+&lt;p&gt;JDK7強力更新成NIO.2版本，之後說的NIO基本都是指這個&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;IO主要是流本身，NIO是以緩衝區、管道為導向，讀寫效率更高&lt;/li&gt;
+&lt;li&gt;位於&lt;code&gt;java.nio.channels.Channel&lt;/code&gt;，其下有兩套NIO:
+&lt;ul&gt;
+&lt;li&gt;處理本地文件&lt;code&gt;FileChannel&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;處理網路:&lt;code&gt;SocketChannel&lt;/code&gt;、&lt;code&gt;ServerSocketChannel&lt;/code&gt;、&lt;code&gt;DatagramChannel&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;path接口&#34;&gt;Path接口&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;用以取代&lt;code&gt;File&lt;/code&gt;類&lt;/li&gt;
+&lt;li&gt;實例化:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;static Path get(String first, String … more)&lt;/code&gt;:用於將多個字串串連成路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;static Path get(URI uri)&lt;/code&gt;:返回指定uri對應的Path路徑&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;paths類&#34;&gt;Paths類&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;Paths&lt;/code&gt;是工具類，除了上面兩種&lt;code&gt;get&lt;/code&gt;靜態方法，還有許多常用方法:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;String toString()&lt;/code&gt;:返回調用Path 物件的字串表示形式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean startsWith(String path)&lt;/code&gt;:判斷是否以path路徑開始&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean endsWith(String path)&lt;/code&gt;:判斷是否以path路徑結束&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isAbsolute()&lt;/code&gt;:判斷是否是絕對路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path getParent()&lt;/code&gt;:返回Path物件包含整個路徑，不包含Path 物件指定的檔路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path getRoot()&lt;/code&gt;:返回調用Path 物件的根路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path getFileName()&lt;/code&gt;:返回與調用Path 物件關聯的檔案名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int getNameCount()&lt;/code&gt;:返回Path 根目錄後面元素的數量&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path getName(int idx)&lt;/code&gt;:返回指定索引位置idx 的路徑名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path toAbsolutePath()&lt;/code&gt;:作為絕對路徑返回調用Path 物件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path resolve(Path p)&lt;/code&gt;:合併兩個路徑，返回合併後的路徑對應的Path物件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File toFile()&lt;/code&gt;:將Path轉化為File類的物件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;files類&#34;&gt;Files類&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;位於&lt;code&gt;java.nio.file.Files&lt;/code&gt;，是操作文件或目錄的工具類，常用方法:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Path copy(Path src, Path dest, CopyOption … how)&lt;/code&gt;:檔的複製&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path createDirectory(Path path, FileAttribute&amp;lt;?&amp;gt; … attr)&lt;/code&gt;:創建一個目錄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path createFile(Path path, FileAttribute&amp;lt;?&amp;gt; … arr)&lt;/code&gt;:創建一個檔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void delete(Path path)&lt;/code&gt;:刪除一個檔/目錄，如果不存在，執行報錯&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void deleteIfExists(Path path)&lt;/code&gt;:Path對應的檔/目錄如果存在，執行刪除&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Path move(Path src, Path dest, CopyOption…how)&lt;/code&gt;:將src移動到dest位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;long size(Path path)&lt;/code&gt;:返回&lt;code&gt;path&lt;/code&gt;指定文件的大小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用於判斷&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;boolean exists(Path path, LinkOption … opts)&lt;/code&gt;:判斷檔是否存在&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isDirectory(Path path, LinkOption … opts)&lt;/code&gt;:判斷是否是目錄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isRegularFile(Path path, LinkOption … opts)&lt;/code&gt;:判斷是否是檔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isHidden(Path path)&lt;/code&gt;:判斷是否是隱藏檔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isReadable(Path path)&lt;/code&gt;:判斷檔是否可讀&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isWritable(Path path)&lt;/code&gt;:判斷檔是否可寫&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean notExists(Path path, LinkOption … opts)&lt;/code&gt;:判斷檔是否不存在&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用於操作內容&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;SeekableByteChannel newByteChannel(Path path, OpenOption…how)&lt;/code&gt;:獲取與指定檔的連接，how 指定打開方式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DirectoryStream&amp;lt;Path&amp;gt; newDirectoryStream(Path path)&lt;/code&gt;:打開path 指定的目錄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;InputStream newInputStream(Path path, OpenOption…how)&lt;/code&gt;:獲取&lt;code&gt;InputStreamj&lt;/code&gt;物件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;OutputStream newOutputStream(Path path, OpenOption…how)&lt;/code&gt;:獲取&lt;code&gt;OutputStreamj&lt;/code&gt;物件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;序列化:實現&lt;code&gt;Serializable&lt;/code&gt;接口、定義&lt;code&gt;serialVersionUID&lt;/code&gt;、確認類中的屬性也都是可以序列化的&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RandomAccessFile&lt;/code&gt;:雙向、可於任意位置存取，構造時用&lt;code&gt;mode&lt;/code&gt;參數決定類型，使用&lt;code&gt;seek(index)&lt;/code&gt;移動指針、&lt;code&gt;getFilePointer()&lt;/code&gt;找指針&lt;/li&gt;
+&lt;li&gt;NIO:用&lt;code&gt;Path&lt;/code&gt;取代&lt;code&gt;File&lt;/code&gt;，緩衝區跟管道取代IO&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211212-agg-ja-27/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>IO流:基礎、緩衝流、轉換流與Unicode編碼</title>
+        <link>https://yoziming.github.io/post/211211-agg-ja-26/</link>
+        <pubDate>Sat, 11 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211211-agg-ja-26/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211211-agg-ja-26/ -&lt;h1 id=&#34;file類&#34;&gt;File類&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;位於 &lt;code&gt;java.io&lt;/code&gt;之下&lt;/li&gt;
+&lt;li&gt;File類的一個物件，代表一個實際的文件檔案或一個資料夾&lt;/li&gt;
+&lt;li&gt;File類只涉及檔案或資料夾的創建、刪除、改名&amp;hellip;等方法，只能碰到外殼；讀取或寫入需要IO流才能做到&lt;/li&gt;
+&lt;li&gt;File類的物件通常做為參數傳到流的構造器中，作為讀取或寫入的終點&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;實例化&#34;&gt;實例化&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;構造器的幾種參數&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;File(String filepath)&lt;/code&gt;:一般路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File(String parentPath, String childPath)&lt;/code&gt;:分成父目錄與子目錄，再拼接起來&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File(FileA parentFile, String childPath)&lt;/code&gt;:相當於以 &lt;code&gt;FileA&lt;/code&gt;為父目錄下的子目錄&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;路徑&#34;&gt;路徑&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;不指明就是相對路徑，在IDEA中若使用 &lt;code&gt;JUnit&lt;/code&gt;單元測試位置是 &lt;code&gt;Module&lt;/code&gt;下(與 &lt;code&gt;src&lt;/code&gt;資料夾同層)；若 &lt;code&gt;main()&lt;/code&gt;方法則是在 &lt;code&gt;Project&lt;/code&gt;下&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;指明則是絕對路徑，例如 &lt;code&gt;&amp;quot;G:\\Java\\code\\guigu\\day26IO\\src\\hi.txt&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;關於正反、雙斜槓等疑惑可以參考這篇:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://yoziming.github.io/post/211212-slash-file-name/&#34;&gt;https://yoziming.github.io/post/211212-slash-file-name/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;File類中有一個常量 &lt;code&gt;File.separator&lt;/code&gt;可以根據系統自動變換分隔符&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;常用方法&#34;&gt;常用方法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;預設以一個File類的實例物件.調用以下方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;String getAbsolutionPath()&lt;/code&gt;:獲取絕對路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String getPath()&lt;/code&gt;:獲取相對路徑&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String getName()&lt;/code&gt;:獲取檔案名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String getParent()&lt;/code&gt;:獲取上層文件夾目錄路徑(需本身是絕對路徑)，若無則返回null&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Long Length()&lt;/code&gt;:獲取檔案大小，單位位元組&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Long LastModified()&lt;/code&gt;:獲取最後修改時間戳&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;file1.boolean renameTo(File file2)&lt;/code&gt;:將file1搬到file2的路徑並改名成file2，必須有file1無file2(他是一個移動+改名，無法覆蓋)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;String[] List()&lt;/code&gt;:獲取指定目錄下的所有資料夾名與檔案名，類似dir與ls，只適用於資料夾目錄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File[] ListFiles()&lt;/code&gt;:獲取指定目錄下的所有資料夾與檔案的File數組，只適用於資料夾目錄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isDirctory()&lt;/code&gt;:判斷是否為文件夾&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isFile()&lt;/code&gt;:判斷是否為檔案&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean exists()&lt;/code&gt;:判斷是否存在&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean canRead()&lt;/code&gt;:判斷是否能讀&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean canWrite()&lt;/code&gt;:判斷是否能寫&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean isHidden()&lt;/code&gt;:判斷是否隱藏&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;創建刪除檔案&#34;&gt;創建/刪除檔案&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;不是實例化，而是真正在硬碟中創建檔案&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;boolean createNewFile()&lt;/code&gt;:創建檔案，若檔案已存在則不創建並返回 &lt;code&gt;false&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean mkdir()&lt;/code&gt;:創建資料夾，若資料夾已存在或不存在上層目錄，則不創建並返回 &lt;code&gt;false&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean mkdirs()&lt;/code&gt;:創建資料夾，若不存在上層目錄，一併創建&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean delete()&lt;/code&gt;:執行就馬上刪了，可不會進資源回收桶，慎用，如果是文件夾必須是空的才能刪&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;io流&#34;&gt;IO流&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;IO即in和out，輸入和輸出&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;流(Stream)是一種抽象的概念，指資料的傳遞，流有以下特性:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先進先出:最先寫入輸出流的資料最先被輸入流讀取到&lt;/li&gt;
+&lt;li&gt;順序存取:可以一個接一個地往流中寫入一串位元組，讀出時也將按寫入順序讀取一串位元組，不能隨機訪問中間的資料(&lt;code&gt;RandomAccessFile&lt;/code&gt;除外)&lt;/li&gt;
+&lt;li&gt;只讀或只寫:每個流只能是輸入流或輸出流的一種，不能同時具備兩個功能，輸入流只能進行讀操作，對輸出流只能進行寫操作。在一個資料傳輸通道中，如果既要寫入資料，又要讀取資料，則要分別提供兩個流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;分類&#34;&gt;分類&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;台灣用法，字節=位元組；字符=字元，個人認為這邊中國翻譯完勝。&lt;/p&gt;
+&lt;p&gt;中國用位元-字節-字符，元是&amp;quot;基礎&amp;quot;能組成&amp;quot;字&amp;quot;，形象的&amp;quot;符&amp;quot;比&amp;quot;節點&amp;quot;大，邏輯清晰、字數整齊且不易混淆。&lt;/p&gt;
+&lt;p&gt;台灣用位元-位元組-字元，長短不一就算了，結果又用回&amp;quot;元&amp;quot;，元應該是用在基本的、最小的、固定的單位，這邊記java字元是16-bit；而C語言的字元又是8-bit，媽的char就不該翻成字元&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;按資料流的方向:輸入流、輸出流&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;按處理資料單位:字節流(8bit = 1byte)、字符流(16bit = 1char)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;按功能:節點流、處理流(針對流的流)&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;字節(位元組，8-bit)&lt;/th&gt;
+&lt;th&gt;字符(字元，16-bit)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;輸入&lt;/td&gt;
+&lt;td&gt;InputStream&lt;/td&gt;
+&lt;td&gt;Reader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;輸出&lt;/td&gt;
+&lt;td&gt;OutputStream&lt;/td&gt;
+&lt;td&gt;Writer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;適用於&lt;/td&gt;
+&lt;td&gt;非文字檔案&lt;/td&gt;
+&lt;td&gt;純文字檔案(底層自帶緩衝)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;字符流&#34;&gt;字符流&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;專門用於純文字&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;範例-字符流讀取文字檔案&#34;&gt;範例-字符流讀取文字檔案&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test1&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 造一個讀取的流，聲明在這是為了finally要關，所以先賦null(沒有實際造)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    FileReader reader = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 指定要作為流的起點的檔案
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        File file1 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hi.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 將檔案作為形參，傳入構造器，實際造流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        reader = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileReader(file1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// .read()方法按順序讀出一個一個int形式的char，直到沒東西了返回-1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; data;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((data = reader.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;()) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;print&lt;/span&gt;(((&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;) data));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 永遠記得開了流就要關
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 關閉前先判斷是否為&amp;#34;一開始就沒進去實際造&amp;#34;的null
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (reader != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) reader.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;改良-使用帶參數的-readcbuf方法&#34;&gt;改良-使用帶參數的 &lt;code&gt;read(cbuf)&lt;/code&gt;方法&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 指定要作為流的起點的檔案
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    File file1 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hi.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 將檔案作為形參，傳入構造器，實際造
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    reader = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileReader(file1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// .read(cbuf)方法按順序讀出一個一個char[]形式的數組，
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 返回讀出的char數量，直到沒東西了返回-1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[] cbuf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt;[5]; &lt;span style=&#34;color:#228b22&#34;&gt;// 假設一次拿5個char出來
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len; &lt;span style=&#34;color:#228b22&#34;&gt;// 用來接收拿出來的數量
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = reader.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(cbuf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; i = 0; i &amp;lt; len; i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 注意這個for循環不能寫i &amp;lt; cbuf.length，否則拿到不滿5個時會出錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// &amp;#34;錯誤&amp;#34;不是空指針，而是會重複輸出上一輪的後幾個字
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;print&lt;/span&gt;(cbuf[i]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 再改進，取代上面的for，直接用String裝
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        String str = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(cbuf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;print&lt;/span&gt;(str);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;範例-字符流輸出文字到檔案&#34;&gt;範例-字符流輸出文字到檔案&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;FileWriter writer = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    File file2 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;file2.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    writer = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileWriter(file2, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;); &lt;span style=&#34;color:#228b22&#34;&gt;// 參數append預設是false
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    writer.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;something...&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;assert&lt;/span&gt; writer != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        writer.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;new FileWriter(file, true);&lt;/code&gt; 此構造器的參數 &lt;code&gt;append&lt;/code&gt;可以選擇輸出方式，預設或不寫為 &lt;code&gt;false&lt;/code&gt;，意思就是每次調用時覆蓋一個新的檔案；&lt;code&gt;true&lt;/code&gt;時則表示在原有檔案追加&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;字節流&#34;&gt;字節流&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可以用於所有地方，但讀取文字時要注意&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;範例-字節流讀取文字&#34;&gt;範例-字節流讀取文字&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test3&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Exception { &lt;span style=&#34;color:#228b22&#34;&gt;// 偷懶先拋個異常
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    File f3 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hi.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileInputStream fileInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(f3);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[5];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; n = 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((n = fileInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String str = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; String(buf, 0, n);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;print&lt;/span&gt;(str);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fileInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;在UTF-8編碼下用字節流讀取中文會出現切字問題，原因後述&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;範例-字節流複製圖片&#34;&gt;範例-字節流複製圖片&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test4&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileInputStream inputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileOutputStream outputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        File src = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;pic.png&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        File dest = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;newpic.png&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        inputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(src);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        outputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(dest);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[5];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = inputStream.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            outputStream.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(buf,0,len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;assert&lt;/span&gt; inputStream != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;; &lt;span style=&#34;color:#228b22&#34;&gt;// 並列寫完全OK，反正都是要關
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            inputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;assert&lt;/span&gt; outputStream != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            outputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;緩衝流&#34;&gt;緩衝流&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;透過緩衝區提高讀寫效率&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;範例-使用緩衝流實現複製&#34;&gt;範例-使用緩衝流實現複製&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;bufferTest1&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileInputStream fileInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileOutputStream fileOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BufferedInputStream bufferedInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BufferedOutputStream bufferedOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        File src = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;陳菊.avi&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        File dest = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; File(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;陳菊2.avi&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        fileInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(src);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        fileOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(dest);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 造緩衝流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        bufferedInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BufferedInputStream(fileInputStream);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        bufferedOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BufferedOutputStream(fileOutputStream);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 用緩衝流操作
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[1024];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = bufferedInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            bufferedOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(buf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 關閉流，穿脫衣服原則，後穿的先脫
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;assert&lt;/span&gt; bufferedOutputStream != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            bufferedOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;assert&lt;/span&gt; bufferedInputStream != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            bufferedInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 其實關閉外層流就把內層的也關了，所以可省略
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            fileOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            fileInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;就是在原有的流上套一層緩衝流&lt;/li&gt;
+&lt;li&gt;使用緩衝流讀寫速度有明顯提升，這邊懶的特別寫測試了
+&lt;ul&gt;
+&lt;li&gt;緩衝流有&lt;code&gt;flush()&lt;/code&gt;方法可以手動清空緩衝區，正常不需要，自動會清&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;把input、outputStream換成Reader、Writer也能操作文字檔案，特別提下關於換行:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Reader&lt;/code&gt;有&lt;code&gt;readLine()&lt;/code&gt;方法&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Writer&lt;/code&gt;有&lt;code&gt;newLine()&lt;/code&gt;方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;練習-用流實現加密解密&#34;&gt;練習-用流實現加密解密&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;picLock&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileInputStream fileInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FileOutputStream fileOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 在流的構造參數直接寫路徑相當於new一個File物件並包裝起來傳入，懶人福音
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        fileInputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileInputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;pic.png&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        fileOutputStream = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; FileOutputStream(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;lockedPic.png&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[] buf = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;[10];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; len;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; ((len = fileInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;read&lt;/span&gt;(buf)) != -1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 進行加密修改字節，注意不是用foreach，那是讀出數據賦到一個暫時變量=白改
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; i = 0; i &amp;lt; buf.&lt;span style=&#34;color:#658b00&#34;&gt;length&lt;/span&gt;; i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt; b = buf[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                b = (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;byte&lt;/span&gt;) (b ^ 5); &lt;span style=&#34;color:#228b22&#34;&gt;// 異或，兩者不同為true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                buf[i] = b;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            fileOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;write&lt;/span&gt;(buf, 0, len);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            fileInputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            fileOutputStream.&lt;span style=&#34;color:#658b00&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            e.&lt;span style=&#34;color:#658b00&#34;&gt;printStackTrace&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;兩個知識點:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在流的構造參數直接寫路徑，省略創造&lt;code&gt;File&lt;/code&gt;物件的步驟&lt;/li&gt;
+&lt;li&gt;由於加密方法是&lt;code&gt;異或&lt;/code&gt;，再執行一遍就是解密了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;轉換流&#34;&gt;轉換流&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;提供字節流跟字符流之間的轉換，本身是一種處理流、字符流(看最尾詞綴)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;解碼&#34;&gt;解碼&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;字節 -&amp;gt; 字符 (從一串瑣碎看不懂的轉為看得懂的，小到大)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;InputStreamReader&lt;/code&gt;:將一個字節的輸入流轉換為字符的輸入流&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; InputStreamReader(fileInputStream,&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;UTF-8&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;根據讀入的字節流需要指明編碼格式，沒寫會依照預設的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;編碼&#34;&gt;編碼&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;字符 -&amp;gt; 字節 (把人看的轉成給機器看的，大到小)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;OutputStreamWriter&lt;/code&gt;:將一個字符的輸出流轉換為字節的輸出流&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; OutputStreamWriter(fileOutputStream,&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Big5&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;一樣需要指明編碼，這邊有點不好理解，outputStreamWriter物件本身屬於字符流，調用&lt;code&gt;write()&lt;/code&gt;方法時，根據編碼格式輸出對應的字節流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;unicode與utf-8&#34;&gt;Unicode與UTF-8&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Unicode&lt;/code&gt;字符集是定義字符唯一編號的集合，相當於一本超大超厚的電話簿，他使用16+1位面符來編號，所以上限不是65536個字，總之全世界的文字都能存的下&lt;/li&gt;
+&lt;li&gt;考慮&lt;code&gt;Unicode&lt;/code&gt;的&amp;quot;大小或長度&amp;quot;是沒有意義的，他只是一種規範、一張表，所謂&amp;quot;&lt;code&gt;一個Unicode佔16bit=2char&lt;/code&gt;&amp;ldquo;是不嚴謹、不正確的說法&lt;/li&gt;
+&lt;li&gt;真正用來傳輸、實現&amp;rdquo;&lt;code&gt;編碼&lt;/code&gt;&amp;ldquo;的是&lt;strong&gt;Unicode Transformation Format&lt;/strong&gt;，UTF&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;UTF-8&lt;/code&gt;就是用8&lt;code&gt;bit&lt;/code&gt;=1&lt;code&gt;byte&lt;/code&gt;當作最小單位，一個&amp;quot;字&amp;quot;可以由1~4個&lt;code&gt;byte&lt;/code&gt;表示，由檔頭0或1的個數宣告此&amp;quot;字&amp;quot;有幾個&lt;code&gt;byte&lt;/code&gt;；長度可變是為了靈活省空間
+&lt;ul&gt;
+&lt;li&gt;理論上是1~6&lt;code&gt;byte&lt;/code&gt;但實際只用到4，例如在&lt;code&gt;MySQL&lt;/code&gt;中用&lt;code&gt;utf8&lt;/code&gt;編碼會被打死，一定要用&lt;code&gt;utf8mb4&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;純英數字跟基本符號只佔1&lt;code&gt;byte&lt;/code&gt;，與&lt;code&gt;ACSII&lt;/code&gt;相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;UTF-8&lt;/code&gt;大部分漢字佔3&lt;code&gt;byte&lt;/code&gt;；所以用字節流去裝漢字，很可能把字給切剩了造成亂碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;流的基本分類:
+&lt;ul&gt;
+&lt;li&gt;方向:輸入(&lt;code&gt;Input&lt;/code&gt;)、輸出(&lt;code&gt;Output&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;單位:字節(&lt;code&gt;Stream&lt;/code&gt;)、字符(&lt;code&gt;Reader&lt;/code&gt;/&lt;code&gt;Writer&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;功能:節點、處理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;節點流前綴:
+&lt;ul&gt;
+&lt;li&gt;文件:&lt;code&gt;File&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;記憶體:&lt;code&gt;CharArray&lt;/code&gt;、&lt;code&gt;ByteArray&lt;/code&gt;、&lt;code&gt;String&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;管道(進程通訊):&lt;code&gt;Piped&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;處理流:
+&lt;ul&gt;
+&lt;li&gt;緩衝流:&lt;code&gt;Buffered&lt;/code&gt;為前綴，可加速讀寫，套上後操作緩衝流(含關閉)&lt;/li&gt;
+&lt;li&gt;轉換流:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;InputStreamReader&lt;/code&gt;:將輸入的字節轉字符流(解碼)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;OutputStreamWriter&lt;/code&gt;:將輸出的字符轉字節流(編碼)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;物件流:&lt;code&gt;Object&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;數據流:&lt;code&gt;Data&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;過濾流:&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;計數流:&lt;code&gt;LineNumber&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;打印流:&lt;code&gt;Print&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211211-agg-ja-26/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>泛型Generic</title>
+        <link>https://yoziming.github.io/post/211210-agg-ja-25/</link>
+        <pubDate>Fri, 10 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211210-agg-ja-25/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211210-agg-ja-25/ -&lt;h1 id=&#34;泛型generic&#34;&gt;泛型Generic&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;泛型是JDK5新增的項目&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;特性&#34;&gt;特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;帶泛型的結構在實例化時，可以指明具體的泛型類型，類似於貼&amp;lt;標籤&amp;gt;&lt;/li&gt;
+&lt;li&gt;指明完後，使用到類的地方全都換成該泛型&lt;/li&gt;
+&lt;li&gt;用一個比喻，我自訂一個帶&amp;lt;&amp;gt;泛型的校車類，當實例化具體的校車A時，在&amp;lt;&amp;gt;中指明上裝的都是&amp;lt;北一女學生&amp;gt;，那裝進去的就只能是北一女學生，&lt;/li&gt;
+&lt;li&gt;當我對這台校車A進行各種操作時，就不用考慮裡面人是啥種類(以前都用&lt;code&gt;Object&lt;/code&gt;盛裝，然後操作時還要先&lt;code&gt;instanceOf&lt;/code&gt;確認種類再強轉)，現在跟校車A牽扯的通通都是&amp;lt;北一女學生&amp;gt;不用囉嗦&lt;/li&gt;
+&lt;li&gt;承上例，我也可以實例化另一台校車B&amp;lt;建中男學生&amp;gt;。一個優勢在於我規劃校車這個類時，先不用考慮具體要裝的是啥類而用泛型，用這個泛型先寫好通用的方法，留著空給實例化時再去決定實際調用的類&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用範例&#34;&gt;使用範例&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 造一個指明泛型為Integer, String的Map
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;HashMap&amp;lt;Integer, String&amp;gt; stringHashMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;Integer, String&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;stringHashMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(1, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;小名&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;stringHashMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(2, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;老王&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;stringHashMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(3, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;阿洲&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#228b22&#34;&gt;// 此時如果想放進非Integer,String的東西則報錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 轉成EntrySet，叫Map.Entry是因為Entry是一個內部接口
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Set&amp;lt;Map.&lt;span style=&#34;color:#658b00&#34;&gt;Entry&lt;/span&gt;&amp;lt;Integer, String&amp;gt;&amp;gt; entries = stringHashMap.&lt;span style=&#34;color:#658b00&#34;&gt;entrySet&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 通通都自動帶入泛型，而不用再去判斷種類或強轉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 試著遍歷
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Iterator&amp;lt;Map.&lt;span style=&#34;color:#658b00&#34;&gt;Entry&lt;/span&gt;&amp;lt;Integer, String&amp;gt;&amp;gt; iterator = entries.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (iterator.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map.&lt;span style=&#34;color:#658b00&#34;&gt;Entry&lt;/span&gt;&amp;lt;Integer, String&amp;gt; next = iterator.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Integer key = next.&lt;span style=&#34;color:#658b00&#34;&gt;getKey&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String value = next.&lt;span style=&#34;color:#658b00&#34;&gt;getValue&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(key + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;=&amp;gt;&amp;#34;&lt;/span&gt; + value);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;聲明&#34;&gt;聲明&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;集合接口或集合類都天生帶有泛型的結構，自建的類或接口也能聲明泛型&lt;/li&gt;
+&lt;li&gt;泛型類可能有多個參數，可以都放在&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt;內用&amp;quot;&lt;code&gt;,&lt;/code&gt;&amp;ldquo;隔開，例如:&lt;code&gt;&amp;lt;E1, E2, E3&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;聲明構造器時不用寫泛型&lt;/li&gt;
+&lt;li&gt;靜態方法不能使用類的泛型(因為泛型在實例化時才決定，當能不能跟static共存)&lt;/li&gt;
+&lt;li&gt;異常類不能聲明為泛型(因為它祖宗就沒有&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt;，繼承再怎樣都生不出來)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;實例化&#34;&gt;實例化&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;實例化時，指定的泛型必須是一個實際類，不能是基本數據類型(有需要就用包裝類)&lt;/li&gt;
+&lt;li&gt;泛型可以嵌套使用&lt;/li&gt;
+&lt;li&gt;帶泛型的接口或類在實例化時如果不指定泛型，就當作&lt;code&gt;Object&lt;/code&gt;處理，但不等價於&lt;code&gt;Object&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;要嘛一路都用泛型，要嘛都不要用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;泛型方法&#34;&gt;泛型方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在方法中出現了泛型的結構，泛形參數與類的泛型無關&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;我是為了寫一個&amp;quot;各種類&amp;quot;都能丟進來用的方法，舉例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &amp;lt;E&amp;gt; List&amp;lt;E&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;copyFromArrayToList&lt;/span&gt;(E[] arr) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ArrayList&amp;lt;E&amp;gt; arrayList = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (E e : arr) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        arrayList.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; arrayList;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果不在方法前加&lt;code&gt;&amp;lt;E&amp;gt;&lt;/code&gt;指明它是泛型方法，系統會把我的形參(&lt;code&gt;E[] arr&lt;/code&gt;)的&lt;code&gt;E[]&lt;/code&gt;看成一個自訂類。但我這裡要的效果是&amp;quot;E可以是int數組或String數組&amp;hellip;等等都能放進來&amp;quot;的意思&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;所以泛型方法可以是靜態的，因為是在調用時就指明到底是哪個類了&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;繼承泛型類&#34;&gt;繼承泛型類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;泛型不同的引用不能相互賦值，即使本來是父子類關係，例如:&lt;code&gt;List&amp;lt;Object&amp;gt;&lt;/code&gt; 跟&lt;code&gt;List&amp;lt;String&amp;gt;&lt;/code&gt; 已經生殖隔離了，但可以用通配符&amp;rdquo;?&amp;ldquo;再把他們搞回一家人&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;但如果&amp;lt;&amp;gt;內泛型類一樣，外面是多態關係則無所謂，就是多態的一種體現&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;子類繼承泛型類時，可以選擇保留或不保留泛型；父類有多個泛型時可以選擇保留任意數量&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;子類可以選擇用更小的範圍取代父類的泛型，例如原本是&lt;code&gt;&amp;lt;T&amp;gt;&lt;/code&gt;，繼承時改成&lt;code&gt;&amp;lt;String&amp;gt;&lt;/code&gt;把範圍鎖死&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;通配符&#34;&gt;通配符&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;?&amp;gt;&lt;/code&gt;相當於所有泛型的父類&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test2&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    List&amp;lt;Object&amp;gt; list1 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    List&amp;lt;String&amp;gt; list2 = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// list=list2; // 報錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    list1.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;LKJ&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    list1.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;LKJHKJ&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    list2.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;LKJ222&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        List&amp;lt;?&amp;gt; listFather = null; // &amp;lt;?&amp;gt;相當於&amp;lt;任何人&amp;gt;的父類
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(list1); &lt;span style=&#34;color:#228b22&#34;&gt;// 這下都能調用這個方法了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    print(list2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;print&lt;/span&gt;(List&amp;lt;?&amp;gt; list) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Iterator&amp;lt;?&amp;gt; iterator = list.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (iterator.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(iterator.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;無法對&lt;code&gt;&amp;lt;?&amp;gt;&lt;/code&gt;進行寫入，因為根本不知道到底是啥類型，但可以&lt;code&gt;= null&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以對&lt;code&gt;&amp;lt;?&amp;gt;&lt;/code&gt;進行讀取，讀出來的數據類型為&lt;code&gt;Object&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;有限制條件的通配符&#34;&gt;有限制條件的通配符&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;? extends 類名&amp;gt;&lt;/code&gt;:表示通配的範圍小於等於該類&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;? super 類名&amp;gt;&lt;/code&gt;:表示通配的範圍大於等於該類&lt;/li&gt;
+&lt;li&gt;舉例:有&lt;code&gt;爺、父、子&lt;/code&gt;三個類為繼承關係
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;? extends 父&amp;gt;&lt;/code&gt;表示應用範圍只有&lt;code&gt;父、子&lt;/code&gt;，操作數據時跟多態一樣考慮就可以&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;? super 父&amp;gt;&lt;/code&gt;表示應用範圍只有&lt;code&gt;Object、爺、父&lt;/code&gt;，操作數據時跟多態一樣考慮就可以&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;泛型練習&#34;&gt;泛型練習&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;寫一個&lt;code&gt;DAO&amp;lt;&amp;gt;&lt;/code&gt;類、在自訂一個&lt;code&gt;User&lt;/code&gt;類作為泛型，試著調用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;DAO&lt;/span&gt;&amp;lt;T&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, T&amp;gt; map = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 注意這個map實例化
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 保存T類型的物件到Map成員變量中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;save&lt;/span&gt;(String id, T entity) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        map.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(id, entity);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 從map獲取id對應物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; T &lt;span style=&#34;color:#008b45&#34;&gt;get&lt;/span&gt;(String id) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        T t = map.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(id);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; t;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 以entity替換map中key為id的內容
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;update&lt;/span&gt;(String id, T entity) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (map.&lt;span style=&#34;color:#658b00&#34;&gt;containsKey&lt;/span&gt;(id)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            map.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(id, entity);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 返回map所有存放的T物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; List&amp;lt;T&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;list&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// return (List&amp;lt;T&amp;gt;) map.values(); // 這是錯誤的，不行把父Collection轉子List
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 正確
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        List&amp;lt;T&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        Collection&amp;lt;T&amp;gt; values = map.values();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        list.addAll(values);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//        return list;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 終極簡化
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        Collection&amp;lt;T&amp;gt; values = map.&lt;span style=&#34;color:#658b00&#34;&gt;values&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;(values);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 刪除指定id物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;delete&lt;/span&gt;(String id) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        map.&lt;span style=&#34;color:#658b00&#34;&gt;remove&lt;/span&gt;(id);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; age;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 各種重寫的方法...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;DAOTest&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        DAO&amp;lt;User&amp;gt; userDAO = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; DAO&amp;lt;User&amp;gt;(); &lt;span style=&#34;color:#228b22&#34;&gt;// 如果上面寫DAO時沒實例化map，這邊會報錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        userDAO.&lt;span style=&#34;color:#658b00&#34;&gt;save&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;001&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; User(1, 30, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;張3&amp;#34;&lt;/span&gt;)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        userDAO.&lt;span style=&#34;color:#658b00&#34;&gt;save&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;002&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; User(2, 20, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;張4&amp;#34;&lt;/span&gt;)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        userDAO.&lt;span style=&#34;color:#658b00&#34;&gt;save&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;003&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; User(3, 5, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;張5&amp;#34;&lt;/span&gt;)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 注意存在map的String id跟User.id是不同的
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        userDAO.&lt;span style=&#34;color:#658b00&#34;&gt;update&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;003&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; User(4, 50, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;dfg&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&amp;lt;User&amp;gt; list = userDAO.&lt;span style=&#34;color:#658b00&#34;&gt;list&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        list.&lt;span style=&#34;color:#658b00&#34;&gt;forEach&lt;/span&gt;(System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;::println); &lt;span style=&#34;color:#228b22&#34;&gt;// 注意forEach用法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;泛型&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt;中沒有父子類關係&lt;/li&gt;
+&lt;li&gt;map轉list，注意不要直接用&lt;code&gt;map.value&lt;/code&gt;得到&lt;code&gt;Collection&lt;/code&gt;數組就想轉成子類的&lt;code&gt;List&lt;/code&gt;，要嘛用遍歷或&lt;code&gt;addAll&lt;/code&gt;將數組裝入&lt;code&gt;list&lt;/code&gt;才行&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211210-agg-ja-25/ - Yoziming</description>
+        </item>
     
     
     
@@ -11875,132 +13063,6 @@ func test(a *[3]int) {
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-array1/ - Yoziming</description>
         </item>
-    
-    
-    
-        <item>
-        <title>錯誤處理</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-err/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-err/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-err/ -&lt;h1 id=&#34;錯誤處理&#34;&gt;錯誤處理&lt;/h1&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;//捕捉異常
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;defer&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//內置函數recover就是找是否異常
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err := &lt;span style=&#34;color:#658b00&#34;&gt;recover&lt;/span&gt;(); err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; { &lt;span style=&#34;color:#228b22&#34;&gt;//err不為空=有錯
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;			fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;錯誤&amp;#34;&lt;/span&gt;, err)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n1 := &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n2 := &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	res := n1 / n2
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(res)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//讀取文件名稱，錯誤就報錯
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(name &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;string&lt;/span&gt;) (err &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;error&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; name == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.ini&amp;#34;&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//返回自訂錯誤
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; errors.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;文件錯誤&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	err := &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.in564&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#658b00&#34;&gt;panic&lt;/span&gt;(err)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;02繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;() {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;01繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;03繼續執行...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://yoziming.github.io/post/210810-agg-go-err/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>繼承</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-inherit/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-inherit/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-inherit/ -&lt;h1 id=&#34;繼承&#34;&gt;繼承&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Student struct {
-	Name  string
-	Age   int
-	Score int
-	//共有的字段
-}
-
-type Pupil struct {
-	Student //套入
-	Covid19 bool
-}
-
-type College struct {
-	Student //套入指針效率更好
-	SexExp  bool
-}
-
-func (stu *Student) ShowInfo() {
-	fmt.Printf(&amp;#34;姓名=%v 年齡=%v 成績=%v\n&amp;#34;, stu.Name, stu.Age, stu.Score)
-}
-
-func (stu *Student) SetScore(s int) {
-	stu.Score = s
-}
-
-func (p *Pupil) Test() {
-	fmt.Println(&amp;#34;小學生考試&amp;#34;)
-}
-
-func main() {
-	pupilA := &amp;amp;Pupil{}
-	pupilA.Student.Name = &amp;#34;tome&amp;#34;
-	pupilA.Student.Age = 8
-	pupilA.Covid19 = true
-
-	pupilA.Test()
-	pupilA.Student.SetScore(66)
-	pupilA.Student.ShowInfo()
-	fmt.Println(&amp;#34;是否得肺炎&amp;#34;, pupilA.Covid19)
-
-	C1 := College{}
-	C1.Student.Name = &amp;#34;John&amp;#34;
-	C1.Age = 23 //其實可以省略.Student
-	C1.SexExp = false
-
-	C1.Student.SetScore(39)
-	C1.ShowInfo() //其實可以省略.Student
-	fmt.Println(&amp;#34;是否破處&amp;#34;, C1.SexExp)
-
-	//如果有低能把結構體跟匿名結構體用了相同的字段或方法，會採取就近訪問原則
-	// 如果在一個結構中嵌入多個匿名結構，且匿名結構有同名的字段，那就必須指明匿名結構否則報錯
-
-	//組合
-	var d D
-	d.a.Name = &amp;#34;xxxx&amp;#34; //有名字的結構體訪問時就要上完整名字
-}
-
-//組合
-type D struct {
-	a Student //有名字的結構體
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-inherit/ - Yoziming</description>
-        </item>
-    
-    
-    
-    
     
     
   </channel>

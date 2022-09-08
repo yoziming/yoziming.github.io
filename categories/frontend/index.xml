@@ -7,7 +7,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Mon, 20 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DataTables實用code合籍</title>
+      <link>https://yoziming.github.io/post/220825-datatables/</link>
+      <pubDate>Thu, 25 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220825-datatables/</guid>
+      <description>DataTables小技巧 DataTables是前端非常好用的表格套件
+https://datatables.net/manual/
+自動序號 { width : &amp;#34;5%&amp;#34;, data : null, defaultContent : &amp;#39;&amp;#39;, title : &amp;#34;&amp;lt;spring:message code=&amp;#39;序號&amp;#39;/&amp;gt;&amp;#34;, render : function(data, type, row, meta) { return meta.row + 1; } }, 後端分頁的改成這種
+function(data, type, full, meta){ return meta.row + 1 + meta.settings._iDisplayStart; } i18n中文化 搭配官方的 : http://cdn.datatables.net/plug-ins/1.12.1/i18n/
+language: { url: &amp;#34;/scripts/DataTables-1.12.1/zh-HANT.json&amp;#34;, infoFiltered: &amp;#34;&amp;#34;, }, 防止預設的排序 order : []
+格式化時間 }, { data: &amp;#34;reportTime&amp;#34;, title: &amp;#34;&amp;lt;spring:message code=&amp;#39;回報時間&amp;#39;/&amp;gt;&amp;#34;, render: function ChangeDateFormat(date) { var dateee = new Date(date).</description>
+    </item>
+    
+    <item>
+      <title>前端js到後端Java的時間格式接收轉換</title>
+      <link>https://yoziming.github.io/post/220730-front-back-time-format/</link>
+      <pubDate>Sat, 30 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220730-front-back-time-format/</guid>
+      <description>前後端傳送、接收時間格式 java的原始Date類是iso-8601的格式(2004-05-03T17:30:08Z)，UTC時間。或是接收Long的時間戳，像這樣1662084454350的 前端，用dayjs包起來(預設能夠解析local的2004-05-03，轉換成UTC) &amp;#34;startTime&amp;#34;: dayjs($(&amp;#34;#startDate&amp;#34;).val()), // 轉成UTC時間 後端可以註解時間的pattern在實體類 @JsonFormat(locale = &amp;#34;zh&amp;#34;, timezone = &amp;#34;GMT+8&amp;#34;, pattern = &amp;#34;yyyy-MM-dd HH:mm:ss&amp;#34;) @DateTimeFormat(pattern = &amp;#34;yyyy-MM-dd HH:mm:ss&amp;#34;) Date startTime; 或是加在controller上
+@GetMapping(&amp;#34;/test&amp;#34;) public ResponseResource test( @RequestParam @DateTimeFormat(pattern = &amp;#34;yyyy-MM-dd&amp;#34;) Date startTime, @RequestParam @DateTimeFormat(pattern = &amp;#34;yyyy-MM-dd&amp;#34;) Date endTime) {...} 同場加映: 超過24小時的時間格式判斷是否在區間內 背景: 用到一個設定叫&amp;quot;晚上時段&amp;quot;，例如定義了18:00-28:00表示當天晚上8點到明天凌晨4點都屬於&amp;quot;晚上時段&amp;quot;，現在要判定updateTime是不是屬於&amp;quot;晚上時段&amp;quot;內
+/** * 判斷updateTime是否為設定中的&amp;#34;晚上時段&amp;#34; */ private boolean isNightTime(String nightTimeRange, Date updateTime) { String[] nightTimeRangeArr = nightTimeRange.split(&amp;#34;-&amp;#34;); // 格式：##:##-##:##，範例：20:00-28:00 LocalTime startTime = LocalTime.parse(nightTimeRangeArr[0]); LocalDateTime startDayTime = LocalDateTime.</description>
+    </item>
+    
     <item>
       <title>JS關於Array的includes()的坑</title>
       <link>https://yoziming.github.io/post/220620-js-array-includes/</link>

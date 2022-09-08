@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>DataTables實用code合籍</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="序號、跳轉到、選取、後端分頁...等等">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="DataTables實用code合籍" />
+<meta property="og:description" content="序號、跳轉到、選取、後端分頁...等等" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/220825-datatables/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-08-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-08-25T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DataTables實用code合籍"/>
+<meta name="twitter:description" content="序號、跳轉到、選取、後端分頁...等等"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#datatables%e5%b0%8f%e6%8a%80%e5%b7%a7" onclick="onNavClick(`#datatables小技巧-nav`)" id="datatables小技巧-nav">
+									DataTables小技巧
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%8b%95%e5%ba%8f%e8%99%9f" onclick="onNavClick(`#自動序號-nav`)" id="自動序號-nav">
+									自動序號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#i18n%e4%b8%ad%e6%96%87%e5%8c%96" onclick="onNavClick(`#i18n中文化-nav`)" id="i18n中文化-nav">
+									i18n中文化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%b2%e6%ad%a2%e9%a0%90%e8%a8%ad%e7%9a%84%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#防止預設的排序-nav`)" id="防止預設的排序-nav">
+									防止預設的排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%bc%e5%bc%8f%e5%8c%96%e6%99%82%e9%96%93" onclick="onNavClick(`#格式化時間-nav`)" id="格式化時間-nav">
+									格式化時間
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%b3%e8%bd%89%e5%88%b0" onclick="onNavClick(`#跳轉到-nav`)" id="跳轉到-nav">
+									跳轉到
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e6%8c%89%e9%88%95" onclick="onNavClick(`#自訂按鈕-nav`)" id="自訂按鈕-nav">
+									自訂按鈕
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e5%88%86%e9%a0%81" onclick="onNavClick(`#後端分頁-nav`)" id="後端分頁-nav">
+									後端分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e5%ae%8c%e6%88%90%e5%be%8c%e7%b6%81%e5%ae%9a%e4%ba%8b%e4%bb%b6" onclick="onNavClick(`#初始化完成後綁定事件-nav`)" id="初始化完成後綁定事件-nav">
+									初始化完成後綁定事件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%a8%e8%a1%8c%e5%90%88%e4%bd%b5%e7%9b%b8%e5%90%8c%e5%80%bc" onclick="onNavClick(`#跨行合併相同值-nav`)" id="跨行合併相同值-nav">
+									跨行合併相同值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#datatables%e5%b0%8f%e6%8a%80%e5%b7%a7" onclick="onNavClick(`#datatables小技巧-nav`)" id="datatables小技巧-nav">
+									DataTables小技巧
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%8b%95%e5%ba%8f%e8%99%9f" onclick="onNavClick(`#自動序號-nav`)" id="自動序號-nav">
+									自動序號
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#i18n%e4%b8%ad%e6%96%87%e5%8c%96" onclick="onNavClick(`#i18n中文化-nav`)" id="i18n中文化-nav">
+									i18n中文化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%98%b2%e6%ad%a2%e9%a0%90%e8%a8%ad%e7%9a%84%e6%8e%92%e5%ba%8f" onclick="onNavClick(`#防止預設的排序-nav`)" id="防止預設的排序-nav">
+									防止預設的排序
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a0%bc%e5%bc%8f%e5%8c%96%e6%99%82%e9%96%93" onclick="onNavClick(`#格式化時間-nav`)" id="格式化時間-nav">
+									格式化時間
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%b3%e8%bd%89%e5%88%b0" onclick="onNavClick(`#跳轉到-nav`)" id="跳轉到-nav">
+									跳轉到
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e8%a8%82%e6%8c%89%e9%88%95" onclick="onNavClick(`#自訂按鈕-nav`)" id="自訂按鈕-nav">
+									自訂按鈕
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%be%8c%e7%ab%af%e5%88%86%e9%a0%81" onclick="onNavClick(`#後端分頁-nav`)" id="後端分頁-nav">
+									後端分頁
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e5%ae%8c%e6%88%90%e5%be%8c%e7%b6%81%e5%ae%9a%e4%ba%8b%e4%bb%b6" onclick="onNavClick(`#初始化完成後綁定事件-nav`)" id="初始化完成後綁定事件-nav">
+									初始化完成後綁定事件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%b7%a8%e8%a1%8c%e5%90%88%e4%bd%b5%e7%9b%b8%e5%90%8c%e5%80%bc" onclick="onNavClick(`#跨行合併相同值-nav`)" id="跨行合併相同值-nav">
+									跨行合併相同值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/front.jpg')"
+                    
+                
+            >
+                <div class="post-title">
+                    DataTables實用code合籍
+                    
+                    <div class="post-subtitle">
+                        序號、跳轉到、選取、後端分頁...等等
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-08-25 00:00
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/frontend">Frontend</a>
+                                &nbsp;
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="datatables小技巧">DataTables小技巧</h2>
+<blockquote>
+<p>DataTables是前端非常好用的表格套件</p>
+</blockquote>
+<p><a href="https://datatables.net/manual/">https://datatables.net/manual/</a></p>
+<h2 id="自動序號">自動序號</h2>
+<p><img src="image-20220902150627664.png" alt="image-20220902150627664"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>							{
+</span></span><span style="display:flex;"><span>								width : <span style="color:#cd5555">&#34;5%&#34;</span>,
+</span></span><span style="display:flex;"><span>								data : <span style="color:#8b008b;font-weight:bold">null</span>,
+</span></span><span style="display:flex;"><span>								defaultContent : <span style="color:#cd5555">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>								title : <span style="color:#cd5555">&#34;&lt;spring:message code=&#39;序號&#39;/&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>								render : <span style="color:#8b008b;font-weight:bold">function</span>(data, type, row, meta) {
+</span></span><span style="display:flex;"><span>									<span style="color:#8b008b;font-weight:bold">return</span> meta.row + <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>								}
+</span></span><span style="display:flex;"><span>							},
+</span></span></code></pre></div><p>後端分頁的改成這種</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span>(data, type, full, meta){
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">return</span> meta.row + <span style="color:#b452cd">1</span> + meta.settings._iDisplayStart;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="i18n中文化">i18n中文化</h2>
+<p>搭配官方的 : <a href="http://cdn.datatables.net/plug-ins/1.12.1/i18n/">http://cdn.datatables.net/plug-ins/1.12.1/i18n/</a></p>
+<pre tabindex="0"><code>        language: {
+            url: &#34;/scripts/DataTables-1.12.1/zh-HANT.json&#34;,
+            infoFiltered: &#34;&#34;,
+        },
+</code></pre><h2 id="防止預設的排序">防止預設的排序</h2>
+<p><img src="image-20220902150702931.png" alt="image-20220902150702931"></p>
+<p><code>order : []</code></p>
+<h2 id="格式化時間">格式化時間</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            data: <span style="color:#cd5555">&#34;reportTime&#34;</span>,
+</span></span><span style="display:flex;"><span>            title: <span style="color:#cd5555">&#34;&lt;spring:message code=&#39;回報時間&#39;/&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            render: <span style="color:#8b008b;font-weight:bold">function</span> ChangeDateFormat(date) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> dateee = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>(date).toJSON();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>(+<span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>(dateee) + <span style="color:#b452cd">8</span> * <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">1000</span>).toISOString().replace(<span style="color:#1c7e71">/T/g</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#39; &#39;</span>).replace(<span style="color:#1c7e71">/\.[\d]{3}Z/</span>, <span style="color:#cd5555">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }, {
+</span></span></code></pre></div><h2 id="跳轉到">跳轉到</h2>
+<p><img src="image-20220902150444996.png" alt="image-20220902150444996"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>        drawCallback: <span style="color:#8b008b;font-weight:bold">function</span>(setting) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">var</span> _this = $(<span style="color:#8b008b;font-weight:bold">this</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">var</span> tableId = _this.attr(<span style="color:#cd5555">&#39;id&#39;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">var</span> pageDiv = $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId + <span style="color:#cd5555">&#39;_paginate&#39;</span>);
+</span></span><span style="display:flex;"><span>            pageDiv.append(<span style="color:#cd5555">&#39;跳轉到&lt;input id=&#34;&#39;</span> + tableId +
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#39;_gotoPage&#34; type=&#34;text&#34; style=&#34;height:28px;line-height:28px;width:40px;&#34;/&gt;&#39;</span> +
+</span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#39;&lt;a class=&#34;paginate_button&#34; aria-controls=&#34;&#39;</span> + tableId + <span style="color:#cd5555">&#39;&#34; tabindex=&#34;0&#34; id=&#34;&#39;</span> +
+</span></span><span style="display:flex;"><span>                tableId + <span style="color:#cd5555">&#39;_goto&#34;&gt;Go&lt;/a&gt;&#39;</span>)
+</span></span><span style="display:flex;"><span>            $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId + <span style="color:#cd5555">&#39;_goto&#39;</span>).click(<span style="color:#8b008b;font-weight:bold">function</span>(obj) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> page = $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId + <span style="color:#cd5555">&#39;_gotoPage&#39;</span>).val();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> thisDataTable = $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId).DataTable();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> pageInfo = thisDataTable.page.info();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">isNaN</span>(page)) {
+</span></span><span style="display:flex;"><span>                    $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId + <span style="color:#cd5555">&#39;_gotoPage&#39;</span>).val(<span style="color:#cd5555">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">var</span> maxPage = pageInfo.pages;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">var</span> page = <span style="color:#658b00">Number</span>(page) - <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (page &lt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>                        page = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>                    } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (page &gt;= maxPage) {
+</span></span><span style="display:flex;"><span>                        page = maxPage - <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    $(<span style="color:#cd5555">&#39;#&#39;</span> + tableId + <span style="color:#cd5555">&#39;_gotoPage&#39;</span>).val(page + <span style="color:#b452cd">1</span>);
+</span></span><span style="display:flex;"><span>                    thisDataTable.page(page).draw(<span style="color:#cd5555">&#39;page&#39;</span>);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>        },
+</span></span></code></pre></div><h2 id="自訂按鈕">自訂按鈕</h2>
+<p><img src="image-20220902152049136.png" alt="image-20220902152049136"></p>
+<ul>
+<li>這邊有搭配select插件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>        columns: [{
+</span></span><span style="display:flex;"><span>            width: <span style="color:#cd5555">&#34;5%&#34;</span>,
+</span></span><span style="display:flex;"><span>            data: <span style="color:#8b008b;font-weight:bold">null</span>,
+</span></span><span style="display:flex;"><span>            defaultContent: <span style="color:#cd5555">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>            orderable: <span style="color:#8b008b;font-weight:bold">false</span>,
+</span></span><span style="display:flex;"><span>            className: <span style="color:#cd5555">&#39;select-checkbox&#39;</span>
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		select: {
+</span></span><span style="display:flex;"><span>            style: <span style="color:#cd5555">&#39;multi&#39;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>            ...
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>		buttons: [{
+</span></span><span style="display:flex;"><span>            extend: <span style="color:#cd5555">&#39;csv&#39;</span>,
+</span></span><span style="display:flex;"><span>            className: <span style="color:#cd5555">&#34;force-hide&#34;</span>,
+</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;匯出當前頁&#39;</span>,
+</span></span><span style="display:flex;"><span>            bom: <span style="color:#8b008b;font-weight:bold">true</span>,
+</span></span><span style="display:flex;"><span>            title: <span style="color:#cd5555">&#34;&lt;spring:message code=&#39;燈控器管理&#39;/&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            exportOptions: {
+</span></span><span style="display:flex;"><span>                columns: [<span style="color:#b452cd">1</span>, <span style="color:#b452cd">2</span>, <span style="color:#b452cd">3</span>, <span style="color:#b452cd">4</span>, <span style="color:#b452cd">5</span>, <span style="color:#b452cd">6</span>, <span style="color:#b452cd">7</span>, <span style="color:#b452cd">8</span>, <span style="color:#b452cd">9</span>],
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;全選&#39;</span>,
+</span></span><span style="display:flex;"><span>            action: <span style="color:#8b008b;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>                table.rows().select();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;全不選&#39;</span>,
+</span></span><span style="display:flex;"><span>            action: <span style="color:#8b008b;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>                table.rows().deselect();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;刪除選中&#39;</span>,
+</span></span><span style="display:flex;"><span>            action: <span style="color:#8b008b;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">let</span> idList = [];
+</span></span><span style="display:flex;"><span>                table.rows({
+</span></span><span style="display:flex;"><span>                    selected: <span style="color:#8b008b;font-weight:bold">true</span>
+</span></span><span style="display:flex;"><span>                }).data().map(obj =&gt; {
+</span></span><span style="display:flex;"><span>                    idList.push(obj.id)
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (idList.length &lt; <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>                    alertMessage(<span style="color:#cd5555">&#34;未選中任何項目&#34;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                confirmMessage(<span style="color:#cd5555">&#34;目前選中 &#34;</span> + idList.length + <span style="color:#cd5555">&#34; 項，確定要執行批量刪除?&#34;</span>, <span style="color:#8b008b;font-weight:bold">function</span>(confirm) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (confirm) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">let</span> result = postDelete(idList);
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">if</span> (result != <span style="color:#cd5555">&#34;FAIL&#34;</span>) {
+</span></span><span style="display:flex;"><span>                            table.rows(<span style="color:#cd5555">&#39;.selected&#39;</span>).remove().draw(<span style="color:#8b008b;font-weight:bold">false</span>);
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }],
+</span></span></code></pre></div><h2 id="後端分頁">後端分頁</h2>
+<p>前端一頁1000筆以上效率就不高了，最好就要考慮後端分頁</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>        processing: <span style="color:#8b008b;font-weight:bold">true</span>,
+</span></span><span style="display:flex;"><span>        serverSide: <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#228b22">// 後端分頁
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        bDestroy: <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#228b22">// 下邊兩個屬性應該是重載數據相關的 不加在加載數據會彈窗報錯
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        bRetrieve: <span style="color:#8b008b;font-weight:bold">true</span>,
+</span></span><span style="display:flex;"><span>        deferRender: <span style="color:#8b008b;font-weight:bold">true</span>,
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        ajax: {
+</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>            url: ems.parseUrl(<span style="color:#cd5555">&#34;file&#34;</span>) + <span style="color:#cd5555">&#34;/getList&#34;</span>,
+</span></span><span style="display:flex;"><span>            contentType: <span style="color:#cd5555">&#34;application/json&#34;</span>,
+</span></span><span style="display:flex;"><span>            dataType: <span style="color:#cd5555">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>            data: <span style="color:#8b008b;font-weight:bold">function</span>(data) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">//console.log(data)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">var</span> d = {
+</span></span><span style="display:flex;"><span>					自己的搜尋參數...
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#34;currentPage&#34;</span>: (data.start / data.length) + <span style="color:#b452cd">1</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#34;pageSize&#34;</span>: data.length,
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd5555">&#34;sort&#34;</span>: data.columns[data.order[<span style="color:#b452cd">0</span>].column].data, <span style="color:#228b22">// 排序的欄位
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#cd5555">&#34;asc&#34;</span>: data.order[<span style="color:#b452cd">0</span>].dir == <span style="color:#cd5555">&#34;asc&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> JSON.stringify(d);
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            error: <span style="color:#8b008b;font-weight:bold">function</span>(jqXHR, ajaxOptions, thrownError) {
+</span></span><span style="display:flex;"><span>                console.log(<span style="color:#cd5555">&#34;獲取清單失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            dataSrc: <span style="color:#8b008b;font-weight:bold">function</span>(json) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (json.status == <span style="color:#cd5555">&#34;SUCCESS&#34;</span>) {
+</span></span><span style="display:flex;"><span>                    json.recordsFiltered = json.result.count; <span style="color:#228b22">// 指定記錄數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    json.recordsTotal = json.result.totalPage; <span style="color:#228b22">// 指定頁數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">return</span> json.result.list;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },        
+</span></span></code></pre></div><h2 id="初始化完成後綁定事件">初始化完成後綁定事件</h2>
+<pre tabindex="0"><code>initComplete: function(setting) {
+</code></pre><h2 id="跨行合併相同值">跨行合併相同值</h2>
+<p>例如第1筆資料的&rsquo;群組&rsquo;是A，第2筆也是A，在&rsquo;群組&rsquo;這欄位就2行合併</p>
+<p><img src="image-20220902150919656.png" alt="image-20220902150919656"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>drawCallback : <span style="color:#8b008b;font-weight:bold">function</span>(setting) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    mregeRow(<span style="color:#b452cd">0</span>); <span style="color:#228b22">// 合併目標欄位(豎的)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    $(<span style="color:#cd5555">&#34;.remove&#34;</span>).hide();
+</span></span><span style="display:flex;"><span>    $(<span style="color:#cd5555">&#34;.marge&#34;</span>).css(<span style="color:#cd5555">&#34;vertical-align&#34;</span>, <span style="color:#cd5555">&#34;middle&#34;</span>);        
+</span></span><span style="display:flex;"><span>},
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>      <span style="color:#228b22">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">       * 要合併單元格，需要存儲兩個參數，
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">       * 1. 開始合併的單元格的第一行的行數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">       * 2. 要合併的單元格的個數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">       **/</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">function</span> mregeRow(v) {
+</span></span><span style="display:flex;"><span>          tr = $(<span style="color:#cd5555">&#34;#checkTable tr&#34;</span>).length;<span style="color:#228b22">// 獲取當前表格中行數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">var</span> mark = <span style="color:#b452cd">0</span>; <span style="color:#228b22">//要合併的單元格數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">var</span> index = <span style="color:#b452cd">0</span>; <span style="color:#228b22">//起始行數
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>          <span style="color:#228b22">//判斷 若只有一行數據，就是表頭，則不做調整
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>          <span style="color:#8b008b;font-weight:bold">if</span> (tr &gt; <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>              <span style="color:#228b22">//var i=1 比較當前的tr和上一個tr的值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>              <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">var</span> i = <span style="color:#b452cd">0</span>; i &lt; tr; i++) {
+</span></span><span style="display:flex;"><span>                  <span style="color:#8b008b;font-weight:bold">var</span> ford = $(<span style="color:#cd5555">&#34;#checkTable tr:gt(0):eq(&#34;</span> + i + <span style="color:#cd5555">&#34;) td:eq(&#34;</span> + <span style="color:#658b00">parseInt</span>(v) + <span style="color:#cd5555">&#34;)&#34;</span>).text();
+</span></span><span style="display:flex;"><span>                  <span style="color:#228b22">//根據下標獲取單元格的值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                  <span style="color:#228b22">// tr:gt(0) 從下標0 開始獲取
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                  <span style="color:#228b22">// tr:gt(0):eq( i ) :i 標識 當前行的下標 ，0 開始
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                  <span style="color:#228b22">// td:eq(0) 當前行的第一個單元格，下標從0開始
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                  <span style="color:#8b008b;font-weight:bold">var</span> behind = $(<span style="color:#cd5555">&#34;#checkTable tr:gt(0):eq(&#34;</span> + (<span style="color:#658b00">parseInt</span>(i) + <span style="color:#b452cd">1</span>) + <span style="color:#cd5555">&#34;) td:eq(&#34;</span> + <span style="color:#658b00">parseInt</span>(v) + <span style="color:#cd5555">&#34;)&#34;</span>).text();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#8b008b;font-weight:bold">if</span> (ford != <span style="color:#cd5555">&#34;&#34;</span> &amp;&amp; ford == behind) {
+</span></span><span style="display:flex;"><span>                      $(<span style="color:#cd5555">&#34;#checkTable tr:gt(0):eq(&#34;</span> + (<span style="color:#658b00">parseInt</span>(i) + <span style="color:#b452cd">1</span>) + <span style="color:#cd5555">&#34;) td:eq(&#34;</span> + <span style="color:#658b00">parseInt</span>(v) + <span style="color:#cd5555">&#34;)&#34;</span>).attr(<span style="color:#cd5555">&#34;class&#34;</span>, <span style="color:#cd5555">&#34;remove&#34;</span>);
+</span></span><span style="display:flex;"><span>                      mark = mark + <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>                  } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (ford != behind) {
+</span></span><span style="display:flex;"><span>                      index = i - mark;
+</span></span><span style="display:flex;"><span>                      $(<span style="color:#cd5555">&#34;#checkTable tr:gt(0):eq(&#34;</span> + index + <span style="color:#cd5555">&#34;) td:eq(&#34;</span> + <span style="color:#658b00">parseInt</span>(v) + <span style="color:#cd5555">&#34;)&#34;</span>).attr(<span style="color:#cd5555">&#34;rowspan&#34;</span>, mark + <span style="color:#b452cd">1</span>);<span style="color:#228b22">//將當前的行加入屬性rowspan，合併 mark+1行
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                      $(<span style="color:#cd5555">&#34;#checkTable tr:gt(0):eq(&#34;</span> + index + <span style="color:#cd5555">&#34;) td:eq(&#34;</span> + <span style="color:#658b00">parseInt</span>(v) + <span style="color:#cd5555">&#34;)&#34;</span>).attr(<span style="color:#cd5555">&#34;class&#34;</span>, <span style="color:#cd5555">&#34;marge&#34;</span>);
+</span></span><span style="display:flex;"><span>                      <span style="color:#228b22">//rowspan 列上橫跨， colspan 行上橫跨
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                      <span style="color:#228b22">//後面的參數，表示橫跨的單元格個數，
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                      <span style="color:#228b22">//合併單元格就是將其他的單元格隱藏（hide）,或刪除（remove）。
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                      <span style="color:#228b22">//將一個單元格的rowspan 或colsspan 加大
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>                      mark = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>                  }
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      }
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>    <span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 全局ajax設定，阻止重複提交
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
+</span></span><span style="display:flex;"><span>    $.ajaxPrefilter(<span style="color:#8b008b;font-weight:bold">function</span>(options, originalOptions, jqXHR) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> key = options.url;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (!pendingRequests[key] &amp;&amp; key.indexOf(<span style="color:#cd5555">&#39;.html&#39;</span>) == -<span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>            pendingRequests[key] = jqXHR;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (key.indexOf(<span style="color:#cd5555">&#39;.html&#39;</span>) == -<span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>            jqXHR.abort(); <span style="color:#228b22">// 放棄晚觸發的重複提交
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">//pendingRequests[key].abort(); // 放棄先觸發的提交
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> complete = options.complete;
+</span></span><span style="display:flex;"><span>        options.complete = <span style="color:#8b008b;font-weight:bold">function</span>(jqXHR, textStatus) {
+</span></span><span style="display:flex;"><span>            pendingRequests[key] = <span style="color:#8b008b;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ($.isFunction(complete)) {
+</span></span><span style="display:flex;"><span>                complete.apply(<span style="color:#8b008b;font-weight:bold">this</span>, arguments);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2022-08-25</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/220810-batch-convert-md-to-word/">
+			上一篇<br>批次將.md格式轉換成.docx
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

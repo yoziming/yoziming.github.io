@@ -1,0 +1,141 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>柚子茶室</title>
+    <link>https://yoziming.github.io/</link>
+    <description>Recent content on 柚子茶室</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Yoziming</copyright>
+    <lastBuildDate>Thu, 25 Aug 2022 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>錯誤處理</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-err/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-err/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-err/ -&lt;h1 id=&#34;錯誤處理&#34;&gt;錯誤處理&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#228b22&#34;&gt;//捕捉異常
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;defer&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//內置函數recover就是找是否異常
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err := &lt;span style=&#34;color:#658b00&#34;&gt;recover&lt;/span&gt;(); err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; { &lt;span style=&#34;color:#228b22&#34;&gt;//err不為空=有錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;			fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;錯誤&amp;#34;&lt;/span&gt;, err)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n1 := &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	n2 := &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	res := n1 / n2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(res)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;//讀取文件名稱，錯誤就報錯
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(name &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;string&lt;/span&gt;) (err &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;error&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; name == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.ini&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	} &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#228b22&#34;&gt;//返回自訂錯誤
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; errors.&lt;span style=&#34;color:#008b45&#34;&gt;New&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;文件錯誤&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	err := &lt;span style=&#34;color:#008b45&#34;&gt;readConf&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;config.in564&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; err != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;nil&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#658b00&#34;&gt;panic&lt;/span&gt;(err)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;02繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;01繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#008b45&#34;&gt;test02&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fmt.&lt;span style=&#34;color:#008b45&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;03繼續執行...&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://yoziming.github.io/post/210810-agg-go-err/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>繼承</title>
+        <link>https://yoziming.github.io/post/210810-agg-go-inherit/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210810-agg-go-inherit/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-inherit/ -&lt;h1 id=&#34;繼承&#34;&gt;繼承&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Student struct {
+	Name  string
+	Age   int
+	Score int
+	//共有的字段
+}
+
+type Pupil struct {
+	Student //套入
+	Covid19 bool
+}
+
+type College struct {
+	Student //套入指針效率更好
+	SexExp  bool
+}
+
+func (stu *Student) ShowInfo() {
+	fmt.Printf(&amp;#34;姓名=%v 年齡=%v 成績=%v\n&amp;#34;, stu.Name, stu.Age, stu.Score)
+}
+
+func (stu *Student) SetScore(s int) {
+	stu.Score = s
+}
+
+func (p *Pupil) Test() {
+	fmt.Println(&amp;#34;小學生考試&amp;#34;)
+}
+
+func main() {
+	pupilA := &amp;amp;Pupil{}
+	pupilA.Student.Name = &amp;#34;tome&amp;#34;
+	pupilA.Student.Age = 8
+	pupilA.Covid19 = true
+
+	pupilA.Test()
+	pupilA.Student.SetScore(66)
+	pupilA.Student.ShowInfo()
+	fmt.Println(&amp;#34;是否得肺炎&amp;#34;, pupilA.Covid19)
+
+	C1 := College{}
+	C1.Student.Name = &amp;#34;John&amp;#34;
+	C1.Age = 23 //其實可以省略.Student
+	C1.SexExp = false
+
+	C1.Student.SetScore(39)
+	C1.ShowInfo() //其實可以省略.Student
+	fmt.Println(&amp;#34;是否破處&amp;#34;, C1.SexExp)
+
+	//如果有低能把結構體跟匿名結構體用了相同的字段或方法，會採取就近訪問原則
+	// 如果在一個結構中嵌入多個匿名結構，且匿名結構有同名的字段，那就必須指明匿名結構否則報錯
+
+	//組合
+	var d D
+	d.a.Name = &amp;#34;xxxx&amp;#34; //有名字的結構體訪問時就要上完整名字
+}
+
+//組合
+type D struct {
+	a Student //有名字的結構體
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-inherit/ - Yoziming</description>
+        </item>
+    
+    
+    
+    
+    
+    
+  </channel>
+</rss> 
