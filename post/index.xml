@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Thu, 25 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MJPEG轉canvas播放</title>
+      <link>https://yoziming.github.io/post/220915-mjpeg-to-canvas/</link>
+      <pubDate>Thu, 15 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/220915-mjpeg-to-canvas/</guid>
+      <description>背景 IPCAM的影像要能在web上播放，但又是用無線網路訊號非常不穩，就有很多問題 問題 來自攝影機經過NVR的stream輸出是MJPEG格式，本來直接一個&amp;lt;img src=&amp;quot;url&amp;quot;就可以播放 但是用無線網路不穩定會掉包，就會導致net::ERR_INCOMPLETE_CHUNKED_ENCODING 200 (OK) 影像畫面會直接變一片白，需要重新request才可以 這種錯誤我試過onerror等方法都catch不到 解決 最後找到一個好一點的方法，就是用canvas轉一層。這樣做畫面會維持在最後一張，發生問題就重新request 效果變成影像源頭掛掉時，畫面停住(本來是直接一片白)，重新連上後再繼續更新 看畫面上時間可能是到了10:02卡住不動，之後跳成10:08又繼續播放 CODE url是影像來源，例如axxon的NVR系統是host&amp;hellip;/DeviceIpint.158/SourceEndpoint.video:0:1 var optstr = &amp;#34;&amp;lt;canvas id=&amp;#39;movie_canvas&amp;#39; width=&amp;#39;640px&amp;#39; height=&amp;#39;360px&amp;#39;&amp;gt;&amp;lt;/canvas&amp;gt;&amp;#34;; $(&amp;#34;#movie&amp;#34;).html(optstr); var ctx = document.getElementById(&amp;#39;movie_canvas&amp;#39;).getContext(&amp;#39;2d&amp;#39;); ctx.scale(0.33, 0.33) var img = new Image(); img.onload = function() { ctx.drawImage(img, 0, 0); }; var imgRefresher = setInterval(function() { img.src = url; }, 100) var movieDg = $(&amp;#34;#movie&amp;#34;).dialog({ modal: true, width: 690, height: 430, title: &amp;#34;即時影像&amp;#34;, close: function() { clearInterval(imgRefresher); $(&amp;#34;#movie_canvas&amp;#34;).remove(); window.</description>
+    </item>
+    
     <item>
       <title>DataTables實用code合籍</title>
       <link>https://yoziming.github.io/post/220825-datatables/</link>
@@ -16,10 +25,9 @@
       <guid>https://yoziming.github.io/post/220825-datatables/</guid>
       <description>DataTables小技巧 DataTables是前端非常好用的表格套件
 https://datatables.net/manual/
-自動序號 { width : &amp;#34;5%&amp;#34;, data : null, defaultContent : &amp;#39;&amp;#39;, title : &amp;#34;&amp;lt;spring:message code=&amp;#39;序號&amp;#39;/&amp;gt;&amp;#34;, render : function(data, type, row, meta) { return meta.row + 1; } }, 後端分頁的改成這種
-function(data, type, full, meta){ return meta.row + 1 + meta.settings._iDisplayStart; } i18n中文化 搭配官方的 : http://cdn.datatables.net/plug-ins/1.12.1/i18n/
+自動序號 { width: &amp;#34;2%&amp;#34;, data: null, defaultContent: &amp;#39;&amp;#39;, orderable: false, title: &amp;#34;序號&amp;#34;, render: function(data, type, full, meta) { return meta.row + 1 + meta.settings._iDisplayStart; } } i18n中文化 搭配官方的 : http://cdn.datatables.net/plug-ins/1.12.1/i18n/
 language: { url: &amp;#34;/scripts/DataTables-1.12.1/zh-HANT.json&amp;#34;, infoFiltered: &amp;#34;&amp;#34;, }, 防止預設的排序 order : []
-格式化時間 }, { data: &amp;#34;reportTime&amp;#34;, title: &amp;#34;&amp;lt;spring:message code=&amp;#39;回報時間&amp;#39;/&amp;gt;&amp;#34;, render: function ChangeDateFormat(date) { var dateee = new Date(date).</description>
+格式化時間 { data: &amp;#34;time&amp;#34;, title: &amp;#34;時間&amp;#34;, render: function(data) { return data ? dayjs(data).format(&amp;#39;YYYY-MM-DD&amp;#39;) : &amp;#34;&amp;#34;; }, } 綁定特殊動作 比如說要設定某個onclick事件並傳入參數，如果參數很單純(例如純數字的id)那可以簡單的用render，例如: 這樣是把參數一起寫死到html的元素中了，按F12就可以直接看到 render: function(data) { return &amp;#39;&amp;lt;i class=&amp;#34;fa-solid fa-trash-can fa-2xl&amp;#34; onclick=&amp;#34;deleteById(&amp;#39; + data + &amp;#39;)&amp;#34;&amp;gt;&amp;lt;/i&amp;gt;&amp;#39;; }, 但如果要傳入的東西比較複雜(例如是一個多層的json object)，那用createdCell再用JQuery的.</description>
     </item>
     
     <item>

@@ -6,9 +6,391 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Thu, 25 Aug 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 15 Sep 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>反射Reflection、動態代理</title>
+        <link>https://yoziming.github.io/post/211214-agg-ja-29/</link>
+        <pubDate>Tue, 14 Dec 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/211214-agg-ja-29/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/211214-agg-ja-29/ -&lt;h1 id=&#34;反射reflection&#34;&gt;反射Reflection&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;反射Reflection是Java被視為動態語言的關鍵，可以在運行時獲取類的內部訊息
+&lt;ul&gt;
+&lt;li&gt;動態語言:程式運行時，代碼可以根據某些條件改變自身結構&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;具體來說，當我們加載完某類之後，在記憶體中堆的方法區就產生了一個該類的&lt;code&gt;Class物件&lt;/code&gt;，此物件包含了完整的該類的結構訊息&lt;/li&gt;
+&lt;li&gt;因此我們能透過反射的API，從一個物件取得他所屬類的屬性與方法並進行各種操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;主要api&#34;&gt;主要API&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;java.lang.Class&lt;/code&gt;:代表一個類&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.lang.reflect.Method&lt;/code&gt;:代表類的方法&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.lang.reflect.Field&lt;/code&gt;:代表類的成員變數&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.lang.reflect.Constructor&lt;/code&gt;:代表類的構造器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;class類&#34;&gt;Class類&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Class類&lt;/code&gt;即是&amp;quot;類的類&amp;quot;，為反射的源頭&lt;/li&gt;
+&lt;li&gt;Object類中定義了&lt;code&gt;getClass()&lt;/code&gt;方法，此方法被所有類繼承&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Class類&lt;/code&gt;的實例物件只能由系統建立，當一個&lt;code&gt;.class檔案&lt;/code&gt;被JVM載入執行時系統在堆的方法區產生唯一對應的物件&lt;/li&gt;
+&lt;li&gt;通過&lt;code&gt;Class物件&lt;/code&gt;可以完整獲取類的結構並進行各種操作，所以要使用反射必須先獲取&lt;code&gt;Class物件&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;萬物皆物件、萬物皆有&lt;code&gt;Class類&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;數組的話只要元素類型與維度相同，視為同一個&lt;code&gt;Class&lt;/code&gt;，例如&lt;code&gt;int[5]&lt;/code&gt;與&lt;code&gt;int[20]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;獲取class實例物件&#34;&gt;獲取Class實例物件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;已知具體類名:&lt;code&gt;Class clazz = String.class&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;已知全類名:&lt;code&gt;Class clazz = Class.forName(&amp;quot;java.lang.String&amp;quot;)&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;可能拋出錯誤&lt;code&gt;ClassNotFoundException&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;也可以透過&lt;code&gt;ClassLoader&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ClassLoader cl = this.getClass().getClassLoader()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Class clazz4 = cl.loadClass(&amp;quot;全類名&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;已有某類的實例物件:&lt;code&gt;Class clazz = obj01.getClass()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;classloader&#34;&gt;ClassLoader&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充知識點，有印象就好&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;類的加載實際步驟&#34;&gt;類的加載實際步驟&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;Load:將&lt;code&gt;.class檔案&lt;/code&gt;讀入記憶體、創建&lt;code&gt;Class物件&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Link:將類的二進位數據合併到JRE中、引入&lt;code&gt;常量&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Initialize:初始化，執行類構造器&lt;code&gt;&amp;lt;clinit&amp;gt;()&lt;/code&gt;方法，進行&lt;code&gt;static&lt;/code&gt;屬性或指定初始值的賦值&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;如果一個類的父類還沒初始化，會先進行父類的初始化&lt;/li&gt;
+&lt;li&gt;JVM會保證&lt;code&gt;&amp;lt;clinit&amp;gt;()&lt;/code&gt;方法在多線程環境中的加鎖與同步&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;加載器的分類&#34;&gt;加載器的分類&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;Bootstrap:引導類，由C語言編寫，負責Java平台核心庫，無法直接獲取&lt;/li&gt;
+&lt;li&gt;Extension:擴展類，負責載入&lt;code&gt;jre/lib/ext或&lt;/code&gt;指定目錄下的&lt;code&gt;jar包&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;System(APPs):系統類，負責載入&lt;code&gt;java.class.path&lt;/code&gt;目錄下的&lt;code&gt;jar包&lt;/code&gt;，最常用的&lt;/li&gt;
+&lt;li&gt;SomeClass:自訂類&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;從class創立類的實例物件&#34;&gt;從Class創立類的實例物件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;取得一個&lt;code&gt;Class物件&lt;/code&gt;後，可以透過&lt;code&gt;newInstance()&lt;/code&gt;方法創建對應類的實例，但有前提:
+&lt;ul&gt;
+&lt;li&gt;該類必須有一個空參的構造器&lt;/li&gt;
+&lt;li&gt;該構造器要有符合的訪問權限&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;從class實例物件反射獲取資訊&#34;&gt;從Class實例物件反射獲取資訊&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;基本都是&lt;code&gt;getXXX()&lt;/code&gt;，沒特別聲明的會返回包含父類的&lt;code&gt;public&lt;/code&gt;資訊&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Declared&lt;/code&gt;用於指明&amp;quot;當前代&amp;quot;，並且無視權限修飾符&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;取得構造器&#34;&gt;取得構造器&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public Constructor&amp;lt;T&amp;gt;[] getConstructors()&lt;/code&gt;:返回&lt;code&gt;public&lt;/code&gt;的構造器，構造器無法繼承，這可不會拿到父類的構造器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Constructor&amp;lt;T&amp;gt;[] getDeclaredConstructors&lt;/code&gt;:返回當前類的所有構造器(含private)&lt;/li&gt;
+&lt;li&gt;對於返回的&lt;code&gt;Constructor類物件&lt;/code&gt;，還能再細探:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public int getModifiers()&lt;/code&gt;:取得修飾符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public String getName()&lt;/code&gt;:取得方法名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt;[] getParameterTypes()&lt;/code&gt;:取得參數的類型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;取得屬性&#34;&gt;取得屬性&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;public Field[] getFields()&lt;/code&gt;:返回類或接口public的Field(含父類)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;public Field[] getDeclaredFields()&lt;/code&gt;:返回當前的Field(含private)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;對於返回的&lt;code&gt;Field類物件&lt;/code&gt;，還能再細探:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;public int getModifiers()&lt;/code&gt;:以整數形式返回此Field的修飾符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt; getType()&lt;/code&gt;:得到Field的屬性類型&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;public String getName()&lt;/code&gt;:返回Field的名稱&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;取得方法&#34;&gt;取得方法&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public Method[] getMethods()&lt;/code&gt;:返回類&lt;code&gt;public&lt;/code&gt;的方法(含父類)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Method[] getDeclaredMethods()&lt;/code&gt;:返回當前的方法(含&lt;code&gt;private&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;對於返回的&lt;code&gt;Method類物件&lt;/code&gt;，還能再細探:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt; getReturnType()&lt;/code&gt;:取得全部的返回值&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt;[] getParameterTypes()&lt;/code&gt;:取得全部的參數&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public int getModifiers()&lt;/code&gt;:取得修飾符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt;[] getExceptionTypes()&lt;/code&gt;:取得異常資訊&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;獲取父類或實現的接口&#34;&gt;獲取父類或實現的接口&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;?&amp;gt;[] getInterfaces()&lt;/code&gt;:返回當前類所有實現的接口(不含父類)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public Class&amp;lt;? Super T&amp;gt; getSuperclass()&lt;/code&gt;:返回父類的&lt;code&gt;Class物件&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;想獲得父類的接口可以2個組合用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;heading&#34;&gt;&lt;/h5&gt;
+&lt;h5 id=&#34;其他資訊&#34;&gt;其他資訊&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;框架常用到，尤其是泛型相關的&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getDeclaredAnnotations()&lt;/code&gt;:取得註解&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getGenericSuperclass&lt;/code&gt;:獲取父類泛型類型Type&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ParameterizedType&lt;/code&gt;:獲取泛型類型&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getActualTypeArguments&lt;/code&gt;:獲取實際的泛型類型參數&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Package getPackage()&lt;/code&gt;:獲取類所在的包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;範例&#34;&gt;範例&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;自訂一個Person類，他的繼承、接口、註解這邊就不貼了&lt;/p&gt;
+&lt;p&gt;用來嘗試調用上面講的這些獲得資訊方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#707a7c&#34;&gt;@MyAnnotation&lt;/span&gt;(value = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;hi&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Person&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;extends&lt;/span&gt; Creature&amp;lt;String&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;implements&lt;/span&gt; Comparable&amp;lt;String&amp;gt;, MyInterface {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; age;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;Person&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#008b45&#34;&gt;toString&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;name=&amp;#34;&lt;/span&gt; + name + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;,id=&amp;#34;&lt;/span&gt; + id+ &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;,age=&amp;#34;&lt;/span&gt; + age;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@MyAnnotation&lt;/span&gt;(value = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;name&amp;amp;int&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;Person&lt;/span&gt;(String name, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; age) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;name&lt;/span&gt; = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;age&lt;/span&gt; = age;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String &lt;span style=&#34;color:#008b45&#34;&gt;show&lt;/span&gt;(String nation) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;我的國籍是&amp;#34;&lt;/span&gt; + nation);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; nation;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;display&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;我是靜態方法&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;compareTo&lt;/span&gt;(String o) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;info&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;我是人&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;使用反射&#34;&gt;使用反射&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;獲取資訊後，可以用返回的結構透過反射來操作物件實例&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;操作屬性&#34;&gt;操作屬性&lt;/h3&gt;
+&lt;h5 id=&#34;作法1&#34;&gt;作法1&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;已知要調用的屬姓名&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Class&amp;lt;Person&amp;gt; clazz = Person.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Person p = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;newInstance&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 返回該屬性的Field物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Field id = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;getField&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用set方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;id.&lt;span style=&#34;color:#658b00&#34;&gt;set&lt;/span&gt;(p, 20);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(p);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 查看可調用get方法，返回obj需要強轉
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; nid = (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt;) id.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(p);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(nid);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;用&lt;code&gt;getField(String 屬性名)&lt;/code&gt;方法獲得該屬性的Field物件&lt;/li&gt;
+&lt;li&gt;以Field物件調用set方法&lt;/li&gt;
+&lt;li&gt;受到權限管制，實際開發不這樣用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h5 id=&#34;作法2&#34;&gt;作法2&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;真正使用的&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Class&amp;lt;Person&amp;gt; clazz = Person.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Person p = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;newInstance&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 用Declared返回該屬性的Field物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Field name = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;getDeclaredField&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;name&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 開啟權限
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;name.&lt;span style=&#34;color:#658b00&#34;&gt;setAccessible&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;name.&lt;span style=&#34;color:#658b00&#34;&gt;set&lt;/span&gt;(p, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Tom&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(name.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(p));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;已知要調用的屬姓名&lt;/li&gt;
+&lt;li&gt;用&lt;code&gt;getDeclaredField(String 屬性名)&lt;/code&gt;方法獲得該屬性的Field物件，這次沒有權限問題了，總是能獲得&lt;/li&gt;
+&lt;li&gt;但是能獲得不等於能修改，想修改之前要先&lt;code&gt;setAccessible(true)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;以Field物件調用set方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;調用方法&#34;&gt;調用方法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用invoke&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Class&amp;lt;Person&amp;gt; clazz = Person.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Person p = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;newInstance&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用方法，需要指明方法的形參類型
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Method show = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;getDeclaredMethod&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;show&amp;#34;&lt;/span&gt;, String.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;show.&lt;span style=&#34;color:#658b00&#34;&gt;setAccessible&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Object nation = show.&lt;span style=&#34;color:#658b00&#34;&gt;invoke&lt;/span&gt;(p, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;台灣&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;nation = &amp;#34;&lt;/span&gt; + nation);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用靜態方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Method display = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;getDeclaredMethod&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;display&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;display.&lt;span style=&#34;color:#658b00&#34;&gt;invoke&lt;/span&gt;(clazz);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;已知要調用的方法名&lt;/li&gt;
+&lt;li&gt;用&lt;code&gt;getDeclaredMethod&lt;/code&gt;，需要指明具體形參類型，因為可能有很多&lt;code&gt;override&lt;/code&gt;的方法&lt;/li&gt;
+&lt;li&gt;有權限問題一樣需要&lt;code&gt;setAccessible&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;invoke(物件, 形參...)&lt;/code&gt;的返回值就是調用的方法的返回值
+&lt;ul&gt;
+&lt;li&gt;如果沒有則返回&lt;code&gt;null&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;也可以調用靜態方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;調用構造器&#34;&gt;調用構造器&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JDK8幾乎不這樣用，直接clazz.newInstance()就造物件了&lt;/p&gt;
+&lt;p&gt;但新版的JDK將該方法廢棄，建議用這種形式，所以還是學一下&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Class&amp;lt;Person&amp;gt; clazz = Person.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 調用構造器
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;Constructor&amp;lt;Person&amp;gt; con = clazz.&lt;span style=&#34;color:#658b00&#34;&gt;getDeclaredConstructor&lt;/span&gt;(String.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;class&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;con.&lt;span style=&#34;color:#658b00&#34;&gt;setAccessible&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Person jay = con.&lt;span style=&#34;color:#658b00&#34;&gt;newInstance&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Jay&amp;#34;&lt;/span&gt;, 50);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(jay);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;參數的部分要注意，我本來還以為&lt;code&gt;int.class&lt;/code&gt;要用&lt;code&gt;Integer.class&lt;/code&gt;，結果不用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;動態代理&#34;&gt;動態代理&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一個動態的代理工廠，可以隨目標類創造出對應的代理實例&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;由靜態代理模式轉動態，需要解決兩個問題&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如何根據加載到記憶體中的&lt;code&gt;被代理類&lt;/code&gt;，動態的創建一個&lt;code&gt;代理類&lt;/code&gt;及&lt;code&gt;實例物件&lt;/code&gt;?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;當通過&lt;code&gt;代理類實例物件&lt;/code&gt;調用&lt;code&gt;方法a&lt;/code&gt;時，如何動態的去調用&lt;code&gt;被代理類&lt;/code&gt;中的同名&lt;code&gt;方法a&lt;/code&gt;?&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;範例代碼:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;interface&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Human&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String &lt;span style=&#34;color:#008b45&#34;&gt;getBelief&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;eat&lt;/span&gt;(String food);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 被代理類
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;SuperMan&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;implements&lt;/span&gt; Human {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#008b45&#34;&gt;getBelief&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;I believe I can fly!&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;eat&lt;/span&gt;(String food) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;超人愛吃&amp;#34;&lt;/span&gt; + food);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 代理工廠
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ProxyFactory&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 調用此方法，返回一個代理類的物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Object &lt;span style=&#34;color:#008b45&#34;&gt;getProxyInstance&lt;/span&gt;(Object obj) { &lt;span style=&#34;color:#228b22&#34;&gt;// obj=被代理類的物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        MyInvocationHandler myInvocationHandler = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; MyInvocationHandler();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        myInvocationHandler.&lt;span style=&#34;color:#658b00&#34;&gt;bind&lt;/span&gt;(obj); &lt;span style=&#34;color:#228b22&#34;&gt;// 連結物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; Proxy.&lt;span style=&#34;color:#658b00&#34;&gt;newProxyInstance&lt;/span&gt;(obj.&lt;span style=&#34;color:#658b00&#34;&gt;getClass&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;getClassLoader&lt;/span&gt;(), obj.&lt;span style=&#34;color:#658b00&#34;&gt;getClass&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;getInterfaces&lt;/span&gt;(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                myInvocationHandler);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 代理類的物件被調用方法a時，就自動調用invoke方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;MyInvocationHandler&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;implements&lt;/span&gt; InvocationHandler {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Object obj; &lt;span style=&#34;color:#228b22&#34;&gt;// 需要使用被代理類的物件進行賦值
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 連結物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;bind&lt;/span&gt;(Object obj) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;obj&lt;/span&gt; = obj;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 物件傳進來，在這裡進行反射調用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Object &lt;span style=&#34;color:#008b45&#34;&gt;invoke&lt;/span&gt;(Object proxy, Method method, Object[] args) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; Throwable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// 要執行的方法就在這
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; method.&lt;span style=&#34;color:#658b00&#34;&gt;invoke&lt;/span&gt;(obj, args);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ProxyTest&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;main&lt;/span&gt;(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        SuperMan superMan = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; SuperMan();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Human proxyInstance = (Human) ProxyFactory.&lt;span style=&#34;color:#658b00&#34;&gt;getProxyInstance&lt;/span&gt;(superMan);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(proxyInstance.&lt;span style=&#34;color:#658b00&#34;&gt;getBelief&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxyInstance.&lt;span style=&#34;color:#658b00&#34;&gt;eat&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;漢堡包&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;實現&lt;code&gt;InvocationHandler&lt;/code&gt;接口，在&lt;code&gt;invoke&lt;/code&gt;方法中完成具體的代理操作&lt;/li&gt;
+&lt;li&gt;透過&lt;code&gt;Proxy.newProxyInstance&lt;/code&gt;靜態方法，返回代理類的物件&lt;/li&gt;
+&lt;li&gt;以此物件完成想代理的操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;小結&#34;&gt;小結&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;獲取Class物件:&lt;code&gt;類.class&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;反射創造實例:&lt;code&gt;newInstance()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;獲取資訊:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getXXX()&lt;/code&gt;獲取&lt;code&gt;public&lt;/code&gt;及一些父類的&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getDeclaredXXX()&lt;/code&gt;獲得當前類，無視封裝性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;突破封裝權限:&lt;code&gt;setAccessible(true)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;操作:&lt;code&gt;set&lt;/code&gt;改變屬性、&lt;code&gt;invoke&lt;/code&gt;調用方法&lt;/li&gt;
+&lt;li&gt;動態代理:&lt;code&gt;Proxy.newProxyInstance&lt;/code&gt;靜態方法、實現&lt;code&gt;InvocationHandler&lt;/code&gt;接口&lt;/li&gt;
+&lt;/ul&gt;
+- https://yoziming.github.io/post/211214-agg-ja-29/ - Yoziming</description>
+        </item>
     
     
     
@@ -12954,114 +13336,6 @@ func main() {
 	bi(9, s1, 0, len(s1)-1)
 }
 &lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-binary-search/ - Yoziming</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>數組</title>
-        <link>https://yoziming.github.io/post/210810-agg-go-array1/</link>
-        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://yoziming.github.io/post/210810-agg-go-array1/</guid>
-        <description>柚子茶室 https://yoziming.github.io/post/210810-agg-go-array1/ -&lt;h1 id=&#34;數組&#34;&gt;數組&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	var n1 [3]int = [3]int{1, 2, 3}
-	var n2 = [3]int{4, 5, 6}
-	//長度聲明後就不能變化
-	var n3 = [...]int{7, 8, 9}
-	//數組長度是類型的一部分 [3]int != [4]int
-	var n4 = [...]string{0: &amp;#34;李四&amp;#34;, 1: &amp;#34;張三&amp;#34;, 5: &amp;#34;王武&amp;#34;}
-	n5 := []int{5, 5, 5, 5, 5}
-	//[]int 這樣定義其實是切片
-
-	fmt.Println(n1)
-	fmt.Println(n2)
-	fmt.Println(n3)
-	fmt.Println(n4)
-	fmt.Println(n5)
-
-	n9 := fmt.Sprintf(&amp;#34;%.2f&amp;#34;, 9.888888)
-	fmt.Println(n9)
-
-	var score [5]float64
-	for i := 0; i &amp;lt; len(score); i++ {
-		fmt.Println(&amp;#34;輸入成績&amp;#34;)
-		fmt.Scanln(&amp;amp;score[i])
-	}
-	for i := 0; i &amp;lt; len(score); i++ {
-		fmt.Printf(&amp;#34;score[%d]=%v\n&amp;#34;, i, score[i])
-
-	}
-	arr := [3]int{11, 22, 33}
-	fmt.Println(arr)
-	test(&amp;amp;arr)
-	fmt.Println(arr)
-
-}
-
-func test(a *[3]int) {
-	a[0] = 88
-	var arr4 = [3]string{&amp;#34;a&amp;#34;, &amp;#34;b&amp;#34;, &amp;#34;c&amp;#34;}
-	b := 3
-	arr4[b] = &amp;#34;tom&amp;#34;
-	fmt.Println(arr4)
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;遍歷數組&#34;&gt;遍歷數組&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	arr1 := []int{1, 2, 3, 4, 5, 6, 7}
-	for index, value := range arr1 {
-		fmt.Printf(&amp;#34;index=%v,value=%v\n&amp;#34;, index, value)
-	}
-	for _, v := range arr1 {
-		fmt.Printf(&amp;#34;%v&amp;#34;, v)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;應用練習&#34;&gt;應用練習&lt;/h1&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
-	var az [26]byte
-	for i := 0; i &amp;lt; len(az); i++ {
-		az[i] = &amp;#39;A&amp;#39; + byte(i)
-		fmt.Printf(&amp;#34;%c &amp;#34;, az[i])
-
-	}
-
-	var n1 = [...]int{1, 2, 6, 8, -5, 99, 44, 3, 0}
-	max := n1[0]
-	for i := 1; i &amp;lt; len(n1); i++ {
-		if max &amp;lt; n1[i] {
-			max = n1[i]
-		}
-
-	}
-	fmt.Printf(&amp;#34;%v\n&amp;#34;, max)
-
-	var n2 = [...]int{1, 2, 6, 8, -5, 99, 44, 3, 0}
-	var sum int
-	for _, v := range n2 {
-		sum = sum + v
-	}
-	fmt.Printf(&amp;#34;和=%v\n&amp;#34;, sum)
-	fmt.Printf(&amp;#34;平均=%v\n&amp;#34;, sum/len(n2))
-	//我要保留平均的小數點
-	fmt.Printf(&amp;#34;平均=%.2f\n&amp;#34;, float64(sum)/float64(len(n2)))
-
-	//要求:隨機生成5個數字，並反轉後打印
-	//思路:隨機 rand.Init()，放進數組，把數組反轉，打印
-
-	var arr3 [5]int
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i &amp;lt; len(arr3); i++ {
-		arr3[i] = rand.Intn(100) //0&amp;lt;=n&amp;lt;100
-	}
-	fmt.Println(arr3)
-	//順序翻轉
-	for i := 0; i &amp;lt; len(arr3)/2; i++ {
-		arr3[i], arr3[len(arr3)-i-1] = arr3[len(arr3)-i-1], arr3[i]
-	}
-	fmt.Println(arr3)
-}
-&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210810-agg-go-array1/ - Yoziming</description>
         </item>
     
     
