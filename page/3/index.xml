@@ -6,9 +6,491 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Sat, 15 Oct 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Jan 2023 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://yoziming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>實作練習-客戶名單管理系統</title>
+        <link>https://yoziming.github.io/post/210820-agg-go-proj-user-list/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210820-agg-go-proj-user-list/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210820-agg-go-proj-user-list/ -&lt;h1 id=&#34;實作練習-客戶名單管理系統&#34;&gt;實作練習-客戶名單管理系統&lt;/h1&gt;
+&lt;h3 id=&#34;model&#34;&gt;model&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Customer struct {
+	Id     int
+	Name   string
+	Gender string
+	Age    int
+	Phone  string
+	Email  string
+}
+
+//使用工廠模式返回一個實例
+func NewCustomer(id int, name string, gender string,
+	age int, phone string, email string) Customer {
+	return Customer{
+		Id:     id,
+		Name:   name,
+		Gender: gender,
+		Age:    age,
+		Phone:  phone,
+		Email:  email,
+	}
+}
+
+//返回用戶訊息
+func (c Customer) GetInfo() string {
+	info := fmt.Sprintf(&amp;#34;%v	%v	%v	%v	%v	%v&amp;#34;,
+		c.Id, c.Name, c.Gender, c.Age, c.Phone, c.Email)
+	return info
+
+}
+
+//用戶創建
+func NewCustomer2(name string, gender string,
+	age int, phone string, email string) Customer {
+	return Customer{
+		Name:   name,
+		Gender: gender,
+		Age:    age,
+		Phone:  phone,
+		Email:  email,
+	}
+}
+
+//修改
+func (c *Customer) Reset(name string, gender string, age int, phone string, email string) {
+	if name != &amp;#34;&amp;#34; {
+		c.Name = name
+	}
+	if gender != &amp;#34;&amp;#34; {
+		c.Gender = gender
+	}
+	if age != 0 {
+		c.Age = age
+	}
+	if phone != &amp;#34;&amp;#34; {
+		c.Phone = phone
+	}
+	if email != &amp;#34;&amp;#34; {
+		c.Email = email
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;view&#34;&gt;view&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+type customerView struct {
+	key             string //接收用戶輸入
+	loop            bool   //是否循環回到主頁面
+	customerService *service.CustomerService
+}
+
+//顯示主菜單
+func (cv *customerView) mainMenu() {
+	for {
+		fmt.Println(&amp;#34;\n---客戶訊息管理系統---&amp;#34;)
+		fmt.Println(&amp;#34;   1 添加新客戶&amp;#34;)
+		fmt.Println(&amp;#34;   2 修改客戶&amp;#34;)
+		fmt.Println(&amp;#34;   3 刪除客戶&amp;#34;)
+		fmt.Println(&amp;#34;   4 客戶列表&amp;#34;)
+		fmt.Println(&amp;#34;   5 退出&amp;#34;)
+		fmt.Print(&amp;#34;請選擇(1-5)...&amp;#34;)
+		fmt.Scanln(&amp;amp;cv.key)
+		switch cv.key {
+		case &amp;#34;1&amp;#34;:
+			fmt.Println(&amp;#34;你選擇的是...1 添加新客戶&amp;#34;)
+			cv.add()
+		case &amp;#34;2&amp;#34;:
+			fmt.Println(&amp;#34;你選擇的是...2 修改客戶&amp;#34;)
+		case &amp;#34;3&amp;#34;:
+			fmt.Println(&amp;#34;你選擇的是...3 刪除客戶&amp;#34;)
+			cv.delete()
+		case &amp;#34;4&amp;#34;:
+			fmt.Println(&amp;#34;你選擇的是...4 客戶列表&amp;#34;)
+			cv.list()
+		case &amp;#34;5&amp;#34;:
+			fmt.Println(&amp;#34;你選擇的是...5 退出&amp;#34;)
+			cv.loop = false
+		default:
+			fmt.Println(&amp;#34;輸入有誤，請重新輸入...&amp;#34;)
+		}
+		if !cv.loop {
+			break
+		}
+	}
+	fmt.Println(&amp;#34;你已成功退出客戶訊息管理系統!&amp;#34;)
+}
+
+//得到用戶輸入並添加
+func (cv *customerView) add() {
+	fmt.Println(&amp;#34;---添加新客戶---&amp;#34;)
+	fmt.Println(&amp;#34;輸入姓名...&amp;#34;)
+	name := &amp;#34;&amp;#34;
+	fmt.Scanln(&amp;amp;name)
+	fmt.Println(&amp;#34;輸入性別...&amp;#34;)
+	gender := &amp;#34;&amp;#34;
+	fmt.Scanln(&amp;amp;gender)
+	fmt.Println(&amp;#34;輸入年齡...&amp;#34;)
+	age := 0
+	fmt.Scanln(&amp;amp;age)
+	fmt.Println(&amp;#34;輸入電話...&amp;#34;)
+	phone := &amp;#34;&amp;#34;
+	fmt.Scanln(&amp;amp;phone)
+	fmt.Println(&amp;#34;輸入信箱...&amp;#34;)
+	email := &amp;#34;&amp;#34;
+	fmt.Scanln(&amp;amp;email)
+	//構建一個Customer實例
+	//id要系統分配
+	customer := model.NewCustomer2(name, gender, age, phone, email)
+	//調用
+	if cv.customerService.Add(customer) {
+		fmt.Println(&amp;#34;添加完成!&amp;#34;)
+	} else {
+		fmt.Println(&amp;#34;添加失敗!&amp;#34;)
+	}
+
+}
+
+//修改
+// func (cs *customerView) Reset() {
+// 	var id int
+// 	fmt.Println(&amp;#34;请输入需要修改的用户ID(无需请输入-1)&amp;#34;)
+// 	fmt.Scanln(&amp;amp;id)
+// 	if id == -1 {
+// 		return
+// 	}
+// 	resetIndex := cs.customerService.FindById(id)
+// 	if resetIndex == -1 {
+// 		fmt.Println(&amp;#34;改用户不存在&amp;#34;)
+// 	} else {
+// 		_, name, gender, age, phone, email := cs.customerService[resetIndex].GetInfo()
+// 		fmt.Printf(&amp;#34;姓名(%v):&amp;#34;, name)
+// 		fmt.Scanln(&amp;amp;name)
+// 		fmt.Printf(&amp;#34;性别(%v):&amp;#34;, gender)
+// 		fmt.Scanln(&amp;amp;gender)
+// 		fmt.Printf(&amp;#34;年龄(%v):&amp;#34;, age)
+// 		fmt.Scanln(&amp;amp;age)
+// 		fmt.Printf(&amp;#34;电话(%v):&amp;#34;, phone)
+// 		fmt.Scanln(&amp;amp;phone)
+// 		fmt.Printf(&amp;#34;邮箱(%v):&amp;#34;, email)
+// 		fmt.Scanln(&amp;amp;email)
+// 		cs.customerService.List()[resetIndex].Reset(name, gender, age, phone, email)
+
+// 	// }
+
+// }
+
+//刪除用戶
+func (cv *customerView) delete() {
+	fmt.Println(&amp;#34;---刪除客戶---&amp;#34;)
+	fmt.Println(&amp;#34;輸入ID(-1=退出)...&amp;#34;)
+	id := -1
+	fmt.Scanln(&amp;amp;id)
+	if id == -1 {
+		return //放棄刪除
+	}
+	fmt.Println(&amp;#34;確認是否刪除?(Y/N)&amp;#34;)
+	var choice string = &amp;#34;&amp;#34;
+	fmt.Scanln(&amp;amp;choice)
+	if choice == &amp;#34;y&amp;#34; || choice == &amp;#34;Y&amp;#34; {
+		if cv.customerService.Delete(id) {
+			fmt.Println(&amp;#34;刪除完成!&amp;#34;)
+		} else {
+			fmt.Println(&amp;#34;刪除失敗，該ID不存在&amp;#34;)
+		}
+	}
+
+}
+
+//顯示所有客戶信息
+func (cv *customerView) list() {
+	customers := cv.customerService.List()
+	fmt.Println(&amp;#34;---客戶列表---&amp;#34;)
+	fmt.Println(&amp;#34;編號\t姓名\t性別\t年齡\t電話\t信箱&amp;#34;)
+	for i := range customers {
+		fmt.Println(customers[i].GetInfo())
+
+	}
+
+	fmt.Println(&amp;#34;---客戶列表末尾---&amp;#34;)
+}
+
+func main() {
+	//創建一個customerView的實例並運行顯示
+	customerView := customerView{
+		key:  &amp;#34;&amp;#34;,
+		loop: true,
+	}
+	//對customerService字段初始化
+	customerView.customerService = service.NewCustomerService()
+
+	customerView.mainMenu()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;controler&#34;&gt;controler&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;//完成對Customer的操作
+type CustomerService struct {
+	customers []model.Customer
+	//聲明一個字段，表示當前切片有幾個客戶
+	customerNum int //還能作為新客戶的id+1
+}
+
+//寫一個方法返回*CustomerService，就是Customer的切片
+func NewCustomerService() *CustomerService {
+	customerService := &amp;amp;CustomerService{}
+	//初始化一個客戶
+	customerService.customerNum = 1
+	customer := model.NewCustomer(1, &amp;#34;摺紙&amp;#34;, &amp;#34;女&amp;#34;, 15, &amp;#34;110&amp;#34;, &amp;#34;001@x.mail&amp;#34;)
+	customerService.customers = append(customerService.customers, customer)
+	return customerService
+
+}
+
+//返回客戶切片
+func (cs *CustomerService) List() []model.Customer {
+	return cs.customers
+}
+
+//添加客戶到customer切片
+func (cs *CustomerService) Add(customer model.Customer) bool {
+	//添加一個分配ID的規則
+	cs.customerNum++
+	customer.Id = cs.customerNum
+	cs.customers = append(cs.customers, customer)
+	return true
+}
+
+//根據id尋找對應切片的下標
+func (cs *CustomerService) FindById(id int) int {
+	index := -1 //找不到則返回-1
+	for i := 0; i &amp;lt; len(cs.customers); i++ {
+		if cs.customers[i].Id == id {
+			//找到了
+			index = i
+		}
+	}
+	return index
+}
+
+//刪除
+func (cs *CustomerService) Delete(id int) bool {
+	index := cs.FindById(id)
+	if index == -1 {
+		return false
+	}
+	//從切片中刪除一個元素
+	cs.customers = append(cs.customers[:index], cs.customers[index+1:]...)
+	return true
+}
+
+//修改
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210820-agg-go-proj-user-list/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>實作練習-家庭收支小app</title>
+        <link>https://yoziming.github.io/post/210820-agg-go-proj-family-count/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210820-agg-go-proj-family-count/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210820-agg-go-proj-family-count/ -&lt;h1 id=&#34;實作練習-家庭收支小app&#34;&gt;實作練習-家庭收支小app&lt;/h1&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type MyMoney struct {
+	key     string  //鍵入值
+	note    string  //收支說明
+	balance float64 //餘額
+	money   float64 //收支
+	flag    bool    //判斷是否有明細
+	details string  //詳細
+	loop    bool    //循環
+}
+
+//綁定方法
+func (mm *MyMoney) MainMenu() {
+	for {
+		if !mm.loop {
+			break
+		}
+		fmt.Println(&amp;#34;\n-----------------家庭收支记账软件-----------------&amp;#34;)
+		fmt.Println(&amp;#34;                  1 收支明细&amp;#34;)
+		fmt.Println(&amp;#34;                  2 登记收入&amp;#34;)
+		fmt.Println(&amp;#34;                  3 登记支出&amp;#34;)
+		fmt.Println(&amp;#34;                  4 退出软件&amp;#34;)
+		fmt.Print(&amp;#34;請選擇(1-4)...&amp;#34;)
+		fmt.Scanln(&amp;amp;mm.key)
+
+		switch mm.key {
+		case &amp;#34;1&amp;#34;:
+			mm.showDetails()
+		case &amp;#34;2&amp;#34;:
+			mm.income()
+		case &amp;#34;3&amp;#34;:
+			mm.outcome()
+		case &amp;#34;4&amp;#34;:
+			mm.exit()
+		default:
+			fmt.Println(&amp;#34;輸入錯誤，返回主選單&amp;#34;)
+		}
+	}
+}
+
+func (mm *MyMoney) showDetails() {
+	fmt.Println(&amp;#34;\n-----------------收支明细-----------------&amp;#34;)
+	if mm.flag {
+		fmt.Println(mm.details)
+	} else {
+		fmt.Println(&amp;#34;當前沒有明細&amp;#34;)
+	}
+}
+
+func (mm *MyMoney) income() {
+	fmt.Println(&amp;#34;\n-----------------登记收入-----------------&amp;#34;)
+	fmt.Println(&amp;#34;輸入收入金額...&amp;#34;)
+	fmt.Scanln(&amp;amp;mm.money)
+	mm.balance += mm.money
+	fmt.Println(&amp;#34;輸入收入說明...&amp;#34;)
+	fmt.Scanln(&amp;amp;mm.note)
+	mm.details += fmt.Sprintf(&amp;#34;\n收入\t%v\t	%v\t	%v&amp;#34;, mm.balance, mm.money, mm.note)
+	mm.flag = true
+}
+
+func (mm *MyMoney) outcome() {
+	fmt.Println(&amp;#34;本次支出金额:&amp;#34;)
+	fmt.Scanln(&amp;amp;mm.money)
+	//这里需要做一个必要的判断
+	mm.balance -= mm.money
+	fmt.Println(&amp;#34;本次支出说明:&amp;#34;)
+	fmt.Scanln(&amp;amp;mm.note)
+	mm.details += fmt.Sprintf(&amp;#34;\n支出\t%v\t	%v\t	%v&amp;#34;, mm.balance, mm.money, mm.note)
+	mm.flag = true
+}
+
+func (mm *MyMoney) exit() {
+	fmt.Println(&amp;#34;確定使否退出?(Y/N)&amp;#34;)
+	choice := &amp;#34;&amp;#34;
+	for {
+		fmt.Scanln(&amp;amp;choice)
+		if choice == &amp;#34;Y&amp;#34; || choice == &amp;#34;N&amp;#34; {
+			break
+		}
+		fmt.Println(&amp;#34;錯誤，確定使否退出?(Y/N)&amp;#34;)
+	}
+	if choice == &amp;#34;Y&amp;#34; {
+		fmt.Println(&amp;#34;\n-----------------結束-----------------&amp;#34;)
+		mm.loop = false
+	} else {
+		mm.loop = true
+	}
+}
+
+//工廠模式
+func NewMyMoney() *MyMoney {
+	return &amp;amp;MyMoney{
+		key:     &amp;#34;&amp;#34;,
+		loop:    true,
+		balance: 10000.0,
+		money:   0.0,
+		note:    &amp;#34;&amp;#34;,
+		flag:    false,
+		details: &amp;#34;收支\t账户金额\t收支金额\t说 明&amp;#34;,
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210820-agg-go-proj-family-count/ - Yoziming</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>實作練習-點對點聊天</title>
+        <link>https://yoziming.github.io/post/210820-agg-go-proj-p2pchat/</link>
+        <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://yoziming.github.io/post/210820-agg-go-proj-p2pchat/</guid>
+        <description>柚子茶室 https://yoziming.github.io/post/210820-agg-go-proj-p2pchat/ -&lt;h1 id=&#34;實作練習-點對點聊天&#34;&gt;實作練習-點對點聊天&lt;/h1&gt;
+&lt;h3 id=&#34;servergo&#34;&gt;server.go&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	fmt.Println(&amp;#34;伺服器開始監聽&amp;#34;)
+	listen, err := net.Listen(&amp;#34;tcp&amp;#34;, &amp;#34;0.0.0.0:8888&amp;#34;) //0.0.0.0 寫4位ip v4 v6都能用
+	if err != nil {
+		fmt.Println(&amp;#34;監聽失敗&amp;#34;, err)
+		return
+	}
+	defer listen.Close() //主程式退出後就關閉監聽
+	// fmt.Printf(&amp;#34;listen succes=%v\n&amp;#34;, listen)
+	for {
+		//開啟監聽端口8888
+		time.Sleep(time.Microsecond)
+		fmt.Println(&amp;#34;等待連接中...&amp;#34;)
+		conn, err := listen.Accept()
+		if err != nil {
+			fmt.Println(&amp;#34;Accept()err=&amp;#34;, err)
+		} else {
+			fmt.Printf(&amp;#34;conn suc con=%v 客戶端ip=%v\n&amp;#34;, conn, conn.RemoteAddr().String())
+		}
+		//準備啟動一個協程
+		go process(conn)
+	}
+}
+
+func process(conn net.Conn) {
+	//循環接收客戶端送來的數據
+	defer conn.Close()
+	fmt.Printf(&amp;#34;伺服器等待%s客戶端輸入...\n&amp;#34;, conn.RemoteAddr().String())
+	for {
+		//創建一個新的切片
+		buf := make([]byte, 1024)
+		n, err := conn.Read(buf) //從conn讀取
+		//等待客戶端通過conn發送信息
+		//如果客戶端沒有write,那協程就阻塞在這
+
+		if err != nil {
+			fmt.Println(&amp;#34;客戶端Read err&amp;#34;, err)
+			return
+		}
+		fmt.Print(string(buf[:n])) //不用換行因為接收來的就包含\n
+		//來的是一個byte切片 讀到[:n]剛好，後面還有玩意不是要的
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;clientgo&#34;&gt;client.go&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func main() {
+	conn, err := net.Dial(&amp;#34;tcp&amp;#34;, &amp;#34;127.0.0.1:8888&amp;#34;)
+	if err != nil {
+		fmt.Println(&amp;#34;client dial err=&amp;#34;, err)
+		return
+	}
+	fmt.Printf(&amp;#34;conn suc con=%v 主機端ip=%v\n&amp;#34;, conn, conn.RemoteAddr().String())
+	//客戶端讀取輸入行
+
+	for {
+
+		reader := bufio.NewReader(os.Stdin) //代表標準輸入(終端)
+		fmt.Println(&amp;#34;等待輸入... (exit=離開)&amp;#34;)
+		data, err := reader.ReadString(&amp;#39;\n&amp;#39;) //代表接受到\n為止
+		if err != nil {
+			fmt.Println(&amp;#34;ReadString&amp;#34;, err)
+		}
+		//如果輸入exit就退出
+		line := strings.Trim(data, &amp;#34;\n\r&amp;#34;)
+		if line == &amp;#34;exit&amp;#34; {
+			fmt.Println(&amp;#34;客戶端已退出&amp;#34;)
+			break
+		}
+		//從客戶端發送數據
+		n, err := conn.Write([]byte(data))
+		if err != nil {
+			fmt.Println(&amp;#34;conn.Write&amp;#34;, err)
+		}
+		fmt.Printf(&amp;#34;客戶端發送了%d字節的數據\n&amp;#34;, n)
+
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;- https://yoziming.github.io/post/210820-agg-go-proj-p2pchat/ - Yoziming</description>
+        </item>
     
     
     

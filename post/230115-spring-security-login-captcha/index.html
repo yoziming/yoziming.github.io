@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="google-site-verification" content="XrwF-xUZWSGJVBBm7jM8vqemVqx--zo5Tb9d-Vr7BCc" />
+<title>Spring Security登入時加上圖形驗證碼</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="把驗證碼存到Session來簡單防範攻擊">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="Spring Security登入時加上圖形驗證碼" />
+<meta property="og:description" content="把驗證碼存到Session來簡單防範攻擊" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoziming.github.io/post/230115-spring-security-login-captcha/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-01-15T00:00:00+00:00" /><meta property="og:site_name" content="My Blog" />
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spring Security登入時加上圖形驗證碼"/>
+<meta name="twitter:description" content="把驗證碼存到Session來簡單防範攻擊"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+
+  
+
+
+
+
+<link rel="icon" href="https://yoziming.github.io/images/favicon.png">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://yoziming.github.io/scss/dark-mode.min.f7c2efa7183435a6bd1842f91c541481c7a5137b5991629a870f24e4a516ad4b.css" integrity="sha256-98Lvpxg0Naa9GEL5HFQUgcelE3tZkWKahw8k5KUWrUs=" media="screen">
+
+
+<script src="/vendor/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+
+
+  <script src="/js/toc.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://yoziming.github.io/">
+    
+        <div class="nav-title">
+            柚子茶室
+        </div>
+        
+        <div class="nav-subtitle">
+            紀錄自學大小事
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/">
+                首頁🏠
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                標籤🏷️
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                系列文📖
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about-me">
+                關於我🐣
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-security%e7%99%bb%e5%85%a5%e5%8a%a0%e4%b8%8a%e5%9c%96%e5%bd%a2%e9%a9%97%e8%ad%89%e7%a2%bc" onclick="onNavClick(`#spring-security登入加上圖形驗證碼-nav`)" id="spring-security登入加上圖形驗證碼-nav">
+									Spring Security登入加上圖形驗證碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96%e9%a9%97%e8%ad%89%e7%a2%bc%e5%9c%96%e7%89%87" onclick="onNavClick(`#獲取驗證碼圖片-nav`)" id="獲取驗證碼圖片-nav">
+									獲取驗證碼圖片
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exception" onclick="onNavClick(`#exception-nav`)" id="exception-nav">
+									Exception
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter" onclick="onNavClick(`#filter-nav`)" id="filter-nav">
+									Filter
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#handler" onclick="onNavClick(`#handler-nav`)" id="handler-nav">
+									Handler
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#securityconfig" onclick="onNavClick(`#securityconfig-nav`)" id="securityconfig-nav">
+									SecurityConfig
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/">
+                    首頁🏠
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    標籤🏷️
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    系列文📖
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about-me">
+                    關於我🐣
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目錄 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#spring-security%e7%99%bb%e5%85%a5%e5%8a%a0%e4%b8%8a%e5%9c%96%e5%bd%a2%e9%a9%97%e8%ad%89%e7%a2%bc" onclick="onNavClick(`#spring-security登入加上圖形驗證碼-nav`)" id="spring-security登入加上圖形驗證碼-nav">
+									Spring Security登入加上圖形驗證碼
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%89%8d%e7%ab%af" onclick="onNavClick(`#前端-nav`)" id="前端-nav">
+									前端
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8d%b2%e5%8f%96%e9%a9%97%e8%ad%89%e7%a2%bc%e5%9c%96%e7%89%87" onclick="onNavClick(`#獲取驗證碼圖片-nav`)" id="獲取驗證碼圖片-nav">
+									獲取驗證碼圖片
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#exception" onclick="onNavClick(`#exception-nav`)" id="exception-nav">
+									Exception
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#filter" onclick="onNavClick(`#filter-nav`)" id="filter-nav">
+									Filter
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#handler" onclick="onNavClick(`#handler-nav`)" id="handler-nav">
+									Handler
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#securityconfig" onclick="onNavClick(`#securityconfig-nav`)" id="securityconfig-nav">
+									SecurityConfig
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://yoziming.github.io/">
+            柚子茶室
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://yoziming.github.io/">
+        <div class="single-column-header-title">柚子茶室</div>
+        
+        <div class="single-column-header-subtitle">紀錄自學大小事</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://yoziming.github.io/images/spring.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    Spring Security登入時加上圖形驗證碼
+                    
+                    <div class="post-subtitle">
+                        把驗證碼存到Session來簡單防範攻擊
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-01-15 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="spring-security登入加上圖形驗證碼">Spring Security登入加上圖形驗證碼</h1>
+<ul>
+<li>效果</li>
+</ul>
+<p><img src="image-20221208144125814.png" alt="image-20221208144125814"></p>
+<h3 id="前端">前端</h3>
+<ul>
+<li>
+<p>帳號密碼+驗證碼很單純不多說</p>
+</li>
+<li>
+<p>點圖片刷新:</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">function</span> reloadCaptcha() {
+</span></span><span style="display:flex;"><span>		$(<span style="color:#cd5555">&#34;#captcha&#34;</span>).attr(<span style="color:#cd5555">&#34;src&#34;</span>, <span style="color:#cd5555">&#34;{登入的url}/getCaptcha?t=&#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>().getTime());
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="獲取驗證碼圖片">獲取驗證碼圖片</h3>
+<ul>
+<li>將密碼存到Session，也可以存到Redis，這邊用最簡單的方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>	<span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">	 * 獲取驗證碼圖片
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/getCaptcha&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getCaptcha</span>(HttpServletRequest request,HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 生成驗證碼圖片，寬 高
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		ShearCaptcha captcha = CaptchaUtil.<span style="color:#658b00">createShearCaptcha</span>(<span style="color:#b452cd">160</span>, <span style="color:#b452cd">45</span>, <span style="color:#b452cd">4</span>, <span style="color:#b452cd">3</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 4位純數字，去除0跟7
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		RandomGenerator randomGenerator = <span style="color:#8b008b;font-weight:bold">new</span> RandomGenerator(<span style="color:#cd5555">&#34;12345689&#34;</span>, <span style="color:#b452cd">4</span>);
+</span></span><span style="display:flex;"><span>		captcha.<span style="color:#658b00">setGenerator</span>(randomGenerator);
+</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// Console.log(&#34;驗證碼code: &#34;+ captcha.getCode());
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		<span style="color:#228b22">// 指定響應頭給瀏覽器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;image/png&#34;</span>); <span style="color:#228b22">// 告訴瀏覽器輸出內容為圖片
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Pragma&#34;</span>, <span style="color:#cd5555">&#34;No-cache&#34;</span>); <span style="color:#228b22">// 禁止瀏覽器緩存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Cache-Control&#34;</span>, <span style="color:#cd5555">&#34;no-cache&#34;</span>);
+</span></span><span style="display:flex;"><span>		request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>, captcha.<span style="color:#658b00">getCode</span>());
+</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 输出流给前端
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		captcha.<span style="color:#658b00">write</span>(response.<span style="color:#658b00">getOutputStream</span>());
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><h3 id="exception">Exception</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeException</span> <span style="color:#8b008b;font-weight:bold">extends</span> AuthenticationException {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">VerificationCodeException</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">super</span>(<span style="color:#cd5555">&#34;驗證碼校驗失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="filter">Filter</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 登入時的圖形驗證碼過濾器
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFilter</span> <span style="color:#8b008b;font-weight:bold">extends</span> OncePerRequestFilter {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilterInternal</span>(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throws</span> ServletException, IOException {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#cd5555">&#34;/login&#34;</span>.<span style="color:#658b00">equals</span>(request.<span style="color:#658b00">getRequestURI</span>())) {
+</span></span><span style="display:flex;"><span>            filterChain.<span style="color:#658b00">doFilter</span>(request, response);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>                verificationCode(request);
+</span></span><span style="display:flex;"><span>                filterChain.<span style="color:#658b00">doFilter</span>(request, response);
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">catch</span> (VerificationCodeException e) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">new</span> FormLoginFailureHandler().<span style="color:#658b00">onAuthenticationFailure</span>(request, response, e);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">verificationCode</span>(HttpServletRequest request){
+</span></span><span style="display:flex;"><span>        String captcha = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+</span></span><span style="display:flex;"><span>        HttpSession session = request.<span style="color:#658b00">getSession</span>();
+</span></span><span style="display:flex;"><span>        String saveCaptcha = (String) session.<span style="color:#658b00">getAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+</span></span><span style="display:flex;"><span>        session.<span style="color:#658b00">removeAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (ObjectUtils.<span style="color:#658b00">isEmpty</span>(captcha) || ObjectUtils.<span style="color:#658b00">isEmpty</span>(saveCaptcha) || !captcha.<span style="color:#658b00">equals</span>(saveCaptcha)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeException();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="handler">Handler</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFailureHandler</span> <span style="color:#8b008b;font-weight:bold">implements</span> AuthenticationFailureHandler {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">onAuthenticationFailure</span>(HttpServletRequest request, HttpServletResponse response,
+</span></span><span style="display:flex;"><span>            AuthenticationException exception) <span style="color:#8b008b;font-weight:bold">throws</span> IOException, ServletException {
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;login fail, msg: {}&#34;</span>, exception.<span style="color:#658b00">getMessage</span>());
+</span></span><span style="display:flex;"><span>        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/json;charset=UTF-8&#34;</span>);
+</span></span><span style="display:flex;"><span>        response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(JSON.<span style="color:#658b00">toJSONString</span>(ResultVO.<span style="color:#658b00">error</span>(<span style="color:#b452cd">10000</span>, exception.<span style="color:#658b00">getMessage</span>())));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="securityconfig">SecurityConfig</h3>
+<ul>
+<li>注意至少要先設定登入頁與getCaptcha是可以無條件通過的</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">configure</span>(HttpSecurity http) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">authorizeRequests</span>() <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">antMatchers</span>( <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">permitAll</span>().<span style="color:#658b00">anyRequest</span>().<span style="color:#658b00">authenticated</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">csrf</span>() <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">ignoringAntMatchers</span>( <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">csrfTokenRepository</span>(csrfTokenRepository());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">sessionManagement</span>() <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">sessionCreationPolicy</span>(SessionCreationPolicy.<span style="color:#658b00">ALWAYS</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">rememberMe</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 檢查圖形驗證碼
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (LOGIN_CAPTCHA){
+</span></span><span style="display:flex;"><span>                http.<span style="color:#658b00">addFilterBefore</span>(<span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeFilter(), UsernamePasswordAuthenticationFilter.<span style="color:#658b00">class</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">上次修改於 2023-01-15</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下一篇<br>已經到底啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://yoziming.github.io/post/221215-java-code-build-excel/">
+			上一篇<br>用Java code生成Excel檔案
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+<div id="waline"></div>
+<script>
+    new Waline({
+        el: '#waline',
+        path: location.pathname,
+        serverURL: "https://waline-pn38gfwbz-yoziming.vercel.app/" ,
+		lang: 'en-US',
+		visitor: true,
+		meta: ['nick', 'mail'],
+    });
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	Yoziming
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script>
+    </body>
+</html>

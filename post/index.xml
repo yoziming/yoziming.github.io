@@ -7,7 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Yoziming</copyright>
-    <lastBuildDate>Sat, 15 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 15 Jan 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://yoziming.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring Security登入時加上圖形驗證碼</title>
+      <link>https://yoziming.github.io/post/230115-spring-security-login-captcha/</link>
+      <pubDate>Sun, 15 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/230115-spring-security-login-captcha/</guid>
+      <description>Spring Security登入加上圖形驗證碼 效果 前端 帳號密碼+驗證碼很單純不多說
+點圖片刷新:
+function reloadCaptcha() { $(&amp;#34;#captcha&amp;#34;).attr(&amp;#34;src&amp;#34;, &amp;#34;{登入的url}/getCaptcha?t=&amp;#34; + new Date().getTime()); } 獲取驗證碼圖片 將密碼存到Session，也可以存到Redis，這邊用最簡單的方法 /** * 獲取驗證碼圖片 */ @GetMapping(&amp;#34;/getCaptcha&amp;#34;) public void getCaptcha(HttpServletRequest request,HttpServletResponse response) throws IOException { // 生成驗證碼圖片，寬 高 ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(160, 45, 4, 3); // 4位純數字，去除0跟7 RandomGenerator randomGenerator = new RandomGenerator(&amp;#34;12345689&amp;#34;, 4); captcha.setGenerator(randomGenerator); // Console.log(&amp;#34;驗證碼code: &amp;#34;+ captcha.getCode()); // 指定響應頭給瀏覽器 response.setContentType(&amp;#34;image/png&amp;#34;); // 告訴瀏覽器輸出內容為圖片 response.setHeader(&amp;#34;Pragma&amp;#34;, &amp;#34;No-cache&amp;#34;); // 禁止瀏覽器緩存 response.setHeader(&amp;#34;Cache-Control&amp;#34;, &amp;#34;no-cache&amp;#34;); request.getSession().setAttribute(&amp;#34;captchaCode&amp;#34;, captcha.getCode()); // 输出流给前端 captcha.write(response.getOutputStream()); } Exception public class VerificationCodeException extends AuthenticationException { public VerificationCodeException(){ super(&amp;#34;驗證碼校驗失敗&amp;#34;); } } Filter /** * 登入時的圖形驗證碼過濾器 */ @Component public class VerificationCodeFilter extends OncePerRequestFilter { @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException { if (!</description>
+    </item>
+    
+    <item>
+      <title>用Java code生成Excel檔案</title>
+      <link>https://yoziming.github.io/post/221215-java-code-build-excel/</link>
+      <pubDate>Thu, 15 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/221215-java-code-build-excel/</guid>
+      <description>知識點 用Java code 生成Excel檔案 簡單快入的更改字形、排版 Excel欄位有下拉選單(資料驗證) 應用情景 有一個報修功能讓使用者可以上傳Excel的清單，系統可以讀取然後產生批量的報修單。於是有一個範例檔案 然而範例檔案還要達成傻瓜式操作，防止使用者填入錯誤的代碼，需要做成下拉清單，像這樣: 引用包 Hutool、poi Code 下拉選單的核心就在writer.addSelect方法，只要把Enum轉為String[]就可以了 @GetMapping(&amp;#34;/getExample&amp;#34;) public void getExample(HttpServletResponse response) throws IOException { // 造下拉選單的array Map&amp;lt;String, String&amp;gt; stateMap = new HashMap&amp;lt;&amp;gt;(); List&amp;lt;String&amp;gt; stateList = new ArrayList&amp;lt;&amp;gt;(); stateMap.put(LightCtrlDetailState.PM_ACCEPT.getCode(), LightCtrlDetailState.PM_ACCEPT.getDesc()); stateMap.put(LightCtrlDetailState.PM_DISCARD.getCode(), LightCtrlDetailState.PM_DISCARD.getDesc()); stateMap.forEach((k, v) -&amp;gt; stateList.add(&amp;#34;#&amp;#34; + k + &amp;#34;(&amp;#34; + v + &amp;#34;)&amp;#34;)); String[] stateArray = stateList.toArray(new String[0]); List&amp;lt;String&amp;gt; faultList = new ArrayList&amp;lt;&amp;gt;(); Map&amp;lt;String, String&amp;gt; faultMap = LightCtrlFault.toMap(); faultMap.forEach((k, v) -&amp;gt; faultList.add(&amp;#34;#&amp;#34; + k + &amp;#34;(&amp;#34; + v + &amp;#34;)&amp;#34;)); String[] faultArray = faultList.</description>
+    </item>
+    
+    <item>
+      <title>DataTables前端搜尋</title>
+      <link>https://yoziming.github.io/post/221115-datatables-frnotend-search/</link>
+      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://yoziming.github.io/post/221115-datatables-frnotend-search/</guid>
+      <description>前端搜尋 /** 前端搜尋時間 */ $.fn.dataTable.ext.search.push( function(settings, data, dataIndex) { let index = MAIN_TABLE.column(&amp;#34;reportTime:name&amp;#34;).index(); let from = $(&amp;#34;#sf-reportTime-min&amp;#34;).val(); let to = $(&amp;#34;#sf-reportTime-max&amp;#34;).val() if (from == &amp;#34;&amp;#34; &amp;amp;&amp;amp; to == &amp;#34;&amp;#34;) return true; var min = dayjs(from).unix(); var max = dayjs(to).unix(); var date = dayjs(data[index]).unix(); if (!(Number.isNaN(min) &amp;amp;&amp;amp; Number.isNaN(max)) &amp;amp;&amp;amp; min &amp;lt;= date &amp;amp;&amp;amp; max &amp;gt;= date) { return true; } if (min &amp;lt;= date &amp;amp;&amp;amp; Number.isNaN(max)) return true; if (max &amp;gt;= date &amp;amp;&amp;amp; Number.</description>
+    </item>
+    
     <item>
       <title>瀏覽器記住使用者上次上傳的檔案</title>
       <link>https://yoziming.github.io/post/221015-last-time-upload/</link>
