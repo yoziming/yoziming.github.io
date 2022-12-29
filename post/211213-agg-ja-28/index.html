@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="通訊協定:URL、IP與網路編程"/>
 <meta name="twitter:description" content="尚硅谷JavaSE筆記-28"/>
@@ -845,7 +844,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </blockquote>
 <h5 id="client端">client端</h5>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">client1</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-</span></span><span style="display:flex;"><span>    Socket localhost = <span style="color:#8b008b;font-weight:bold">new</span> Socket(<span style="color:#cd5555">&#34;localhost&#34;</span>, 8899);
+</span></span><span style="display:flex;"><span>    Socket localhost = <span style="color:#8b008b;font-weight:bold">new</span> Socket(<span style="color:#cd5555">&#34;localhost&#34;</span>, <span style="color:#b452cd">8899</span>);
 </span></span><span style="display:flex;"><span>    OutputStream outputStream = localhost.<span style="color:#658b00">getOutputStream</span>();
 </span></span><span style="display:flex;"><span>    outputStream.<span style="color:#658b00">write</span>(<span style="color:#cd5555">&#34;哈囉你好嗎&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 關鍵，這邊write完不shutdown，後面read方法會被阻塞
@@ -853,10 +852,10 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 接收回應，這邊複習轉換流
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    InputStream is = localhost.<span style="color:#658b00">getInputStream</span>();
 </span></span><span style="display:flex;"><span>    InputStreamReader isr = <span style="color:#8b008b;font-weight:bold">new</span> InputStreamReader(is);
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">char</span>[] cbuf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">char</span>[10];
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">char</span>[] cbuf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">char</span>[<span style="color:#b452cd">10</span>];
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> len;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((len = isr.<span style="color:#658b00">read</span>(cbuf)) != -1) {
-</span></span><span style="display:flex;"><span>        String str = <span style="color:#8b008b;font-weight:bold">new</span> String(cbuf, 0, len);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((len = isr.<span style="color:#658b00">read</span>(cbuf)) != -<span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>        String str = <span style="color:#8b008b;font-weight:bold">new</span> String(cbuf, <span style="color:#b452cd">0</span>, len);
 </span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">print</span>(str);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 關閉
@@ -874,17 +873,17 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <hr>
 <h5 id="server端">server端</h5>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">server1</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-</span></span><span style="display:flex;"><span>    ServerSocket serverSocket = <span style="color:#8b008b;font-weight:bold">new</span> ServerSocket(8899);
+</span></span><span style="display:flex;"><span>    ServerSocket serverSocket = <span style="color:#8b008b;font-weight:bold">new</span> ServerSocket(<span style="color:#b452cd">8899</span>);
 </span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;server啟動，正在監聽port:&#34;</span> + serverSocket.<span style="color:#658b00">getLocalPort</span>());
 </span></span><span style="display:flex;"><span>    Socket s = serverSocket.<span style="color:#658b00">accept</span>();
 </span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;收到請求，來自:&#34;</span> + s.<span style="color:#658b00">getInetAddress</span>());
 </span></span><span style="display:flex;"><span>    InputStream inputStream = s.<span style="color:#658b00">getInputStream</span>();
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 由於要處理中文字，用好朋友ByteArrayOutputStream來裝
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ByteArrayOutputStream baos = <span style="color:#8b008b;font-weight:bold">new</span> ByteArrayOutputStream();
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[10];
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[<span style="color:#b452cd">10</span>];
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> len;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((len = inputStream.<span style="color:#658b00">read</span>(buf)) != -1) {
-</span></span><span style="display:flex;"><span>        baos.<span style="color:#658b00">write</span>(buf, 0, len);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((len = inputStream.<span style="color:#658b00">read</span>(buf)) != -<span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>        baos.<span style="color:#658b00">write</span>(buf, <span style="color:#b452cd">0</span>, len);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(baos.<span style="color:#658b00">toString</span>());
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 返回訊號
@@ -915,7 +914,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramSocket socket = <span style="color:#8b008b;font-weight:bold">new</span> DatagramSocket();
 </span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">byte</span>[] data = <span style="color:#cd5555">&#34;麥當勞歡樂送&#34;</span>.<span style="color:#658b00">getBytes</span>(StandardCharsets.<span style="color:#658b00">UTF_8</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 具體的Packet才指明內容跟要發給誰
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramPacket datagramPacket = <span style="color:#8b008b;font-weight:bold">new</span> DatagramPacket(data, 0, data.<span style="color:#658b00">length</span>, InetAddress.<span style="color:#658b00">getLocalHost</span>(), 9090);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramPacket datagramPacket = <span style="color:#8b008b;font-weight:bold">new</span> DatagramPacket(data, <span style="color:#b452cd">0</span>, data.<span style="color:#658b00">length</span>, InetAddress.<span style="color:#658b00">getLocalHost</span>(), <span style="color:#b452cd">9090</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 參數是發送的data、起始與終點、來源(本機)與port
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        socket.<span style="color:#658b00">send</span>(datagramPacket);
 </span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;反正送出去了，不管有沒有人接，我先溜了&#34;</span>);
@@ -926,14 +925,14 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Test</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">receiver</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// UDP接收端可以在socket先聲明端口
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramSocket socket = <span style="color:#8b008b;font-weight:bold">new</span> DatagramSocket(9090);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramSocket socket = <span style="color:#8b008b;font-weight:bold">new</span> DatagramSocket(<span style="color:#b452cd">9090</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 準備接收的容器
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[100];
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">byte</span>[] buf = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">byte</span>[<span style="color:#b452cd">100</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// socket已經說過地址了，這邊就只負責讀內容
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramPacket packet = <span style="color:#8b008b;font-weight:bold">new</span> DatagramPacket(buf, 0, buf.<span style="color:#658b00">length</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        DatagramPacket packet = <span style="color:#8b008b;font-weight:bold">new</span> DatagramPacket(buf, <span style="color:#b452cd">0</span>, buf.<span style="color:#658b00">length</span>);
 </span></span><span style="display:flex;"><span>        socket.<span style="color:#658b00">receive</span>(packet);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 印出接收的內容
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#8b008b;font-weight:bold">new</span> String(packet.<span style="color:#658b00">getData</span>(), 0, packet.<span style="color:#658b00">getLength</span>()));
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#8b008b;font-weight:bold">new</span> String(packet.<span style="color:#658b00">getData</span>(), <span style="color:#b452cd">0</span>, packet.<span style="color:#658b00">getLength</span>()));
 </span></span><span style="display:flex;"><span>        socket.<span style="color:#658b00">close</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}

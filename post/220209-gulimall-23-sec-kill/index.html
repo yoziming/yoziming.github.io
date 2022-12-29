@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="秒殺優惠模組、Cron表達式"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-23"/>
@@ -1461,7 +1460,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {  },execute);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#228b22">// application.properties
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>spring.<span style="color:#658b00">task</span>.<span style="color:#658b00">scheduling</span>.<span style="color:#658b00">pool</span>.<span style="color:#658b00">size</span>: 5
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>spring.<span style="color:#658b00">task</span>.<span style="color:#658b00">scheduling</span>.<span style="color:#658b00">pool</span>.<span style="color:#658b00">size</span>: <span style="color:#b452cd">5</span>
 </span></span></code></pre></div><ul>
 <li>使用Spring的異步任務</li>
 </ul>
@@ -1479,7 +1478,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">hello</span>() {
 </span></span><span style="display:flex;"><span>    log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;hello...&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(3);
+</span></span><span style="display:flex;"><span>        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(<span style="color:#b452cd">3</span>);
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
 </span></span><span style="display:flex;"><span>        e.<span style="color:#658b00">printStackTrace</span>();
 </span></span><span style="display:flex;"><span>    }
@@ -1517,7 +1516,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        RLock lock = redissonClient.<span style="color:#658b00">getLock</span>(upload_lock);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 加鎖
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            lock.<span style="color:#658b00">lock</span>(10, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            lock.<span style="color:#658b00">lock</span>(<span style="color:#b452cd">10</span>, TimeUnit.<span style="color:#658b00">SECONDS</span>);
 </span></span><span style="display:flex;"><span>            seckillService.<span style="color:#658b00">uploadSeckillSkuLatest3Days</span>();
 </span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
 </span></span><span style="display:flex;"><span>            e.<span style="color:#658b00">printStackTrace</span>();
@@ -1540,7 +1539,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 掃描最近三天的商品需要參加秒殺的活動
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    R lates3DaySession = couponFeignService.<span style="color:#658b00">getLates3DaySession</span>();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (lates3DaySession.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (lates3DaySession.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 上架商品
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;SeckillSessionWithSkusVo&gt; sessionData = lates3DaySession.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>,
 </span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SeckillSessionWithSkusVo&gt;&gt;() {
@@ -1639,7 +1638,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>                    Long skuId = seckillSkuVo.<span style="color:#658b00">getSkuId</span>();
 </span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 先查詢sku的基本信息，調用遠程服務
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    R info = productFeignService.<span style="color:#658b00">getInfo</span>(skuId);
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>                        SkuInfoVo skuInfo = info.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;skuInfo&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SkuInfoVo&gt;() {
 </span></span><span style="display:flex;"><span>                        });
 </span></span><span style="display:flex;"><span>                        redisTo.<span style="color:#658b00">setSkuInfo</span>(skuInfo);
@@ -1706,19 +1705,19 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String replace = key.<span style="color:#658b00">replace</span>(SESSION__CACHE_PREFIX, <span style="color:#cd5555">&#34;&#34;</span>);
 </span></span><span style="display:flex;"><span>        String[] s = replace.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取存入Redis商品的開始時間
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> startTime = Long.<span style="color:#658b00">parseLong</span>(s[0]);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> startTime = Long.<span style="color:#658b00">parseLong</span>(s[<span style="color:#b452cd">0</span>]);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取存入Redis商品的結束時間
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> endTime = Long.<span style="color:#658b00">parseLong</span>(s[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> endTime = Long.<span style="color:#658b00">parseLong</span>(s[<span style="color:#b452cd">1</span>]);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 判斷是否是當前秒殺場次
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (currentTime &gt;= startTime &amp;&amp; currentTime &lt;= endTime) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 獲取這個秒殺場次需要的所有商品信息
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            List&lt;String&gt; range = redisTemplate.<span style="color:#658b00">opsForList</span>().<span style="color:#658b00">range</span>(key, -100, 100);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            List&lt;String&gt; range = redisTemplate.<span style="color:#658b00">opsForList</span>().<span style="color:#658b00">range</span>(key, -<span style="color:#b452cd">100</span>, <span style="color:#b452cd">100</span>);
 </span></span><span style="display:flex;"><span>            BoundHashOperations&lt;String, String, String&gt; hasOps =
 </span></span><span style="display:flex;"><span>                    redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">assert</span> range != <span style="color:#8b008b;font-weight:bold">null</span>;
 </span></span><span style="display:flex;"><span>            List&lt;String&gt; listValue = hasOps.<span style="color:#658b00">multiGet</span>(range);
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (listValue != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; listValue.<span style="color:#658b00">size</span>() &gt;= 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (listValue != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; listValue.<span style="color:#658b00">size</span>() &gt;= <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                List&lt;SeckillSkuRedisTo&gt; collect = listValue.<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
 </span></span><span style="display:flex;"><span>                    String items = (String) item;
@@ -1763,7 +1762,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    BoundHashOperations&lt;String, String, String&gt; hashOps = redisTemplate.<span style="color:#658b00">boundHashOps</span>(SECKILL_CHARE_PREFIX);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 拿到所有的key
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Set&lt;String&gt; keys = hashOps.<span style="color:#658b00">keys</span>();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (keys != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; keys.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (keys != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; keys.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 正則表達式進行匹配
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String reg = <span style="color:#cd5555">&#34;\\d-&#34;</span> + skuId;
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (String key : keys) {
@@ -1806,7 +1805,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    CompletableFuture&lt;Void&gt; seckillFuture = CompletableFuture.<span style="color:#658b00">runAsync</span>(() -&gt; {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠程調用查詢當前sku是否參與秒殺優惠活動
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R skuSeckilInfo = seckillFeignService.<span style="color:#658b00">getSkuSeckilInfo</span>(skuId);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuSeckilInfo.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuSeckilInfo.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 查詢成功
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            SeckillSkuVo seckilInfoData = skuSeckilInfo.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;SeckillSkuVo&gt;() {
 </span></span><span style="display:flex;"><span>            });
@@ -1941,7 +1940,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            String seckillCount = redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">get</span>(SKU_STOCK_SEMAPHORE + randomCode);
 </span></span><span style="display:flex;"><span>            Integer count = Integer.<span style="color:#658b00">valueOf</span>(seckillCount);
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 判斷信號量是否大於0,並且買的數量不能超過庫存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count &gt; 0 &amp;&amp; num &lt;= seckillLimit &amp;&amp; count &gt; num) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count &gt; <span style="color:#b452cd">0</span> &amp;&amp; num &lt;= seckillLimit &amp;&amp; count &gt; num) {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 驗證這個人是否已經買過了，如果秒殺成功，就去redis佔位，靠setIfAbsent(userId-sessionId-skuId
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#228b22">// SETNX 原子性處理
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                String redisKey = user.<span style="color:#658b00">getId</span>() + <span style="color:#cd5555">&#34;-&#34;</span> + skuId;
@@ -1952,7 +1951,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (aBoolean) {
 </span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 佔位成功說明沒買過，要消費掉信號量，用try
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    RSemaphore semaphore = redissonClient.<span style="color:#658b00">getSemaphore</span>(SKU_STOCK_SEMAPHORE + randomCode);
-</span></span><span style="display:flex;"><span>                    <span style="color:#00688b;font-weight:bold">boolean</span> semaphoreCount = semaphore.<span style="color:#658b00">tryAcquire</span>(num, 100, TimeUnit.<span style="color:#658b00">MILLISECONDS</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#00688b;font-weight:bold">boolean</span> semaphoreCount = semaphore.<span style="color:#658b00">tryAcquire</span>(num, <span style="color:#b452cd">100</span>, TimeUnit.<span style="color:#658b00">MILLISECONDS</span>);
 </span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 保證Redis中還有商品庫存
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (semaphoreCount) {
 </span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 創建訂單號和訂單信息發送給MQ

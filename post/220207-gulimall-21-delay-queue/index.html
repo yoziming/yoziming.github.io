@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Seata、消息隊列分佈式事務"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-21"/>
@@ -1054,7 +1053,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    HashMap&lt;String, Object&gt; arguments = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
 </span></span><span style="display:flex;"><span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;order-event-exchange&#34;</span>);<span style="color:#228b22">// 死信路由
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;order.release.order&#34;</span>);<span style="color:#228b22">// 死信路由鍵
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 60000); <span style="color:#228b22">// 消息過期時間 1分鐘
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, <span style="color:#b452cd">60000</span>); <span style="color:#228b22">// 消息過期時間 1分鐘
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;order.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> queue;
@@ -1152,7 +1151,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-exchange&#34;</span>, <span style="color:#cd5555">&#34;stock-event-exchange&#34;</span>);
 </span></span><span style="display:flex;"><span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-dead-letter-routing-key&#34;</span>, <span style="color:#cd5555">&#34;stock.release&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 消息過期時間 2分鐘
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, 120000);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        arguments.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;x-message-ttl&#34;</span>, <span style="color:#b452cd">120000</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        Queue queue = <span style="color:#8b008b;font-weight:bold">new</span> Queue(<span style="color:#cd5555">&#34;stock.delay.queue&#34;</span>, <span style="color:#8b008b;font-weight:bold">true</span>, <span style="color:#8b008b;font-weight:bold">false</span>, <span style="color:#8b008b;font-weight:bold">false</span>, arguments);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> queue;
@@ -1265,7 +1264,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">//鎖定成功就返回1，失敗就返回0
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            Long count = wareSkuDao.<span style="color:#658b00">lockSkuStock</span>(skuId, wareId, hasStock.<span style="color:#658b00">getNum</span>());
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// count==1表示鎖定成功
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count == 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (count == <span style="color:#b452cd">1</span>) {
 </span></span><span style="display:flex;"><span>                skuStocked = <span style="color:#8b008b;font-weight:bold">true</span>;
 </span></span><span style="display:flex;"><span>                WareOrderTaskDetailEntity taskDetailEntity = WareOrderTaskDetailEntity.<span style="color:#658b00">builder</span>()
 </span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">skuId</span>(skuId)
@@ -1273,7 +1272,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">skuNum</span>(hasStock.<span style="color:#658b00">getNum</span>())
 </span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">taskId</span>(wareOrderTaskEntity.<span style="color:#658b00">getId</span>())
 </span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">wareId</span>(wareId)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">lockStatus</span>(1)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">lockStatus</span>(<span style="color:#b452cd">1</span>)
 </span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">build</span>();
 </span></span><span style="display:flex;"><span>                wareOrderTaskDetailService.<span style="color:#658b00">save</span>(taskDetailEntity);
 </span></span><span style="display:flex;"><span>
@@ -1365,16 +1364,16 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String orderSn = orderTaskInfo.<span style="color:#658b00">getOrderSn</span>();
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">//遠程查詢訂單信息
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R orderData = orderFeignService.<span style="color:#658b00">getOrderStatus</span>(orderSn);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (orderData.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (orderData.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">//訂單數據返回成功
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            OrderVo orderInfo = orderData.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;OrderVo&gt;() {
 </span></span><span style="display:flex;"><span>            });
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">//判斷訂單狀態是否已取消或者支付或者訂單不存在
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 1、訂單不存在：解鎖
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 2、訂單存在，且訂單狀態是取消狀態：解鎖
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo == <span style="color:#8b008b;font-weight:bold">null</span> || orderInfo.<span style="color:#658b00">getStatus</span>() == 4) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (orderInfo == <span style="color:#8b008b;font-weight:bold">null</span> || orderInfo.<span style="color:#658b00">getStatus</span>() == <span style="color:#b452cd">4</span>) {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 工作單狀態必須是 已鎖定 才可以解鎖【因為解鎖方法沒有加事務】
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo.<span style="color:#658b00">getLockStatus</span>() == 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (taskDetailInfo.<span style="color:#658b00">getLockStatus</span>() == <span style="color:#b452cd">1</span>) {
 </span></span><span style="display:flex;"><span>                    unLockStock(detail.<span style="color:#658b00">getSkuId</span>(), detail.<span style="color:#658b00">getWareId</span>(), detail.<span style="color:#658b00">getSkuNum</span>(), detailId);
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            }
@@ -1399,7 +1398,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 2、更新工作單的狀態 為已解鎖 2
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        WareOrderTaskDetailEntity taskDetailEntity = <span style="color:#8b008b;font-weight:bold">new</span> WareOrderTaskDetailEntity();
 </span></span><span style="display:flex;"><span>        taskDetailEntity.<span style="color:#658b00">setId</span>(taskDetailId);
-</span></span><span style="display:flex;"><span>        taskDetailEntity.<span style="color:#658b00">setLockStatus</span>(2);
+</span></span><span style="display:flex;"><span>        taskDetailEntity.<span style="color:#658b00">setLockStatus</span>(<span style="color:#b452cd">2</span>);
 </span></span><span style="display:flex;"><span>        wareOrderTaskDetailService.<span style="color:#658b00">updateById</span>(taskDetailEntity);
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><ul>
@@ -1470,9 +1469,9 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span></code></pre></div><h3 id="關閉訂單">關閉訂單</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>訂單創建成功<span style="color:#a61717;background-color:#e3d2d2">，</span>發送一條消息給mq的延時隊列
-</span></span><span style="display:flex;"><span>1<span style="color:#a61717;background-color:#e3d2d2">、</span>當 訂單數據是 0 待付款<span style="color:#a61717;background-color:#e3d2d2">，</span>修改DB 訂單狀態為 4 取消狀態
-</span></span><span style="display:flex;"><span>2<span style="color:#a61717;background-color:#e3d2d2">、</span>關單比解鎖早<span style="color:#a61717;background-color:#e3d2d2">，</span>所以解鎖的時候檢查訂單狀態為4的就可以解鎖掉了
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">訂單創建成功，發送一條消息給</span>mq<span style="color:#a61717;background-color:#e3d2d2">的延時隊列</span>
+</span></span><span style="display:flex;"><span><span style="color:#b452cd">1</span><span style="color:#a61717;background-color:#e3d2d2">、當</span> <span style="color:#a61717;background-color:#e3d2d2">訂單數據是</span> <span style="color:#b452cd">0</span> <span style="color:#a61717;background-color:#e3d2d2">待付款，修改</span>DB <span style="color:#a61717;background-color:#e3d2d2">訂單狀態為</span> <span style="color:#b452cd">4</span> <span style="color:#a61717;background-color:#e3d2d2">取消狀態</span>
+</span></span><span style="display:flex;"><span><span style="color:#b452cd">2</span><span style="color:#a61717;background-color:#e3d2d2">、關單比解鎖早，所以解鎖的時候檢查訂單狀態為</span><span style="color:#b452cd">4</span><span style="color:#a61717;background-color:#e3d2d2">的就可以解鎖掉了</span>
 </span></span><span style="display:flex;"><span><span style="color:#228b22">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 定時關閉訂單
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"> *

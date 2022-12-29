@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Redisson與SpringCache"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-12"/>
@@ -1130,7 +1129,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>RLock lock = redisson.<span style="color:#658b00">getLock</span>(<span style="color:#cd5555">&#34;myLock&#34;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#228b22">// 設定10秒
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>lock.<span style="color:#658b00">lock</span>(10, TimeUnit.<span style="color:#658b00">SECONDS</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>lock.<span style="color:#658b00">lock</span>(<span style="color:#b452cd">10</span>, TimeUnit.<span style="color:#658b00">SECONDS</span>);
 </span></span></code></pre></div><h2 id="readwritelock-讀寫鎖">ReadWriteLock 讀寫鎖</h2>
 <ul>
 <li>
@@ -1169,7 +1168,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        s = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>();
 </span></span><span style="display:flex;"><span>        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
 </span></span><span style="display:flex;"><span>        ops.<span style="color:#658b00">set</span>(<span style="color:#cd5555">&#34;writeValue&#34;</span>,s);
-</span></span><span style="display:flex;"><span>        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(10);
+</span></span><span style="display:flex;"><span>        TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(<span style="color:#b452cd">10</span>);
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) {
 </span></span><span style="display:flex;"><span>        e.<span style="color:#658b00">printStackTrace</span>();
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">finally</span> {
@@ -1190,7 +1189,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        rLock.<span style="color:#658b00">lock</span>();
 </span></span><span style="display:flex;"><span>        ValueOperations&lt;String, String&gt; ops = stringRedisTemplate.<span style="color:#658b00">opsForValue</span>();
 </span></span><span style="display:flex;"><span>        s = ops.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;writeValue&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> { TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(10); } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) { e.<span style="color:#658b00">printStackTrace</span>(); }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> { TimeUnit.<span style="color:#658b00">SECONDS</span>.<span style="color:#658b00">sleep</span>(<span style="color:#b452cd">10</span>); } <span style="color:#8b008b;font-weight:bold">catch</span> (InterruptedException e) { e.<span style="color:#658b00">printStackTrace</span>(); }
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
 </span></span><span style="display:flex;"><span>        e.<span style="color:#658b00">printStackTrace</span>();
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">finally</span> {
@@ -1264,7 +1263,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">lockDoor</span>() <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        RCountDownLatch door = redisson.<span style="color:#658b00">getCountDownLatch</span>(<span style="color:#cd5555">&#34;door&#34;</span>);
-</span></span><span style="display:flex;"><span>        door.<span style="color:#658b00">trySetCount</span>(5);
+</span></span><span style="display:flex;"><span>        door.<span style="color:#658b00">trySetCount</span>(<span style="color:#b452cd">5</span>);
 </span></span><span style="display:flex;"><span>        door.<span style="color:#658b00">await</span>();       <span style="color:#228b22">// 等待閉鎖完成
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;放假了...&#34;</span>;
 </span></span><span style="display:flex;"><span>    }
@@ -1451,7 +1450,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Cacheable</span>(cacheNames = <span style="color:#cd5555">&#34;category&#34;</span>, key = <span style="color:#cd5555">&#34;#root.method.name&#34;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#707a7c">@Override</span>
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> List&lt;CategoryEntity&gt; <span style="color:#008b45">getLevel1Catalog</span>() {
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">list</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;CategoryEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;parent_cid&#34;</span>, 0));
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">list</span>(<span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;CategoryEntity&gt;().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;parent_cid&#34;</span>, <span style="color:#b452cd">0</span>));
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h4 id="cacheevict"><code>@CacheEvict</code></h4>
 <ul>

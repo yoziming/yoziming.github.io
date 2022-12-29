@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="醫院管理API &amp; 服務註冊與發現"/>
 <meta name="twitter:description" content="尚硅谷Spring筆記-08"/>
@@ -833,7 +832,7 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String logoData = (String) stringObjectMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>);
 </span></span><span style="display:flex;"><span>    logoData = logoData.<span style="color:#658b00">replaceAll</span>(<span style="color:#cd5555">&#34; &#34;</span>, <span style="color:#cd5555">&#34;+&#34;</span>);
 </span></span><span style="display:flex;"><span>    stringObjectMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;logoData&#34;</span>, logoData);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> hospitalService.<span style="color:#658b00">save</span>(stringObjectMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院編號已存在，修改請聯絡工程師&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> hospitalService.<span style="color:#658b00">save</span>(stringObjectMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(<span style="color:#b452cd">230</span>, <span style="color:#cd5555">&#34;醫院編號已存在，修改請聯絡工程師&#34;</span>);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><ul>
 <li>服務層
@@ -864,10 +863,10 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">    */</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (hospitalExist == <span style="color:#8b008b;font-weight:bold">null</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 新物件
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        hospital.<span style="color:#658b00">setStatus</span>(0);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        hospital.<span style="color:#658b00">setStatus</span>(<span style="color:#b452cd">0</span>);
 </span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setCreateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
 </span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setUpdateTime</span>(<span style="color:#8b008b;font-weight:bold">new</span> Date());
-</span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setIsDeleted</span>(0);
+</span></span><span style="display:flex;"><span>        hospital.<span style="color:#658b00">setIsDeleted</span>(<span style="color:#b452cd">0</span>);
 </span></span><span style="display:flex;"><span>        hospitalRepository.<span style="color:#658b00">save</span>(hospital);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
 </span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
@@ -897,7 +896,7 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Result <span style="color:#008b45">saveDepartment</span>(HttpServletRequest request) {
 </span></span><span style="display:flex;"><span>        Map&lt;String, String[]&gt; parameterMap_0 = request.<span style="color:#658b00">getParameterMap</span>();
 </span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; parameterMap = HttpRequestHelper.<span style="color:#658b00">switchMap</span>(parameterMap_0);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> departmentService.<span style="color:#658b00">save</span>(parameterMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院科室編號已存在，修改請聯絡工程師&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> departmentService.<span style="color:#658b00">save</span>(parameterMap) ? Result.<span style="color:#658b00">ok</span>() : Result.<span style="color:#658b00">build</span>(<span style="color:#b452cd">230</span>, <span style="color:#cd5555">&#34;醫院科室編號已存在，修改請聯絡工程師&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@ApiOperation</span>(<span style="color:#cd5555">&#34;查詢科室&#34;</span>)
@@ -908,9 +907,9 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取醫院編號
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取當前頁 和 每頁記錄數，沒指定(為空)就是1跟10
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> page = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;page&#34;</span>)) ? 1 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> page = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;page&#34;</span>)) ? <span style="color:#b452cd">1</span> : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
 </span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;page&#34;</span>));
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> limit = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;limit&#34;</span>)) ? 10 : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> limit = StringUtils.<span style="color:#658b00">isEmpty</span>(parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;limit&#34;</span>)) ? <span style="color:#b452cd">10</span> : Integer.<span style="color:#658b00">parseInt</span>((String) parameterMap.<span style="color:#658b00">get</span>(
 </span></span><span style="display:flex;"><span>                <span style="color:#cd5555">&#34;limit&#34;</span>));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        DepartmentQueryVo departmentQueryVo = <span style="color:#8b008b;font-weight:bold">new</span> DepartmentQueryVo();
@@ -929,7 +928,7 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        String hoscode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;hoscode&#34;</span>);
 </span></span><span style="display:flex;"><span>        String depcode = (String) parameterMap.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;depcode&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (depcode == <span style="color:#8b008b;font-weight:bold">null</span> || hoscode == <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(230, <span style="color:#cd5555">&#34;醫院或科室編號不存在&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">build</span>(<span style="color:#b452cd">230</span>, <span style="color:#cd5555">&#34;醫院或科室編號不存在&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        departmentService.<span style="color:#658b00">remove</span>(hoscode, depcode);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Result.<span style="color:#658b00">ok</span>();
@@ -960,7 +959,7 @@ public interface HospitalRepository extends MongoRepository&lt;Hospital, String&
 </span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Page&lt;Department&gt; <span style="color:#008b45">findPageDepartment</span>(<span style="color:#00688b;font-weight:bold">int</span> page, <span style="color:#00688b;font-weight:bold">int</span> limit, DepartmentQueryVo departmentQueryVo) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 創建Pageable，設置當前頁和每頁記錄數，0是第一頁
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Pageable pageable = PageRequest.<span style="color:#658b00">of</span>(page - 1, limit);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Pageable pageable = PageRequest.<span style="color:#658b00">of</span>(page - <span style="color:#b452cd">1</span>, limit);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 查詢用VO，所以要先造一個department去承接屬性
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Department department = <span style="color:#8b008b;font-weight:bold">new</span> Department();
 </span></span><span style="display:flex;"><span>        org.<span style="color:#658b00">springframework</span>.<span style="color:#658b00">beans</span>.<span style="color:#658b00">BeanUtils</span>.<span style="color:#658b00">copyProperties</span>(departmentQueryVo, department);

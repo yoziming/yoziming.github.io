@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="商品屬性維護、庫存模組、基礎篇總結"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-07"/>
@@ -978,11 +977,11 @@ spring.jackson.time-zone=GMT+8
 </span></span><span style="display:flex;"><span>        wrapper.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;brand_id&#34;</span>, brandId);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    String min = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;min&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(min) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(min).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; 0) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(min) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(min).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        wrapper.<span style="color:#658b00">ge</span>(<span style="color:#cd5555">&#34;price&#34;</span>, min);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    String max = (String) params.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;max&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(max) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(max).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; 0) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtils.<span style="color:#658b00">isNotBlank</span>(max) &amp;&amp; <span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(max).<span style="color:#658b00">compareTo</span>(BigDecimal.<span style="color:#658b00">ZERO</span>) &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        wrapper.<span style="color:#658b00">le</span>(<span style="color:#cd5555">&#34;price&#34;</span>, max);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
@@ -1139,7 +1138,7 @@ spring.jackson.time-zone=GMT+8
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#707a7c">@Override</span>
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> PageUtils <span style="color:#008b45">queryPageUnreceive</span>(Map&lt;String, Object&gt; params) {
 </span></span><span style="display:flex;"><span>    QueryWrapper&lt;PurchaseEntity&gt; queryWrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;PurchaseEntity&gt;()
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 0).<span style="color:#658b00">or</span>().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 1);
+</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, <span style="color:#b452cd">0</span>).<span style="color:#658b00">or</span>().<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;status&#34;</span>, <span style="color:#b452cd">1</span>);
 </span></span><span style="display:flex;"><span>    IPage&lt;PurchaseEntity&gt; page = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">page</span>(<span style="color:#8b008b;font-weight:bold">new</span> Query&lt;PurchaseEntity&gt;().<span style="color:#658b00">getPage</span>(params), queryWrapper);
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> PageUtils(page);
 </span></span><span style="display:flex;"><span>}
@@ -1212,19 +1211,19 @@ spring.jackson.time-zone=GMT+8
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WareConstant</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">enum</span> PurchaseStatusEnum {
-</span></span><span style="display:flex;"><span>        CREATED(0, <span style="color:#cd5555">&#34;新建&#34;</span>),
-</span></span><span style="display:flex;"><span>        ASSIGNED(1, <span style="color:#cd5555">&#34;已分配&#34;</span>),
-</span></span><span style="display:flex;"><span>        RECEIVE(2, <span style="color:#cd5555">&#34;已領取&#34;</span>),
-</span></span><span style="display:flex;"><span>        FINISH(3, <span style="color:#cd5555">&#34;已完成&#34;</span>),
-</span></span><span style="display:flex;"><span>        HASERROR(4, <span style="color:#cd5555">&#34;有異常&#34;</span>),
+</span></span><span style="display:flex;"><span>        CREATED(<span style="color:#b452cd">0</span>, <span style="color:#cd5555">&#34;新建&#34;</span>),
+</span></span><span style="display:flex;"><span>        ASSIGNED(<span style="color:#b452cd">1</span>, <span style="color:#cd5555">&#34;已分配&#34;</span>),
+</span></span><span style="display:flex;"><span>        RECEIVE(<span style="color:#b452cd">2</span>, <span style="color:#cd5555">&#34;已領取&#34;</span>),
+</span></span><span style="display:flex;"><span>        FINISH(<span style="color:#b452cd">3</span>, <span style="color:#cd5555">&#34;已完成&#34;</span>),
+</span></span><span style="display:flex;"><span>        HASERROR(<span style="color:#b452cd">4</span>, <span style="color:#cd5555">&#34;有異常&#34;</span>),
 </span></span><span style="display:flex;"><span>        ;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">enum</span> PurchaseDetailStatusEnum {
-</span></span><span style="display:flex;"><span>        CREATED(0, <span style="color:#cd5555">&#34;新建&#34;</span>),
-</span></span><span style="display:flex;"><span>        ASSIGNED(1, <span style="color:#cd5555">&#34;已分配&#34;</span>),
-</span></span><span style="display:flex;"><span>        BUYING(2, <span style="color:#cd5555">&#34;正在採購&#34;</span>),
-</span></span><span style="display:flex;"><span>        FINISH(3, <span style="color:#cd5555">&#34;已完成&#34;</span>),
-</span></span><span style="display:flex;"><span>        HASERROR(4, <span style="color:#cd5555">&#34;採購失敗&#34;</span>),
+</span></span><span style="display:flex;"><span>        CREATED(<span style="color:#b452cd">0</span>, <span style="color:#cd5555">&#34;新建&#34;</span>),
+</span></span><span style="display:flex;"><span>        ASSIGNED(<span style="color:#b452cd">1</span>, <span style="color:#cd5555">&#34;已分配&#34;</span>),
+</span></span><span style="display:flex;"><span>        BUYING(<span style="color:#b452cd">2</span>, <span style="color:#cd5555">&#34;正在採購&#34;</span>),
+</span></span><span style="display:flex;"><span>        FINISH(<span style="color:#b452cd">3</span>, <span style="color:#cd5555">&#34;已完成&#34;</span>),
+</span></span><span style="display:flex;"><span>        HASERROR(<span style="color:#b452cd">4</span>, <span style="color:#cd5555">&#34;採購失敗&#34;</span>),
 </span></span></code></pre></div><ul>
 <li>這裡前端有一個BUG，當合併某些需求到採購單後，產生的採購單id，在ROM中為purchaseId，會汙染到新增完顯示的預設值(假象)</li>
 <li>把這條ban了就好了，反正本來post就沒要傳接那麼多東西</li>
@@ -1277,7 +1276,7 @@ spring.jackson.time-zone=GMT+8
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        QueryWrapper&lt;PurchaseDetailEntity&gt; wrapper = <span style="color:#8b008b;font-weight:bold">new</span> QueryWrapper&lt;PurchaseDetailEntity&gt;();
 </span></span><span style="display:flex;"><span>        wrapper.<span style="color:#658b00">and</span>(q -&gt; {
 </span></span><span style="display:flex;"><span>            q.<span style="color:#658b00">eq</span>(<span style="color:#cd5555">&#34;purchase_id&#34;</span>, item.<span style="color:#658b00">getId</span>());
-</span></span><span style="display:flex;"><span>            q.<span style="color:#658b00">lt</span>(<span style="color:#cd5555">&#34;status&#34;</span>, 2);
+</span></span><span style="display:flex;"><span>            q.<span style="color:#658b00">lt</span>(<span style="color:#cd5555">&#34;status&#34;</span>, <span style="color:#b452cd">2</span>);
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>        List&lt;PurchaseDetailEntity&gt; list = purchaseDetailService.<span style="color:#658b00">list</span>(wrapper);
 </span></span><span style="display:flex;"><span>
@@ -1364,11 +1363,11 @@ spring.jackson.time-zone=GMT+8
 </span></span><span style="display:flex;"><span>        wareSkuEntity.<span style="color:#658b00">setSkuId</span>(skuId);
 </span></span><span style="display:flex;"><span>        wareSkuEntity.<span style="color:#658b00">setStock</span>(skuNum);
 </span></span><span style="display:flex;"><span>        wareSkuEntity.<span style="color:#658b00">setWareId</span>(wareId);
-</span></span><span style="display:flex;"><span>        wareSkuEntity.<span style="color:#658b00">setStockLocked</span>(0);
+</span></span><span style="display:flex;"><span>        wareSkuEntity.<span style="color:#658b00">setStockLocked</span>(<span style="color:#b452cd">0</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 遠端查找setSkuName
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R info = productFeignService.<span style="color:#658b00">info</span>(skuId);
 </span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; data = (Map&lt;String, Object&gt;) info.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuInfo&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (info.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            wareSkuEntity.<span style="color:#658b00">setSkuName</span>((String) data.<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuName&#34;</span>));
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 添加庫存信息

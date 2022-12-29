@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="確認訂單、feign請求頭問題"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-19"/>
@@ -1205,8 +1204,8 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    Map&lt;Long, Boolean&gt; stocks;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Integer <span style="color:#008b45">getCount</span>() {
-</span></span><span style="display:flex;"><span>        Integer count = 0;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>        Integer count = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
 </span></span><span style="display:flex;"><span>                count += item.<span style="color:#658b00">getCount</span>();
 </span></span><span style="display:flex;"><span>            }
@@ -1221,7 +1220,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">//計算訂單總額
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> BigDecimal <span style="color:#008b45">getTotal</span>() {
 </span></span><span style="display:flex;"><span>        BigDecimal totalNum = BigDecimal.<span style="color:#658b00">ZERO</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (items != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; items.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (OrderItemTo item : items) {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">//計算當前商品的總價格
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                BigDecimal itemPrice = item.<span style="color:#658b00">getPrice</span>().<span style="color:#658b00">multiply</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(item.<span style="color:#658b00">getCount</span>().<span style="color:#658b00">toString</span>()));
@@ -1290,7 +1289,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        List&lt;SkuStockVo&gt; skuStockVos = skuHasStock.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;data&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;SkuStockVo&gt;&gt;() {
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuStockVos != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; skuStockVos.<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (skuStockVos != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; skuStockVos.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 將skuStockVos集合轉換為map
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            Map&lt;Long, Boolean&gt; skuHasStockMap =
 </span></span><span style="display:flex;"><span>                    skuStockVos.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toMap</span>(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
@@ -1307,7 +1306,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 防重令牌(防止表單重複提交)
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 為用戶設置一個token，三十分鐘過期時間（存在redis）
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    String token = UUID.<span style="color:#658b00">randomUUID</span>().<span style="color:#658b00">toString</span>().<span style="color:#658b00">replace</span>(<span style="color:#cd5555">&#34;-&#34;</span>, <span style="color:#cd5555">&#34;&#34;</span>);
-</span></span><span style="display:flex;"><span>    redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">set</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>(), token, 30,
+</span></span><span style="display:flex;"><span>    redisTemplate.<span style="color:#658b00">opsForValue</span>().<span style="color:#658b00">set</span>(USER_ORDER_TOKEN_PREFIX + memberResponseTo.<span style="color:#658b00">getId</span>(), token, <span style="color:#b452cd">30</span>,
 </span></span><span style="display:flex;"><span>            TimeUnit.<span style="color:#658b00">MINUTES</span>);
 </span></span><span style="display:flex;"><span>    confirmVo.<span style="color:#658b00">setOrderToken</span>(token);
 </span></span><span style="display:flex;"><span>

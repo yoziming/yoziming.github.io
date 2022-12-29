@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="高併發方案、Sentinel限流、Sleuth鏈路追蹤"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-24"/>
@@ -1735,16 +1734,16 @@ management.endpoints.web.exposure.include=*
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#658b00">解法1</span>: <span style="color:#cd5555">在配置文件application.properties</span>
 </span></span><span style="display:flex;"><span><span style="color:#228b22"># 防止啟動死鎖衝突</span>
 </span></span><span style="display:flex;"><span><span style="color:#658b00">spring.sleuth.redis.enabled</span>=<span style="color:#cd5555">false</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>解法2: 啟動類排除TraceRedisAutoConfiguration.<span style="color:#658b00">class</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">解法</span><span style="color:#b452cd">2</span>: <span style="color:#a61717;background-color:#e3d2d2">啟動類排除</span>TraceRedisAutoConfiguration.<span style="color:#658b00">class</span>
 </span></span><span style="display:flex;"><span><span style="color:#707a7c">@SpringBootApplication</span>(exclude = {DataSourceAutoConfiguration.<span style="color:#658b00">class</span>,TraceRedisAutoConfiguration.<span style="color:#658b00">class</span>})
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>解法3: 自己聲明配置一個zipkin的採樣器<span style="color:#a61717;background-color:#e3d2d2">，</span>而不是使用 spring boot 自動配置的 代碼如下<span style="color:#a61717;background-color:#e3d2d2">：</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">解法</span><span style="color:#b452cd">3</span>: <span style="color:#a61717;background-color:#e3d2d2">自己聲明配置一個</span>zipkin<span style="color:#a61717;background-color:#e3d2d2">的採樣器，而不是使用</span> spring boot <span style="color:#a61717;background-color:#e3d2d2">自動配置的</span> <span style="color:#a61717;background-color:#e3d2d2">代碼如下：</span>
 </span></span><span style="display:flex;"><span><span style="color:#707a7c">@Configuration</span>
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SleuthSamplerConfiguration</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Bean</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Sampler <span style="color:#008b45">defaultSampler</span>() <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 这个值是采样率，设置为1就是100%采样，每一条请求都采，0.1就是10%采样率
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Float f = <span style="color:#8b008b;font-weight:bold">new</span> Float(0.<span style="color:#658b00">1f</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Float f = <span style="color:#8b008b;font-weight:bold">new</span> Float(<span style="color:#b452cd">0.1f</span>);
 </span></span><span style="display:flex;"><span>        SamplerProperties samplerProperties = <span style="color:#8b008b;font-weight:bold">new</span> SamplerProperties();
 </span></span><span style="display:flex;"><span>        samplerProperties.<span style="color:#658b00">setProbability</span>(f);
 </span></span><span style="display:flex;"><span>        ProbabilityBasedSampler sampler = <span style="color:#8b008b;font-weight:bold">new</span> ProbabilityBasedSampler(samplerProperties);

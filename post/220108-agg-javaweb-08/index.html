@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="書城項目:Maven管理依賴、圖書模塊"/>
 <meta name="twitter:description" content="尚硅谷JavaWeb筆記-08"/>
@@ -2031,7 +2030,7 @@ String sql=&#34;語句&#34;最好不要換行
 <li>造一個pojo為Page<!-- raw HTML omitted -->，泛型方便可以塞進Book類以外的，復用性++</li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Page</span>&lt;T&gt; {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> PAGE_SIZE = 4;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">int</span> PAGE_SIZE = <span style="color:#b452cd">4</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageNo;
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> pageTotal;
@@ -2044,8 +2043,8 @@ String sql=&#34;語句&#34;最好不要換行
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setPageNo</span>(<span style="color:#00688b;font-weight:bold">int</span> pageNo) {
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 檢查邊界，比如有人手賤想查第-5頁或9999999頁
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageNo &lt; 1) {
-</span></span><span style="display:flex;"><span>        pageNo = 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageNo &lt; <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>        pageNo = <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageNo &gt; pageTotal) {
 </span></span><span style="display:flex;"><span>        pageNo = pageTotal;
@@ -2097,15 +2096,15 @@ String sql=&#34;語句&#34;最好不要換行
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 求總頁碼
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> pageTotal = pageTotalCount / pageSize;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageTotalCount % pageSize &gt; 0) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (pageTotalCount % pageSize &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 除不盡要加一頁，也包含不到一頁的情況
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pageTotal += 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pageTotal += <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    page.<span style="color:#658b00">setPageTotal</span>(pageTotal);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    page.<span style="color:#658b00">setPageNo</span>(pageNo);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 當前頁面的資料
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> begin = (page.<span style="color:#658b00">getPageNo</span>() - 1) * pageSize;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">int</span> begin = (page.<span style="color:#658b00">getPageNo</span>() - <span style="color:#b452cd">1</span>) * pageSize;
 </span></span><span style="display:flex;"><span>    List&lt;Book&gt; items = bookDao.<span style="color:#658b00">queryForPageItems</span>(begin, pageSize);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 封裝
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    page.<span style="color:#658b00">setItems</span>(items);
@@ -2136,7 +2135,7 @@ String sql=&#34;語句&#34;最好不要換行
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">page</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
 </span></span><span style="display:flex;"><span>        IOException {
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), <span style="color:#b452cd">1</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
 </span></span><span style="display:flex;"><span>    Page&lt;Book&gt; page = bookService.<span style="color:#658b00">page</span>(pageNo, pageSize);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 屬於誰的servlet就把網址設給誰
@@ -2215,7 +2214,7 @@ response.sendRedirect(request.getContextPath() + &#34;/BookServlet?action=page&a
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">page</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
 </span></span><span style="display:flex;"><span>        IOException {
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), <span style="color:#b452cd">1</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
 </span></span><span style="display:flex;"><span>    Page&lt;Book&gt; page = bookService.<span style="color:#658b00">page</span>(pageNo, pageSize);
 </span></span><span style="display:flex;"><span>    page.<span style="color:#658b00">setUrl</span>(<span style="color:#cd5555">&#34;IndexServlet?action=page&#34;</span>);
@@ -2244,12 +2243,12 @@ response.sendRedirect(request.getContextPath() + &#34;/BookServlet?action=page&a
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pageByPrice</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> ServletException,
 </span></span><span style="display:flex;"><span>        IOException {
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), 1);
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageNo = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageNo&#34;</span>), <span style="color:#b452cd">1</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pageSize = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;pageSize&#34;</span>), Page.<span style="color:#658b00">PAGE_SIZE</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), 0);
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), <span style="color:#b452cd">0</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> max = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>),Integer.<span style="color:#658b00">MAX_VALUE</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (min&gt;max){
-</span></span><span style="display:flex;"><span>        min=0;
+</span></span><span style="display:flex;"><span>        min=<span style="color:#b452cd">0</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><h3 id="排序">排序</h3>
 <blockquote>
@@ -2276,10 +2275,10 @@ response.sendRedirect(request.getContextPath() + &#34;/BookServlet?action=page&a
 <li>這樣確實會有一個問題，就是當用戶手賤空值點搜尋，這時候min會被預設為0且max=2147483647，雖然顯示的東西一樣，但回顯那會多出超大的數字很突兀</li>
 <li>修正</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), 0);
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> min = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;min&#34;</span>), <span style="color:#b452cd">0</span>);
 </span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> max = WebUtils.<span style="color:#658b00">parseInt</span>(request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;max&#34;</span>), Integer.<span style="color:#658b00">MAX_VALUE</span>);
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (min &gt; max) {
-</span></span><span style="display:flex;"><span>    min = 0;
+</span></span><span style="display:flex;"><span>    min = <span style="color:#b452cd">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>Page&lt;Book&gt; page = bookService.<span style="color:#658b00">pageByPrice</span>(pageNo, pageSize, min, max);
 </span></span><span style="display:flex;"><span>StringBuilder sb = <span style="color:#8b008b;font-weight:bold">new</span> StringBuilder(<span style="color:#cd5555">&#34;IndexServlet?action=pageByPrice&#34;</span>);

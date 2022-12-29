@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="後台:商品分類、網關轉發微服務、跨域"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-03"/>
@@ -1110,12 +1109,12 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; entities = baseMapper.<span style="color:#658b00">selectList</span>(<span style="color:#8b008b;font-weight:bold">null</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// lamdba表達式左邊形參，右邊方法
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;CategoryEntity&gt; levelMenus = entities.<span style="color:#658b00">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">filter</span>(e -&gt; e.<span style="color:#658b00">getParentCid</span>() == 0) <span style="color:#228b22">// 先篩出第一級，set他的子級，調用下面的方法
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">filter</span>(e -&gt; e.<span style="color:#658b00">getParentCid</span>() == <span style="color:#b452cd">0</span>) <span style="color:#228b22">// 先篩出第一級，set他的子級，調用下面的方法
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                .<span style="color:#658b00">map</span>((menu) -&gt; {
 </span></span><span style="display:flex;"><span>                    menu.<span style="color:#658b00">setChildren</span>(findChildren(menu, entities));
 </span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> menu;
 </span></span><span style="display:flex;"><span>                })
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">sorted</span>(Comparator.<span style="color:#658b00">comparingInt</span>(menu -&gt; (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>())))
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">sorted</span>(Comparator.<span style="color:#658b00">comparingInt</span>(menu -&gt; (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? <span style="color:#b452cd">0</span> : menu.<span style="color:#658b00">getSort</span>())))
 </span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> levelMenus;
@@ -1138,7 +1137,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> categoryEntity;
 </span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">sorted</span>((menu, menu2) -&gt; {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 菜單的排序
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu.<span style="color:#658b00">getSort</span>()) - (menu2.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? 0 : menu2.<span style="color:#658b00">getSort</span>());
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">return</span> (menu.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? <span style="color:#b452cd">0</span> : menu.<span style="color:#658b00">getSort</span>()) - (menu2.<span style="color:#658b00">getSort</span>() == <span style="color:#8b008b;font-weight:bold">null</span> ? <span style="color:#b452cd">0</span> : menu2.<span style="color:#658b00">getSort</span>());
 </span></span><span style="display:flex;"><span>        }).<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> children;
@@ -1260,7 +1259,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">addAllowedMethod</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
 </span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">addAllowedOrigin</span>(<span style="color:#cd5555">&#34;*&#34;</span>);
 </span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">setAllowCredentials</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">setMaxAge</span>(600L);
+</span></span><span style="display:flex;"><span>        corsConfiguration.<span style="color:#658b00">setMaxAge</span>(<span style="color:#b452cd">600L</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        source.<span style="color:#658b00">registerCorsConfiguration</span>(<span style="color:#cd5555">&#34;/**&#34;</span>, corsConfiguration);
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> CorsWebFilter(source);
@@ -1271,7 +1270,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">getOrder</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 指定此過濾器位於NettyWriteResponseFilter之後
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 即待處理完響應體後接着處理響應頭
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> NettyWriteResponseFilter.<span style="color:#658b00">WRITE_RESPONSE_FILTER_ORDER</span> + 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> NettyWriteResponseFilter.<span style="color:#658b00">WRITE_RESPONSE_FILTER_ORDER</span> + <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
@@ -1279,13 +1278,13 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> Mono&lt;Void&gt; <span style="color:#008b45">filter</span>(ServerWebExchange exchange, GatewayFilterChain chain) {
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> chain.<span style="color:#658b00">filter</span>(exchange).<span style="color:#658b00">then</span>(Mono.<span style="color:#658b00">defer</span>(() -&gt; {
 </span></span><span style="display:flex;"><span>            exchange.<span style="color:#658b00">getResponse</span>().<span style="color:#658b00">getHeaders</span>().<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getValue</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">size</span>() &gt; 1))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getValue</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">1</span>))
 </span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">filter</span>(kv -&gt; (kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_ORIGIN</span>)
 </span></span><span style="display:flex;"><span>                            || kv.<span style="color:#658b00">getKey</span>().<span style="color:#658b00">equals</span>(HttpHeaders.<span style="color:#658b00">ACCESS_CONTROL_ALLOW_CREDENTIALS</span>)))
 </span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">forEach</span>(kv -&gt;
 </span></span><span style="display:flex;"><span>                    {
 </span></span><span style="display:flex;"><span>                        kv.<span style="color:#658b00">setValue</span>(<span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;String&gt;() {{
-</span></span><span style="display:flex;"><span>                            add(kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">get</span>(0));
+</span></span><span style="display:flex;"><span>                            add(kv.<span style="color:#658b00">getValue</span>().<span style="color:#658b00">get</span>(<span style="color:#b452cd">0</span>));
 </span></span><span style="display:flex;"><span>                        }});
 </span></span><span style="display:flex;"><span>                    });
 </span></span><span style="display:flex;"><span>

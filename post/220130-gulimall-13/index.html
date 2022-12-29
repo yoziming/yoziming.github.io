@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="用ElasticSearch實現商品搜索"/>
 <meta name="twitter:description" content="SpringBoot微服務項目筆記-13"/>
@@ -737,7 +736,7 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 頁碼
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Integer pageNum = 1;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Integer pageNum = <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 原生的所有查詢條件
@@ -971,8 +970,8 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (String attr : param.<span style="color:#658b00">getAttrs</span>()) {
 </span></span><span style="display:flex;"><span>            BoolQueryBuilder boolQuery = QueryBuilders.<span style="color:#658b00">boolQuery</span>();
 </span></span><span style="display:flex;"><span>            String[] s = attr.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
-</span></span><span style="display:flex;"><span>            String attrId = s[0];
-</span></span><span style="display:flex;"><span>            String[] attrValues = s[1].<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;:&#34;</span>);
+</span></span><span style="display:flex;"><span>            String attrId = s[<span style="color:#b452cd">0</span>];
+</span></span><span style="display:flex;"><span>            String[] attrValues = s[<span style="color:#b452cd">1</span>].<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;:&#34;</span>);
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// must中的必須是同時滿足的，如果boolQuery不是內層的
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 那麼boolQuery會拼接多個must(attrs.attrId)，例如id = 6時，同時必須id = 7，沒有此attr
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            boolQuery.<span style="color:#658b00">must</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;attrs.attrId&#34;</span>, attrId));
@@ -986,21 +985,21 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 1.5、庫存
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getHasStock</span>() != <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>        boolQueryBuilder.<span style="color:#658b00">filter</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;hasStock&#34;</span>, param.<span style="color:#658b00">getHasStock</span>() == 1));
+</span></span><span style="display:flex;"><span>        boolQueryBuilder.<span style="color:#658b00">filter</span>(QueryBuilders.<span style="color:#658b00">termQuery</span>(<span style="color:#cd5555">&#34;hasStock&#34;</span>, param.<span style="color:#658b00">getHasStock</span>() == <span style="color:#b452cd">1</span>));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 1.6、價格區間 0_500  _500  500_
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getSkuPrice</span>())) {
 </span></span><span style="display:flex;"><span>        RangeQueryBuilder rangeQuery = QueryBuilders.<span style="color:#658b00">rangeQuery</span>(<span style="color:#cd5555">&#34;skuPrice&#34;</span>);
 </span></span><span style="display:flex;"><span>        String[] s = param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == 2) {
-</span></span><span style="display:flex;"><span>            rangeQuery.<span style="color:#658b00">gte</span>(s[0]).<span style="color:#658b00">lte</span>(s[1]);
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == 1) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == <span style="color:#b452cd">2</span>) {
+</span></span><span style="display:flex;"><span>            rangeQuery.<span style="color:#658b00">gte</span>(s[<span style="color:#b452cd">0</span>]).<span style="color:#658b00">lte</span>(s[<span style="color:#b452cd">1</span>]);
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (s.<span style="color:#658b00">length</span> == <span style="color:#b452cd">1</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">startsWith</span>(<span style="color:#cd5555">&#34;_&#34;</span>)) {
-</span></span><span style="display:flex;"><span>                rangeQuery.<span style="color:#658b00">lte</span>(s[0]);
+</span></span><span style="display:flex;"><span>                rangeQuery.<span style="color:#658b00">lte</span>(s[<span style="color:#b452cd">0</span>]);
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getSkuPrice</span>().<span style="color:#658b00">endsWith</span>(<span style="color:#cd5555">&#34;_&#34;</span>)) {
-</span></span><span style="display:flex;"><span>                rangeQuery.<span style="color:#658b00">gte</span>(s[0]);
+</span></span><span style="display:flex;"><span>                rangeQuery.<span style="color:#658b00">gte</span>(s[<span style="color:#b452cd">0</span>]);
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        boolQueryBuilder.<span style="color:#658b00">filter</span>(rangeQuery);
@@ -1015,12 +1014,12 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 2.1、排序
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getSort</span>())) {
 </span></span><span style="display:flex;"><span>        String[] s = param.<span style="color:#658b00">getSort</span>().<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
-</span></span><span style="display:flex;"><span>        SortOrder order = s[1].<span style="color:#658b00">equalsIgnoreCase</span>(<span style="color:#cd5555">&#34;asc&#34;</span>) ? SortOrder.<span style="color:#658b00">ASC</span> : SortOrder.<span style="color:#658b00">DESC</span>;
-</span></span><span style="display:flex;"><span>        sourceBuilder.<span style="color:#658b00">sort</span>(s[0], order);
+</span></span><span style="display:flex;"><span>        SortOrder order = s[<span style="color:#b452cd">1</span>].<span style="color:#658b00">equalsIgnoreCase</span>(<span style="color:#cd5555">&#34;asc&#34;</span>) ? SortOrder.<span style="color:#658b00">ASC</span> : SortOrder.<span style="color:#658b00">DESC</span>;
+</span></span><span style="display:flex;"><span>        sourceBuilder.<span style="color:#658b00">sort</span>(s[<span style="color:#b452cd">0</span>], order);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 2.2、分頁
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">from</span>((param.<span style="color:#658b00">getPageNum</span>() - 1) * EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">from</span>((param.<span style="color:#658b00">getPageNum</span>() - <span style="color:#b452cd">1</span>) * EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span>);
 </span></span><span style="display:flex;"><span>    sourceBuilder.<span style="color:#658b00">size</span>(EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 2.3、高亮
@@ -1036,18 +1035,18 @@ https://shopping.friday.tw/ec2/search?
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 聚合分析【品牌、分類、分析所有可選的規格】
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 3.1、品牌聚合
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder brand_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>).<span style="color:#658b00">size</span>(10);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder brand_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandId&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">10</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 子聚合，獲得品牌name和圖片
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandName&#34;</span>).<span style="color:#658b00">size</span>(1));
-</span></span><span style="display:flex;"><span>    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_img_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandImg&#34;</span>).<span style="color:#658b00">size</span>(1));
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandName&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">1</span>));
+</span></span><span style="display:flex;"><span>    brand_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;brand_img_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;brandImg&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">1</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 構建DSL
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO 聚合品牌
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">aggregation</span>(brand_agg);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 3.2、分類聚合
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder catalog_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogId&#34;</span>).<span style="color:#658b00">size</span>(20);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder catalog_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogId&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">20</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 子聚合，獲得分類名
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    catalog_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogName&#34;</span>).<span style="color:#658b00">size</span>(1));
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    catalog_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;catalog_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;catalogName&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">1</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 構建DSL
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// TODO 聚合分類
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    sourceBuilder.<span style="color:#658b00">aggregation</span>(catalog_agg);
@@ -1055,11 +1054,11 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 3.3、規格聚合【嵌入式】
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    NestedAggregationBuilder attr_agg = AggregationBuilders.<span style="color:#658b00">nested</span>(<span style="color:#cd5555">&#34;attr_agg&#34;</span>, <span style="color:#cd5555">&#34;attrs&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 根據id分組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder attr_id_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_id_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrId&#34;</span>).<span style="color:#658b00">size</span>(10);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TermsAggregationBuilder attr_id_agg = AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_id_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrId&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">10</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 子聚合=》在id分組內部，繼續按照 attr_name分組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrName&#34;</span>).<span style="color:#658b00">size</span>(1));
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_name_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrName&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">1</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 子聚合=》在id分組內部，繼續按照 attr_value分組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_value_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrValue&#34;</span>).<span style="color:#658b00">size</span>(50));
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    attr_id_agg.<span style="color:#658b00">subAggregation</span>(AggregationBuilders.<span style="color:#658b00">terms</span>(<span style="color:#cd5555">&#34;attr_value_agg&#34;</span>).<span style="color:#658b00">field</span>(<span style="color:#cd5555">&#34;attrs.attrValue&#34;</span>).<span style="color:#658b00">size</span>(<span style="color:#b452cd">50</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 嵌入式聚合
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    attr_agg.<span style="color:#658b00">subAggregation</span>(attr_id_agg);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 構建DSL
@@ -1093,7 +1092,7 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 設置高亮信息
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (!StringUtils.<span style="color:#658b00">isEmpty</span>(param.<span style="color:#658b00">getKeyword</span>())) {
 </span></span><span style="display:flex;"><span>                HighlightField skuTitle = hit.<span style="color:#658b00">getHighlightFields</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;skuTitle&#34;</span>);
-</span></span><span style="display:flex;"><span>                model.<span style="color:#658b00">setSkuTitle</span>(skuTitle.<span style="color:#658b00">getFragments</span>()[0].<span style="color:#658b00">string</span>());
+</span></span><span style="display:flex;"><span>                model.<span style="color:#658b00">setSkuTitle</span>(skuTitle.<span style="color:#658b00">getFragments</span>()[<span style="color:#b452cd">0</span>].<span style="color:#658b00">string</span>());
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            products.<span style="color:#658b00">add</span>(model);
 </span></span><span style="display:flex;"><span>        }
@@ -1111,7 +1110,7 @@ https://shopping.friday.tw/ec2/search?
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        attrVo.<span style="color:#658b00">setAttrId</span>(bucket.<span style="color:#658b00">getKeyAsNumber</span>().<span style="color:#658b00">longValue</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提取屬性名字
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ParsedStringTerms attr_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_name_agg&#34;</span>);
-</span></span><span style="display:flex;"><span>        attrVo.<span style="color:#658b00">setAttrName</span>(attr_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+</span></span><span style="display:flex;"><span>        attrVo.<span style="color:#658b00">setAttrName</span>(attr_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">getKeyAsString</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提取品牌圖片
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ParsedStringTerms attr_value_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;attr_value_agg&#34;</span>);
 </span></span><span style="display:flex;"><span>        List&lt;String&gt; attrValues = attr_value_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(item -&gt; {
@@ -1132,10 +1131,10 @@ https://shopping.friday.tw/ec2/search?
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        brandVo.<span style="color:#658b00">setBrandId</span>(bucket.<span style="color:#658b00">getKeyAsNumber</span>().<span style="color:#658b00">longValue</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提取品牌名字
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ParsedStringTerms brand_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brand_name_agg&#34;</span>);
-</span></span><span style="display:flex;"><span>        brandVo.<span style="color:#658b00">setBrandName</span>(brand_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+</span></span><span style="display:flex;"><span>        brandVo.<span style="color:#658b00">setBrandName</span>(brand_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">getKeyAsString</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提取品牌圖片
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ParsedStringTerms brand_img_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;brand_img_agg&#34;</span>);
-</span></span><span style="display:flex;"><span>        brandVo.<span style="color:#658b00">setBrandImg</span>(brand_img_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+</span></span><span style="display:flex;"><span>        brandVo.<span style="color:#658b00">setBrandImg</span>(brand_img_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">getKeyAsString</span>());
 </span></span><span style="display:flex;"><span>        brandVos.<span style="color:#658b00">add</span>(brandVo);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setBrands</span>(brandVos);
@@ -1150,43 +1149,43 @@ https://shopping.friday.tw/ec2/search?
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        catalogVo.<span style="color:#658b00">setCatalogId</span>(Long.<span style="color:#658b00">parseLong</span>(bucket.<span style="color:#658b00">getKeyAsString</span>()));
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 提取分類名字
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        ParsedStringTerms catalog_name_agg = bucket.<span style="color:#658b00">getAggregations</span>().<span style="color:#658b00">get</span>(<span style="color:#cd5555">&#34;catalog_name_agg&#34;</span>);
-</span></span><span style="display:flex;"><span>        catalogVo.<span style="color:#658b00">setCatalogName</span>(catalog_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(0).<span style="color:#658b00">getKeyAsString</span>());
+</span></span><span style="display:flex;"><span>        catalogVo.<span style="color:#658b00">setCatalogName</span>(catalog_name_agg.<span style="color:#658b00">getBuckets</span>().<span style="color:#658b00">get</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">getKeyAsString</span>());
 </span></span><span style="display:flex;"><span>        catalogVos.<span style="color:#658b00">add</span>(catalogVo);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setCatalogs</span>(catalogVos);
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 5、分頁信息   pageNum:當前頁碼 、total:總記錄數 、totalPages: 總頁碼
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">long</span> total = hits.<span style="color:#658b00">getTotalHits</span>().<span style="color:#658b00">value</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> totalPages = (<span style="color:#00688b;font-weight:bold">int</span>) total % EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> == 0 ? (<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> :
-</span></span><span style="display:flex;"><span>            ((<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> + 1);
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> totalPages = (<span style="color:#00688b;font-weight:bold">int</span>) total % EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> == <span style="color:#b452cd">0</span> ? (<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> :
+</span></span><span style="display:flex;"><span>            ((<span style="color:#00688b;font-weight:bold">int</span>) total / EsConstant.<span style="color:#658b00">PRODUCT_PAGESIZE</span> + <span style="color:#b452cd">1</span>);
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setPageNum</span>(param.<span style="color:#658b00">getPageNum</span>());
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setTotal</span>(total);
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setTotalPages</span>(totalPages);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 6、所有頁碼數
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    List&lt;Integer&gt; pageNavs = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 1; i &lt;= totalPages; i++) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">1</span>; i &lt;= totalPages; i++) {
 </span></span><span style="display:flex;"><span>        pageNavs.<span style="color:#658b00">add</span>(i);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    result.<span style="color:#658b00">setPageNavs</span>(pageNavs);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 7、構建麵包屑導航功能
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getAttrs</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getAttrs</span>().<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getAttrs</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getAttrs</span>().<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        List&lt;SearchResult.<span style="color:#658b00">NavVo</span>&gt; collect = param.<span style="color:#658b00">getAttrs</span>().<span style="color:#658b00">stream</span>().<span style="color:#658b00">map</span>(attr -&gt; {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">//1、分析每一個attrs傳過來的參數值
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            SearchResult.<span style="color:#658b00">NavVo</span> navVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">NavVo</span>();
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// attrs=2_5寸:6寸
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            String[] s = attr.<span style="color:#658b00">split</span>(<span style="color:#cd5555">&#34;_&#34;</span>);
-</span></span><span style="display:flex;"><span>            navVo.<span style="color:#658b00">setNavValue</span>(s[1]);
-</span></span><span style="display:flex;"><span>            R r = productFeignService.<span style="color:#658b00">attrInfo</span>(Long.<span style="color:#658b00">parseLong</span>(s[0]));
+</span></span><span style="display:flex;"><span>            navVo.<span style="color:#658b00">setNavValue</span>(s[<span style="color:#b452cd">1</span>]);
+</span></span><span style="display:flex;"><span>            R r = productFeignService.<span style="color:#658b00">attrInfo</span>(Long.<span style="color:#658b00">parseLong</span>(s[<span style="color:#b452cd">0</span>]));
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 根據請求構造麵包屑 規格屬性Id集合，這個集合包含的屬性規格不显示【前端會遍歷每個參數显示】
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            result.<span style="color:#658b00">getAttrIds</span>().<span style="color:#658b00">add</span>(Long.<span style="color:#658b00">parseLong</span>(s[0]));
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            result.<span style="color:#658b00">getAttrIds</span>().<span style="color:#658b00">add</span>(Long.<span style="color:#658b00">parseLong</span>(s[<span style="color:#b452cd">0</span>]));
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>                AttrResponseVo data = r.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;attr&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;AttrResponseVo&gt;() {
 </span></span><span style="display:flex;"><span>                });
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 設置屬性名
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                navVo.<span style="color:#658b00">setNavName</span>(data.<span style="color:#658b00">getAttrName</span>());
 </span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>                navVo.<span style="color:#658b00">setNavName</span>(s[0]);
+</span></span><span style="display:flex;"><span>                navVo.<span style="color:#658b00">setNavName</span>(s[<span style="color:#b452cd">0</span>]);
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">//2、取消了這個麵包屑以後，我們要跳轉到哪個地方，將請求的地址url裏面的當前置空
@@ -1201,13 +1200,13 @@ https://shopping.friday.tw/ec2/search?
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 品牌、分類
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getBrandId</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getBrandId</span>().<span style="color:#658b00">size</span>() &gt; 0) {
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getBrandId</span>() != <span style="color:#8b008b;font-weight:bold">null</span> &amp;&amp; param.<span style="color:#658b00">getBrandId</span>().<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>        List&lt;SearchResult.<span style="color:#658b00">NavVo</span>&gt; navs = result.<span style="color:#658b00">getNavs</span>();
 </span></span><span style="display:flex;"><span>        SearchResult.<span style="color:#658b00">NavVo</span> navVo = <span style="color:#8b008b;font-weight:bold">new</span> SearchResult.<span style="color:#658b00">NavVo</span>();
 </span></span><span style="display:flex;"><span>        navVo.<span style="color:#658b00">setNavName</span>(<span style="color:#cd5555">&#34;品牌&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// TODO 遠程查詢所有品牌
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        R r = productFeignService.<span style="color:#658b00">brandsInfo</span>(param.<span style="color:#658b00">getBrandId</span>());
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (r.<span style="color:#658b00">getCode</span>() == <span style="color:#b452cd">0</span>) {
 </span></span><span style="display:flex;"><span>            List&lt;BrandVo&gt; brand = r.<span style="color:#658b00">getData</span>(<span style="color:#cd5555">&#34;brand&#34;</span>, <span style="color:#8b008b;font-weight:bold">new</span> TypeReference&lt;List&lt;BrandVo&gt;&gt;() {
 </span></span><span style="display:flex;"><span>            });
 </span></span><span style="display:flex;"><span>            StringBuffer sb = <span style="color:#8b008b;font-weight:bold">new</span> StringBuffer();

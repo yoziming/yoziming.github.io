@@ -28,7 +28,6 @@
 
 
 
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="LeetCode Easy: 66"/>
 <meta name="twitter:description" content="紀錄解題當下的思路與收穫的知識點"/>
@@ -499,10 +498,10 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 從最後一位數開始遍歷(向前)，不為9時直接加一，為9時讓當前元素重置為0(進位了)
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span>[] <span style="color:#008b45">plusOne</span>(<span style="color:#00688b;font-weight:bold">int</span>[] digits) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = digits.<span style="color:#658b00">length</span> - 1; i &gt;= 0; i--) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = digits.<span style="color:#658b00">length</span> - <span style="color:#b452cd">1</span>; i &gt;= <span style="color:#b452cd">0</span>; i--) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 如果等於 9 ，重置為0
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (digits[i] == 9){
-</span></span><span style="display:flex;"><span>                digits[i] = 0;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (digits[i] == <span style="color:#b452cd">9</span>){
+</span></span><span style="display:flex;"><span>                digits[i] = <span style="color:#b452cd">0</span>;
 </span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 不為9，直接加一返回
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                digits[i] ++;
@@ -511,8 +510,8 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 循環出來如果沒返回(原數字剛好是999之類的情況)，
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#228b22">// 所有的位都已經重置為0了 ，只需要數組擴容，在第一位數加一即可
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        digits = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[digits.<span style="color:#658b00">length</span> + 1];
-</span></span><span style="display:flex;"><span>        digits[0] = 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        digits = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[digits.<span style="color:#658b00">length</span> + <span style="color:#b452cd">1</span>];
+</span></span><span style="display:flex;"><span>        digits[<span style="color:#b452cd">0</span>] = <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> digits;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
@@ -528,15 +527,15 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">addBinary</span>(String a, String b) {
 </span></span><span style="display:flex;"><span>        StringBuilder res = <span style="color:#8b008b;font-weight:bold">new</span> StringBuilder(); <span style="color:#228b22">// 預計返回的結果
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> i = a.<span style="color:#658b00">length</span>() - 1; <span style="color:#228b22">// 標記遍歷到 a 的位置，準備從最後一位向前遍歷
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> j = b.<span style="color:#658b00">length</span>() - 1; <span style="color:#228b22">// 標記遍歷到 b 的位置
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> carry = 0; <span style="color:#228b22">// 進位
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">while</span> (i &gt;= 0 || j &gt;= 0 || carry != 0) { <span style="color:#228b22">// a 沒遍歷完，或 b 沒遍歷完，或進位不為 0
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> digitA = (i &gt;= 0 ? a.<span style="color:#658b00">charAt</span>(i) - <span style="color:#cd5555">&#39;0&#39;</span> : 0); <span style="color:#228b22">// 當前 a 的取值(如果是&#39;1&#39; - &#39;0&#39; 剛好就是1)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> digitB = (j &gt;= 0 ? b.<span style="color:#658b00">charAt</span>(j) - <span style="color:#cd5555">&#39;0&#39;</span> : 0); <span style="color:#228b22">// 當前 b 的取值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> i = a.<span style="color:#658b00">length</span>() - <span style="color:#b452cd">1</span>; <span style="color:#228b22">// 標記遍歷到 a 的位置，準備從最後一位向前遍歷
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> j = b.<span style="color:#658b00">length</span>() - <span style="color:#b452cd">1</span>; <span style="color:#228b22">// 標記遍歷到 b 的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> carry = <span style="color:#b452cd">0</span>; <span style="color:#228b22">// 進位
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">while</span> (i &gt;= <span style="color:#b452cd">0</span> || j &gt;= <span style="color:#b452cd">0</span> || carry != <span style="color:#b452cd">0</span>) { <span style="color:#228b22">// a 沒遍歷完，或 b 沒遍歷完，或進位不為 0
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> digitA = (i &gt;= <span style="color:#b452cd">0</span> ? a.<span style="color:#658b00">charAt</span>(i) - <span style="color:#cd5555">&#39;0&#39;</span> : <span style="color:#b452cd">0</span>); <span style="color:#228b22">// 當前 a 的取值(如果是&#39;1&#39; - &#39;0&#39; 剛好就是1)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> digitB = (j &gt;= <span style="color:#b452cd">0</span> ? b.<span style="color:#658b00">charAt</span>(j) - <span style="color:#cd5555">&#39;0&#39;</span> : <span style="color:#b452cd">0</span>); <span style="color:#228b22">// 當前 b 的取值
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> sum = digitA + digitB + carry; <span style="color:#228b22">// 當前位置相加的結果
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            carry = (sum &gt;= 2 ? 1 : 0); <span style="color:#228b22">// 是否有進位(相加=2就是要進位)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            sum = (sum &gt;= 2 ? sum - 2 : sum); <span style="color:#228b22">// 去除進位后留下的数字
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            carry = (sum &gt;= <span style="color:#b452cd">2</span> ? <span style="color:#b452cd">1</span> : <span style="color:#b452cd">0</span>); <span style="color:#228b22">// 是否有進位(相加=2就是要進位)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            sum = (sum &gt;= <span style="color:#b452cd">2</span> ? sum - <span style="color:#b452cd">2</span> : sum); <span style="color:#228b22">// 去除進位后留下的数字
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            res.<span style="color:#658b00">append</span>(sum); <span style="color:#228b22">// 把去除進位后留下的数字拼接到結果中
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 若最後一次有進位也是while的第三個條件，不會遺漏
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            i--;  <span style="color:#228b22">// 遍歷到 a 的位置向左移動
@@ -563,23 +562,23 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 </span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Solution</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">mySqrt</span>(<span style="color:#00688b;font-weight:bold">int</span> x) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 特殊值判斷
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (x == 0) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> 0;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (x == <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#b452cd">0</span>;
 </span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (x == 1) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> 1;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (x == <span style="color:#b452cd">1</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> left = 1;
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> right = x / 2;
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> left = <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> right = x / <span style="color:#b452cd">2</span>;
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 在區間 [left..right] 查找目標元素
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">while</span> (left &lt; right) {
 </span></span><span style="display:flex;"><span>            <span style="color:#228b22">// mid需要進位，否則最後區間剩2數時會卡死
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> mid = left + (right - left + 1) / 2;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">int</span> mid = left + (right - left + <span style="color:#b452cd">1</span>) / <span style="color:#b452cd">2</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (mid &gt; x / mid) {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 下一輪搜索區間是 [left..mid - 1]
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                right = mid - 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                right = mid - <span style="color:#b452cd">1</span>;
 </span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 下一輪搜索區間是 [mid..right]
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                left = mid;
