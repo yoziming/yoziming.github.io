@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="JSP、Hibernate、Spring Data JPA"/>
 <meta name="twitter:description" content="整理工作上用到的知識"/>
@@ -643,75 +644,75 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>全表映射，它把DB與開發者隔離了，可以完全不管DB類型，而使用HQL語句代替，但也是可以用native sql，壞處是性能差，有3種使用模式</li>
 <li>Hibernate Query Language</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String hql=<span style="color:#cd5555">&#34;select u.uid,u.uname,u.upwd from Users u where u.uname=&#39;張三&#39;&#34;</span>;
-</span></span><span style="display:flex;"><span>Query query = session.<span style="color:#658b00">createQuery</span>(hql);
-</span></span><span style="display:flex;"><span>List&lt;Object[]&gt; list = query.<span style="color:#658b00">list</span>();
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> (Object[] objects : list) {
-</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(Arrays.<span style="color:#658b00">toString</span>(objects));
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String hql=<span style="color:#cd5555">&#34;select u.uid,u.uname,u.upwd from Users u where u.uname=&#39;張三&#39;&#34;</span>;
+Query query = session.<span style="color:#658b00">createQuery</span>(hql);
+List&lt;Object[]&gt; list = query.<span style="color:#658b00">list</span>();
+<span style="color:#8b008b;font-weight:bold">for</span> (Object[] objects : list) {
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(Arrays.<span style="color:#658b00">toString</span>(objects));
+}
+</code></pre></div><ul>
 <li>原生SQL查詢，例如:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String sql = <span style="color:#cd5555">&#34;select uid,uname,upwd from _users&#34;</span>;
-</span></span><span style="display:flex;"><span>List list = session.<span style="color:#658b00">createSQLQuery</span>(sql).<span style="color:#658b00">list</span>();
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(Object obj : list){
-</span></span><span style="display:flex;"><span>    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(obj);
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String sql = <span style="color:#cd5555">&#34;select uid,uname,upwd from _users&#34;</span>;
+List list = session.<span style="color:#658b00">createSQLQuery</span>(sql).<span style="color:#658b00">list</span>();
+<span style="color:#8b008b;font-weight:bold">for</span>(Object obj : list){
+    System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(obj);
+}
+</code></pre></div><ul>
 <li>Query By Criteria
 <ul>
 <li>類似動態語言的特性，可以鏈式查詢</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">//查詢uname屬性
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
-</span></span><span style="display:flex;"><span>PropertyProjection property = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;name&#34;</span>);
-</span></span><span style="display:flex;"><span>criteria.<span style="color:#658b00">setProjection</span>(property);
-</span></span><span style="display:flex;"><span>List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22">//查詢uname, upwd屬性
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
-</span></span><span style="display:flex;"><span><span style="color:#228b22">//1.建立投射列表
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ProjectionList projectionList = Projections.<span style="color:#658b00">projectionList</span>();
-</span></span><span style="display:flex;"><span><span style="color:#228b22">//2.向投射列表中新增列投射
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>PropertyProjection property1 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;uname&#34;</span>);
-</span></span><span style="display:flex;"><span>PropertyProjection property2 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;upwd&#34;</span>);
-</span></span><span style="display:flex;"><span>projectionList.<span style="color:#658b00">add</span>(property1).<span style="color:#658b00">add</span>(property2);
-</span></span><span style="display:flex;"><span><span style="color:#228b22">//3.將投射列表設定到準則中
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>criteria.<span style="color:#658b00">setProjection</span>(projectionList);
-</span></span><span style="display:flex;"><span>List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
-</span></span></code></pre></div><h3 id="spring-data-jpa">Spring Data JPA</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">//查詢uname屬性
+</span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
+PropertyProjection property = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;name&#34;</span>);
+criteria.<span style="color:#658b00">setProjection</span>(property);
+List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
+
+<span style="color:#228b22">//查詢uname, upwd屬性
+</span><span style="color:#228b22"></span>Criteria criteria = session.<span style="color:#658b00">createCriteria</span>(Users.<span style="color:#658b00">class</span>);
+<span style="color:#228b22">//1.建立投射列表
+</span><span style="color:#228b22"></span>ProjectionList projectionList = Projections.<span style="color:#658b00">projectionList</span>();
+<span style="color:#228b22">//2.向投射列表中新增列投射
+</span><span style="color:#228b22"></span>PropertyProjection property1 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;uname&#34;</span>);
+PropertyProjection property2 = Projections.<span style="color:#658b00">property</span>(<span style="color:#cd5555">&#34;upwd&#34;</span>);
+projectionList.<span style="color:#658b00">add</span>(property1).<span style="color:#658b00">add</span>(property2);
+<span style="color:#228b22">//3.將投射列表設定到準則中
+</span><span style="color:#228b22"></span>criteria.<span style="color:#658b00">setProjection</span>(projectionList);
+List&lt;Object&gt; result = criteria.<span style="color:#658b00">list</span>();
+</code></pre></div><h3 id="spring-data-jpa">Spring Data JPA</h3>
 <blockquote>
 <p><a href="https://spring.io/projects/spring-data-jpa">https://spring.io/projects/spring-data-jpa</a></p>
 </blockquote>
 <ul>
 <li>JPA的進一步封裝，Spring Data JPA底層基於Hibernate，使用註解來宣告Model層，例如</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Entity</span>
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Table</span>(name = <span style="color:#cd5555">&#34;memberaccountjpa&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MemberAccountJPA</span> {
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Id</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@GeneratedValue</span>(strategy=GenerationType.<span style="color:#658b00">AUTO</span>)
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> id;
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;EMAIL&#34;</span>)
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String email;
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;CELLPHONE&#34;</span>)
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String cellphone;
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;PASSWORD&#34;</span>)
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String password;
-</span></span><span style="display:flex;"><span>  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;ADDRESS&#34;</span>)
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">private</span> String address;
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Entity</span>
+<span style="color:#707a7c">@Table</span>(name = <span style="color:#cd5555">&#34;memberaccountjpa&#34;</span>)
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MemberAccountJPA</span> {
+  <span style="color:#707a7c">@Id</span>
+  <span style="color:#707a7c">@GeneratedValue</span>(strategy=GenerationType.<span style="color:#658b00">AUTO</span>)
+  <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">int</span> id;
+  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;EMAIL&#34;</span>)
+  <span style="color:#8b008b;font-weight:bold">private</span> String email;
+  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;CELLPHONE&#34;</span>)
+  <span style="color:#8b008b;font-weight:bold">private</span> String cellphone;
+  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;PASSWORD&#34;</span>)
+  <span style="color:#8b008b;font-weight:bold">private</span> String password;
+  <span style="color:#707a7c">@Column</span>(name=<span style="color:#cd5555">&#34;ADDRESS&#34;</span>)
+  <span style="color:#8b008b;font-weight:bold">private</span> String address;
+</code></pre></div><ul>
 <li>然後造一個對應的XxxRepository介面繼承JpaRepository，就可以快速的使用基礎CRUD，詳細關鍵字看官方文檔</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">MemberRepository</span>  <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;MemberAccountJPA, Long&gt;{
-</span></span><span style="display:flex;"><span>	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findAll</span>();
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findByEmail</span>(String email);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">MemberRepository</span>  <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;MemberAccountJPA, Long&gt;{
+	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findAll</span>();
+	
+	List&lt;MemberAccountJPA&gt; <span style="color:#008b45">findByEmail</span>(String email);
+
+}
+</code></pre></div><ul>
 <li>為何繼承介面就能操作? 底層是動態代理模式，實際執行的實體是SimpleJpaRepository，它執行的方法再往底層追是 hibernate 的CriteriaQueryImpl，拼接出SQL語句</li>
 </ul>
 <h2 id="mybatis">MyBatis</h2>

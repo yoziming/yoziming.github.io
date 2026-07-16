@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="用Javafaker產生假資料"/>
 <meta name="twitter:description" content="順便練習PostgreSQL、JPA、Gradle"/>
@@ -922,8 +923,8 @@ docker run -p 5432:5432 --name postgres --restart=always -e POSTGRES_USER=postgr
 <li>然後進到gradle專案的<code>build.gradle</code></li>
 </ul>
 <pre tabindex="0"><code>dependencies {
-	compileOnly &#39;org.projectlombok:lombok:1.18.22&#39;
-	annotationProcessor &#39;org.projectlombok:lombok:1.18.22&#39;
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 </code></pre><h2 id="javafaker">Javafaker</h2>
 <ul>
@@ -932,88 +933,90 @@ docker run -p 5432:5432 --name postgres --restart=always -e POSTGRES_USER=postgr
 </ul>
 <h2 id="參考程式碼">參考程式碼</h2>
 <h3 id="buildgradle">build.gradle</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-groovy" data-lang="groovy"><span style="display:flex;"><span>plugins {
-</span></span><span style="display:flex;"><span>	id <span style="color:#cd5555">&#39;org.springframework.boot&#39;</span> version <span style="color:#cd5555">&#39;2.6.3&#39;</span>
-</span></span><span style="display:flex;"><span>	id <span style="color:#cd5555">&#39;io.spring.dependency-management&#39;</span> version <span style="color:#cd5555">&#39;1.0.11.RELEASE&#39;</span>
-</span></span><span style="display:flex;"><span>	id <span style="color:#cd5555">&#39;java&#39;</span>
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>group = <span style="color:#cd5555">&#39;com.example&#39;</span>
-</span></span><span style="display:flex;"><span>version = <span style="color:#cd5555">&#39;0.0.1-SNAPSHOT&#39;</span>
-</span></span><span style="display:flex;"><span>sourceCompatibility = <span style="color:#cd5555">&#39;1.8&#39;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>repositories {
-</span></span><span style="display:flex;"><span>	mavenCentral()
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>dependencies {
-</span></span><span style="display:flex;"><span>	implementation <span style="color:#cd5555">&#39;org.springframework.boot:spring-boot-starter-data-jpa&#39;</span>
-</span></span><span style="display:flex;"><span>	runtimeOnly <span style="color:#cd5555">&#39;com.h2database:h2&#39;</span>
-</span></span><span style="display:flex;"><span>	testImplementation <span style="color:#cd5555">&#39;org.springframework.boot:spring-boot-starter-test&#39;</span>
-</span></span><span style="display:flex;"><span>	implementation <span style="color:#cd5555">&#39;org.postgresql:postgresql&#39;</span>
-</span></span><span style="display:flex;"><span>	implementation <span style="color:#cd5555">&#39;com.github.javafaker:javafaker:1.0.2&#39;</span>
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	compileOnly <span style="color:#cd5555">&#39;org.projectlombok:lombok:1.18.22&#39;</span>
-</span></span><span style="display:flex;"><span>	annotationProcessor <span style="color:#cd5555">&#39;org.projectlombok:lombok:1.18.22&#39;</span>
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>test {
-</span></span><span style="display:flex;"><span>	useJUnitPlatform()
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="applicationproperties">application.properties</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#228b22"># 數據庫基本資訊配置</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.datasource.url</span>=<span style="color:#cd5555">jdbc:postgresql://127.0.0.1:5432/postgres</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.datasource.username</span>=<span style="color:#cd5555">postgres</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.datasource.password</span>=<span style="color:#cd5555">postgres</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.jpa.show-sql</span>=<span style="color:#cd5555">true</span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22"># JPA相關配置</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.jpa.database</span>=<span style="color:#cd5555">postgresql</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.jpa.hibernate.ddl-auto</span>=<span style="color:#cd5555">update</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.jpa.properties.hibernate.dialect</span>=<span style="color:#cd5555">org.hibernate.dialect.PostgreSQL9Dialect</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults</span> = <span style="color:#cd5555">false</span>
-</span></span></code></pre></div><h3 id="entity">entity</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Entity</span>(name = <span style="color:#cd5555">&#34;staff&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Data</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Staff</span> {
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Id</span> <span style="color:#228b22">// 主鍵且自增
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	<span style="color:#707a7c">@GeneratedValue</span>(strategy = GenerationType.<span style="color:#658b00">AUTO</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">private</span> Integer id;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Column</span>(name = <span style="color:#cd5555">&#34;full_name&#34;</span>, nullable = <span style="color:#8b008b;font-weight:bold">true</span>) <span style="color:#228b22">// 屬性與表欄位名不同
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	<span style="color:#8b008b;font-weight:bold">private</span> String name;
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">private</span> Integer age;
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">private</span> String address;
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">private</span> BigDecimal salary;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Transient</span> <span style="color:#228b22">// 不存在表中
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	<span style="color:#8b008b;font-weight:bold">private</span> String description;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="repository">repository</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy">plugins {
+	id <span style="color:#cd5555">&#39;org.springframework.boot&#39;</span> version <span style="color:#cd5555">&#39;2.6.3&#39;</span>
+	id <span style="color:#cd5555">&#39;io.spring.dependency-management&#39;</span> version <span style="color:#cd5555">&#39;1.0.11.RELEASE&#39;</span>
+	id <span style="color:#cd5555">&#39;java&#39;</span>
+}
+
+group = <span style="color:#cd5555">&#39;com.example&#39;</span>
+version = <span style="color:#cd5555">&#39;0.0.1-SNAPSHOT&#39;</span>
+sourceCompatibility = <span style="color:#cd5555">&#39;1.8&#39;</span>
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation <span style="color:#cd5555">&#39;org.springframework.boot:spring-boot-starter-data-jpa&#39;</span>
+	runtimeOnly <span style="color:#cd5555">&#39;com.h2database:h2&#39;</span>
+	testImplementation <span style="color:#cd5555">&#39;org.springframework.boot:spring-boot-starter-test&#39;</span>
+	implementation <span style="color:#cd5555">&#39;org.postgresql:postgresql&#39;</span>
+	implementation <span style="color:#cd5555">&#39;com.github.javafaker:javafaker:1.0.2&#39;</span>
+	
+	compileOnly <span style="color:#cd5555">&#39;org.projectlombok:lombok:1.18.22&#39;</span>
+	annotationProcessor <span style="color:#cd5555">&#39;org.projectlombok:lombok:1.18.22&#39;</span>
+}
+
+test {
+	useJUnitPlatform()
+}
+
+</code></pre></div><h3 id="applicationproperties">application.properties</h3>
+<pre tabindex="0"><code class="language-properties" data-lang="properties"># 數據庫基本資訊配置
+spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.jpa.show-sql=true
+# JPA相關配置
+spring.jpa.database=postgresql
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults = false
+
+</code></pre><h3 id="entity">entity</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Entity</span>(name = <span style="color:#cd5555">&#34;staff&#34;</span>)
+<span style="color:#707a7c">@Data</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Staff</span> {
+	<span style="color:#707a7c">@Id</span> <span style="color:#228b22">// 主鍵且自增
+</span><span style="color:#228b22"></span>	<span style="color:#707a7c">@GeneratedValue</span>(strategy = GenerationType.<span style="color:#658b00">AUTO</span>)
+	<span style="color:#8b008b;font-weight:bold">private</span> Integer id;
+
+	<span style="color:#707a7c">@Column</span>(name = <span style="color:#cd5555">&#34;full_name&#34;</span>, nullable = <span style="color:#8b008b;font-weight:bold">true</span>) <span style="color:#228b22">// 屬性與表欄位名不同
+</span><span style="color:#228b22"></span>	<span style="color:#8b008b;font-weight:bold">private</span> String name;
+	
+	<span style="color:#8b008b;font-weight:bold">private</span> Integer age;
+	<span style="color:#8b008b;font-weight:bold">private</span> String address;
+	<span style="color:#8b008b;font-weight:bold">private</span> BigDecimal salary;
+
+	<span style="color:#707a7c">@Transient</span> <span style="color:#228b22">// 不存在表中
+</span><span style="color:#228b22"></span>	<span style="color:#8b008b;font-weight:bold">private</span> String description;
+}
+</code></pre></div><h3 id="repository">repository</h3>
 <ul>
 <li>可以用內建封裝好的方法，也可以自己寫SQL拼接</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Repository</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">StaffRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;Staff, Integer&gt; {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	List&lt;Staff&gt; <span style="color:#008b45">getStaffsByAgeStartingWith</span>(Integer age);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Query</span>(value = <span style="color:#cd5555">&#34;select * from staff  where id &gt; :id and age = :age&#34;</span>, nativeQuery = <span style="color:#8b008b;font-weight:bold">true</span>)
-</span></span><span style="display:flex;"><span>	List&lt;Staff&gt; <span style="color:#008b45">getStaffByIdAndAge</span>(<span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;age&#34;</span>) Integer age, <span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;id&#34;</span>) Integer id);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="service">service</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Service</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">StaffServiceImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> StaffService {
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Autowired</span>
-</span></span><span style="display:flex;"><span>	StaffRepository staffRepository;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Override</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addStaff</span>(Staff staff) {
-</span></span><span style="display:flex;"><span>		staffRepository.<span style="color:#658b00">save</span>(staff);
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="快速生成測試類">快速生成測試類</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Repository</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">StaffRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;Staff, Integer&gt; {
+
+	List&lt;Staff&gt; <span style="color:#008b45">getStaffsByAgeStartingWith</span>(Integer age);
+
+	<span style="color:#707a7c">@Query</span>(value = <span style="color:#cd5555">&#34;select * from staff  where id &gt; :id and age = :age&#34;</span>, nativeQuery = <span style="color:#8b008b;font-weight:bold">true</span>)
+	List&lt;Staff&gt; <span style="color:#008b45">getStaffByIdAndAge</span>(<span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;age&#34;</span>) Integer age, <span style="color:#707a7c">@Param</span>(<span style="color:#cd5555">&#34;id&#34;</span>) Integer id);
+
+}
+</code></pre></div><h3 id="service">service</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Service</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">StaffServiceImpl</span> <span style="color:#8b008b;font-weight:bold">implements</span> StaffService {
+	<span style="color:#707a7c">@Autowired</span>
+	StaffRepository staffRepository;
+
+	<span style="color:#707a7c">@Override</span>
+	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addStaff</span>(Staff staff) {
+		staffRepository.<span style="color:#658b00">save</span>(staff);
+	}
+}
+</code></pre></div><h2 id="快速生成測試類">快速生成測試類</h2>
 <p><img src="image-20220227222837774.png" alt="image-20220227222837774"></p>
 <h3 id="生成所有setter">生成所有setter</h3>
 <blockquote>
@@ -1027,21 +1030,21 @@ docker run -p 5432:5432 --name postgres --restart=always -e POSTGRES_USER=postgr
 <ul>
 <li>Javafaker的用法很簡單，造一個<code>Faker</code>類，建構時填入區域。然後在setter中盡情使用</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>	<span style="color:#707a7c">@Test</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">testAddStaff</span>() {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;開始測試&#34;</span>);
-</span></span><span style="display:flex;"><span>		Faker fakerWithUS = <span style="color:#8b008b;font-weight:bold">new</span> Faker(Locale.<span style="color:#658b00">US</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; <span style="color:#b452cd">10</span>; i++) {
-</span></span><span style="display:flex;"><span>			Staff staff = <span style="color:#8b008b;font-weight:bold">new</span> Staff();
-</span></span><span style="display:flex;"><span>			staff.<span style="color:#658b00">setAddress</span>(fakerWithUS.<span style="color:#658b00">address</span>().<span style="color:#658b00">fullAddress</span>());
-</span></span><span style="display:flex;"><span>			staff.<span style="color:#658b00">setAge</span>(fakerWithUS.<span style="color:#658b00">number</span>().<span style="color:#658b00">numberBetween</span>(<span style="color:#b452cd">1</span>, <span style="color:#b452cd">100</span>));
-</span></span><span style="display:flex;"><span>			staff.<span style="color:#658b00">setName</span>(fakerWithUS.<span style="color:#658b00">name</span>().<span style="color:#658b00">lastName</span>());
-</span></span><span style="display:flex;"><span>			staff.<span style="color:#658b00">setSalary</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(fakerWithUS.<span style="color:#658b00">number</span>().<span style="color:#658b00">numberBetween</span>(<span style="color:#b452cd">22000</span>, <span style="color:#b452cd">50000</span>)));
-</span></span><span style="display:flex;"><span>			staffServiceImpl.<span style="color:#658b00">addStaff</span>(staff);
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;測試end&#34;</span>);
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">	<span style="color:#707a7c">@Test</span>
+	<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">testAddStaff</span>() {
+		log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;開始測試&#34;</span>);
+		Faker fakerWithUS = <span style="color:#8b008b;font-weight:bold">new</span> Faker(Locale.<span style="color:#658b00">US</span>);
+		<span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; 10; i++) {
+			Staff staff = <span style="color:#8b008b;font-weight:bold">new</span> Staff();
+			staff.<span style="color:#658b00">setAddress</span>(fakerWithUS.<span style="color:#658b00">address</span>().<span style="color:#658b00">fullAddress</span>());
+			staff.<span style="color:#658b00">setAge</span>(fakerWithUS.<span style="color:#658b00">number</span>().<span style="color:#658b00">numberBetween</span>(1, 100));
+			staff.<span style="color:#658b00">setName</span>(fakerWithUS.<span style="color:#658b00">name</span>().<span style="color:#658b00">lastName</span>());
+			staff.<span style="color:#658b00">setSalary</span>(<span style="color:#8b008b;font-weight:bold">new</span> BigDecimal(fakerWithUS.<span style="color:#658b00">number</span>().<span style="color:#658b00">numberBetween</span>(22000, 50000)));
+			staffServiceImpl.<span style="color:#658b00">addStaff</span>(staff);
+		}
+		log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;測試end&#34;</span>);
+	}
+</code></pre></div><ul>
 <li>執行指定的測試方法，在package explore找到那個測試方法，或是直接在方法的區塊內點右鍵</li>
 </ul>
 <p><img src="image-20220227235608621.png" alt="image-20220227235608621"></p>

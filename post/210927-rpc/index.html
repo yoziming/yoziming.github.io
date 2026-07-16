@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="RPC"/>
 <meta name="twitter:description" content="尚硅谷Golang課"/>
@@ -455,7 +456,7 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 type World struct{}
 
 func (w *World) HelloWorld(name string, resp *string) error {
-	*resp = name + &#34;你好&#34;
+	*resp = name + &quot;你好&quot;
 	return nil
 	// 如果這個return的返回值不為空，
 	// 那無論傳出的參數是否有值，服務端都不會給東西
@@ -469,66 +470,67 @@ type MyInerface interface {
 
 // 調用方法時，給i傳參，參數是實現HelloWorld方法的對象
 func RegsiterService(i MyInerface) {
-	rpc.RegisterName(&#34;hello&#34;, i)
+	rpc.RegisterName(&quot;hello&quot;, i)
 }
 func main() {
 	// 1.註冊RPC服務 綁定對象方法
-	err := rpc.RegisterName(&#34;hello&#34;, new(World))
+	err := rpc.RegisterName(&quot;hello&quot;, new(World))
 	if err != nil {
-		fmt.Println(&#34;註冊RPC服務失敗&#34;, err)
+		fmt.Println(&quot;註冊RPC服務失敗&quot;, err)
 	}
 
 	// 2.開始監聽
-	listener, err := net.Listen(&#34;tcp&#34;, &#34;127.0.0.1:8899&#34;)
+	listener, err := net.Listen(&quot;tcp&quot;, &quot;127.0.0.1:8899&quot;)
 	if err != nil {
-		fmt.Println(&#34;listener failed&#34;, err)
+		fmt.Println(&quot;listener failed&quot;, err)
 		return
 	}
-	fmt.Println(&#34;server開始監聽...&#34;)
+	fmt.Println(&quot;server開始監聽...&quot;)
 	defer listener.Close()
 	// 3.建立連接
 	conn, err := listener.Accept()
 	if err != nil {
-		fmt.Println(&#34;Accept failed&#34;, err)
+		fmt.Println(&quot;Accept failed&quot;, err)
 		return
 	}
-	fmt.Println(&#34;連接成功&#34;)
+	fmt.Println(&quot;連接成功&quot;)
 	defer conn.Close()
 	// 4.綁訂服務
 	jsonrpc.ServeConn(conn)
 }
+
 </code></pre><h3 id="client">client</h3>
 <pre tabindex="0"><code>import (
-	&#34;fmt&#34;
-	&#34;net/rpc&#34;
-	&#34;net/rpc/jsonrpc&#34;
+	&quot;fmt&quot;
+	&quot;net/rpc&quot;
+	&quot;net/rpc/jsonrpc&quot;
 )
 
 func main01() {
 	// 1.用RPC連接伺服器
-	// conn, err := rpc.Dial(&#34;tcp&#34;, &#34;127.0.0.1:8899&#34;)
-	conn, err := jsonrpc.Dial(&#34;tcp&#34;, &#34;127.0.0.1:8899&#34;)
+	// conn, err := rpc.Dial(&quot;tcp&quot;, &quot;127.0.0.1:8899&quot;)
+	conn, err := jsonrpc.Dial(&quot;tcp&quot;, &quot;127.0.0.1:8899&quot;)
 	if err != nil {
-		fmt.Println(&#34;Accept failed&#34;, err)
+		fmt.Println(&quot;Accept failed&quot;, err)
 		return
 	}
 	defer conn.Close()
 	// 2.遠程調用函數
-	var reply = &#34;&#34;
-	err = conn.Call(&#34;hello.HelloWorld&#34;, &#34;張三&#34;, &amp;reply)
+	var reply = &quot;&quot;
+	err = conn.Call(&quot;hello.HelloWorld&quot;, &quot;張三&quot;, &amp;reply)
 	if err != nil {
-		fmt.Println(&#34;Call failed&#34;, err)
+		fmt.Println(&quot;Call failed&quot;, err)
 		return
 	}
 	fmt.Println(reply)
 }
 
 func main() {
-	// myClient := InitClient(&#34;127.0.0.1:8899&#34;)
+	// myClient := InitClient(&quot;127.0.0.1:8899&quot;)
 	// var resp string
-	// err := myClient.HelloWorld(&#34;李四&#34;, &amp;resp)
+	// err := myClient.HelloWorld(&quot;李四&quot;, &amp;resp)
 	// if err != nil {
-	// 	fmt.Println(&#34;HelloWorld failed&#34;, err)
+	// 	fmt.Println(&quot;HelloWorld failed&quot;, err)
 	// 	return
 	// }
 	// fmt.Println(resp, err)
@@ -540,13 +542,14 @@ type MyClient struct {
 
 // 把c初始化下面才能調用
 // func InitClient(addr string) {
-// 	conn, _ := jsonrpc.Dial(&#34;tcp&#34;, addr)
+// 	conn, _ := jsonrpc.Dial(&quot;tcp&quot;, addr)
 // 	return MyClient{c: conn}
 // }
 
 func (m *MyClient) HelloWorld(a string, b *string) error {
-	return m.c.Call(&#34;hello.HelloWorld&#34;, a, b)
+	return m.c.Call(&quot;hello.HelloWorld&quot;, a, b)
 }
+
 </code></pre>
                     
                     <HR width="100%" id="EOF">

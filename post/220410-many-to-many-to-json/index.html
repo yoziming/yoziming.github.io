@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="合併多對多關係並輸出成JSON"/>
 <meta name="twitter:description" content="例如要列出每個使用者有哪些群組身分"/>
@@ -655,75 +656,75 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>今天想查詢以&quot;使用者&quot;出發，要列出每個使用者的群組身分有哪些，返回JSON像這樣</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>[
-</span></span><span style="display:flex;"><span>{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">1</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]},
-</span></span><span style="display:flex;"><span>{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">2</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]},
-</span></span><span style="display:flex;"><span>{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">3</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">3</span>]}
-</span></span><span style="display:flex;"><span>]      
-</span></span></code></pre></div><h1 id="模擬資料">模擬資料</h1>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 模擬資料
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>List&lt;User&gt; list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">1</span>, <span style="color:#b452cd">1</span>));
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">1</span>, <span style="color:#b452cd">2</span>));
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">1</span>, <span style="color:#b452cd">3</span>));
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">2</span>, <span style="color:#b452cd">2</span>));
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">3</span>, <span style="color:#b452cd">3</span>));
-</span></span><span style="display:flex;"><span>list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(<span style="color:#b452cd">2</span>, <span style="color:#b452cd">3</span>));
-</span></span></code></pre></div><h2 id="方法一">方法一</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">[
+{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">1</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]},
+{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">2</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]},
+{<span style="color:#8b008b;font-weight:bold">&#34;userId&#34;</span>:<span style="color:#b452cd">3</span>,<span style="color:#8b008b;font-weight:bold">&#34;groups&#34;</span>:[<span style="color:#b452cd">3</span>]}
+]      
+</code></pre></div><h1 id="模擬資料">模擬資料</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 模擬資料
+</span><span style="color:#228b22"></span>List&lt;User&gt; list = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(1, 1));
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(1, 2));
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(1, 3));
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(2, 2));
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(3, 3));
+list.<span style="color:#658b00">add</span>(<span style="color:#8b008b;font-weight:bold">new</span> User(2, 3));
+</code></pre></div><h2 id="方法一">方法一</h2>
 <ul>
 <li>建一個<code>UserVo</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">UserVo</span> {
-</span></span><span style="display:flex;"><span>    Integer userId;
-</span></span><span style="display:flex;"><span>    List&lt;Integer&gt; groups;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">UserVo</span> {
+    Integer userId;
+    List&lt;Integer&gt; groups;
+}
+</code></pre></div><ul>
 <li>用<code>stream().filter</code>操作</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List&lt;UserVo&gt; result = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> (User user : list) {
-</span></span><span style="display:flex;"><span>    UserVo userVo = <span style="color:#8b008b;font-weight:bold">null</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 如果Id已經存在
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    Optional&lt;UserVo&gt; matched = result.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(e -&gt; user.<span style="color:#658b00">getUserId</span>().<span style="color:#658b00">equals</span>(e.<span style="color:#658b00">getUserId</span>())).<span style="color:#658b00">findFirst</span>();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (matched.<span style="color:#658b00">isPresent</span>()) {
-</span></span><span style="display:flex;"><span>        userVo = matched.<span style="color:#658b00">get</span>();
-</span></span><span style="display:flex;"><span>        List&lt;Integer&gt; groups = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;(userVo.<span style="color:#658b00">getGroups</span>());
-</span></span><span style="display:flex;"><span>        groups.<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
-</span></span><span style="display:flex;"><span>        userVo.<span style="color:#658b00">setGroups</span>(groups);
-</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>        userVo = UserVo.<span style="color:#658b00">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">userId</span>(user.<span style="color:#658b00">getUserId</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">groups</span>(Arrays.<span style="color:#658b00">asList</span>(user.<span style="color:#658b00">getGroup</span>())).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        result.<span style="color:#658b00">add</span>(userVo);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;result = &#34;</span> + result);
-</span></span></code></pre></div><h2 id="方法二">方法二</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;UserVo&gt; result = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+<span style="color:#8b008b;font-weight:bold">for</span> (User user : list) {
+    UserVo userVo = <span style="color:#8b008b;font-weight:bold">null</span>;
+    <span style="color:#228b22">// 如果Id已經存在
+</span><span style="color:#228b22"></span>    Optional&lt;UserVo&gt; matched = result.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(e -&gt; user.<span style="color:#658b00">getUserId</span>().<span style="color:#658b00">equals</span>(e.<span style="color:#658b00">getUserId</span>())).<span style="color:#658b00">findFirst</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (matched.<span style="color:#658b00">isPresent</span>()) {
+        userVo = matched.<span style="color:#658b00">get</span>();
+        List&lt;Integer&gt; groups = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;(userVo.<span style="color:#658b00">getGroups</span>());
+        groups.<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
+        userVo.<span style="color:#658b00">setGroups</span>(groups);
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        userVo = UserVo.<span style="color:#658b00">builder</span>()
+                .<span style="color:#658b00">userId</span>(user.<span style="color:#658b00">getUserId</span>())
+                .<span style="color:#658b00">groups</span>(Arrays.<span style="color:#658b00">asList</span>(user.<span style="color:#658b00">getGroup</span>())).<span style="color:#658b00">build</span>();
+        result.<span style="color:#658b00">add</span>(userVo);
+    }
+}
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;result = &#34;</span> + result);
+</code></pre></div><h2 id="方法二">方法二</h2>
 <ul>
 <li>用Map</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Map&lt;Integer, Set&lt;Integer&gt;&gt; idGroupsMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> (User user : list) {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (idGroupsMap.<span style="color:#658b00">containsKey</span>(user.<span style="color:#658b00">getUserId</span>())) {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 如果Id已經存在
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        idGroupsMap.<span style="color:#658b00">get</span>(user.<span style="color:#658b00">getUserId</span>()).<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
-</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>        idGroupsMap.<span style="color:#658b00">put</span>(user.<span style="color:#658b00">getUserId</span>(), <span style="color:#8b008b;font-weight:bold">new</span> HashSet&lt;&gt;(Arrays.<span style="color:#658b00">asList</span>(user.<span style="color:#658b00">getGroup</span>())));
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(idGroupsMap); <span style="color:#228b22">// 純數值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// 不借助Vo生成有序的JSON
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>JSONArray ja = <span style="color:#8b008b;font-weight:bold">new</span> JSONArray();
-</span></span><span style="display:flex;"><span>idGroupsMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
-</span></span><span style="display:flex;"><span>    JSONObject jo = <span style="color:#8b008b;font-weight:bold">new</span> JSONObject(<span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap&lt;String, Object&gt;());
-</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, k);
-</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, v);
-</span></span><span style="display:flex;"><span>    ja.<span style="color:#658b00">add</span>(jo);
-</span></span><span style="display:flex;"><span>});
-</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(ja);
-</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;JSON=&#34;</span> + JSONUtil.<span style="color:#658b00">toJsonPrettyStr</span>(ja));
-</span></span></code></pre></div><h3 id="踩坑記錄">踩坑記錄</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Map&lt;Integer, Set&lt;Integer&gt;&gt; idGroupsMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+<span style="color:#8b008b;font-weight:bold">for</span> (User user : list) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (idGroupsMap.<span style="color:#658b00">containsKey</span>(user.<span style="color:#658b00">getUserId</span>())) {
+        <span style="color:#228b22">// 如果Id已經存在
+</span><span style="color:#228b22"></span>        idGroupsMap.<span style="color:#658b00">get</span>(user.<span style="color:#658b00">getUserId</span>()).<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        idGroupsMap.<span style="color:#658b00">put</span>(user.<span style="color:#658b00">getUserId</span>(), <span style="color:#8b008b;font-weight:bold">new</span> HashSet&lt;&gt;(Arrays.<span style="color:#658b00">asList</span>(user.<span style="color:#658b00">getGroup</span>())));
+    }
+}
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(idGroupsMap); <span style="color:#228b22">// 純數值
+</span><span style="color:#228b22"></span>
+<span style="color:#228b22">// 不借助Vo生成有序的JSON
+</span><span style="color:#228b22"></span>JSONArray ja = <span style="color:#8b008b;font-weight:bold">new</span> JSONArray();
+idGroupsMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
+    JSONObject jo = <span style="color:#8b008b;font-weight:bold">new</span> JSONObject(<span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap&lt;String, Object&gt;());
+    jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, k);
+    jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, v);
+    ja.<span style="color:#658b00">add</span>(jo);
+});
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(ja);
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;JSON=&#34;</span> + JSONUtil.<span style="color:#658b00">toJsonPrettyStr</span>(ja));
+</code></pre></div><h3 id="踩坑記錄">踩坑記錄</h3>
 <ul>
 <li>我在邊吃過一個虧，就是單純遍歷<code>idGroupsMap</code>，然後判斷k是否存在，若有就把v拿出來，add資料，然後再用同k放回去，問題就出在最後這個put</li>
 <li>一直報錯<code>null</code>，我就覺得很奇怪，開<code>debug</code>看每個值都有阿，怎麼到put那步就報null</li>
@@ -732,56 +733,56 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>如果v需要多步驟大改可以取出v然後做一個clone，運算完，將clone作為新的v放進去才行</li>
 <li>相較之下就很麻煩，不如用<code>computeIfPresent()</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>idGroupsMap.<span style="color:#658b00">computeIfPresent</span>(user.<span style="color:#658b00">getUserId</span>(), (k, v) -&gt; {
-</span></span><span style="display:flex;"><span>    v.<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> v;
-</span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><h2 id="方法三">方法三</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">idGroupsMap.<span style="color:#658b00">computeIfPresent</span>(user.<span style="color:#658b00">getUserId</span>(), (k, v) -&gt; {
+    v.<span style="color:#658b00">add</span>(user.<span style="color:#658b00">getGroup</span>());
+    <span style="color:#8b008b;font-weight:bold">return</span> v;
+});
+</code></pre></div><h2 id="方法三">方法三</h2>
 <ul>
 <li>流式操作，用<code>Collectors.mapping</code></li>
 <li>最優雅，且如果資料量龐大時可以用parallelStream來並行處理(但是小心順序與線程安全問題)</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Map&lt;Integer, Set&lt;Integer&gt;&gt; userMap =
-</span></span><span style="display:flex;"><span>        list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(
-</span></span><span style="display:flex;"><span>                Collectors.<span style="color:#658b00">groupingBy</span>(
-</span></span><span style="display:flex;"><span>                        User::getUserId,
-</span></span><span style="display:flex;"><span>                        Collectors.<span style="color:#658b00">mapping</span>(
-</span></span><span style="display:flex;"><span>                                User::getGroup,
-</span></span><span style="display:flex;"><span>                                Collectors.<span style="color:#658b00">toSet</span>()
-</span></span><span style="display:flex;"><span>                        )
-</span></span><span style="display:flex;"><span>                )
-</span></span><span style="display:flex;"><span>        );
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>List&lt;Map&lt;String, Object&gt;&gt; result =
-</span></span><span style="display:flex;"><span>        userMap.<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">map</span>(entry -&gt; {
-</span></span><span style="display:flex;"><span>                    Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;(<span style="color:#b452cd">2</span>);
-</span></span><span style="display:flex;"><span>                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, entry.<span style="color:#658b00">getKey</span>());
-</span></span><span style="display:flex;"><span>                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, entry.<span style="color:#658b00">getValue</span>());
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> map;
-</span></span><span style="display:flex;"><span>                })
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
-</span></span></code></pre></div><h1 id="小結">小結</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Map&lt;Integer, Set&lt;Integer&gt;&gt; userMap =
+        list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(
+                Collectors.<span style="color:#658b00">groupingBy</span>(
+                        User::getUserId,
+                        Collectors.<span style="color:#658b00">mapping</span>(
+                                User::getGroup,
+                                Collectors.<span style="color:#658b00">toSet</span>()
+                        )
+                )
+        );
+
+List&lt;Map&lt;String, Object&gt;&gt; result =
+        userMap.<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">stream</span>()
+                .<span style="color:#658b00">map</span>(entry -&gt; {
+                    Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;(2);
+                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, entry.<span style="color:#658b00">getKey</span>());
+                    map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, entry.<span style="color:#658b00">getValue</span>());
+                    <span style="color:#8b008b;font-weight:bold">return</span> map;
+                })
+                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">toList</span>());
+</code></pre></div><h1 id="小結">小結</h1>
 <ul>
 <li>方法二、三更好一點，用Map、Set本身可以防止重複的key，並且不需要額外造一個<code>Vo</code>更省資源</li>
 <li>另外我發現<code>Hutool</code>的<code>JSONArray</code>就很奇怪，如果純用<code>LinkedHashMap</code>作為<code>JsonNode</code>，那我put的順序最後輸出時又會亂掉，但是用<code>JSONObject(new LinkedHashMap&lt;String, Object&gt;());</code>他就能維持住put的順序</li>
 <li>後來覺得<code>jackson-databind</code>可能還是好用一點，直接用<code>LinkedHashMap</code>構成他就會照順序</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List&lt;Object&gt; ja = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>idGroupsMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
-</span></span><span style="display:flex;"><span>    HashMap&lt;String, Object&gt; jo = <span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap&lt;&gt;();
-</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, k);
-</span></span><span style="display:flex;"><span>    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, v);
-</span></span><span style="display:flex;"><span>    ja.<span style="color:#658b00">add</span>(jo);
-</span></span><span style="display:flex;"><span>});
-</span></span><span style="display:flex;"><span>System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;JSON = &#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> ObjectMapper().<span style="color:#658b00">writeValueAsString</span>(ja));
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;Object&gt; ja = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+idGroupsMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
+    HashMap&lt;String, Object&gt; jo = <span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap&lt;&gt;();
+    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;userId&#34;</span>, k);
+    jo.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;groups&#34;</span>, v);
+    ja.<span style="color:#658b00">add</span>(jo);
+});
+System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;JSON = &#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> ObjectMapper().<span style="color:#658b00">writeValueAsString</span>(ja));
+</code></pre></div><ul>
 <li>如果有POJO也可以直接註釋順序</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@JsonPropertyOrder</span>({<span style="color:#cd5555">&#34;name&#34;</span>, <span style="color:#cd5555">&#34;phoneNumber&#34;</span>,<span style="color:#cd5555">&#34;email&#34;</span>, <span style="color:#cd5555">&#34;salary&#34;</span>, <span style="color:#cd5555">&#34;id&#34;</span> })
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Employee</span> {
-</span></span><span style="display:flex;"><span>...
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@JsonPropertyOrder</span>({<span style="color:#cd5555">&#34;name&#34;</span>, <span style="color:#cd5555">&#34;phoneNumber&#34;</span>,<span style="color:#cd5555">&#34;email&#34;</span>, <span style="color:#cd5555">&#34;salary&#34;</span>, <span style="color:#cd5555">&#34;id&#34;</span> })
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Employee</span> {
+...
+</code></pre></div><ul>
 <li>但是要注意用<code>jackson</code>還原泛型時使用<code>TypeReference</code>不要引錯包，我曾經在這邊找問題找超久&hellip;</li>
 </ul>
 <pre tabindex="0"><code>import com.fasterxml.jackson.core.type.TypeReference;

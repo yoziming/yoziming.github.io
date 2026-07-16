@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Spring Security登入時加上圖形驗證碼"/>
 <meta name="twitter:description" content="把驗證碼存到Session來簡單防範攻擊"/>
@@ -637,109 +638,109 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>點圖片刷新:</p>
 </li>
 <li>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">function</span> reloadCaptcha() {
-</span></span><span style="display:flex;"><span>		$(<span style="color:#cd5555">&#34;#captcha&#34;</span>).attr(<span style="color:#cd5555">&#34;src&#34;</span>, <span style="color:#cd5555">&#34;{登入的url}/getCaptcha?t=&#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>().getTime());
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">	<span style="color:#8b008b;font-weight:bold">function</span> reloadCaptcha() {
+		$(<span style="color:#cd5555">&#34;#captcha&#34;</span>).attr(<span style="color:#cd5555">&#34;src&#34;</span>, <span style="color:#cd5555">&#34;{登入的url}/getCaptcha?t=&#34;</span> + <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#658b00">Date</span>().getTime());
+	}
+</code></pre></div></li>
 </ul>
 <h3 id="獲取驗證碼圖片">獲取驗證碼圖片</h3>
 <ul>
 <li>將密碼存到Session，也可以存到Redis，這邊用最簡單的方法</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>	<span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">	 * 獲取驗證碼圖片
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">	 */</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/getCaptcha&#34;</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getCaptcha</span>(HttpServletRequest request,HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
-</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 生成驗證碼圖片，寬 高
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		ShearCaptcha captcha = CaptchaUtil.<span style="color:#658b00">createShearCaptcha</span>(<span style="color:#b452cd">160</span>, <span style="color:#b452cd">45</span>, <span style="color:#b452cd">4</span>, <span style="color:#b452cd">3</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 4位純數字，去除0跟7
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		RandomGenerator randomGenerator = <span style="color:#8b008b;font-weight:bold">new</span> RandomGenerator(<span style="color:#cd5555">&#34;12345689&#34;</span>, <span style="color:#b452cd">4</span>);
-</span></span><span style="display:flex;"><span>		captcha.<span style="color:#658b00">setGenerator</span>(randomGenerator);
-</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// Console.log(&#34;驗證碼code: &#34;+ captcha.getCode());
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		<span style="color:#228b22">// 指定響應頭給瀏覽器
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;image/png&#34;</span>); <span style="color:#228b22">// 告訴瀏覽器輸出內容為圖片
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Pragma&#34;</span>, <span style="color:#cd5555">&#34;No-cache&#34;</span>); <span style="color:#228b22">// 禁止瀏覽器緩存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Cache-Control&#34;</span>, <span style="color:#cd5555">&#34;no-cache&#34;</span>);
-</span></span><span style="display:flex;"><span>		request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>, captcha.<span style="color:#658b00">getCode</span>());
-</span></span><span style="display:flex;"><span>		<span style="color:#228b22">// 输出流给前端
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>		captcha.<span style="color:#658b00">write</span>(response.<span style="color:#658b00">getOutputStream</span>());
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div><h3 id="exception">Exception</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeException</span> <span style="color:#8b008b;font-weight:bold">extends</span> AuthenticationException {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">VerificationCodeException</span>(){
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">super</span>(<span style="color:#cd5555">&#34;驗證碼校驗失敗&#34;</span>);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="filter">Filter</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 登入時的圖形驗證碼過濾器
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFilter</span> <span style="color:#8b008b;font-weight:bold">extends</span> OncePerRequestFilter {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilterInternal</span>(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throws</span> ServletException, IOException {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#cd5555">&#34;/login&#34;</span>.<span style="color:#658b00">equals</span>(request.<span style="color:#658b00">getRequestURI</span>())) {
-</span></span><span style="display:flex;"><span>            filterChain.<span style="color:#658b00">doFilter</span>(request, response);
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>                verificationCode(request);
-</span></span><span style="display:flex;"><span>                filterChain.<span style="color:#658b00">doFilter</span>(request, response);
-</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">catch</span> (VerificationCodeException e) {
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">new</span> FormLoginFailureHandler().<span style="color:#658b00">onAuthenticationFailure</span>(request, response, e);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">verificationCode</span>(HttpServletRequest request){
-</span></span><span style="display:flex;"><span>        String captcha = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
-</span></span><span style="display:flex;"><span>        HttpSession session = request.<span style="color:#658b00">getSession</span>();
-</span></span><span style="display:flex;"><span>        String saveCaptcha = (String) session.<span style="color:#658b00">getAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
-</span></span><span style="display:flex;"><span>        session.<span style="color:#658b00">removeAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (ObjectUtils.<span style="color:#658b00">isEmpty</span>(captcha) || ObjectUtils.<span style="color:#658b00">isEmpty</span>(saveCaptcha) || !captcha.<span style="color:#658b00">equals</span>(saveCaptcha)) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeException();
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="handler">Handler</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Slf4j</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFailureHandler</span> <span style="color:#8b008b;font-weight:bold">implements</span> AuthenticationFailureHandler {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">onAuthenticationFailure</span>(HttpServletRequest request, HttpServletResponse response,
-</span></span><span style="display:flex;"><span>            AuthenticationException exception) <span style="color:#8b008b;font-weight:bold">throws</span> IOException, ServletException {
-</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;login fail, msg: {}&#34;</span>, exception.<span style="color:#658b00">getMessage</span>());
-</span></span><span style="display:flex;"><span>        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/json;charset=UTF-8&#34;</span>);
-</span></span><span style="display:flex;"><span>        response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(JSON.<span style="color:#658b00">toJSONString</span>(ResultVO.<span style="color:#658b00">error</span>(<span style="color:#b452cd">10000</span>, exception.<span style="color:#658b00">getMessage</span>())));
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="securityconfig">SecurityConfig</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">	<span style="color:#228b22">/**
+</span><span style="color:#228b22">	 * 獲取驗證碼圖片
+</span><span style="color:#228b22">	 */</span>
+	<span style="color:#707a7c">@GetMapping</span>(<span style="color:#cd5555">&#34;/getCaptcha&#34;</span>)
+	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getCaptcha</span>(HttpServletRequest request,HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+		<span style="color:#228b22">// 生成驗證碼圖片，寬 高
+</span><span style="color:#228b22"></span>		ShearCaptcha captcha = CaptchaUtil.<span style="color:#658b00">createShearCaptcha</span>(160, 45, 4, 3);
+		<span style="color:#228b22">// 4位純數字，去除0跟7
+</span><span style="color:#228b22"></span>		RandomGenerator randomGenerator = <span style="color:#8b008b;font-weight:bold">new</span> RandomGenerator(<span style="color:#cd5555">&#34;12345689&#34;</span>, 4);
+		captcha.<span style="color:#658b00">setGenerator</span>(randomGenerator);
+		<span style="color:#228b22">// Console.log(&#34;驗證碼code: &#34;+ captcha.getCode());
+</span><span style="color:#228b22"></span>		<span style="color:#228b22">// 指定響應頭給瀏覽器
+</span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;image/png&#34;</span>); <span style="color:#228b22">// 告訴瀏覽器輸出內容為圖片
+</span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Pragma&#34;</span>, <span style="color:#cd5555">&#34;No-cache&#34;</span>); <span style="color:#228b22">// 禁止瀏覽器緩存
+</span><span style="color:#228b22"></span>		response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Cache-Control&#34;</span>, <span style="color:#cd5555">&#34;no-cache&#34;</span>);
+		request.<span style="color:#658b00">getSession</span>().<span style="color:#658b00">setAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>, captcha.<span style="color:#658b00">getCode</span>());
+		<span style="color:#228b22">// 输出流给前端
+</span><span style="color:#228b22"></span>		captcha.<span style="color:#658b00">write</span>(response.<span style="color:#658b00">getOutputStream</span>());
+	}
+</code></pre></div><h3 id="exception">Exception</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeException</span> <span style="color:#8b008b;font-weight:bold">extends</span> AuthenticationException {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#008b45">VerificationCodeException</span>(){
+        <span style="color:#8b008b;font-weight:bold">super</span>(<span style="color:#cd5555">&#34;驗證碼校驗失敗&#34;</span>);
+    }
+}
+</code></pre></div><h3 id="filter">Filter</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 登入時的圖形驗證碼過濾器
+</span><span style="color:#228b22"> */</span>
+<span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFilter</span> <span style="color:#8b008b;font-weight:bold">extends</span> OncePerRequestFilter {
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">doFilterInternal</span>(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            <span style="color:#8b008b;font-weight:bold">throws</span> ServletException, IOException {
+        <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#cd5555">&#34;/login&#34;</span>.<span style="color:#658b00">equals</span>(request.<span style="color:#658b00">getRequestURI</span>())) {
+            filterChain.<span style="color:#658b00">doFilter</span>(request, response);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">try</span> {
+                verificationCode(request);
+                filterChain.<span style="color:#658b00">doFilter</span>(request, response);
+            } <span style="color:#8b008b;font-weight:bold">catch</span> (VerificationCodeException e) {
+                <span style="color:#8b008b;font-weight:bold">new</span> FormLoginFailureHandler().<span style="color:#658b00">onAuthenticationFailure</span>(request, response, e);
+            }
+        }
+    }
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">verificationCode</span>(HttpServletRequest request){
+        String captcha = request.<span style="color:#658b00">getParameter</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+        HttpSession session = request.<span style="color:#658b00">getSession</span>();
+        String saveCaptcha = (String) session.<span style="color:#658b00">getAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+        session.<span style="color:#658b00">removeAttribute</span>(<span style="color:#cd5555">&#34;captchaCode&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (ObjectUtils.<span style="color:#658b00">isEmpty</span>(captcha) || ObjectUtils.<span style="color:#658b00">isEmpty</span>(saveCaptcha) || !captcha.<span style="color:#658b00">equals</span>(saveCaptcha)) {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeException();
+        }
+    }
+}
+</code></pre></div><h3 id="handler">Handler</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Component</span>
+<span style="color:#707a7c">@Slf4j</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">VerificationCodeFailureHandler</span> <span style="color:#8b008b;font-weight:bold">implements</span> AuthenticationFailureHandler {
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">onAuthenticationFailure</span>(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException exception) <span style="color:#8b008b;font-weight:bold">throws</span> IOException, ServletException {
+        log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;login fail, msg: {}&#34;</span>, exception.<span style="color:#658b00">getMessage</span>());
+        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/json;charset=UTF-8&#34;</span>);
+        response.<span style="color:#658b00">getWriter</span>().<span style="color:#658b00">write</span>(JSON.<span style="color:#658b00">toJSONString</span>(ResultVO.<span style="color:#658b00">error</span>(10000, exception.<span style="color:#658b00">getMessage</span>())));
+    }
+}
+</code></pre></div><h3 id="securityconfig">SecurityConfig</h3>
 <ul>
 <li>注意至少要先設定登入頁與getCaptcha是可以無條件通過的</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#707a7c">@Override</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">configure</span>(HttpSecurity http) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">authorizeRequests</span>() <span style="color:#228b22">//
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">antMatchers</span>( <span style="color:#228b22">//
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">permitAll</span>().<span style="color:#658b00">anyRequest</span>().<span style="color:#658b00">authenticated</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">csrf</span>() <span style="color:#228b22">//
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">ignoringAntMatchers</span>( <span style="color:#228b22">//
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">csrfTokenRepository</span>(csrfTokenRepository());
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">sessionManagement</span>() <span style="color:#228b22">//
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    .<span style="color:#658b00">sessionCreationPolicy</span>(SessionCreationPolicy.<span style="color:#658b00">ALWAYS</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            http.<span style="color:#658b00">rememberMe</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 檢查圖形驗證碼
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (LOGIN_CAPTCHA){
-</span></span><span style="display:flex;"><span>                http.<span style="color:#658b00">addFilterBefore</span>(<span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeFilter(), UsernamePasswordAuthenticationFilter.<span style="color:#658b00">class</span>);
-</span></span><span style="display:flex;"><span>            }
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#707a7c">@Override</span>
+        <span style="color:#8b008b;font-weight:bold">protected</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">configure</span>(HttpSecurity http) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+            http.<span style="color:#658b00">authorizeRequests</span>() <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>                    .<span style="color:#658b00">antMatchers</span>( <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">permitAll</span>().<span style="color:#658b00">anyRequest</span>().<span style="color:#658b00">authenticated</span>();
+
+            http.<span style="color:#658b00">csrf</span>() <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>                    .<span style="color:#658b00">ignoringAntMatchers</span>( <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>                    ).<span style="color:#658b00">csrfTokenRepository</span>(csrfTokenRepository());
+
+            http.<span style="color:#658b00">sessionManagement</span>() <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>                    .<span style="color:#658b00">sessionCreationPolicy</span>(SessionCreationPolicy.<span style="color:#658b00">ALWAYS</span>);
+
+            http.<span style="color:#658b00">rememberMe</span>();
+
+            <span style="color:#228b22">// 檢查圖形驗證碼
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (LOGIN_CAPTCHA){
+                http.<span style="color:#658b00">addFilterBefore</span>(<span style="color:#8b008b;font-weight:bold">new</span> VerificationCodeFilter(), UsernamePasswordAuthenticationFilter.<span style="color:#658b00">class</span>);
+            }
+</code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2023-01-15</p>
@@ -751,8 +752,8 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
             <nav class="post-pagination">
 
                 
-                <a class="newer-posts">
-			下一篇<br>已經到底啦。
+                <a class="newer-posts" href="https://yoziming.github.io/post/260716-valid-skill/">
+			下一篇<br>如何驗證並持續維護skill
                 </a>
                 
                 

@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ECharts基本應用"/>
 <meta name="twitter:description" content="同一段時間內多條折線圖的做法"/>
@@ -454,427 +455,427 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>思路是這樣的，首先確定X軸(時間)的起點與終點，然後根據分割的最小時間單位(例如每天)，先產生出timeNodeArray 時間刻度數組，例如我從5/1~5/30號，那就會有30個節點</li>
 <li>timeNodeArray 可以在前端生成也可以在後端，我後來統一是做在後端，類似這樣</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#228b22">// 建立時間節點數組(xAxis)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        FastDateFormat sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd&#34;</span>);
-</span></span><span style="display:flex;"><span>        List&lt;String&gt; xAxis = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == <span style="color:#b452cd">2</span>) { <span style="color:#228b22">// 以&#34;月&#34;為基本單位建立時間節點數組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM&#34;</span>);
-</span></span><span style="display:flex;"><span>            <span style="color:#00688b;font-weight:bold">int</span> monthsBetween = monthsBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
-</span></span><span style="display:flex;"><span>            Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
-</span></span><span style="display:flex;"><span>            cal.<span style="color:#658b00">setTime</span>(param.<span style="color:#658b00">getStartTime</span>());
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; monthsBetween; i++) {
-</span></span><span style="display:flex;"><span>                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(cal.<span style="color:#658b00">getTime</span>()));
-</span></span><span style="display:flex;"><span>                cal.<span style="color:#658b00">add</span>(Calendar.<span style="color:#658b00">MONTH</span>, <span style="color:#b452cd">1</span>);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == <span style="color:#b452cd">3</span>) { <span style="color:#228b22">// 以&#34;日&#34;為基本單位建立時間節點數組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd&#34;</span>);
-</span></span><span style="display:flex;"><span>            <span style="color:#00688b;font-weight:bold">int</span> daysBetween = daysBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; daysBetween; i++) {
-</span></span><span style="display:flex;"><span>                Date nextTime = <span style="color:#8b008b;font-weight:bold">new</span> Date(param.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>() + (<span style="color:#b452cd">1000L</span> * <span style="color:#b452cd">60</span> * <span style="color:#b452cd">60</span> * <span style="color:#b452cd">24</span> * i));
-</span></span><span style="display:flex;"><span>                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(nextTime));
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == <span style="color:#b452cd">4</span>) { <span style="color:#228b22">// 以&#34;時&#34;為基本單位建立時間節點數組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd HH:mm:ss&#34;</span>);
-</span></span><span style="display:flex;"><span>            <span style="color:#00688b;font-weight:bold">int</span> hoursBetween = hoursBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; hoursBetween; i++) {
-</span></span><span style="display:flex;"><span>                Date nextTime = <span style="color:#8b008b;font-weight:bold">new</span> Date(param.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>() + (<span style="color:#b452cd">1000L</span> * <span style="color:#b452cd">60</span> * <span style="color:#b452cd">60</span> * i));
-</span></span><span style="display:flex;"><span>                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(nextTime));
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        }
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#228b22">// 建立時間節點數組(xAxis)
+</span><span style="color:#228b22"></span>        FastDateFormat sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd&#34;</span>);
+        List&lt;String&gt; xAxis = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+        <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == 2) { <span style="color:#228b22">// 以&#34;月&#34;為基本單位建立時間節點數組
+</span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM&#34;</span>);
+            <span style="color:#00688b;font-weight:bold">int</span> monthsBetween = monthsBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
+            Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
+            cal.<span style="color:#658b00">setTime</span>(param.<span style="color:#658b00">getStartTime</span>());
+            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; monthsBetween; i++) {
+                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(cal.<span style="color:#658b00">getTime</span>()));
+                cal.<span style="color:#658b00">add</span>(Calendar.<span style="color:#658b00">MONTH</span>, 1);
+            }
+        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == 3) { <span style="color:#228b22">// 以&#34;日&#34;為基本單位建立時間節點數組
+</span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd&#34;</span>);
+            <span style="color:#00688b;font-weight:bold">int</span> daysBetween = daysBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
+            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; daysBetween; i++) {
+                Date nextTime = <span style="color:#8b008b;font-weight:bold">new</span> Date(param.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>() + (1000L * 60 * 60 * 24 * i));
+                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(nextTime));
+            }
+
+        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (param.<span style="color:#658b00">getStatsType</span>() == 4) { <span style="color:#228b22">// 以&#34;時&#34;為基本單位建立時間節點數組
+</span><span style="color:#228b22"></span>            sdf = FastDateFormat.<span style="color:#658b00">getInstance</span>(<span style="color:#cd5555">&#34;yyyy-MM-dd HH:mm:ss&#34;</span>);
+            <span style="color:#00688b;font-weight:bold">int</span> hoursBetween = hoursBetween(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>());
+            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; hoursBetween; i++) {
+                Date nextTime = <span style="color:#8b008b;font-weight:bold">new</span> Date(param.<span style="color:#658b00">getStartTime</span>().<span style="color:#658b00">getTime</span>() + (1000L * 60 * 60 * i));
+                xAxis.<span style="color:#658b00">add</span>(sdf.<span style="color:#658b00">format</span>(nextTime));
+            }
+        }
+</code></pre></div><ul>
 <li>計算時間差的工具類，其實我很想用糊塗工具包&hellip;</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 獲取兩個日期相差的月數
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">monthsBetween</span>(Date d1, Date d2) {
-</span></span><span style="display:flex;"><span>        Calendar c1 = Calendar.<span style="color:#658b00">getInstance</span>();
-</span></span><span style="display:flex;"><span>        Calendar c2 = Calendar.<span style="color:#658b00">getInstance</span>();
-</span></span><span style="display:flex;"><span>        c1.<span style="color:#658b00">setTime</span>(d1);
-</span></span><span style="display:flex;"><span>        c2.<span style="color:#658b00">setTime</span>(d2);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> year1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">YEAR</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> year2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">YEAR</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> month1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">MONTH</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> month2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">MONTH</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> day1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">DAY_OF_MONTH</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> day2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">DAY_OF_MONTH</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取年的差值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> yearInterval = year1 - year2;
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 如果 d1的 月-日 小於 d2的 月-日 那麼 yearInterval-- 這樣就得到了相差的年數
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (month1 &lt; month2 || month1 == month2 &amp;&amp; day1 &lt; day2) {
-</span></span><span style="display:flex;"><span>            yearInterval--;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 獲取月數差值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> monthInterval = (month1 + <span style="color:#b452cd">12</span>) - month2;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (day1 &lt; day2) {
-</span></span><span style="display:flex;"><span>            monthInterval--;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        monthInterval %= <span style="color:#b452cd">12</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Math.<span style="color:#658b00">abs</span>(yearInterval * <span style="color:#b452cd">12</span> + monthInterval);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * JAVA計算兩個日期相差多少天(by date)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">daysBetween</span>(Date date1, Date date2) {
-</span></span><span style="display:flex;"><span>        Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
-</span></span><span style="display:flex;"><span>        cal.<span style="color:#658b00">setTime</span>(date1);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> time1 = cal.<span style="color:#658b00">getTimeInMillis</span>();
-</span></span><span style="display:flex;"><span>        cal.<span style="color:#658b00">setTime</span>(date2);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> time2 = cal.<span style="color:#658b00">getTimeInMillis</span>();
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> between_days = (time2 - time1) / (<span style="color:#b452cd">1000</span> * <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">24</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Integer.<span style="color:#658b00">parseInt</span>(String.<span style="color:#658b00">valueOf</span>(between_days));
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * JAVA計算兩個日期相差多少小時
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">hoursBetween</span>(Date date1, Date date2) {
-</span></span><span style="display:flex;"><span>        Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
-</span></span><span style="display:flex;"><span>        cal.<span style="color:#658b00">setTime</span>(date1);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> time1 = cal.<span style="color:#658b00">getTimeInMillis</span>();
-</span></span><span style="display:flex;"><span>        cal.<span style="color:#658b00">setTime</span>(date2);
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> time2 = cal.<span style="color:#658b00">getTimeInMillis</span>();
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> between_hours = (time2 - time1) / (<span style="color:#b452cd">1000</span> * <span style="color:#b452cd">3600</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> Integer.<span style="color:#658b00">parseInt</span>(String.<span style="color:#658b00">valueOf</span>(between_hours));
-</span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 獲取兩個日期相差的月數
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">monthsBetween</span>(Date d1, Date d2) {
+        Calendar c1 = Calendar.<span style="color:#658b00">getInstance</span>();
+        Calendar c2 = Calendar.<span style="color:#658b00">getInstance</span>();
+        c1.<span style="color:#658b00">setTime</span>(d1);
+        c2.<span style="color:#658b00">setTime</span>(d2);
+        <span style="color:#00688b;font-weight:bold">int</span> year1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">YEAR</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> year2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">YEAR</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> month1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">MONTH</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> month2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">MONTH</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> day1 = c1.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">DAY_OF_MONTH</span>);
+        <span style="color:#00688b;font-weight:bold">int</span> day2 = c2.<span style="color:#658b00">get</span>(Calendar.<span style="color:#658b00">DAY_OF_MONTH</span>);
+        <span style="color:#228b22">// 獲取年的差值
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> yearInterval = year1 - year2;
+        <span style="color:#228b22">// 如果 d1的 月-日 小於 d2的 月-日 那麼 yearInterval-- 這樣就得到了相差的年數
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (month1 &lt; month2 || month1 == month2 &amp;&amp; day1 &lt; day2) {
+            yearInterval--;
+        }
+        <span style="color:#228b22">// 獲取月數差值
+</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">int</span> monthInterval = (month1 + 12) - month2;
+        <span style="color:#8b008b;font-weight:bold">if</span> (day1 &lt; day2) {
+            monthInterval--;
+        }
+        monthInterval %= 12;
+        <span style="color:#8b008b;font-weight:bold">return</span> Math.<span style="color:#658b00">abs</span>(yearInterval * 12 + monthInterval);
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * JAVA計算兩個日期相差多少天(by date)
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">daysBetween</span>(Date date1, Date date2) {
+        Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
+        cal.<span style="color:#658b00">setTime</span>(date1);
+        <span style="color:#00688b;font-weight:bold">long</span> time1 = cal.<span style="color:#658b00">getTimeInMillis</span>();
+        cal.<span style="color:#658b00">setTime</span>(date2);
+        <span style="color:#00688b;font-weight:bold">long</span> time2 = cal.<span style="color:#658b00">getTimeInMillis</span>();
+        <span style="color:#00688b;font-weight:bold">long</span> between_days = (time2 - time1) / (1000 * 3600 * 24);
+        <span style="color:#8b008b;font-weight:bold">return</span> Integer.<span style="color:#658b00">parseInt</span>(String.<span style="color:#658b00">valueOf</span>(between_days));
+    }
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * JAVA計算兩個日期相差多少小時
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">hoursBetween</span>(Date date1, Date date2) {
+        Calendar cal = Calendar.<span style="color:#658b00">getInstance</span>();
+        cal.<span style="color:#658b00">setTime</span>(date1);
+        <span style="color:#00688b;font-weight:bold">long</span> time1 = cal.<span style="color:#658b00">getTimeInMillis</span>();
+        cal.<span style="color:#658b00">setTime</span>(date2);
+        <span style="color:#00688b;font-weight:bold">long</span> time2 = cal.<span style="color:#658b00">getTimeInMillis</span>();
+        <span style="color:#00688b;font-weight:bold">long</span> between_hours = (time2 - time1) / (1000 * 3600);
+        <span style="color:#8b008b;font-weight:bold">return</span> Integer.<span style="color:#658b00">parseInt</span>(String.<span style="color:#658b00">valueOf</span>(between_hours));
+    }
+</code></pre></div><ul>
 <li>然後去DB撈對應的資料</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#228b22">// 車類對應編號
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Map&lt;String, String&gt; carTypeMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-</span></span><span style="display:flex;"><span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;03&#34;</span>, <span style="color:#cd5555">&#34;大貨車&#34;</span>); <span style="color:#228b22">// 大貨車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;04&#34;</span>, <span style="color:#cd5555">&#34;小貨車&#34;</span>); <span style="color:#228b22">// 小貨車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;05&#34;</span>, <span style="color:#cd5555">&#34;公車&#34;</span>); <span style="color:#228b22">// 公車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;06&#34;</span>, <span style="color:#cd5555">&#34;自用車&#34;</span>); <span style="color:#228b22">// 自用車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;07&#34;</span>, <span style="color:#cd5555">&#34;機車&#34;</span>); <span style="color:#228b22">// 機車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;08&#34;</span>, <span style="color:#cd5555">&#34;腳踏車&#34;</span>); <span style="color:#228b22">// 腳踏車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;09&#34;</span>, <span style="color:#cd5555">&#34;救護車&#34;</span>); <span style="color:#228b22">// 救護車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;10&#34;</span>, <span style="color:#cd5555">&#34;消防車&#34;</span>); <span style="color:#228b22">// 消防車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;11&#34;</span>, <span style="color:#cd5555">&#34;警車&#34;</span>); <span style="color:#228b22">// 警車
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 取得指定時間段的統計結果
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        List&lt;IdentifyResultStatistics&gt; rawStatsData = identifyResultRepo.<span style="color:#658b00">findVehicleTypeAnalysis</span>(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>(), param.<span style="color:#658b00">getStatsType</span>().<span style="color:#658b00">toString</span>(), param.<span style="color:#658b00">getIdList</span>());
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 依照車種分開
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Map&lt;String, List&lt;IdentifyResultStatistics&gt;&gt; typeCollect = rawStatsData.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">groupingBy</span>(IdentifyResultStatistics::getEventType));
-</span></span><span style="display:flex;"><span>        FastDateFormat finalSdf = sdf;
-</span></span><span style="display:flex;"><span>        typeCollect.<span style="color:#658b00">forEach</span>((type, list) -&gt; {
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 有在8種車內且有紀錄的
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (carTypeMap.<span style="color:#658b00">containsKey</span>(type) &amp;&amp; list.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>                List&lt;Integer&gt; yAxis = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 依照時間找到對應的X，填充Y
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; xAxis.<span style="color:#658b00">size</span>(); i++) {
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 如果db紀錄的時間等於時間節點
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#00688b;font-weight:bold">int</span> finalI = i;
-</span></span><span style="display:flex;"><span>                    Optional&lt;IdentifyResultStatistics&gt; first = list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(e -&gt; finalSdf.<span style="color:#658b00">format</span>(e.<span style="color:#658b00">getStatsTime</span>()).<span style="color:#658b00">equals</span>(xAxis.<span style="color:#658b00">get</span>(finalI))).<span style="color:#658b00">findFirst</span>();
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (first.<span style="color:#658b00">isPresent</span>()) {
-</span></span><span style="display:flex;"><span>                        yAxis.<span style="color:#658b00">add</span>(Math.<span style="color:#658b00">toIntExact</span>(first.<span style="color:#658b00">get</span>().<span style="color:#658b00">getValue</span>()));
-</span></span><span style="display:flex;"><span>                    } <span style="color:#8b008b;font-weight:bold">else</span> { <span style="color:#228b22">// 假設沒有該時間節點的紀錄，則補0
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                        yAxis.<span style="color:#658b00">add</span>(<span style="color:#b452cd">0</span>);
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 總和
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#00688b;font-weight:bold">int</span> total = yAxis.<span style="color:#658b00">stream</span>().<span style="color:#658b00">mapToInt</span>(val -&gt; val).<span style="color:#658b00">sum</span>();
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 寫入
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                EChartsVo build = EChartsVo.<span style="color:#658b00">builder</span>()
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">id</span>(Long.<span style="color:#658b00">parseLong</span>(type))
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">name</span>(carTypeMap.<span style="color:#658b00">get</span>(type))
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">total</span>(total)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">xAxis</span>(xAxis)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">yAxis</span>(yAxis)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>                result.<span style="color:#658b00">add</span>(build);
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 有紀錄的就移出清單
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                carTypeMap.<span style="color:#658b00">remove</span>(type);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        });
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 如果還剩某種車完全沒有紀錄
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (carTypeMap.<span style="color:#658b00">size</span>() &gt; <span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 全部補0
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            List&lt;Integer&gt; zero = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; xAxis.<span style="color:#658b00">size</span>(); i++) {
-</span></span><span style="display:flex;"><span>                zero.<span style="color:#658b00">add</span>(<span style="color:#b452cd">0</span>);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>            carTypeMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
-</span></span><span style="display:flex;"><span>                EChartsVo build = EChartsVo.<span style="color:#658b00">builder</span>()
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">id</span>(Long.<span style="color:#658b00">parseLong</span>(k))
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">name</span>(v)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">total</span>(<span style="color:#b452cd">0</span>)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">xAxis</span>(xAxis)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">yAxis</span>(zero)
-</span></span><span style="display:flex;"><span>                        .<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>                result.<span style="color:#658b00">add</span>(build);
-</span></span><span style="display:flex;"><span>            });
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 排序
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        result.<span style="color:#658b00">sort</span>(Comparator.<span style="color:#658b00">comparing</span>(EChartsVo::getName));
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> result;
-</span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#228b22">// 車類對應編號
+</span><span style="color:#228b22"></span>        Map&lt;String, String&gt; carTypeMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;03&#34;</span>, <span style="color:#cd5555">&#34;大貨車&#34;</span>); <span style="color:#228b22">// 大貨車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;04&#34;</span>, <span style="color:#cd5555">&#34;小貨車&#34;</span>); <span style="color:#228b22">// 小貨車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;05&#34;</span>, <span style="color:#cd5555">&#34;公車&#34;</span>); <span style="color:#228b22">// 公車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;06&#34;</span>, <span style="color:#cd5555">&#34;自用車&#34;</span>); <span style="color:#228b22">// 自用車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;07&#34;</span>, <span style="color:#cd5555">&#34;機車&#34;</span>); <span style="color:#228b22">// 機車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;08&#34;</span>, <span style="color:#cd5555">&#34;腳踏車&#34;</span>); <span style="color:#228b22">// 腳踏車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;09&#34;</span>, <span style="color:#cd5555">&#34;救護車&#34;</span>); <span style="color:#228b22">// 救護車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;10&#34;</span>, <span style="color:#cd5555">&#34;消防車&#34;</span>); <span style="color:#228b22">// 消防車
+</span><span style="color:#228b22"></span>        carTypeMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;11&#34;</span>, <span style="color:#cd5555">&#34;警車&#34;</span>); <span style="color:#228b22">// 警車
+</span><span style="color:#228b22"></span>
+        <span style="color:#228b22">// 取得指定時間段的統計結果
+</span><span style="color:#228b22"></span>        List&lt;IdentifyResultStatistics&gt; rawStatsData = identifyResultRepo.<span style="color:#658b00">findVehicleTypeAnalysis</span>(param.<span style="color:#658b00">getStartTime</span>(), param.<span style="color:#658b00">getEndTime</span>(), param.<span style="color:#658b00">getStatsType</span>().<span style="color:#658b00">toString</span>(), param.<span style="color:#658b00">getIdList</span>());
+
+        <span style="color:#228b22">// 依照車種分開
+</span><span style="color:#228b22"></span>        Map&lt;String, List&lt;IdentifyResultStatistics&gt;&gt; typeCollect = rawStatsData.<span style="color:#658b00">stream</span>().<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">groupingBy</span>(IdentifyResultStatistics::getEventType));
+        FastDateFormat finalSdf = sdf;
+        typeCollect.<span style="color:#658b00">forEach</span>((type, list) -&gt; {
+            <span style="color:#228b22">// 有在8種車內且有紀錄的
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (carTypeMap.<span style="color:#658b00">containsKey</span>(type) &amp;&amp; list.<span style="color:#658b00">size</span>() &gt; 0) {
+                List&lt;Integer&gt; yAxis = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+                <span style="color:#228b22">// 依照時間找到對應的X，填充Y
+</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; xAxis.<span style="color:#658b00">size</span>(); i++) {
+                    <span style="color:#228b22">// 如果db紀錄的時間等於時間節點
+</span><span style="color:#228b22"></span>                    <span style="color:#00688b;font-weight:bold">int</span> finalI = i;
+                    Optional&lt;IdentifyResultStatistics&gt; first = list.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(e -&gt; finalSdf.<span style="color:#658b00">format</span>(e.<span style="color:#658b00">getStatsTime</span>()).<span style="color:#658b00">equals</span>(xAxis.<span style="color:#658b00">get</span>(finalI))).<span style="color:#658b00">findFirst</span>();
+                    <span style="color:#8b008b;font-weight:bold">if</span> (first.<span style="color:#658b00">isPresent</span>()) {
+                        yAxis.<span style="color:#658b00">add</span>(Math.<span style="color:#658b00">toIntExact</span>(first.<span style="color:#658b00">get</span>().<span style="color:#658b00">getValue</span>()));
+                    } <span style="color:#8b008b;font-weight:bold">else</span> { <span style="color:#228b22">// 假設沒有該時間節點的紀錄，則補0
+</span><span style="color:#228b22"></span>                        yAxis.<span style="color:#658b00">add</span>(0);
+                    }
+                }
+                <span style="color:#228b22">// 總和
+</span><span style="color:#228b22"></span>                <span style="color:#00688b;font-weight:bold">int</span> total = yAxis.<span style="color:#658b00">stream</span>().<span style="color:#658b00">mapToInt</span>(val -&gt; val).<span style="color:#658b00">sum</span>();
+                <span style="color:#228b22">// 寫入
+</span><span style="color:#228b22"></span>                EChartsVo build = EChartsVo.<span style="color:#658b00">builder</span>()
+                        .<span style="color:#658b00">id</span>(Long.<span style="color:#658b00">parseLong</span>(type))
+                        .<span style="color:#658b00">name</span>(carTypeMap.<span style="color:#658b00">get</span>(type))
+                        .<span style="color:#658b00">total</span>(total)
+                        .<span style="color:#658b00">xAxis</span>(xAxis)
+                        .<span style="color:#658b00">yAxis</span>(yAxis)
+                        .<span style="color:#658b00">build</span>();
+                result.<span style="color:#658b00">add</span>(build);
+                <span style="color:#228b22">// 有紀錄的就移出清單
+</span><span style="color:#228b22"></span>                carTypeMap.<span style="color:#658b00">remove</span>(type);
+            }
+        });
+        <span style="color:#228b22">// 如果還剩某種車完全沒有紀錄
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (carTypeMap.<span style="color:#658b00">size</span>() &gt; 0) {
+            <span style="color:#228b22">// 全部補0
+</span><span style="color:#228b22"></span>            List&lt;Integer&gt; zero = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = 0; i &lt; xAxis.<span style="color:#658b00">size</span>(); i++) {
+                zero.<span style="color:#658b00">add</span>(0);
+            }
+            carTypeMap.<span style="color:#658b00">forEach</span>((k, v) -&gt; {
+                EChartsVo build = EChartsVo.<span style="color:#658b00">builder</span>()
+                        .<span style="color:#658b00">id</span>(Long.<span style="color:#658b00">parseLong</span>(k))
+                        .<span style="color:#658b00">name</span>(v)
+                        .<span style="color:#658b00">total</span>(0)
+                        .<span style="color:#658b00">xAxis</span>(xAxis)
+                        .<span style="color:#658b00">yAxis</span>(zero)
+                        .<span style="color:#658b00">build</span>();
+                result.<span style="color:#658b00">add</span>(build);
+            });
+        }
+        <span style="color:#228b22">// 排序
+</span><span style="color:#228b22"></span>        result.<span style="color:#658b00">sort</span>(Comparator.<span style="color:#658b00">comparing</span>(EChartsVo::getName));
+        <span style="color:#8b008b;font-weight:bold">return</span> result;
+    }
+</code></pre></div><ul>
 <li>如果資料量很大，map也可以轉parallelStream處理，例如這樣(但要注意處理資料有沒有先後順序的問題)</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#228b22">// 依照區域id分開
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        Map&lt;Long, List&lt;ParkingStats&gt;&gt; pIdMap = allStats.<span style="color:#658b00">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">groupingBy</span>(ParkingStats::getPId));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        pIdMap.<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">parallelStream</span>().<span style="color:#658b00">forEach</span>(entry-&gt;{
-</span></span><span style="display:flex;"><span>            List&lt;ParkingStats&gt; statsList = pIdMap.<span style="color:#658b00">get</span>(entry.<span style="color:#658b00">getKey</span>()); <span style="color:#228b22">// entry.getKey() = key = pId
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#228b22">// 平均
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">double</span> average = statsList.<span style="color:#658b00">stream</span>().<span style="color:#658b00">mapToInt</span>(ParkingStats::getCarIn).<span style="color:#658b00">average</span>().<span style="color:#658b00">orElse</span>(<span style="color:#b452cd">0.0</span>);
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 紀錄
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            ParkingStats build = ParkingStats.<span style="color:#658b00">builder</span>()
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">pId</span>(entry.<span style="color:#658b00">getKey</span>())
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">counterType</span>(<span style="color:#b452cd">8</span>)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">carIn</span>((<span style="color:#00688b;font-weight:bold">int</span>) average)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">carOut</span>(<span style="color:#b452cd">0</span>)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">startTime</span>(yesterday)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">statsType</span>(<span style="color:#b452cd">3</span>)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">createTime</span>(now)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#658b00">updateTime</span>(now).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>            parkingStatsRepo.<span style="color:#658b00">save</span>(build);
-</span></span><span style="display:flex;"><span>            log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;停車場 id={} 在 {} 的全日平均使用量已建立&#34;</span>, entry.<span style="color:#658b00">getKey</span>(), yesterday);
-</span></span><span style="display:flex;"><span>            });
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#228b22">// 依照區域id分開
+</span><span style="color:#228b22"></span>        Map&lt;Long, List&lt;ParkingStats&gt;&gt; pIdMap = allStats.<span style="color:#658b00">stream</span>()
+                .<span style="color:#658b00">collect</span>(Collectors.<span style="color:#658b00">groupingBy</span>(ParkingStats::getPId));
+
+        pIdMap.<span style="color:#658b00">entrySet</span>().<span style="color:#658b00">parallelStream</span>().<span style="color:#658b00">forEach</span>(entry-&gt;{
+            List&lt;ParkingStats&gt; statsList = pIdMap.<span style="color:#658b00">get</span>(entry.<span style="color:#658b00">getKey</span>()); <span style="color:#228b22">// entry.getKey() = key = pId
+</span><span style="color:#228b22"></span>            <span style="color:#228b22">// 平均
+</span><span style="color:#228b22"></span>            <span style="color:#00688b;font-weight:bold">double</span> average = statsList.<span style="color:#658b00">stream</span>().<span style="color:#658b00">mapToInt</span>(ParkingStats::getCarIn).<span style="color:#658b00">average</span>().<span style="color:#658b00">orElse</span>(0.<span style="color:#658b00">0</span>);
+            <span style="color:#228b22">// 紀錄
+</span><span style="color:#228b22"></span>            ParkingStats build = ParkingStats.<span style="color:#658b00">builder</span>()
+                    .<span style="color:#658b00">pId</span>(entry.<span style="color:#658b00">getKey</span>())
+                    .<span style="color:#658b00">counterType</span>(8)
+                    .<span style="color:#658b00">carIn</span>((<span style="color:#00688b;font-weight:bold">int</span>) average)
+                    .<span style="color:#658b00">carOut</span>(0)
+                    .<span style="color:#658b00">startTime</span>(yesterday)
+                    .<span style="color:#658b00">statsType</span>(3)
+                    .<span style="color:#658b00">createTime</span>(now)
+                    .<span style="color:#658b00">updateTime</span>(now).<span style="color:#658b00">build</span>();
+            parkingStatsRepo.<span style="color:#658b00">save</span>(build);
+            log.<span style="color:#658b00">info</span>(<span style="color:#cd5555">&#34;停車場 id={} 在 {} 的全日平均使用量已建立&#34;</span>, entry.<span style="color:#658b00">getKey</span>(), yesterday);
+            });
+</code></pre></div><ul>
 <li>總之我把&quot;如果該時間節點沒有對應的數據，就補0&quot;這件事在後端做了，最後後端傳出去的東西</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Data</span>
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Builder</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">EChartsVo</span> {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 代碼
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Long id;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 名稱 20字
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String name;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * X軸(時間)&#34;yyyy-MM-dd&#34;;
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@JsonProperty</span>(value = <span style="color:#cd5555">&#34;xAxis&#34;</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;String&gt; xAxis;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * Y軸(數值)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@JsonProperty</span>(value = <span style="color:#cd5555">&#34;yAxis&#34;</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Integer&gt; yAxis;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 總數
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Integer total;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * Y軸平均
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Double average;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Data</span>
+<span style="color:#707a7c">@Builder</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">EChartsVo</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 代碼
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Long id;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 名稱 20字
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> String name;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * X軸(時間)&#34;yyyy-MM-dd&#34;;
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@JsonProperty</span>(value = <span style="color:#cd5555">&#34;xAxis&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;String&gt; xAxis;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * Y軸(數值)
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@JsonProperty</span>(value = <span style="color:#cd5555">&#34;yAxis&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Integer&gt; yAxis;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 總數
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Integer total;
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * Y軸平均
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> Double average;
+}
+</code></pre></div><ul>
 <li>去到前端，其實這邊也寫了一個補0的驗證，所以說其實做在哪都可以</li>
 <li>setOption是整個表格的設定，而多組資料就是放在seriesData這個數組裡，這邊做的事其實就是把後端傳來的EChartsVo的List遍歷(一個EChartsVo就是一條線)，塞到seriesData中，畫出表格</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 建立Echarts圖表
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @param timeNodeArray 時間刻度數組
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @param myCharts 圖表的div dom物件，例如: const myCharts = echarts.init(document.getElementById(&#39;myCharts&#39;));
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * @param chartsData 資料，例如: [{&#34;name&#34;:&#34;水位1&#34;,&#34;xAxis&#34;:[&#34;2019-11-14 00:15:00&#34;,&#34;2019-11-14 00:30:00&#34;],&#34;yAxis&#34;:[&#34;0.94&#34;,&#34;0.94&#34;]},{&#34;name&#34;:&#34;水位2&#34;...}]
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> buildChart(timeNodeArray, myCharts, chartsData) {
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//let today = start; // 日期（和數據日期對應）
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">let</span> seriesData = []; <span style="color:#228b22">// series內容
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">let</span> contentData = [];
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 配置x軸
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> xDateElement <span style="color:#8b008b;font-weight:bold">of</span> timeNodeArray) {
-</span></span><span style="display:flex;"><span>        contentData.push([xDateElement, <span style="color:#cd5555">&#34;&#34;</span>]); <span style="color:#228b22">// 預設時間節點該有的數據(用空數據進行填充)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#658b00">Array</span>.isArray(chartsData) || chartsData.length == <span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">let</span> minNum = <span style="color:#b452cd">0</span>,
-</span></span><span style="display:flex;"><span>        maxNum = <span style="color:#b452cd">0</span>; <span style="color:#228b22">// 記錄最大最小值，是圖標不留太多空白
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// 修改格式為[&#39;時間&#39;,&#39;值&#39;]
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    chartsData.map((res, index) =&gt; {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 配置當前數據的Y軸
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">let</span> nowContentData = JSON.parse(JSON.stringify(contentData));
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (res.yAxis.length &gt; <span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>            res.yAxis.map((yRes, yIndex) =&gt; {
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 獲取最大最小值（根據業務需要）
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (index == <span style="color:#b452cd">0</span> &amp;&amp; yIndex == <span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>                    minNum = yRes;
-</span></span><span style="display:flex;"><span>                    maxNum = yRes;
-</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (yRes &lt; minNum) {
-</span></span><span style="display:flex;"><span>                    minNum = yRes;
-</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (yRes &gt; maxNum) {
-</span></span><span style="display:flex;"><span>                    maxNum = yRes;
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 此處直接push賦值會造成整點有一個空數據和一個有數據的情況，所以需要判斷整點
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#228b22">// 如果直接更改整點的數據會產生雙倍數量的折線，所以需要先刪除為空值的整點數據，在進行整點的賦值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">let</span> arrIndex = nowContentData.findIndex(item =&gt; item[<span style="color:#b452cd">0</span>] == res.xAxis[yIndex]);
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (arrIndex != -<span style="color:#b452cd">1</span>) {
-</span></span><span style="display:flex;"><span>                    nowContentData.splice(arrIndex, <span style="color:#b452cd">1</span>);
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>                nowContentData.push([res.xAxis[yIndex], yRes]); <span style="color:#228b22">// 填充傳過來的x軸和y軸
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            });
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        seriesData.push({
-</span></span><span style="display:flex;"><span>            name: res.name,
-</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;line&#34;</span>,
-</span></span><span style="display:flex;"><span>            smooth: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>            symbol: <span style="color:#cd5555">&#34;circle&#34;</span>,
-</span></span><span style="display:flex;"><span>            symbolSize: <span style="color:#b452cd">7</span>, <span style="color:#228b22">// 線上的小圓點
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            lineStyle: {
-</span></span><span style="display:flex;"><span>                normal: {
-</span></span><span style="display:flex;"><span>                    width: <span style="color:#b452cd">1</span> <span style="color:#228b22">// 線段粗細
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            emphasis: {
-</span></span><span style="display:flex;"><span>                focus: <span style="color:#cd5555">&#39;series&#39;</span>
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 此處定義小圓點的大小和顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            itemStyle: {
-</span></span><span style="display:flex;"><span>                normal: {
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// color: `rgb(${res.color})`,
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    borderColor: <span style="color:#cd5555">&#34;#fff&#34;</span>,
-</span></span><span style="display:flex;"><span>                    borderWidth: <span style="color:#b452cd">1</span>
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            data: nowContentData,
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//使用基準線，記得引入require(&#39;echarts/lib/component/markLine&#39;)
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            markLine: {
-</span></span><span style="display:flex;"><span>                silent: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>                symbol: <span style="color:#cd5555">&#34;none&#34;</span>,
-</span></span><span style="display:flex;"><span>                label: {
-</span></span><span style="display:flex;"><span>                    position: <span style="color:#cd5555">&#34;middle&#34;</span>,
-</span></span><span style="display:flex;"><span>                    formatter: <span style="color:#cd5555">&#34;{b}&#34;</span>
-</span></span><span style="display:flex;"><span>                },
-</span></span><span style="display:flex;"><span>                data: []
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>        });
-</span></span><span style="display:flex;"><span>    });
-</span></span><span style="display:flex;"><span>    myCharts.setOption({
-</span></span><span style="display:flex;"><span>        title: {
-</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;時段分析&#39;</span>,
-</span></span><span style="display:flex;"><span>            padding: <span style="color:#b452cd">10</span>,
-</span></span><span style="display:flex;"><span>            left: <span style="color:#cd5555">&#39;center&#39;</span>
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        legend: {
-</span></span><span style="display:flex;"><span>            orient: <span style="color:#cd5555">&#39;horizontal&#39;</span>,
-</span></span><span style="display:flex;"><span>            top: <span style="color:#cd5555">&#39;8%&#39;</span>,
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        backgroundColor: <span style="color:#cd5555">&#39;#fbfbfb&#39;</span>,
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// tooltip的配置
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        tooltip: {
-</span></span><span style="display:flex;"><span>            trigger: <span style="color:#cd5555">&#34;axis&#34;</span>,
-</span></span><span style="display:flex;"><span>            axisPointer: {
-</span></span><span style="display:flex;"><span>                lineStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#34;#ddd&#34;</span>
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            formatter: val =&gt; {
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">let</span> text = <span style="color:#cd5555">&#34;&#34;</span>;
-</span></span><span style="display:flex;"><span>                text = <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>val[<span style="color:#b452cd">0</span>].data[<span style="color:#b452cd">0</span>]<span style="color:#cd5555">}</span><span style="color:#cd5555">&lt;br/&gt;`</span>; <span style="color:#228b22">// 時間
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                val.map((res, index) =&gt; {
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 名字
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    text += <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>res.marker<span style="color:#cd5555">}${</span>res.seriesName<span style="color:#cd5555">}</span><span style="color:#cd5555">：`</span>;
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (res.data[<span style="color:#b452cd">1</span>] === <span style="color:#b452cd">0</span> || res.data[<span style="color:#b452cd">1</span>]) {
-</span></span><span style="display:flex;"><span>                        text += <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>res.data[<span style="color:#b452cd">1</span>]<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span> + <span style="color:#cd5555">&#34;輛&#34;</span>;
-</span></span><span style="display:flex;"><span>                    } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>                        text += <span style="color:#cd5555">&#34;暫無數據&#34;</span>;
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                    text += <span style="color:#cd5555">&#34;&lt;br/&gt;&#34;</span>;
-</span></span><span style="display:flex;"><span>                });
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> text;
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            textStyle: {
-</span></span><span style="display:flex;"><span>                align: <span style="color:#cd5555">&#34;left&#34;</span>
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 圖表位置
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        grid: {
-</span></span><span style="display:flex;"><span>            top: <span style="color:#cd5555">&#34;15%&#34;</span>,
-</span></span><span style="display:flex;"><span>            left: <span style="color:#cd5555">&#34;2%&#34;</span>,
-</span></span><span style="display:flex;"><span>            right: <span style="color:#cd5555">&#34;5%&#34;</span>,
-</span></span><span style="display:flex;"><span>            bottom: <span style="color:#cd5555">&#34;10%&#34;</span>,
-</span></span><span style="display:flex;"><span>            containLabel: <span style="color:#8b008b;font-weight:bold">true</span>
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        xAxis: {
-</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;time&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// x軸單位
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            name: <span style="color:#cd5555">&#34;時間&#34;</span>,
-</span></span><span style="display:flex;"><span>            nameTextStyle: {
-</span></span><span style="display:flex;"><span>                color: <span style="color:#cd5555">&#34;#999&#34;</span>
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// x軸0值時橫線的顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            axisLine: {
-</span></span><span style="display:flex;"><span>                lineStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// x軸坐標文字的顏色配置
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            axisLabel: {
-</span></span><span style="display:flex;"><span>                show: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>                textStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#39;#000&#39;</span>
-</span></span><span style="display:flex;"><span>                },
-</span></span><span style="display:flex;"><span>                interval: <span style="color:#b452cd">3600</span>,
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            data: timeNodeArray,
-</span></span><span style="display:flex;"><span>            min: timeNodeArray[<span style="color:#b452cd">0</span>], <span style="color:#228b22">//`${today}` // 初始為0點
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        },
-</span></span><span style="display:flex;"><span>        yAxis: {
-</span></span><span style="display:flex;"><span>            splitNumber: <span style="color:#b452cd">10</span>, <span style="color:#228b22">// y軸間隔數量
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            type: <span style="color:#cd5555">&#34;value&#34;</span>,
-</span></span><span style="display:flex;"><span>            name: <span style="color:#cd5555">&#34;車種(輛)&#34;</span>, <span style="color:#228b22">// 單位
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            nameTextStyle: {
-</span></span><span style="display:flex;"><span>                color: <span style="color:#cd5555">&#34;#999&#34;</span> <span style="color:#228b22">// 單位顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// y軸0值時的縱線顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            axisLine: {
-</span></span><span style="display:flex;"><span>                lineStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// y坐標文字的顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            axisLabel: {
-</span></span><span style="display:flex;"><span>                formatter: <span style="color:#8b008b;font-weight:bold">function</span>(value, index) {
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> value.toFixed(<span style="color:#b452cd">0</span>) + <span style="color:#cd5555">&#34; 輛&#34;</span>;
-</span></span><span style="display:flex;"><span>                },
-</span></span><span style="display:flex;"><span>                show: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>                textStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#34;#000&#34;</span>
-</span></span><span style="display:flex;"><span>                },
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 平行於x軸的橫向線顏色
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            splitLine: {
-</span></span><span style="display:flex;"><span>                show: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>                lineStyle: {
-</span></span><span style="display:flex;"><span>                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 縮放
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        dataZoom: [{
-</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#39;slider&#39;</span>,
-</span></span><span style="display:flex;"><span>            start: <span style="color:#b452cd">0</span>,
-</span></span><span style="display:flex;"><span>            end: <span style="color:#b452cd">100</span>,
-</span></span><span style="display:flex;"><span>            minValueSpan: <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">3</span> * <span style="color:#b452cd">1000</span>,
-</span></span><span style="display:flex;"><span>        }, {
-</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#39;inside&#39;</span>,
-</span></span><span style="display:flex;"><span>            start: <span style="color:#b452cd">0</span>,
-</span></span><span style="display:flex;"><span>            end: <span style="color:#b452cd">100</span>,
-</span></span><span style="display:flex;"><span>            minValueSpan: <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">3</span> * <span style="color:#b452cd">1000</span>,
-</span></span><span style="display:flex;"><span>        }],
-</span></span><span style="display:flex;"><span>        series: seriesData,
-</span></span><span style="display:flex;"><span>    });
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 建立Echarts圖表
+</span><span style="color:#228b22"> * @param timeNodeArray 時間刻度數組
+</span><span style="color:#228b22"> * @param myCharts 圖表的div dom物件，例如: const myCharts = echarts.init(document.getElementById(&#39;myCharts&#39;));
+</span><span style="color:#228b22"> * @param chartsData 資料，例如: [{&#34;name&#34;:&#34;水位1&#34;,&#34;xAxis&#34;:[&#34;2019-11-14 00:15:00&#34;,&#34;2019-11-14 00:30:00&#34;],&#34;yAxis&#34;:[&#34;0.94&#34;,&#34;0.94&#34;]},{&#34;name&#34;:&#34;水位2&#34;...}]
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">function</span> buildChart(timeNodeArray, myCharts, chartsData) {
+    <span style="color:#228b22">//let today = start; // 日期（和數據日期對應）
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">let</span> seriesData = []; <span style="color:#228b22">// series內容
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">let</span> contentData = [];
+    <span style="color:#228b22">// 配置x軸
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">let</span> xDateElement <span style="color:#8b008b;font-weight:bold">of</span> timeNodeArray) {
+        contentData.push([xDateElement, <span style="color:#cd5555">&#34;&#34;</span>]); <span style="color:#228b22">// 預設時間節點該有的數據(用空數據進行填充)
+</span><span style="color:#228b22"></span>    }
+    <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#658b00">Array</span>.isArray(chartsData) || chartsData.length == <span style="color:#b452cd">0</span>) {
+        <span style="color:#8b008b;font-weight:bold">return</span>;
+    }
+    <span style="color:#8b008b;font-weight:bold">let</span> minNum = <span style="color:#b452cd">0</span>,
+        maxNum = <span style="color:#b452cd">0</span>; <span style="color:#228b22">// 記錄最大最小值，是圖標不留太多空白
+</span><span style="color:#228b22"></span>    <span style="color:#228b22">// 修改格式為[&#39;時間&#39;,&#39;值&#39;]
+</span><span style="color:#228b22"></span>    chartsData.map((res, index) =&gt; {
+        <span style="color:#228b22">// 配置當前數據的Y軸
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">let</span> nowContentData = JSON.parse(JSON.stringify(contentData));
+        <span style="color:#8b008b;font-weight:bold">if</span> (res.yAxis.length &gt; <span style="color:#b452cd">0</span>) {
+            res.yAxis.map((yRes, yIndex) =&gt; {
+                <span style="color:#228b22">// 獲取最大最小值（根據業務需要）
+</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">if</span> (index == <span style="color:#b452cd">0</span> &amp;&amp; yIndex == <span style="color:#b452cd">0</span>) {
+                    minNum = yRes;
+                    maxNum = yRes;
+                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (yRes &lt; minNum) {
+                    minNum = yRes;
+                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (yRes &gt; maxNum) {
+                    maxNum = yRes;
+                }
+                <span style="color:#228b22">// 此處直接push賦值會造成整點有一個空數據和一個有數據的情況，所以需要判斷整點
+</span><span style="color:#228b22"></span>                <span style="color:#228b22">// 如果直接更改整點的數據會產生雙倍數量的折線，所以需要先刪除為空值的整點數據，在進行整點的賦值
+</span><span style="color:#228b22"></span>                <span style="color:#8b008b;font-weight:bold">let</span> arrIndex = nowContentData.findIndex(item =&gt; item[<span style="color:#b452cd">0</span>] == res.xAxis[yIndex]);
+                <span style="color:#8b008b;font-weight:bold">if</span> (arrIndex != -<span style="color:#b452cd">1</span>) {
+                    nowContentData.splice(arrIndex, <span style="color:#b452cd">1</span>);
+                }
+                nowContentData.push([res.xAxis[yIndex], yRes]); <span style="color:#228b22">// 填充傳過來的x軸和y軸
+</span><span style="color:#228b22"></span>            });
+        }
+        seriesData.push({
+            name: res.name,
+            type: <span style="color:#cd5555">&#34;line&#34;</span>,
+            smooth: <span style="color:#8b008b;font-weight:bold">true</span>,
+            symbol: <span style="color:#cd5555">&#34;circle&#34;</span>,
+            symbolSize: <span style="color:#b452cd">7</span>, <span style="color:#228b22">// 線上的小圓點
+</span><span style="color:#228b22"></span>            lineStyle: {
+                normal: {
+                    width: <span style="color:#b452cd">1</span> <span style="color:#228b22">// 線段粗細
+</span><span style="color:#228b22"></span>                }
+            },
+            emphasis: {
+                focus: <span style="color:#cd5555">&#39;series&#39;</span>
+            },
+            <span style="color:#228b22">// 此處定義小圓點的大小和顏色
+</span><span style="color:#228b22"></span>            itemStyle: {
+                normal: {
+                    <span style="color:#228b22">// color: `rgb(${res.color})`,
+</span><span style="color:#228b22"></span>                    borderColor: <span style="color:#cd5555">&#34;#fff&#34;</span>,
+                    borderWidth: <span style="color:#b452cd">1</span>
+                }
+            },
+            data: nowContentData,
+            <span style="color:#228b22">//使用基準線，記得引入require(&#39;echarts/lib/component/markLine&#39;)
+</span><span style="color:#228b22"></span>            markLine: {
+                silent: <span style="color:#8b008b;font-weight:bold">true</span>,
+                symbol: <span style="color:#cd5555">&#34;none&#34;</span>,
+                label: {
+                    position: <span style="color:#cd5555">&#34;middle&#34;</span>,
+                    formatter: <span style="color:#cd5555">&#34;{b}&#34;</span>
+                },
+                data: []
+            },
+        });
+    });
+    myCharts.setOption({
+        title: {
+            text: <span style="color:#cd5555">&#39;時段分析&#39;</span>,
+            padding: <span style="color:#b452cd">10</span>,
+            left: <span style="color:#cd5555">&#39;center&#39;</span>
+        },
+        legend: {
+            orient: <span style="color:#cd5555">&#39;horizontal&#39;</span>,
+            top: <span style="color:#cd5555">&#39;8%&#39;</span>,
+        },
+        backgroundColor: <span style="color:#cd5555">&#39;#fbfbfb&#39;</span>,
+        <span style="color:#228b22">// tooltip的配置
+</span><span style="color:#228b22"></span>        tooltip: {
+            trigger: <span style="color:#cd5555">&#34;axis&#34;</span>,
+            axisPointer: {
+                lineStyle: {
+                    color: <span style="color:#cd5555">&#34;#ddd&#34;</span>
+                }
+            },
+            formatter: val =&gt; {
+                <span style="color:#8b008b;font-weight:bold">let</span> text = <span style="color:#cd5555">&#34;&#34;</span>;
+                text = <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>val[<span style="color:#b452cd">0</span>].data[<span style="color:#b452cd">0</span>]<span style="color:#cd5555">}</span><span style="color:#cd5555">&lt;br/&gt;`</span>; <span style="color:#228b22">// 時間
+</span><span style="color:#228b22"></span>                val.map((res, index) =&gt; {
+                    <span style="color:#228b22">// 名字
+</span><span style="color:#228b22"></span>                    text += <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>res.marker<span style="color:#cd5555">}${</span>res.seriesName<span style="color:#cd5555">}</span><span style="color:#cd5555">：`</span>;
+                    <span style="color:#228b22">// 值
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">if</span> (res.data[<span style="color:#b452cd">1</span>] === <span style="color:#b452cd">0</span> || res.data[<span style="color:#b452cd">1</span>]) {
+                        text += <span style="color:#cd5555">`</span><span style="color:#cd5555">${</span>res.data[<span style="color:#b452cd">1</span>]<span style="color:#cd5555">}</span><span style="color:#cd5555">`</span> + <span style="color:#cd5555">&#34;輛&#34;</span>;
+                    } <span style="color:#8b008b;font-weight:bold">else</span> {
+                        text += <span style="color:#cd5555">&#34;暫無數據&#34;</span>;
+                    }
+                    text += <span style="color:#cd5555">&#34;&lt;br/&gt;&#34;</span>;
+                });
+                <span style="color:#8b008b;font-weight:bold">return</span> text;
+            },
+            textStyle: {
+                align: <span style="color:#cd5555">&#34;left&#34;</span>
+            }
+        },
+        <span style="color:#228b22">// 圖表位置
+</span><span style="color:#228b22"></span>        grid: {
+            top: <span style="color:#cd5555">&#34;15%&#34;</span>,
+            left: <span style="color:#cd5555">&#34;2%&#34;</span>,
+            right: <span style="color:#cd5555">&#34;5%&#34;</span>,
+            bottom: <span style="color:#cd5555">&#34;10%&#34;</span>,
+            containLabel: <span style="color:#8b008b;font-weight:bold">true</span>
+        },
+        xAxis: {
+            type: <span style="color:#cd5555">&#34;time&#34;</span>,
+            <span style="color:#228b22">// x軸單位
+</span><span style="color:#228b22"></span>            name: <span style="color:#cd5555">&#34;時間&#34;</span>,
+            nameTextStyle: {
+                color: <span style="color:#cd5555">&#34;#999&#34;</span>
+            },
+            <span style="color:#228b22">// x軸0值時橫線的顏色
+</span><span style="color:#228b22"></span>            axisLine: {
+                lineStyle: {
+                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
+                }
+            },
+            <span style="color:#228b22">// x軸坐標文字的顏色配置
+</span><span style="color:#228b22"></span>            axisLabel: {
+                show: <span style="color:#8b008b;font-weight:bold">true</span>,
+                textStyle: {
+                    color: <span style="color:#cd5555">&#39;#000&#39;</span>
+                },
+                interval: <span style="color:#b452cd">3600</span>,
+            },
+            data: timeNodeArray,
+            min: timeNodeArray[<span style="color:#b452cd">0</span>], <span style="color:#228b22">//`${today}` // 初始為0點
+</span><span style="color:#228b22"></span>        },
+        yAxis: {
+            splitNumber: <span style="color:#b452cd">10</span>, <span style="color:#228b22">// y軸間隔數量
+</span><span style="color:#228b22"></span>            type: <span style="color:#cd5555">&#34;value&#34;</span>,
+            name: <span style="color:#cd5555">&#34;車種(輛)&#34;</span>, <span style="color:#228b22">// 單位
+</span><span style="color:#228b22"></span>            nameTextStyle: {
+                color: <span style="color:#cd5555">&#34;#999&#34;</span> <span style="color:#228b22">// 單位顏色
+</span><span style="color:#228b22"></span>            },
+            <span style="color:#228b22">// y軸0值時的縱線顏色
+</span><span style="color:#228b22"></span>            axisLine: {
+                lineStyle: {
+                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
+                }
+            },
+            <span style="color:#228b22">// y坐標文字的顏色
+</span><span style="color:#228b22"></span>            axisLabel: {
+                formatter: <span style="color:#8b008b;font-weight:bold">function</span>(value, index) {
+                    <span style="color:#8b008b;font-weight:bold">return</span> value.toFixed(<span style="color:#b452cd">0</span>) + <span style="color:#cd5555">&#34; 輛&#34;</span>;
+                },
+                show: <span style="color:#8b008b;font-weight:bold">true</span>,
+                textStyle: {
+                    color: <span style="color:#cd5555">&#34;#000&#34;</span>
+                },
+            },
+            <span style="color:#228b22">// 平行於x軸的橫向線顏色
+</span><span style="color:#228b22"></span>            splitLine: {
+                show: <span style="color:#8b008b;font-weight:bold">true</span>,
+                lineStyle: {
+                    color: <span style="color:#cd5555">&#34;#999&#34;</span>
+                }
+            },
+        },
+        <span style="color:#228b22">// 縮放
+</span><span style="color:#228b22"></span>        dataZoom: [{
+            type: <span style="color:#cd5555">&#39;slider&#39;</span>,
+            start: <span style="color:#b452cd">0</span>,
+            end: <span style="color:#b452cd">100</span>,
+            minValueSpan: <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">3</span> * <span style="color:#b452cd">1000</span>,
+        }, {
+            type: <span style="color:#cd5555">&#39;inside&#39;</span>,
+            start: <span style="color:#b452cd">0</span>,
+            end: <span style="color:#b452cd">100</span>,
+            minValueSpan: <span style="color:#b452cd">3600</span> * <span style="color:#b452cd">3</span> * <span style="color:#b452cd">1000</span>,
+        }],
+        series: seriesData,
+    });
+}
+</code></pre></div><ul>
 <li>補充一下這些元件設定的名稱(官網就有，不過最常用的應該就是這些)</li>
 </ul>
 <p><img src="Snipaste_2022-05-27_12-04-02.png" alt="Snipaste_2022-05-27_12-04-02"></p>
@@ -882,64 +883,64 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>tooltip就是浮動提示，而聚焦淡化效果是這個(我覺得這個在線很多條時很重要)</li>
 </ul>
 <pre tabindex="0"><code>            emphasis: {
-                focus: &#39;series&#39;
+                focus: 'series'
             },
 </code></pre><p><img src="Snipaste_2022-05-27_12-04-32.png" alt="Snipaste_2022-05-27_12-04-32"></p>
 <ul>
 <li>圓餅圖</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * 圓餅圖
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> buildPieChart(myCharts, chartsData) {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">let</span> legend = [];
-</span></span><span style="display:flex;"><span>    chartsData.map((res, index) =&gt; {
-</span></span><span style="display:flex;"><span>        legend.push(res.name);
-</span></span><span style="display:flex;"><span>    })
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">let</span> option = {
-</span></span><span style="display:flex;"><span>        title: {
-</span></span><span style="display:flex;"><span>            text: <span style="color:#cd5555">&#39;車種佔比&#39;</span>,
-</span></span><span style="display:flex;"><span>            padding: <span style="color:#b452cd">10</span>,
-</span></span><span style="display:flex;"><span>            left: <span style="color:#cd5555">&#39;center&#39;</span>
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        tooltip: { <span style="color:#228b22">// 提示
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            trigger: <span style="color:#cd5555">&#34;item&#34;</span>, <span style="color:#228b22">// 觸發方式
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            formatter: <span style="color:#cd5555">&#34;{b}: {c}輛&lt;br/&gt;({d}%)&#34;</span> <span style="color:#228b22">// 提示的格式
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        },
-</span></span><span style="display:flex;"><span>        legend: { <span style="color:#228b22">// 圖例
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            bottom: <span style="color:#b452cd">10</span>,
-</span></span><span style="display:flex;"><span>            left: <span style="color:#cd5555">&#39;center&#39;</span>,
-</span></span><span style="display:flex;"><span>        },
-</span></span><span style="display:flex;"><span>        backgroundColor: <span style="color:#cd5555">&#39;#fbfbfb&#39;</span>,
-</span></span><span style="display:flex;"><span>        series: [{
-</span></span><span style="display:flex;"><span>            name: <span style="color:#cd5555">&#34;車種佔比&#34;</span>,
-</span></span><span style="display:flex;"><span>            type: <span style="color:#cd5555">&#34;pie&#34;</span>, <span style="color:#228b22">// 圖標的類型
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            radius: <span style="color:#cd5555">&#34;60%&#34;</span>, <span style="color:#228b22">// 餅圖的範圍
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            avoidLabelOverlap: <span style="color:#8b008b;font-weight:bold">false</span>,
-</span></span><span style="display:flex;"><span>            label: {
-</span></span><span style="display:flex;"><span>                normal: {
-</span></span><span style="display:flex;"><span>                    formatter: <span style="color:#cd5555">&#39;{b}\n{d}%&#39;</span>,
-</span></span><span style="display:flex;"><span>                    textStyle: {
-</span></span><span style="display:flex;"><span>                        fontWeight: <span style="color:#cd5555">&#39;normal&#39;</span>,
-</span></span><span style="display:flex;"><span>                        fontSize: <span style="color:#b452cd">15</span>
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                },
-</span></span><span style="display:flex;"><span>                emphasis: {
-</span></span><span style="display:flex;"><span>                    show: <span style="color:#8b008b;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>                    textStyle: {
-</span></span><span style="display:flex;"><span>                        fontWeight: <span style="color:#cd5555">&#34;bold&#34;</span>
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            labelLine: {
-</span></span><span style="display:flex;"><span>                length: <span style="color:#b452cd">1</span>
-</span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            data: chartsData,
-</span></span><span style="display:flex;"><span>        }]
-</span></span><span style="display:flex;"><span>    };
-</span></span><span style="display:flex;"><span>    myCharts.setOption(option);
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">/**
+</span><span style="color:#228b22"> * 圓餅圖
+</span><span style="color:#228b22"> */</span>
+<span style="color:#8b008b;font-weight:bold">function</span> buildPieChart(myCharts, chartsData) {
+    <span style="color:#8b008b;font-weight:bold">let</span> legend = [];
+    chartsData.map((res, index) =&gt; {
+        legend.push(res.name);
+    })
+    <span style="color:#8b008b;font-weight:bold">let</span> option = {
+        title: {
+            text: <span style="color:#cd5555">&#39;車種佔比&#39;</span>,
+            padding: <span style="color:#b452cd">10</span>,
+            left: <span style="color:#cd5555">&#39;center&#39;</span>
+        },
+        tooltip: { <span style="color:#228b22">// 提示
+</span><span style="color:#228b22"></span>            trigger: <span style="color:#cd5555">&#34;item&#34;</span>, <span style="color:#228b22">// 觸發方式
+</span><span style="color:#228b22"></span>            formatter: <span style="color:#cd5555">&#34;{b}: {c}輛&lt;br/&gt;({d}%)&#34;</span> <span style="color:#228b22">// 提示的格式
+</span><span style="color:#228b22"></span>        },
+        legend: { <span style="color:#228b22">// 圖例
+</span><span style="color:#228b22"></span>            bottom: <span style="color:#b452cd">10</span>,
+            left: <span style="color:#cd5555">&#39;center&#39;</span>,
+        },
+        backgroundColor: <span style="color:#cd5555">&#39;#fbfbfb&#39;</span>,
+        series: [{
+            name: <span style="color:#cd5555">&#34;車種佔比&#34;</span>,
+            type: <span style="color:#cd5555">&#34;pie&#34;</span>, <span style="color:#228b22">// 圖標的類型
+</span><span style="color:#228b22"></span>            radius: <span style="color:#cd5555">&#34;60%&#34;</span>, <span style="color:#228b22">// 餅圖的範圍
+</span><span style="color:#228b22"></span>            avoidLabelOverlap: <span style="color:#8b008b;font-weight:bold">false</span>,
+            label: {
+                normal: {
+                    formatter: <span style="color:#cd5555">&#39;{b}\n{d}%&#39;</span>,
+                    textStyle: {
+                        fontWeight: <span style="color:#cd5555">&#39;normal&#39;</span>,
+                        fontSize: <span style="color:#b452cd">15</span>
+                    }
+                },
+                emphasis: {
+                    show: <span style="color:#8b008b;font-weight:bold">true</span>,
+                    textStyle: {
+                        fontWeight: <span style="color:#cd5555">&#34;bold&#34;</span>
+                    }
+                }
+            },
+            labelLine: {
+                length: <span style="color:#b452cd">1</span>
+            },
+            data: chartsData,
+        }]
+    };
+    myCharts.setOption(option);
+}
+</code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-04-25</p>

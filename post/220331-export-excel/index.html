@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="從前端下查詢，再用流匯出並下載Excel"/>
 <meta name="twitter:description" content="完整的範例"/>
@@ -560,145 +561,146 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <li>重點在於前端若使用JQuery封裝好的$.postJSON等方法，會因為二進位問題導致亂碼</li>
 <li>使用原生的xhr可以解決</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span><span style="color:#1e889b">&lt;!DOCTYPE html&gt;</span>
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">html</span> <span style="color:#658b00">lang</span>=<span style="color:#cd5555">&#34;en&#34;</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">head</span>&gt;
-</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">meta</span> <span style="color:#658b00">charset</span>=<span style="color:#cd5555">&#34;UTF-8&#34;</span>&gt;
-</span></span><span style="display:flex;"><span>    &lt;<span style="color:#8b008b;font-weight:bold">title</span>&gt;Title&lt;/<span style="color:#8b008b;font-weight:bold">title</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">head</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">button</span> <span style="color:#658b00">onclick</span>=<span style="color:#cd5555">&#34;doExport()&#34;</span>&gt;export&lt;/<span style="color:#8b008b;font-weight:bold">button</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">html</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span> <span style="color:#658b00">src</span>=<span style="color:#cd5555">&#34;https://code.jquery.com/jquery-3.6.0.min.js&#34;</span>
-</span></span><span style="display:flex;"><span> <span style="color:#658b00">integrity</span>=<span style="color:#cd5555">&#34;sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=&#34;</span> <span style="color:#658b00">crossorigin</span>=<span style="color:#cd5555">&#34;anonymous&#34;</span>&gt;&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">function</span> doExport() {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 請求參數，最後會轉成JSON格式
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">var</span> requestParams = {
-</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;name&#34;</span>: <span style="color:#cd5555">&#34;Tom&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;age&#34;</span>: <span style="color:#b452cd">13</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#cd5555">&#34;test&#34;</span>: <span style="color:#cd5555">&#34;xxx&#34;</span>,
-</span></span><span style="display:flex;"><span>        };
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> url = <span style="color:#cd5555">&#34;http://localhost:12222/export&#34;</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">var</span> xhr = <span style="color:#8b008b;font-weight:bold">new</span> XMLHttpRequest();
-</span></span><span style="display:flex;"><span>        xhr.open(<span style="color:#cd5555">&#34;POST&#34;</span>, url, <span style="color:#8b008b;font-weight:bold">true</span>);
-</span></span><span style="display:flex;"><span>        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Authorization&#34;</span>, <span style="color:#cd5555">&#34;xxx&#34;</span>); <span style="color:#228b22">// 用來做身份校驗的自訂token等等
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Content-Type&#34;</span>, <span style="color:#cd5555">&#34;application/json&#34;</span>);
-</span></span><span style="display:flex;"><span>        xhr.responseType = <span style="color:#cd5555">&#34;blob&#34;</span>; <span style="color:#228b22">// 返回類型blob
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        xhr.onload = <span style="color:#8b008b;font-weight:bold">function</span> () { <span style="color:#228b22">// 定義請求完成的處理函數
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.status === <span style="color:#b452cd">200</span>) {
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> blob = <span style="color:#8b008b;font-weight:bold">this</span>.response;
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">var</span> reader = <span style="color:#8b008b;font-weight:bold">new</span> FileReader();
-</span></span><span style="display:flex;"><span>                reader.readAsDataURL(blob);
-</span></span><span style="display:flex;"><span>                reader.onload = <span style="color:#8b008b;font-weight:bold">function</span> (e) {
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">// 轉換完成後創建隱藏的a標籤執行下載
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">var</span> a = <span style="color:#658b00">document</span>.createElement(<span style="color:#cd5555">&#39;a&#39;</span>);
-</span></span><span style="display:flex;"><span>                    a.download = <span style="color:#cd5555">&#34;export&#34;</span>; <span style="color:#228b22">// 自訂的檔案名稱
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    a.href = e.target.result;
-</span></span><span style="display:flex;"><span>                    $(<span style="color:#cd5555">&#34;body&#34;</span>).append(a);
-</span></span><span style="display:flex;"><span>                    a.click();
-</span></span><span style="display:flex;"><span>                    $(a).remove();
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        };
-</span></span><span style="display:flex;"><span>        xhr.send(JSON.stringify(requestParams)) <span style="color:#228b22">// 發送ajax請求，如果沒有要帶參數可以為空
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
-</span></span><span style="display:flex;"><span>&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
-</span></span></code></pre></div><h1 id="後端">後端</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#1e889b">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#8b008b;font-weight:bold">html</span> <span style="color:#658b00">lang</span>=<span style="color:#cd5555">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">meta</span> <span style="color:#658b00">charset</span>=<span style="color:#cd5555">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#8b008b;font-weight:bold">title</span>&gt;Title&lt;/<span style="color:#8b008b;font-weight:bold">title</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">head</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">button</span> <span style="color:#658b00">onclick</span>=<span style="color:#cd5555">&#34;doExport()&#34;</span>&gt;export&lt;/<span style="color:#8b008b;font-weight:bold">button</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">body</span>&gt;
+&lt;/<span style="color:#8b008b;font-weight:bold">html</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">script</span> <span style="color:#658b00">src</span>=<span style="color:#cd5555">&#34;https://code.jquery.com/jquery-3.6.0.min.js&#34;</span>
+ <span style="color:#658b00">integrity</span>=<span style="color:#cd5555">&#34;sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=&#34;</span> <span style="color:#658b00">crossorigin</span>=<span style="color:#cd5555">&#34;anonymous&#34;</span>&gt;&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+&lt;<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+    <span style="color:#8b008b;font-weight:bold">function</span> doExport() {
+        <span style="color:#228b22">// 請求參數，最後會轉成JSON格式
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">var</span> requestParams = {
+            <span style="color:#cd5555">&#34;name&#34;</span>: <span style="color:#cd5555">&#34;Tom&#34;</span>,
+            <span style="color:#cd5555">&#34;age&#34;</span>: <span style="color:#b452cd">13</span>,
+            <span style="color:#cd5555">&#34;test&#34;</span>: <span style="color:#cd5555">&#34;xxx&#34;</span>,
+        };
+        <span style="color:#8b008b;font-weight:bold">var</span> url = <span style="color:#cd5555">&#34;http://localhost:12222/export&#34;</span>;
+        <span style="color:#8b008b;font-weight:bold">var</span> xhr = <span style="color:#8b008b;font-weight:bold">new</span> XMLHttpRequest();
+        xhr.open(<span style="color:#cd5555">&#34;POST&#34;</span>, url, <span style="color:#8b008b;font-weight:bold">true</span>);
+        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Authorization&#34;</span>, <span style="color:#cd5555">&#34;xxx&#34;</span>); <span style="color:#228b22">// 用來做身份校驗的自訂token等等
+</span><span style="color:#228b22"></span>        xhr.setRequestHeader(<span style="color:#cd5555">&#34;Content-Type&#34;</span>, <span style="color:#cd5555">&#34;application/json&#34;</span>);
+        xhr.responseType = <span style="color:#cd5555">&#34;blob&#34;</span>; <span style="color:#228b22">// 返回類型blob
+</span><span style="color:#228b22"></span>        xhr.onload = <span style="color:#8b008b;font-weight:bold">function</span> () { <span style="color:#228b22">// 定義請求完成的處理函數
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.status === <span style="color:#b452cd">200</span>) {
+                <span style="color:#8b008b;font-weight:bold">var</span> blob = <span style="color:#8b008b;font-weight:bold">this</span>.response;
+                <span style="color:#8b008b;font-weight:bold">var</span> reader = <span style="color:#8b008b;font-weight:bold">new</span> FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = <span style="color:#8b008b;font-weight:bold">function</span> (e) {
+                    <span style="color:#228b22">// 轉換完成後創建隱藏的a標籤執行下載
+</span><span style="color:#228b22"></span>                    <span style="color:#8b008b;font-weight:bold">var</span> a = <span style="color:#658b00">document</span>.createElement(<span style="color:#cd5555">&#39;a&#39;</span>);
+                    a.download = <span style="color:#cd5555">&#34;export&#34;</span>; <span style="color:#228b22">// 自訂的檔案名稱
+</span><span style="color:#228b22"></span>                    a.href = e.target.result;
+                    $(<span style="color:#cd5555">&#34;body&#34;</span>).append(a);
+                    a.click();
+                    $(a).remove();
+                }
+            }
+        };
+        xhr.send(JSON.stringify(requestParams)) <span style="color:#228b22">// 發送ajax請求，如果沒有要帶參數可以為空
+</span><span style="color:#228b22"></span>    }
+&lt;/<span style="color:#8b008b;font-weight:bold">script</span>&gt;
+</code></pre></div><h1 id="後端">後端</h1>
 <h2 id="引包">引包</h2>
 <ul>
 <li>這裡用糊塗工具包更方便，但要注意還需引poi，否則<code>ExcelUtil.getWriter();</code>報錯</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>cn.hutool<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>hutool-all<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>5.7.22<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.poi<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>poi-ooxml<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>4.1.2<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
-</span></span></code></pre></div><h2 id="controller">Controller</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>cn.hutool<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>hutool-all<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>5.7.22<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;groupId&gt;</span>org.apache.poi<span style="color:#8b008b;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;artifactId&gt;</span>poi-ooxml<span style="color:#8b008b;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;version&gt;</span>4.1.2<span style="color:#8b008b;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><h2 id="controller">Controller</h2>
 <ul>
 <li>IDEA可以用插件RoboPOJOGenerator快速的從JSON生成POJO，用於接收@RequestBody特別方便</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#707a7c">@Controller</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyController</span> {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 從BeanList輸出excel到前端並且自訂欄位
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/export&#34;</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">export</span>(<span style="color:#707a7c">@RequestBody</span> RequestParams req, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 這是前端來的請求參數，可以依據此請求去做查詢等等
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;req = &#34;</span> + req);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 這邊隨意生成一些假資料演示
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">1</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">2</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        ExcelWriter writer = ExcelUtil.<span style="color:#658b00">getWriter</span>();
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 自定義標題別名
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;aaa&#34;</span>, <span style="color:#cd5555">&#34;姓名&#34;</span>);
-</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;bbb&#34;</span>, <span style="color:#cd5555">&#34;年齡&#34;</span>);
-</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;count&#34;</span>, <span style="color:#cd5555">&#34;分數&#34;</span>);
-</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;type&#34;</span>, <span style="color:#cd5555">&#34;是否通過&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 預設未添加alias的屬性也會寫出，如果想只寫出加了別名的字段，可以調用此方法排除之
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">setOnlyAlias</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
-</span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 修改字體，預設size是10超級小
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        StyleSet styleSet = writer.<span style="color:#658b00">getStyleSet</span>().<span style="color:#658b00">setFont</span>(HSSFColor.<span style="color:#658b00">HSSFColorPredefined</span>.<span style="color:#658b00">BLACK</span>.<span style="color:#658b00">getIndex</span>(), (<span style="color:#00688b;font-weight:bold">short</span>) <span style="color:#b452cd">14</span>, <span style="color:#8b008b;font-weight:bold">null</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
-</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">setStyleSet</span>(styleSet);        
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 一次性寫出內容，使用默認樣式，強制輸出標題
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">write</span>(xxxInfos, <span style="color:#8b008b;font-weight:bold">true</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// response為HttpServletResponse對象
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/vnd.ms-excel;charset=utf-8&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// test.xls是彈出下載對話框的文件名，不能為中文，中文請自行編碼
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Content-Disposition&#34;</span>, <span style="color:#cd5555">&#34;attachment;filename=test.xls&#34;</span>);
-</span></span><span style="display:flex;"><span>        ServletOutputStream out = response.<span style="color:#658b00">getOutputStream</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        writer.<span style="color:#658b00">flush</span>(out, <span style="color:#8b008b;font-weight:bold">true</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 關閉writer，釋放內存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">close</span>();
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 此處記得關閉輸出Servlet流
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        IoUtil.<span style="color:#658b00">close</span>(out);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="解決jsonobject順序問題">解決JSONObject順序問題</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@Controller</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">MyController</span> {
+
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 從BeanList輸出excel到前端並且自訂欄位
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/export&#34;</span>)
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">export</span>(<span style="color:#707a7c">@RequestBody</span> RequestParams req, HttpServletResponse response) <span style="color:#8b008b;font-weight:bold">throws</span> IOException {
+        <span style="color:#228b22">// 這是前端來的請求參數，可以依據此請求去做查詢等等
+</span><span style="color:#228b22"></span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;req = &#34;</span> + req);
+
+        <span style="color:#228b22">// 這邊隨意生成一些假資料演示
+</span><span style="color:#228b22"></span>        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(1).<span style="color:#658b00">build</span>();
+        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(0).<span style="color:#658b00">build</span>();
+        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(2).<span style="color:#658b00">build</span>();
+
+        ExcelWriter writer = ExcelUtil.<span style="color:#658b00">getWriter</span>();
+        <span style="color:#228b22">// 自定義標題別名
+</span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;aaa&#34;</span>, <span style="color:#cd5555">&#34;姓名&#34;</span>);
+        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;bbb&#34;</span>, <span style="color:#cd5555">&#34;年齡&#34;</span>);
+        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;count&#34;</span>, <span style="color:#cd5555">&#34;分數&#34;</span>);
+        writer.<span style="color:#658b00">addHeaderAlias</span>(<span style="color:#cd5555">&#34;type&#34;</span>, <span style="color:#cd5555">&#34;是否通過&#34;</span>);
+        <span style="color:#228b22">// 預設未添加alias的屬性也會寫出，如果想只寫出加了別名的字段，可以調用此方法排除之
+</span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">setOnlyAlias</span>(<span style="color:#8b008b;font-weight:bold">true</span>);
+        
+        <span style="color:#228b22">// 修改字體，預設size是10超級小
+</span><span style="color:#228b22"></span>        StyleSet styleSet = writer.<span style="color:#658b00">getStyleSet</span>().<span style="color:#658b00">setFont</span>(HSSFColor.<span style="color:#658b00">HSSFColorPredefined</span>.<span style="color:#658b00">BLACK</span>.<span style="color:#658b00">getIndex</span>(), (<span style="color:#00688b;font-weight:bold">short</span>) 14, <span style="color:#8b008b;font-weight:bold">null</span>, <span style="color:#8b008b;font-weight:bold">false</span>);
+        writer.<span style="color:#658b00">setStyleSet</span>(styleSet);        
+
+        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
+        <span style="color:#228b22">// 一次性寫出內容，使用默認樣式，強制輸出標題
+</span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">write</span>(xxxInfos, <span style="color:#8b008b;font-weight:bold">true</span>);
+
+        <span style="color:#228b22">// response為HttpServletResponse對象
+</span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setContentType</span>(<span style="color:#cd5555">&#34;application/vnd.ms-excel;charset=utf-8&#34;</span>);
+        <span style="color:#228b22">// test.xls是彈出下載對話框的文件名，不能為中文，中文請自行編碼
+</span><span style="color:#228b22"></span>        response.<span style="color:#658b00">setHeader</span>(<span style="color:#cd5555">&#34;Content-Disposition&#34;</span>, <span style="color:#cd5555">&#34;attachment;filename=test.xls&#34;</span>);
+        ServletOutputStream out = response.<span style="color:#658b00">getOutputStream</span>();
+
+        writer.<span style="color:#658b00">flush</span>(out, <span style="color:#8b008b;font-weight:bold">true</span>);
+        <span style="color:#228b22">// 關閉writer，釋放內存
+</span><span style="color:#228b22"></span>        writer.<span style="color:#658b00">close</span>();
+        <span style="color:#228b22">// 此處記得關閉輸出Servlet流
+</span><span style="color:#228b22"></span>        IoUtil.<span style="color:#658b00">close</span>(out);
+    }
+    
+}
+
+</code></pre></div><h3 id="解決jsonobject順序問題">解決JSONObject順序問題</h3>
 <ul>
 <li>研究@ResponseBody附贈的探討，最初是在想用JSONObject與map到底差在哪，才發現JSONObject底層其實也是map</li>
 <li>區別在於map可以存null、少數情況下(例如android SDK 4.3以下)用map在多層架構下可能會包不到內層的物件</li>
 <li>所以最好都用JSONObject，建構時傳入一個<code>new LinkedHashMap()</code>可以確保呈現的順序等於put的順序</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">/**
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     * 解決JSONObject順序問題
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/res&#34;</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@ResponseBody</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">res</span>() {
-</span></span><span style="display:flex;"><span>        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">1</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">0</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(<span style="color:#b452cd">2</span>).<span style="color:#658b00">build</span>();
-</span></span><span style="display:flex;"><span>        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
-</span></span><span style="display:flex;"><span>        Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-</span></span><span style="display:flex;"><span>        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
-</span></span><span style="display:flex;"><span>        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;abc&#34;</span>, <span style="color:#b452cd">123</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 重點
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        JSONObject jo = <span style="color:#8b008b;font-weight:bold">new</span> JSONObject(<span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap());
-</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
-</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;afsg&#34;</span>, <span style="color:#cd5555">&#34;SRgrehg&#34;</span>);
-</span></span><span style="display:flex;"><span>        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;map&#34;</span>, map);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> jo.<span style="color:#658b00">toStringPretty</span>();
-</span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+    <span style="color:#228b22">/**
+</span><span style="color:#228b22">     * 解決JSONObject順序問題
+</span><span style="color:#228b22">     */</span>
+    <span style="color:#707a7c">@RequestMapping</span>(<span style="color:#cd5555">&#34;/res&#34;</span>)
+    <span style="color:#707a7c">@ResponseBody</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">res</span>() {
+        XxxInfo build = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;asdfg&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;sreg&#34;</span>).<span style="color:#658b00">count</span>(1).<span style="color:#658b00">build</span>();
+        XxxInfo build2 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;tydrfkj&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;es5u&#34;</span>).<span style="color:#658b00">count</span>(0).<span style="color:#658b00">build</span>();
+        XxxInfo build3 = XxxInfo.<span style="color:#658b00">builder</span>().<span style="color:#658b00">aaa</span>(<span style="color:#cd5555">&#34;dtykl&#34;</span>).<span style="color:#658b00">bbb</span>(<span style="color:#cd5555">&#34;rfjt&#34;</span>).<span style="color:#658b00">count</span>(2).<span style="color:#658b00">build</span>();
+        ArrayList&lt;XxxInfo&gt; xxxInfos = CollUtil.<span style="color:#658b00">newArrayList</span>(build, build2, build3);
+        Map&lt;String, Object&gt; map = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
+        map.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;abc&#34;</span>, 123);
+        <span style="color:#228b22">// 重點
+</span><span style="color:#228b22"></span>        JSONObject jo = <span style="color:#8b008b;font-weight:bold">new</span> JSONObject(<span style="color:#8b008b;font-weight:bold">new</span> LinkedHashMap());
+        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;list&#34;</span>, xxxInfos);
+        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;afsg&#34;</span>, <span style="color:#cd5555">&#34;SRgrehg&#34;</span>);
+        jo.<span style="color:#658b00">putOpt</span>(<span style="color:#cd5555">&#34;map&#34;</span>, map);
+        <span style="color:#8b008b;font-weight:bold">return</span> jo.<span style="color:#658b00">toStringPretty</span>();
+    }
+</code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-03-31</p>

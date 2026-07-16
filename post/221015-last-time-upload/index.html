@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="瀏覽器記住使用者上次上傳的檔案"/>
 <meta name="twitter:description" content="用localStorage保存2進位檔案"/>
@@ -445,52 +446,52 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>在上傳成功時，調用此方法</p>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> getBase64AndSave(file) {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">var</span> reader = <span style="color:#8b008b;font-weight:bold">new</span> FileReader();
-</span></span><span style="display:flex;"><span>    reader.readAsDataURL(file);
-</span></span><span style="display:flex;"><span>    reader.onload = <span style="color:#8b008b;font-weight:bold">function</span>() {
-</span></span><span style="display:flex;"><span>        localStorage.setItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>, reader.result);
-</span></span><span style="display:flex;"><span>    };
-</span></span><span style="display:flex;"><span>    reader.onerror = <span style="color:#8b008b;font-weight:bold">function</span>(error) {
-</span></span><span style="display:flex;"><span>        console.log(<span style="color:#cd5555">&#39;Error: &#39;</span>, error);
-</span></span><span style="display:flex;"><span>    };
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#8b008b;font-weight:bold">function</span> getBase64AndSave(file) {
+    <span style="color:#8b008b;font-weight:bold">var</span> reader = <span style="color:#8b008b;font-weight:bold">new</span> FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = <span style="color:#8b008b;font-weight:bold">function</span>() {
+        localStorage.setItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>, reader.result);
+    };
+    reader.onerror = <span style="color:#8b008b;font-weight:bold">function</span>(error) {
+        console.log(<span style="color:#cd5555">&#39;Error: &#39;</span>, error);
+    };
+}
+</code></pre></div><ul>
 <li>還原檔案</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> urltoFile(url, filename, mimeType) {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> (fetch(url)
-</span></span><span style="display:flex;"><span>        .then(<span style="color:#8b008b;font-weight:bold">function</span>(res) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> res.arrayBuffer();
-</span></span><span style="display:flex;"><span>        })
-</span></span><span style="display:flex;"><span>        .then(<span style="color:#8b008b;font-weight:bold">function</span>(buf) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> File([buf], filename, {
-</span></span><span style="display:flex;"><span>                type: mimeType
-</span></span><span style="display:flex;"><span>            });
-</span></span><span style="display:flex;"><span>        })
-</span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#228b22">/** 還原上次查詢的資料 */</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> recoveryLastTimeData() {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">let</span> uploadFileStr = localStorage.getItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>); <span style="color:#228b22">// 上次記住的data
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (uploadFileStr) {
-</span></span><span style="display:flex;"><span>        urltoFile(uploadFileStr, <span style="color:#cd5555">&#34;lastTime.xlsx&#34;</span>, <span style="color:#cd5555">&#34;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#34;</span>)
-</span></span><span style="display:flex;"><span>            .then(<span style="color:#8b008b;font-weight:bold">function</span>(file) {
-</span></span><span style="display:flex;"><span>                 <span style="color:#228b22">// do something...
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            });
-</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 如果是空的，顯示上傳窗口
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#8b008b;font-weight:bold">function</span> urltoFile(url, filename, mimeType) {
+    <span style="color:#8b008b;font-weight:bold">return</span> (fetch(url)
+        .then(<span style="color:#8b008b;font-weight:bold">function</span>(res) {
+            <span style="color:#8b008b;font-weight:bold">return</span> res.arrayBuffer();
+        })
+        .then(<span style="color:#8b008b;font-weight:bold">function</span>(buf) {
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> File([buf], filename, {
+                type: mimeType
+            });
+        })
+    );
+}
+<span style="color:#228b22">/** 還原上次查詢的資料 */</span>
+<span style="color:#8b008b;font-weight:bold">function</span> recoveryLastTimeData() {
+    <span style="color:#8b008b;font-weight:bold">let</span> uploadFileStr = localStorage.getItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>); <span style="color:#228b22">// 上次記住的data
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (uploadFileStr) {
+        urltoFile(uploadFileStr, <span style="color:#cd5555">&#34;lastTime.xlsx&#34;</span>, <span style="color:#cd5555">&#34;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#34;</span>)
+            .then(<span style="color:#8b008b;font-weight:bold">function</span>(file) {
+                 <span style="color:#228b22">// do something...
+</span><span style="color:#228b22"></span>            });
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 如果是空的，顯示上傳窗口
+</span><span style="color:#228b22"></span>    }
+}
+</code></pre></div><ul>
 <li>清空</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#228b22">/** 清空上次查詢的資料 */</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> clearLastTimeData() {
-</span></span><span style="display:flex;"><span>    localStorage.removeItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>); <span style="color:#228b22">// 上次記住的data
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">// do something...
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#228b22">/** 清空上次查詢的資料 */</span>
+<span style="color:#8b008b;font-weight:bold">function</span> clearLastTimeData() {
+    localStorage.removeItem(<span style="color:#cd5555">&#34;myUploadFileStr&#34;</span>); <span style="color:#228b22">// 上次記住的data
+</span><span style="color:#228b22">// do something...
+</span><span style="color:#228b22"></span>}
+</code></pre></div>
                     
                     <HR width="100%" id="EOF">
 		    <p style="color:#777;">上次修改於 2022-10-15</p>

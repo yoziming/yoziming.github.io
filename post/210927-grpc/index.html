@@ -28,6 +28,7 @@
 
 
 
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Golang下透過grpc調用服務案例"/>
 <meta name="twitter:description" content="grpc簡單說就是跨平台(跨語言)調用各種服務的通用轉接口"/>
@@ -415,9 +416,9 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
 <p>案例:透過grpc遠程傳遞一個調用teacher資料類型的服務</p>
 </blockquote>
 <p>.proto:</p>
-<pre tabindex="0"><code>syntax=&#34;proto3&#34;;
+<pre tabindex="0"><code>syntax=&quot;proto3&quot;;
 
-option go_package=&#34;/.;pb&#34;;
+option go_package=&quot;/.;pb&quot;;
 
 message Teacher{
     int32 age=1;
@@ -432,7 +433,7 @@ service SayName{
 
 // 綁定類方法
 func (c *Children) SayHello(ctx context.Context, t *pb.Teacher) (*pb.Teacher, error) {
-	t.Name += &#34;is sleeping&#34;
+	t.Name += &quot;is sleeping&quot;
 	return t, nil
 }
 
@@ -444,12 +445,12 @@ func main() {
 	pb.RegisterSayNameServer(grpcServer, new(Children))
 
 	// 監聽
-	listener, err := net.Listen(&#34;tcp&#34;, &#34;127.0.0.1:8899&#34;)
+	listener, err := net.Listen(&quot;tcp&quot;, &quot;127.0.0.1:8899&quot;)
 	if err != nil {
-		fmt.Println(&#34;listen err&#34;, err)
+		fmt.Println(&quot;listen err&quot;, err)
 		return
 	}
-	fmt.Println(&#34;server監聽中...&#34;)
+	fmt.Println(&quot;server監聽中...&quot;)
 	defer listener.Close()
 
 	// 啟動服務
@@ -458,9 +459,9 @@ func main() {
 </code></pre><p>client:</p>
 <pre tabindex="0"><code>func main() {
 	// 連接grpc服務
-	grpcConn, err := grpc.Dial(&#34;127.0.0.1:8899&#34;, grpc.WithInsecure())
+	grpcConn, err := grpc.Dial(&quot;127.0.0.1:8899&quot;, grpc.WithInsecure())
 	if err != nil {
-		fmt.Println(&#34;conn err&#34;, err)
+		fmt.Println(&quot;conn err&quot;, err)
 		return
 	}
 	defer grpcConn.Close()
@@ -471,7 +472,7 @@ func main() {
 	// 創建並初始化接收對象
 	var teacher pb.Teacher
 	teacher.Age = 18
-	teacher.Name = &#34;Mary&#34;
+	teacher.Name = &quot;Mary&quot;
 
 	// 調用遠程服務
 	t, err := gprcClient.SayHello(context.TODO(), &amp;teacher)
